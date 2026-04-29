@@ -23,8 +23,8 @@ theme:
         icon: material/brightness-4
         name: "Переключить на тёмную тему"
   font:
-    text: Roboto
-    code: Fira Code
+    text: Inter
+    code: JetBrains Mono
   icon:
     repo: fontawesome/brands/github
     edit: material/pencil
@@ -58,6 +58,10 @@ plugins:
         theme: dark
 
 extra:
+  fonts:
+    text: Inter
+    code: JetBrains Mono
+    provider: google
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/programmcompose/potoksite
