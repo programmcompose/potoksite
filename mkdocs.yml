@@ -51,7 +51,7 @@ plugins:
       lang:
         - ru
         - en
-      separator: "[\s\u200b\-_,:!=\-\u00B7\u00B7\u00DF\u00E7\u00F0\u00F7\u00FC.,;!?\\\/]+|_+"
+      separator: '[\s\u200b\-_,:!=\-\u00B7\u00B7\u00DF\u00E7\u00F0\u00F7\u00FC.,;!?\\\/]+|_+'
   - glightbox
   - mermaid2:
       arguments:
