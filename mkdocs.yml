@@ -10,14 +10,14 @@ theme:
   palette:
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: deep purple
-      accent: indigo
+      primary: grey
+      accent: cyan
       toggle:
         icon: material/brightness-7
         name: "Переключить на светлую тему"
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: deep purple
+      primary: grey
       accent: indigo
       toggle:
         icon: material/brightness-4

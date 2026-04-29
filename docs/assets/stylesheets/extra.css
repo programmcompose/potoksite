@@ -4,11 +4,11 @@
 
 /* Dark theme refinements */
 [data-md-color-scheme="slate"] {
-  --md-default-bg-color: #1a1a2e;
-  --md-default-bg-color--light: #16213e;
-  --md-default-bg-color--lighter: #0f3460;
-  --md-primary-fg-color: #533483;
-  --md-accent-fg-color: #7b2ff7;
+  --md-default-bg-color: #1e1e1e;
+  --md-default-bg-color--light: #252526;
+  --md-default-bg-color--lighter: #2d2d2d;
+  --md-primary-fg-color: #333333;
+  --md-accent-fg-color: #00bcd4;
 }
 
 /* Code blocks styling */
@@ -28,7 +28,7 @@
 }
 
 .md-typeset table:not([class]) th {
-  background-color: rgba(123, 47, 247, 0.1);
+  background-color: rgba(0, 188, 212, 0.1);
 }
 
 /* Admonition refinements */
@@ -44,7 +44,7 @@
 
 .hero-section h1 {
   font-size: 2.5em;
-  background: linear-gradient(135deg, #7b2ff7, #00d2ff);
+  background: linear-gradient(135deg, #00bcd4, #4dd0e1);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -81,7 +81,7 @@ html {
 
 /* Footer */
 .md-footer {
-  background-color: #0f0f23;
+  background-color: #141414;
 }
 
 /* Image containers */
@@ -92,7 +92,7 @@ html {
 
 /* Mermaid diagrams */
 .mermaid {
-  background: rgba(15, 15, 35, 0.8) !important;
+  background: rgba(30, 30, 30, 0.9) !important;
   border-radius: 8px;
   padding: 1em;
 }
