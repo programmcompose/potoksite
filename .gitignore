@@ -1,0 +1,12 @@
+# Git files for MkDocs site
+
+node_modules/
+.pip-cache/
+site/
+.thumbs/
+.DS_Store
+*.pyc
+__pycache__/
+*.egg-info/
+dist/
+build/

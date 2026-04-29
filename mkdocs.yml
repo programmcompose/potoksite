@@ -1,0 +1,143 @@
+site_name: "Создание музыки — Интерактивный курс"
+site_description: "Полный курс по созданию музыки: от основ звука до мастеринга"
+site_url: "https://programmcompose.github.io/potoksite"
+docs_dir: "docs"
+copyright: "© 2024 Создание музыки. Все права защищены."
+
+theme:
+  name: material
+  language: ru
+  palette:
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: deep purple
+      accent: indigo
+      toggle:
+        icon: material/brightness-7
+        name: "Переключить на светлую тему"
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: deep purple
+      accent: indigo
+      toggle:
+        icon: material/brightness-4
+        name: "Переключить на тёмную тему"
+  font:
+    text: Roboto
+    code: Fira Code
+  icon:
+    repo: fontawesome/brands/github
+    edit: material/pencil
+    view: material/eye
+  features:
+    - navigation.instant
+    - navigation.instant.prefetch
+    - navigation.tracking
+    - navigation.expand
+    - navigation.sections
+    - navigation.top
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
+
+repo_name: "potoksite"
+repo_url: "https://github.com/programmcompose/potoksite"
+edit_uri: "edit/main/docs/"
+
+plugins:
+  - search:
+      lang:
+        - ru
+        - en
+      separator: "[\s\u200b\-_,:!=\-\u00B7\u00B7\u00DF\u00E7\u00F0\u00F7\u00FC.,;!?\\\/]+|_+"
+  - glightbox
+  - mermaid2:
+      arguments:
+        theme: dark
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/programmcompose/potoksite
+    - icon: fontawesome/brands/youtube
+      link: https://youtube.com/@yourchannel
+    - icon: fontawesome/brands/telegram
+      link: https://t.me/yourchannel
+  analytics:
+    provider: google
+    property: G-XXXXXXXXXX
+
+extra_css:
+  - assets/stylesheets/extra.css
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: " #"
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __sp
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.magiclink:
+      repo_url_shorthand: true
+      user: squidfunk
+      repo: mkdocs-material
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+      slugify: !!python/object/apply:pymdownx.slugs.slugify
+        kwds:
+          case: lower
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+  - pymdownx.snippets:
+      auto_append:
+        - includes/abbreviations.md
+
+nav:
+  - "Главная": index.md
+  - "Том I: Основы звукозаписи":
+      - "tom1/index.md"
+      - "Что такое звук": "tom1/osnovy-zvuka.md"
+      - "Оборудование": "tom1/oborudovanie.md"
+      - "DAW — выбор программы": "tom1/daw.md"
+  - "Том II: Теория музыки":
+      - "tom2/index.md"
+      - "Нотная грамота": "tom2/notnaya-gramota.md"
+      - "Аккорды и гармония": "tom2/akkordy.md"
+      - "Ритм и перкуссия": "tom2/ritm.md"
+  - "Том III: Практика производства":
+      - "tom3/index.md"
+      - "Запись инструментов": "tom3/zapis.md"
+      - "Сведение (mixing)": "tom3/mixing.md"
+      - "Мастеринг": "tom3/mastering.md"
+  - "Маршрут обучения": "roadmap.md"
+  - "Глоссарий": "glossary.md"
