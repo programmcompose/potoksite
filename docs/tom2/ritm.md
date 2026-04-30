@@ -69,6 +69,12 @@ Snare:       X                   X
 Hi-Hat: x  x  x  x  x  x  x  x  x  x  x  x
 ```
 
+<audio class="audio-player" controls preload="none" src="../../assets/audio/drum-loop-house-128.ogg"></audio>
+
+!!! tip
+    **Слушайте:** классический house-паттерн — kick на каждую долю,
+    snare на 2 и 4, hi-hat на каждую восьмую.
+
 ## Синкопа и оффбит
 
 **Синкопа** — смещение акцента с сильной доли на слабую.
@@ -77,6 +83,20 @@ Hi-Hat: x  x  x  x  x  x  x  x  x  x  x  x
     Синкопа создаёт ощущение «groove» и «swing».
     Попробуйте сдвинуть snare на 10–20 мс после сетки —
     это создаст «laid back» ощущение.
+
+## Примеры лупов
+
+### House (128 BPM)
+
+<audio class="audio-player" controls preload="none" src="../../assets/audio/drum-loop-house-128.ogg"></audio>
+
+### Trap (140 BPM)
+
+<audio class="audio-player" controls preload="none" src="../../assets/audio/drum-loop-trap-140.ogg"></audio>
+
+### Экспериментальный
+
+<!-- Добавьте файл drum-loop-experimental.ogg в assets/audio/ -->
 
 ## Практика
 
