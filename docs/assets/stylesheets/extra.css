@@ -12,14 +12,14 @@
   --md-typeset-color: #FDFBDF;
 }
 
-/* Light theme — same colors */
+/* Light theme */
 [data-md-color-scheme="default"] {
-  --md-default-bg-color: #282828;
-  --md-default-bg-color--light: #2e2e2e;
-  --md-default-bg-color--lighter: #363636;
-  --md-primary-fg-color: #303030;
+  --md-default-bg-color: #FDFBDF;
+  --md-default-bg-color--light: #f5f2d0;
+  --md-default-bg-color--lighter: #efeacd;
+  --md-primary-fg-color: #e8e5c8;
   --md-accent-fg-color: #00bcd4;
-  --md-typeset-color: #FDFBDF;
+  --md-typeset-color: #282828;
 }
 
 /* Force text color globally */
@@ -27,7 +27,7 @@
 .md-content,
 .md-nav__link,
 .md-header__title {
-  color: #FDFBDF;
+  color: var(--md-typeset-color);
 }
 
 /* Link colors */
@@ -40,7 +40,7 @@
 }
 
 .md-nav__link {
-  color: #FDFBDF;
+  color: var(--md-typeset-color);
 }
 
 .md-nav__link:hover {
@@ -131,8 +131,12 @@ html {
 }
 
 /* Footer */
-.md-footer {
+[data-md-color-scheme="slate"] .md-footer {
   background-color: #202020;
+}
+
+[data-md-color-scheme="default"] .md-footer {
+  background-color: #e0ddc0;
 }
 
 /* Image containers */
@@ -142,8 +146,14 @@ html {
 }
 
 /* Mermaid diagrams */
-.mermaid {
+[data-md-color-scheme="slate"] .mermaid {
   background: rgba(30, 30, 30, 0.9) !important;
+  border-radius: 8px;
+  padding: 1em;
+}
+
+[data-md-color-scheme="default"] .mermaid {
+  background: rgba(200, 195, 160, 0.5) !important;
   border-radius: 8px;
   padding: 1em;
 }

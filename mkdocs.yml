@@ -60,13 +60,6 @@ extra:
     text: Inter
     code: JetBrains Mono
     provider: google
-  social:
-    - icon: fontawesome/brands/github
-      link: https://github.com/programmcompose/potoksite
-    - icon: fontawesome/brands/youtube
-      link: https://youtube.com/@yourchannel
-    - icon: fontawesome/brands/telegram
-      link: https://t.me/yourchannel
   analytics:
     provider: google
     property: G-XXXXXXXXXX
