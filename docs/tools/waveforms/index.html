@@ -438,8 +438,8 @@
   };
 
   let audioCtx = null;
-  let oscillator = null;
-  let gainNode = null;
+  let mixOscillators = [];
+  let masterGain = null;
   let analyser = null;
   let animFrame = null;
 
@@ -474,11 +474,10 @@
       btn.innerHTML = `<span class="icon" style="color:${w.color}">${w.icon}</span>${w.label}`;
       btn.addEventListener('click', () => {
         state.waveType = w.id;
+        state.mix[0].type = w.id.replace('2', '');
         buildWaveSelector();
-        if (oscillator) {
-          const typeMap = { sine2: 'sine', pulse: 'square' };
-          oscillator.type = typeMap[w.id] || w.id;
-        }
+        buildMixPanel();
+        updateAudio();
       });
       container.appendChild(btn);
     });
@@ -507,6 +506,7 @@
       sel.value = state.mix[parseInt(sel.dataset.mixType)].type;
       sel.addEventListener('change', (e) => {
         state.mix[parseInt(e.target.dataset.mixType)].type = e.target.value;
+        updateAudio();
       });
     });
 
@@ -515,6 +515,7 @@
         const idx = parseInt(e.target.dataset.mixVol);
         state.mix[idx].volume = parseInt(e.target.value);
         document.getElementById('mixVol' + idx).textContent = e.target.value + '%';
+        updateAudio();
       });
     });
   }
@@ -573,38 +574,86 @@
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     analyser = audioCtx.createAnalyser();
     analyser.fftSize = 2048;
-    gainNode = audioCtx.createGain();
-    gainNode.connect(analyser);
+    masterGain = audioCtx.createGain();
+    masterGain.connect(analyser);
     analyser.connect(audioCtx.destination);
+  }
+
+  function audioTypeFor(type) {
+    const map = { sine: 'sine', square: 'square', sawtooth: 'sawtooth', triangle: 'triangle', pulse: 'square', sine2: 'sine' };
+    return map[type] || 'sine';
+  }
+
+  function rebuildMixAudio() {
+    if (!audioCtx || !state.playing) return;
+
+    stopMixOscillators();
+
+    state.mix.forEach((m, i) => {
+      if (m.volume <= 0) return;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = audioTypeFor(m.type);
+      osc.frequency.value = state.frequency;
+      gain.gain.value = (m.volume / 100) * state.amplitude * 0.25;
+      osc.connect(gain);
+      gain.connect(masterGain);
+      osc.start();
+      mixOscillators.push({ osc, gain, index: i });
+    });
   }
 
   function startAudio() {
     initAudio();
-    if (oscillator) return;
-    oscillator = audioCtx.createOscillator();
-    const typeMap = { sine2: 'sine', pulse: 'square' };
-    oscillator.type = typeMap[state.waveType] || state.waveType;
-    oscillator.frequency.value = state.frequency;
-    oscillator.connect(gainNode);
-    gainNode.gain.value = state.amplitude * 0.3;
-    oscillator.start();
+    masterGain.gain.value = 1;
+    rebuildMixAudio();
+  }
+
+  function stopMixOscillators() {
+    mixOscillators.forEach(({ osc, gain }) => {
+      try { osc.stop(); } catch(e) {}
+      osc.disconnect();
+      gain.disconnect();
+    });
+    mixOscillators = [];
   }
 
   function stopAudio() {
-    if (oscillator) {
-      oscillator.stop();
-      oscillator.disconnect();
-      oscillator = null;
-    }
+    stopMixOscillators();
   }
 
   function updateAudio() {
-    if (oscillator) {
-      oscillator.frequency.value = state.frequency;
-      const typeMap = { sine2: 'sine', pulse: 'square' };
-      oscillator.type = typeMap[state.waveType] || state.waveType;
-      gainNode.gain.value = state.amplitude * 0.3;
-    }
+    if (!state.playing) return;
+
+    mixOscillators.forEach((item, i) => {
+      const m = state.mix[item.index];
+      if (!m) return;
+      item.osc.frequency.value = state.frequency;
+      item.osc.type = audioTypeFor(m.type);
+      item.gain.gain.value = (m.volume / 100) * state.amplitude * 0.25;
+      if (m.volume <= 0) {
+        try { item.osc.stop(); } catch(e) {}
+        item.osc.disconnect();
+        item.gain.disconnect();
+        mixOscillators.splice(i, 1);
+      }
+    });
+
+    state.mix.forEach((m, i) => {
+      if (m.volume <= 0) return;
+      const exists = mixOscillators.find(it => it.index === i);
+      if (!exists) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = audioTypeFor(m.type);
+        osc.frequency.value = state.frequency;
+        gain.gain.value = (m.volume / 100) * state.amplitude * 0.25;
+        osc.connect(gain);
+        gain.connect(masterGain);
+        osc.start();
+        mixOscillators.push({ osc, gain, index: i });
+      }
+    });
   }
 
   const mainCanvas = document.getElementById('mainCanvas');
