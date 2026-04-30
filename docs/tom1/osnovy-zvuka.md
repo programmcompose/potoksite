@@ -112,4 +112,4 @@ flowchart LR
 
 ---
 
-**← [Назад: Том I](index.md)** | **Далее: Оборудование →** [[oborudovanie.md]]
+**← [Назад: Том I](index.md)** | **Далее: Оборудование →** [oborudovanie.md](oborudovanie.md)
