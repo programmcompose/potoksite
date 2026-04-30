@@ -47,6 +47,21 @@
   color: #64b5f6;
 }
 
+/* Active nav link — left sidebar */
+.md-nav__link--active,
+.md-nav__item--active > .md-nav__link,
+.md-nav__item--active > .md-nav__link:hover {
+  color: #64b5f6 !important;
+  font-weight: 700;
+}
+
+/* Active nav link — right sidebar (TOC) */
+.md-nav__title--active,
+.md-nav__title--active:hover {
+  color: #64b5f6 !important;
+  font-weight: 700;
+}
+
 /* Code blocks styling */
 .md-typeset code {
   border-radius: 4px;
