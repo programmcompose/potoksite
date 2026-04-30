@@ -168,3 +168,24 @@ html {
 .md-typeset h3 + ul li {
   font-weight: 400;
 }
+
+/* ========================================
+   Audio players
+   ======================================== */
+
+/* Full-width audio player (standalone) */
+.md-typeset audio.audio-player {
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  margin: 0.6em 0;
+  border-radius: 8px;
+  height: 44px;
+}
+
+/* Compact audio in tables */
+.md-typeset table audio.audio-player {
+  width: 150px;
+  height: 34px;
+  margin: 2px 0;
+}

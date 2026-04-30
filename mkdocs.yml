@@ -29,9 +29,7 @@ theme:
     repo: fontawesome/brands/github
     edit: material/pencil
     view: material/eye
-  features:
-    - navigation.instant
-    - navigation.instant.prefetch
+    features:
     - navigation.tracking
     - navigation.expand
     - navigation.sections

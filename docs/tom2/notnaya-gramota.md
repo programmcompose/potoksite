@@ -25,7 +25,7 @@
 
 Пример: все 12 нот хроматической шкалы
 
-<audio controls src="../assets/audio/chromatic-scale.wav"></audio>
+<audio class="audio-player" controls preload="none" src="../../assets/audio/chromatic-scale.wav"></audio>
 
 !!! note
     Нота **A4 = 440 Гц** — международный стандарт настройки.
@@ -55,7 +55,7 @@
 C → D → E → F → G → A → B → C
 ```
 
-<audio controls src="../assets/audio/c-major-scale.wav"></audio>
+<audio class="audio-player" controls preload="none" src="../../assets/audio/c-major-scale.wav"></audio>
 
 ## Интервалы
 
@@ -63,14 +63,14 @@ C → D → E → F → G → A → B → C
 
 | Интервал | Ноты от C | Характер | Пример |
 |----------|-----------|----------|--------|
-| Унисон | C → C | Та же нота | [▶](../assets/audio/interval-unison.wav) |
-| Малая секунда | C → C# | Натяжение | [▶](../assets/audio/interval-minor-2nd.wav) |
-| Большая секунда | C → D | Шаг | [▶](../assets/audio/interval-major-2nd.wav) |
-| Малая терция | C → D# | Мрачность | [▶](../assets/audio/interval-minor-3rd.wav) |
-| Большая терция | C → E | Радость | [▶](../assets/audio/interval-major-3rd.wav) |
-| Кварта | C → F | Открытость | [▶](../assets/audio/interval-perfect-4th.wav) |
-| Квинта | C → G | Стабильность | [▶](../assets/audio/interval-perfect-5th.wav) |
-| Октава | C → C | Повторение | [▶](../assets/audio/interval-octave.wav) |
+| Унисон | C → C | Та же нота | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-unison.wav"></audio> |
+| Малая секунда | C → C# | Натяжение | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-minor-2nd.wav"></audio> |
+| Большая секунда | C → D | Шаг | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-major-2nd.wav"></audio> |
+| Малая терция | C → D# | Мрачность | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-minor-3rd.wav"></audio> |
+| Большая терция | C → E | Радость | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-major-3rd.wav"></audio> |
+| Кварта | C → F | Открытость | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-perfect-4th.wav"></audio> |
+| Квинта | C → G | Стабильность | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-perfect-5th.wav"></audio> |
+| Октава | C → C | Повторение | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-octave.wav"></audio> |
 
 ---
 
