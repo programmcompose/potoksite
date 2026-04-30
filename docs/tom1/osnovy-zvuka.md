@@ -93,7 +93,7 @@
 ## Визуализация частотного спектра
 
 ```mermaid
-graph LR
+flowchart LR
     A[20 Гц] -->|Sub-bass| B[60 Гц]
     B -->|Bass| C[250 Гц]
     C -->|Low-mid| D[500 Гц]
