@@ -10,15 +10,15 @@ theme:
   palette:
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
-      primary: grey
+      primary: custom
       accent: cyan
       toggle:
         icon: material/brightness-7
         name: "Переключить на светлую тему"
     - media: "(prefers-color-scheme: light)"
       scheme: default
-      primary: grey
-      accent: indigo
+      primary: custom
+      accent: cyan
       toggle:
         icon: material/brightness-4
         name: "Переключить на тёмную тему"
