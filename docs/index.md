@@ -56,14 +56,6 @@
 
 ---
 
-## 📖 Лицензия и обратная связь
-
-Контент курса распространяется под лицензией [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/).
-
-Нашли ошибку или хотите предложить тему? Откройте [Issue на GitHub](https://github.com/programmcompose/potoksite/issues).
-
----
-
 <div class="grid cards" markdown>
 
 -   :material-headset:{ .lg .middle } __Том I__
