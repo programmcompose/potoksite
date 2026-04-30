@@ -96,3 +96,24 @@ html {
   border-radius: 8px;
   padding: 1em;
 }
+
+/* Thicker headings */
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3 {
+  font-weight: 800;
+}
+
+.md-typeset h1 {
+  font-weight: 900;
+}
+
+/* Heading content (lists, paragraphs under headings) — lighter weight */
+.md-typeset h1 + ul,
+.md-typeset h1 + ul li,
+.md-typeset h2 + ul,
+.md-typeset h2 + ul li,
+.md-typeset h3 + ul,
+.md-typeset h3 + ul li {
+  font-weight: 400;
+}

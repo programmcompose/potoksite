@@ -23,7 +23,7 @@ theme:
         icon: material/brightness-4
         name: "Переключить на тёмную тему"
   font:
-    text: Inter
+    text: JetBrains Mono
     code: JetBrains Mono
   icon:
     repo: fontawesome/brands/github
@@ -59,7 +59,7 @@ plugins:
 
 extra:
   fonts:
-    text: Inter
+    text: JetBrains Mono
     code: JetBrains Mono
     provider: google
   social:
