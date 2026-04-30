@@ -145,3 +145,10 @@ nav:
       - "Мастеринг": "tom3/mastering.md"
   - "Маршрут обучения": "roadmap.md"
   - "Глоссарий": "glossary.md"
+  - "Плагины — подборка":
+      - "plugins/index.md"
+      - "Подборка от Meraki": "plugins/meraki-collection.md"
+      - "Waves Abbey Road": "plugins/waves-abbey-road.md"
+      - "Waves CLA": "plugins/waves-cla.md"
+      - "Waves MannyM": "plugins/waves-mannym.md"
+      - "Waves Maserati": "plugins/waves-maserati.md"

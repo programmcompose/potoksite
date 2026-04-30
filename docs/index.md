@@ -50,6 +50,15 @@ hide:
 - **Сведение (mixing)** — EQ, компрессия, панорамирование
 - **Мастеринг** — финальная обработка трека
 
+### Плагины — подборка для изучения
+Обзоры VST-плагинов: компрессоры, EQ, реверб, дилеи, сатурация.
+
+- **Подборка от Meraki** — авторская коллекция инструментов
+- **Waves Abbey Road** — эмуляция оборудования Abbey Road Studios
+- **Waves CLA** — плагины Chris Lord-Alge
+- **Waves MannyM** — плагины Manny Marroquin (9× Grammy)
+- **Waves Maserati** — плагины Tony Maserati
+
 ### Дополнительно
 
 - **Маршрут обучения** — пошаговый план на 12 недель
@@ -122,5 +131,13 @@ hide:
     Словарь терминов
 
     [:octicons-arrow-right-24: Открыть](glossary.md)
+
+-   :material-puzzle:{ .lg .middle } __Плагины__
+
+    ---
+
+    Обзоры VST-плагинов: Waves, Meraki и другие
+
+    [:octicons-arrow-right-24: Открыть](plugins/index.md)
 
 </div>
