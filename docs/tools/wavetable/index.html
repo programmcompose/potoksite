@@ -376,13 +376,12 @@
     Tone.start();
 
     const masterGain = new Tone.Gain(1).toDestination();
-    const merger = new Tone.Merger(4).connect(masterGain);
 
     const oscillators = state.waves.map((w, i) => {
       const osc = new Tone.Oscillator(w.type, 'C4');
       const gain = new Tone.Gain(w.volume / 100);
       osc.connect(gain);
-      gain.connect(merger.input(i));
+      gain.connect(masterGain);
       return { osc, gain };
     });
 
@@ -395,8 +394,8 @@
       stop: () => {
         oscillators.forEach(o => o.osc.stop());
       },
-      setFrequency: (freq) => {
-        oscillators.forEach(o => o.osc.frequency.value = freq);
+      setFrequency: (note) => {
+        oscillators.forEach(o => o.osc.frequency.value = note);
       },
       setType: (index, type) => {
         oscillators[index].osc.type = type;
@@ -405,18 +404,19 @@
         oscillators[index].gain.gain.value = vol / 100;
       },
       triggerAttack: (note) => {
-        const freq = Tone.Frequency(note).toFrequency();
         oscillators.forEach(o => {
-          o.osc.frequency.rampTo(freq, state.adsr.attack);
+          o.osc.frequency.rampTo(note, state.adsr.attack);
         });
-        masterGain.gain.cancelScheduledValues(Tone.now());
-        masterGain.gain.setValueAtTime(0, Tone.now());
-        masterGain.gain.linearRampToValueAtTime(1, Tone.now() + state.adsr.attack);
-        masterGain.gain.linearRampToValueAtTime(state.adsr.sustain, Tone.now() + state.adsr.attack + state.adsr.decay);
+        const now = Tone.now();
+        const currentVal = Math.max(masterGain.gain.value, 0.001);
+        masterGain.gain.setValueAtTime(currentVal, now);
+        masterGain.gain.linearRampToValueAtTime(1, now + state.adsr.attack);
+        masterGain.gain.linearRampToValueAtTime(state.adsr.sustain, now + state.adsr.attack + state.adsr.decay);
       },
       triggerRelease: () => {
-        masterGain.gain.cancelScheduledValues(Tone.now());
-        masterGain.gain.linearRampToValueAtTime(0, Tone.now() + state.adsr.release);
+        const now = Tone.now();
+        masterGain.gain.setValueAtTime(masterGain.gain.value, now);
+        masterGain.gain.linearRampToValueAtTime(0.001, now + state.adsr.release);
       }
     };
 
@@ -432,7 +432,7 @@
   }
 
   function getNoteFrequency(index) {
-    return Tone.Frequency(getNoteName(index)).toFrequency();
+    return getNoteName(index);
   }
 
   function buildWaveGrid() {
