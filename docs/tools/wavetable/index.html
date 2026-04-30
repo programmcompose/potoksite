@@ -363,65 +363,69 @@
     noteIndex: 0
   };
 
-  let synth = null;
+  let synthEngines = null;
   let isPlaying = false;
   let activeNotes = new Set();
   let audioStarted = false;
   let animFrame = null;
 
   function initAudio() {
-    if (audioStarted) return;
+    if (audioStarted) return Promise.resolve();
     audioStarted = true;
 
-    Tone.start();
+    return Tone.start().then(() => {
+      const masterGain = new Tone.Gain(0.5).toDestination();
 
-    const masterGain = new Tone.Gain(1).toDestination();
-
-    const oscillators = state.waves.map((w, i) => {
-      const osc = new Tone.Oscillator(w.type, 'C4');
-      const gain = new Tone.Gain(w.volume / 100);
-      osc.connect(gain);
-      gain.connect(masterGain);
-      return { osc, gain };
-    });
-
-    synth = {
-      oscillators,
-      masterGain,
-      start: () => {
-        oscillators.forEach(o => o.osc.start());
-      },
-      stop: () => {
-        oscillators.forEach(o => o.osc.stop());
-      },
-      setFrequency: (note) => {
-        oscillators.forEach(o => o.osc.frequency.value = note);
-      },
-      setType: (index, type) => {
-        oscillators[index].osc.type = type;
-      },
-      setVolume: (index, vol) => {
-        oscillators[index].gain.gain.value = vol / 100;
-      },
-      triggerAttack: (note) => {
-        oscillators.forEach(o => {
-          o.osc.frequency.rampTo(note, state.adsr.attack);
+      const engines = state.waves.map((w, i) => {
+        const synth = new Tone.Synth({
+          oscillator: { type: w.type },
+          envelope: {
+            attack: state.adsr.attack,
+            decay: state.adsr.decay,
+            sustain: state.adsr.sustain,
+            release: state.adsr.release,
+            attackCurve: 'exponential'
+          }
         });
-        const now = Tone.now();
-        const currentVal = Math.max(masterGain.gain.value, 0.001);
-        masterGain.gain.setValueAtTime(currentVal, now);
-        masterGain.gain.linearRampToValueAtTime(1, now + state.adsr.attack);
-        masterGain.gain.linearRampToValueAtTime(state.adsr.sustain, now + state.adsr.attack + state.adsr.decay);
-      },
-      triggerRelease: () => {
-        const now = Tone.now();
-        masterGain.gain.setValueAtTime(masterGain.gain.value, now);
-        masterGain.gain.linearRampToValueAtTime(0.001, now + state.adsr.release);
-      }
-    };
 
-    synth.start();
-    drawWave();
+        const volGain = new Tone.Gain(w.volume / 100);
+        synth.connect(volGain);
+        volGain.connect(masterGain);
+
+        return { synth, volGain };
+      });
+
+      synthEngines = {
+        masterGain,
+        engines,
+        setType: (index, type) => {
+          engines[index].synth.oscillator.type = type;
+        },
+        setVolume: (index, vol) => {
+          engines[index].volGain.gain.value = vol / 100;
+        },
+        setADSR: () => {
+          engines.forEach(e => {
+            e.synth.envelope.attack = state.adsr.attack;
+            e.synth.envelope.decay = state.adsr.decay;
+            e.synth.envelope.sustain = state.adsr.sustain;
+            e.synth.envelope.release = state.adsr.release;
+          });
+        },
+        triggerAttack: (note) => {
+          engines.forEach(e => {
+            if (e.volGain.gain.value > 0.001) {
+              e.synth.triggerAttack(note);
+            }
+          });
+        },
+        triggerRelease: () => {
+          engines.forEach(e => {
+            e.synth.triggerRelease();
+          });
+        }
+      };
+    });
   }
 
   function getNoteName(index) {
@@ -431,8 +435,12 @@
     return NOTE_NAMES[noteIdx] + octave;
   }
 
-  function getNoteFrequency(index) {
-    return getNoteName(index);
+  function noteToHz(noteName) {
+    const note = noteName.replace(/(\d+)$/, '');
+    const octave = parseInt(noteName.slice(-1));
+    const semitones = { 'C': -9, 'C#': -8, 'D': -7, 'D#': -6, 'E': -5, 'F': -4, 'F#': -3, 'G': -2, 'G#': -1, 'A': 0, 'A#': 1, 'B': 2 };
+    const semi = semitones[note] || 0;
+    return 440 * Math.pow(2, (semi + (octave - 4) * 12) / 12);
   }
 
   function buildWaveGrid() {
@@ -460,7 +468,7 @@
         const idx = parseInt(e.target.dataset.wave);
         state.waves[idx].type = e.target.value;
         e.target.parentElement.querySelector('.tip').textContent = WAVE_TIPS[e.target.value];
-        if (synth) synth.setType(idx, e.target.value);
+        if (synthEngines) synthEngines.setType(idx, e.target.value);
         drawWave();
       });
     });
@@ -471,7 +479,7 @@
         const val = parseInt(e.target.value);
         state.waves[idx].volume = val;
         document.getElementById('vol' + idx).textContent = val + '%';
-        if (synth) synth.setVolume(idx, val);
+        if (synthEngines) synthEngines.setVolume(idx, val);
         drawWave();
       });
     });
@@ -507,6 +515,7 @@
         state.adsr[key] = val;
         const unit = params.find(p => p.key === key).unit;
         document.getElementById('adsr-' + key).textContent = val + unit;
+        if (synthEngines) synthEngines.setADSR();
       });
     });
   }
@@ -547,7 +556,7 @@
     if (activeWaves.length === 0) return;
 
     const samples = w * 2;
-    const freq = getNoteFrequency(state.noteIndex);
+    const freq = noteToHz(getNoteName(state.noteIndex));
     const sampleRate = 44100;
     const period = sampleRate / freq;
     const samplesPerPeriod = Math.min(period, samples);
@@ -611,28 +620,25 @@
   }
 
   function playNote(noteIndex) {
-    if (!synth) return;
+    if (!synthEngines) return;
     const note = getNoteName(noteIndex);
     state.noteIndex = noteIndex;
     updateNoteDisplay();
-    synth.triggerAttack(note);
+    synthEngines.triggerAttack(note);
     activeNotes.add(noteIndex);
     drawWave();
   }
 
   function stopNote(noteIndex) {
-    if (!synth || activeNotes.size <= 1) {
-      activeNotes.clear();
-      synth.triggerRelease();
-      setTimeout(() => {
-        if (activeNotes.size === 0) {
-          document.getElementById('playBtn').textContent = '▶ Play';
-          document.getElementById('playBtn').classList.remove('playing');
-          isPlaying = false;
-        }
-      }, state.adsr.release * 1000);
-    } else {
+    if (!synthEngines) return;
+    if (noteIndex !== undefined) {
       activeNotes.delete(noteIndex);
+      if (activeNotes.size === 0) {
+        synthEngines.triggerRelease();
+      }
+    } else {
+      activeNotes.clear();
+      synthEngines.triggerRelease();
     }
   }
 
@@ -649,15 +655,15 @@ document.addEventListener('DOMContentLoaded', () => {
       drawWave();
     });
 
-    document.getElementById('playBtn').addEventListener('click', () => {
-      initAudio();
+    document.getElementById('playBtn').addEventListener('click', async () => {
+      await initAudio();
       if (!isPlaying) {
         playNote(state.noteIndex);
         isPlaying = true;
         document.getElementById('playBtn').textContent = '⏹ Stop';
         document.getElementById('playBtn').classList.add('playing');
       } else {
-        stopNote(state.noteIndex);
+        stopNote();
         isPlaying = false;
         document.getElementById('playBtn').textContent = '▶ Play';
         document.getElementById('playBtn').classList.remove('playing');
@@ -669,10 +675,7 @@ document.addEventListener('DOMContentLoaded', () => {
         state.octave--;
         updateOctaveDisplay();
         updateNoteDisplay();
-        if (synth) {
-          synth.setFrequency(getNoteFrequency(state.noteIndex));
-          drawWave();
-        }
+        drawWave();
       }
     });
 
@@ -681,26 +684,25 @@ document.addEventListener('DOMContentLoaded', () => {
         state.octave++;
         updateOctaveDisplay();
         updateNoteDisplay();
-        if (synth) {
-          synth.setFrequency(getNoteFrequency(state.noteIndex));
-          drawWave();
-        }
+        drawWave();
       }
     });
 
-    document.addEventListener('keydown', (e) => {
-      if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+    document.addEventListener('keydown', async (e) => {
+      if (e.target.tagName === 'TEXTAREA') return;
       const key = e.key.toLowerCase();
       if (key in KEY_MAP && !e.repeat) {
-        initAudio();
+        e.preventDefault();
+        await initAudio();
         playNote(KEY_MAP[key]);
       }
     });
 
     document.addEventListener('keyup', (e) => {
-      if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+      if (e.target.tagName === 'TEXTAREA') return;
       const key = e.key.toLowerCase();
       if (key in KEY_MAP) {
+        e.preventDefault();
         stopNote(KEY_MAP[key]);
       }
     });
