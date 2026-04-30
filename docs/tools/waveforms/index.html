@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Визуализация волн — Интерактивный инструмент</title>
+<style>
+  :root {
+    --bg: #282828;
+    --bg-light: #363636;
+    --bg-lighter: #404040;
+    --text: #FDFBDF;
+    --accent: #00bcd4;
+    --accent-dim: #00838f;
+    --purple: #ab47bc;
+    --orange: #ff7043;
+    --success: #66bb6a;
+    --danger: #ef5350;
+    --radius: 8px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 16px;
+  }
+
+  .container { max-width: 960px; margin: 0 auto; }
+
+  header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  header h1 {
+    font-size: 1.6em;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4px;
+  }
+
+  header p {
+    font-size: 0.9em;
+    opacity: 0.7;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 12px;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.85em;
+  }
+
+  .back-link:hover { text-decoration: underline; }
+
+  .panel {
+    background: var(--bg-light);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+
+  .panel-title {
+    font-size: 0.8em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.6;
+    margin-bottom: 12px;
+  }
+
+  .canvas-wrap {
+    background: #1a1a1a;
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+  }
+
+  canvas {
+    display: block;
+    width: 100%;
+  }
+
+  .canvas-label {
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    font-size: 0.7em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+
+  .wave-selector {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .wave-btn {
+    background: var(--bg);
+    border: 2px solid var(--bg-lighter);
+    border-radius: var(--radius);
+    padding: 12px 8px;
+    color: var(--text);
+    font-size: 0.85em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    text-align: center;
+  }
+
+  .wave-btn:hover { border-color: var(--accent); }
+  .wave-btn.active { border-color: var(--accent); background: rgba(0,188,212,0.1); }
+
+  .wave-btn .icon {
+    font-size: 1.5em;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .controls-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+  }
+
+  button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 0.9em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+
+  button:active { transform: scale(0.97); }
+
+  .btn-play {
+    background: var(--accent);
+    color: #000;
+    min-width: 120px;
+  }
+
+  .btn-play:hover { background: #4dd0e1; }
+  .btn-play.playing { background: var(--danger); color: #fff; }
+
+  .btn-secondary {
+    background: var(--bg-lighter);
+    color: var(--text);
+  }
+
+  .btn-secondary:hover { background: #555; }
+
+  .slider-group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .slider-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .slider-item label {
+    font-size: 0.8em;
+    font-weight: 600;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .slider-item label span {
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+    height: 4px;
+  }
+
+  .mix-panel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 12px;
+  }
+
+  .mix-item {
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 12px;
+    border: 1px solid var(--bg-lighter);
+  }
+
+  .mix-item label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.85em;
+    margin-bottom: 8px;
+  }
+
+  .mix-item select {
+    width: 100%;
+    padding: 6px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--bg-lighter);
+    background: var(--bg-light);
+    color: var(--text);
+    font-size: 0.85em;
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+
+  .mix-item select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .edu-section {
+    margin-top: 16px;
+  }
+
+  .edu-card {
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 8px;
+    border-left: 3px solid var(--accent);
+  }
+
+  .edu-card h3 {
+    font-size: 0.95em;
+    margin-bottom: 8px;
+    color: var(--accent);
+  }
+
+  .edu-card p {
+    font-size: 0.85em;
+    line-height: 1.6;
+    opacity: 0.8;
+  }
+
+  .edu-card code {
+    background: var(--bg-lighter);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.9em;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .freq-display {
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 8px 0;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .harmonic-bars {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 2px;
+    height: 60px;
+    margin: 8px 0;
+  }
+
+  .harmonic-bar {
+    width: 8px;
+    background: var(--accent);
+    border-radius: 2px 2px 0 0;
+    transition: height 0.1s;
+    opacity: 0.7;
+  }
+
+  .course-link {
+    text-align: center;
+    margin-top: 12px;
+    font-size: 0.8em;
+  }
+
+  .course-link a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .course-link a:hover { text-decoration: underline; }
+
+  @media (max-width: 600px) {
+    body { padding: 8px; }
+    .panel { padding: 12px; }
+    header h1 { font-size: 1.3em; }
+    .wave-selector { grid-template-columns: repeat(2, 1fr); }
+    .slider-group { grid-template-columns: 1fr; }
+    .mix-panel { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="../index.html" class="back-link">← Все инструменты</a>
+  <header>
+    <h1>🌊 Визуализация волн</h1>
+    <p>Интерактивное исследование форм волн, их смешивания и гармоник</p>
+  </header>
+
+  <div class="panel">
+    <div class="panel-title">Основная волна</div>
+    <div class="wave-selector" id="waveSelector"></div>
+    <div class="freq-display" id="freqDisplay">261.63 Гц (C4)</div>
+    <div class="canvas-wrap">
+      <span class="canvas-label">Форма волны</span>
+      <canvas id="mainCanvas" height="200"></canvas>
+    </div>
+    <div class="controls-row" style="margin-top:12px;">
+      <button class="btn-play" id="playBtn">▶ Звук</button>
+      <button class="btn-secondary" id="animBtn">⏸ Анимация</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Параметры</div>
+    <div class="slider-group">
+      <div class="slider-item">
+        <label>Частота <span id="freqVal">261.63 Гц</span></label>
+        <input type="range" id="freqSlider" min="65" max="1000" step="0.01" value="261.63">
+      </div>
+      <div class="slider-item">
+        <label>Амплитуда <span id="ampVal">80%</span></label>
+        <input type="range" id="ampSlider" min="0" max="100" value="80">
+      </div>
+      <div class="slider-item">
+        <label>Циклов на экране <span id="cyclesVal">3</span></label>
+        <input type="range" id="cyclesSlider" min="1" max="10" value="3">
+      </div>
+      <div class="slider-item">
+        <label>Скорость анимации <span id="speedVal">1.0×</span></label>
+        <input type="range" id="speedSlider" min="0.1" max="5" step="0.1" value="1">
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Смешивание волн</div>
+    <div class="mix-panel" id="mixPanel"></div>
+    <div class="canvas-wrap" style="margin-top:12px;">
+      <span class="canvas-label">Результирующая волна</span>
+      <canvas id="mixCanvas" height="160"></canvas>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Спектр гармоник</div>
+    <div class="harmonic-bars" id="harmonicBars"></div>
+    <div class="canvas-wrap">
+      <span class="canvas-label">Частотный спектр</span>
+      <canvas id="spectrumCanvas" height="120"></canvas>
+    </div>
+  </div>
+
+  <div class="panel edu-section">
+    <div class="panel-title">Обучающие материалы</div>
+    <div class="edu-card">
+      <h3>Что такое форма волны?</h3>
+      <p>Форма волны — это визуальное представление звукового сигнала во времени. Каждая форма волны имеет уникальный тембр. <code>Синус</code> — чистый тон без обертонов, основа любого звука. <code>Квадратная</code> волна содержит чётные гармоники и звучит как ретро-синтезатор. <code>Пила</code> содержит все гармоники — яркий, резкий звук. <code>Треугольник</code> — мягкий, близкий к синусу.</p>
+    </div>
+    <div class="edu-card">
+      <h3>Как волны создают сложные тона?</h3>
+      <p>Согласно теореме Фурье, любой периодический сигнал можно представить как сумму синусоид с разными частотами и амплитудами. Смешивая простые волны, мы получаем сложные тембры. Например, смешивая синус и пилу 50/50, получаем звук, похожий на духовой инструмент.</p>
+    </div>
+    <div class="edu-card">
+      <h3>Гармоники и тембр</h3>
+      <p>Каждая форма волны содержит набор гармоник — синусоид с частотами, кратными основной. Чем больше гармоник и чем они сильнее, тем ярче тембр. Синус имеет только основную частоту, пила — все гармоники с убывающей амплитудой <code>1/n</code>, квадратная — только нечётные гармоники.</p>
+    </div>
+  </div>
+
+  <div class="course-link">
+    Подробнее о физике звука → <a href="../../tom1/osnovy-zvuka.html">Том I: Что такое звук</a>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  const WAVE_TYPES = [
+    { id: 'sine', label: 'Синус', icon: '∿', color: '#00bcd4' },
+    { id: 'square', label: 'Квадрат', icon: '⊓', color: '#ab47bc' },
+    { id: 'sawtooth', label: 'Пила', icon: '⩘', color: '#ff7043' },
+    { id: 'triangle', label: 'Треугольник', icon: '△', color: '#66bb6a' },
+    { id: 'pulse', label: 'Меандр', icon: '⊔', color: '#ffa726' },
+    { id: 'sine2', label: 'Синус×2', icon: '∿∿', color: '#4dd0e1' }
+  ];
+
+  const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+
+  let state = {
+    waveType: 'sine',
+    frequency: 261.63,
+    amplitude: 0.8,
+    cycles: 3,
+    speed: 1,
+    playing: false,
+    animating: true,
+    phase: 0,
+    mix: [
+      { type: 'sine', volume: 100 },
+      { type: 'square', volume: 0 },
+      { type: 'sawtooth', volume: 0 },
+      { type: 'triangle', volume: 0 }
+    ]
+  };
+
+  let audioCtx = null;
+  let oscillator = null;
+  let gainNode = null;
+  let analyser = null;
+  let animFrame = null;
+
+  function sampleWave(type, t) {
+    t = t % 1;
+    if (t < 0) t += 1;
+    switch (type) {
+      case 'sine': return Math.sin(2 * Math.PI * t);
+      case 'sine2': return Math.sin(2 * Math.PI * t) + 0.3 * Math.sin(4 * Math.PI * t);
+      case 'square': return t < 0.5 ? 1 : -1;
+      case 'sawtooth': return 2 * (t - Math.floor(t + 0.5));
+      case 'triangle': return 2 * Math.abs(2 * (t - Math.floor(t + 0.5))) - 1;
+      case 'pulse': return t < 0.25 ? 1 : -1;
+      default: return Math.sin(2 * Math.PI * t);
+    }
+  }
+
+  function freqToNote(freq) {
+    const noteNum = 12 * Math.log2(freq / 440) + 69;
+    const rounded = Math.round(noteNum);
+    const name = NOTE_NAMES[((rounded % 12) + 12) % 12];
+    const octave = Math.floor(rounded / 12) - 1;
+    return { name: name + octave, freq: 440 * Math.pow(2, (rounded - 69) / 12) };
+  }
+
+  function buildWaveSelector() {
+    const container = document.getElementById('waveSelector');
+    container.innerHTML = '';
+    WAVE_TYPES.forEach(w => {
+      const btn = document.createElement('button');
+      btn.className = 'wave-btn' + (w.id === state.waveType ? ' active' : '');
+      btn.innerHTML = `<span class="icon" style="color:${w.color}">${w.icon}</span>${w.label}`;
+      btn.addEventListener('click', () => {
+        state.waveType = w.id;
+        buildWaveSelector();
+        if (oscillator) {
+          const typeMap = { sine2: 'sine', pulse: 'square' };
+          oscillator.type = typeMap[w.id] || w.id;
+        }
+      });
+      container.appendChild(btn);
+    });
+  }
+
+  function buildMixPanel() {
+    const container = document.getElementById('mixPanel');
+    container.innerHTML = '';
+    const typeOptions = WAVE_TYPES.filter(w => !w.id.includes('2')).map(w =>
+      `<option value="${w.id}">${w.label}</option>`
+    ).join('');
+
+    state.mix.forEach((m, i) => {
+      const div = document.createElement('div');
+      div.className = 'mix-item';
+      div.innerHTML = `
+        <label>Канал ${i + 1}</label>
+        <select data-mix-type="${i}">${typeOptions}</select>
+        <input type="range" min="0" max="100" value="${m.volume}" data-mix-vol="${i}" style="width:100%;margin-top:4px;">
+        <div style="text-align:right;font-size:0.75em;opacity:0.5;margin-top:2px;"><span id="mixVol${i}">${m.volume}%</span></div>
+      `;
+      container.appendChild(div);
+    });
+
+    container.querySelectorAll('select').forEach(sel => {
+      sel.value = state.mix[parseInt(sel.dataset.mixType)].type;
+      sel.addEventListener('change', (e) => {
+        state.mix[parseInt(e.target.dataset.mixType)].type = e.target.value;
+      });
+    });
+
+    container.querySelectorAll('input[type="range"]').forEach(inp => {
+      inp.addEventListener('input', (e) => {
+        const idx = parseInt(e.target.dataset.mixVol);
+        state.mix[idx].volume = parseInt(e.target.value);
+        document.getElementById('mixVol' + idx).textContent = e.target.value + '%';
+      });
+    });
+  }
+
+  function buildHarmonicBars() {
+    const container = document.getElementById('harmonicBars');
+    container.innerHTML = '';
+    for (let i = 0; i < 16; i++) {
+      const bar = document.createElement('div');
+      bar.className = 'harmonic-bar';
+      bar.id = 'hbar' + i;
+      container.appendChild(bar);
+    }
+  }
+
+  function getHarmonicContent(waveType) {
+    const harmonics = new Array(16).fill(0);
+    switch (waveType) {
+      case 'sine':
+        harmonics[0] = 1;
+        break;
+      case 'sine2':
+        harmonics[0] = 1; harmonics[1] = 0.3;
+        break;
+      case 'square':
+        for (let i = 0; i < 8; i++) harmonics[i * 2] = 1 / (i * 2 + 1);
+        break;
+      case 'sawtooth':
+        for (let i = 0; i < 16; i++) harmonics[i] = 1 / (i + 1);
+        break;
+      case 'triangle':
+        for (let i = 0; i < 8; i++) harmonics[i * 2] = 1 / Math.pow(i * 2 + 1, 2);
+        break;
+      case 'pulse':
+        for (let i = 0; i < 8; i++) harmonics[i * 2] = 1 / (i * 2 + 1);
+        break;
+    }
+    return harmonics;
+  }
+
+  function updateHarmonicBars() {
+    const harmonics = getHarmonicContent(state.waveType);
+    const maxH = Math.max(...harmonics);
+    harmonics.forEach((h, i) => {
+      const bar = document.getElementById('hbar' + i);
+      if (bar) {
+        const height = maxH > 0 ? (h / maxH) * 56 : 0;
+        bar.style.height = height + 'px';
+        bar.style.opacity = 0.3 + (h / maxH) * 0.7;
+      }
+    });
+  }
+
+  function initAudio() {
+    if (audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 2048;
+    gainNode = audioCtx.createGain();
+    gainNode.connect(analyser);
+    analyser.connect(audioCtx.destination);
+  }
+
+  function startAudio() {
+    initAudio();
+    if (oscillator) return;
+    oscillator = audioCtx.createOscillator();
+    const typeMap = { sine2: 'sine', pulse: 'square' };
+    oscillator.type = typeMap[state.waveType] || state.waveType;
+    oscillator.frequency.value = state.frequency;
+    oscillator.connect(gainNode);
+    gainNode.gain.value = state.amplitude * 0.3;
+    oscillator.start();
+  }
+
+  function stopAudio() {
+    if (oscillator) {
+      oscillator.stop();
+      oscillator.disconnect();
+      oscillator = null;
+    }
+  }
+
+  function updateAudio() {
+    if (oscillator) {
+      oscillator.frequency.value = state.frequency;
+      const typeMap = { sine2: 'sine', pulse: 'square' };
+      oscillator.type = typeMap[state.waveType] || state.waveType;
+      gainNode.gain.value = state.amplitude * 0.3;
+    }
+  }
+
+  const mainCanvas = document.getElementById('mainCanvas');
+  const mainCtx = mainCanvas.getContext('2d');
+  const mixCanvas = document.getElementById('mixCanvas');
+  const mixCtx = mixCanvas.getContext('2d');
+  const spectrumCanvas = document.getElementById('spectrumCanvas');
+  const spectrumCtx = spectrumCanvas.getContext('2d');
+
+  function resizeCanvases() {
+    [mainCanvas, mixCanvas, spectrumCanvas].forEach(canvas => {
+      const rect = canvas.parentElement.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      canvas.width = rect.width * dpr;
+      const h = parseInt(canvas.getAttribute('height'));
+      canvas.height = h * dpr;
+      canvas.getContext('2d').scale(dpr, dpr);
+    });
+  }
+
+  function drawMainWave() {
+    const w = mainCanvas.width / (window.devicePixelRatio || 1);
+    const h = mainCanvas.height / (window.devicePixelRatio || 1);
+    const ctx = mainCtx;
+
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.strokeStyle = 'rgba(0, 188, 212, 0.1)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, h / 2);
+    ctx.lineTo(w, h / 2);
+    ctx.stroke();
+
+    const waveColor = WAVE_TYPES.find(w => w.id === state.waveType)?.color || '#00bcd4';
+
+    ctx.beginPath();
+    ctx.strokeStyle = waveColor;
+    ctx.lineWidth = 2.5;
+    ctx.shadowColor = waveColor;
+    ctx.shadowBlur = 8;
+
+    const samples = w * 2;
+    for (let x = 0; x < samples; x++) {
+      const t = (x / samples) * state.cycles + state.phase;
+      const value = sampleWave(state.waveType, t) * state.amplitude;
+      const y = h / 2 - value * (h / 2 - 10);
+      if (x === 0) ctx.moveTo(x / 2, y);
+      else ctx.lineTo(x / 2, y);
+    }
+    ctx.stroke();
+    ctx.shadowBlur = 0;
+  }
+
+  function drawMixWave() {
+    const w = mixCanvas.width / (window.devicePixelRatio || 1);
+    const h = mixCanvas.height / (window.devicePixelRatio || 1);
+    const ctx = mixCtx;
+
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.strokeStyle = 'rgba(0, 188, 212, 0.1)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, h / 2);
+    ctx.lineTo(w, h / 2);
+    ctx.stroke();
+
+    const activeMix = state.mix.filter(m => m.volume > 0);
+    if (activeMix.length === 0) return;
+
+    const samples = w * 2;
+
+    ctx.beginPath();
+    ctx.strokeStyle = '#00bcd4';
+    ctx.lineWidth = 2;
+
+    for (let x = 0; x < samples; x++) {
+      let value = 0;
+      activeMix.forEach(m => {
+        const t = (x / samples) * state.cycles + state.phase;
+        value += sampleWave(m.type, t) * (m.volume / 100);
+      });
+      const normValue = value / activeMix.length;
+      const y = h / 2 - normValue * (h / 2 - 10);
+      if (x === 0) ctx.moveTo(x / 2, y);
+      else ctx.lineTo(x / 2, y);
+    }
+    ctx.stroke();
+  }
+
+  function drawSpectrum() {
+    const w = spectrumCanvas.width / (window.devicePixelRatio || 1);
+    const h = spectrumCanvas.height / (window.devicePixelRatio || 1);
+    const ctx = spectrumCtx;
+
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(0, 0, w, h);
+
+    const harmonics = getHarmonicContent(state.waveType);
+    const maxH = Math.max(...harmonics);
+    const barWidth = (w - 20) / harmonics.length;
+
+    harmonics.forEach((harm, i) => {
+      const barH = maxH > 0 ? (harm / maxH) * (h - 20) : 0;
+      const x = 10 + i * barWidth;
+      const gradient = ctx.createLinearGradient(x, h - 10 - barH, x, h - 10);
+      gradient.addColorStop(0, WAVE_TYPES.find(w => w.id === state.waveType)?.color || '#00bcd4');
+      gradient.addColorStop(1, 'rgba(0,188,212,0.1)');
+      ctx.fillStyle = gradient;
+      ctx.fillRect(x + 1, h - 10 - barH, barWidth - 2, barH);
+    });
+  }
+
+  function animate() {
+    if (state.animating) {
+      state.phase += 0.008 * state.speed;
+      if (state.phase > 1) state.phase -= 1;
+    }
+
+    drawMainWave();
+    drawMixWave();
+    drawSpectrum();
+    updateHarmonicBars();
+
+    if (analyser && state.playing) {
+      const bufferLength = analyser.frequencyBinCount;
+      const dataArray = new Uint8Array(bufferLength);
+      analyser.getByteFrequencyData(dataArray);
+
+      const w = spectrumCanvas.width / (window.devicePixelRatio || 1);
+      const h = spectrumCanvas.height / (window.devicePixelRatio || 1);
+      const ctx = spectrumCtx;
+
+      ctx.fillStyle = '#1a1a1a';
+      ctx.fillRect(0, 0, w, h);
+
+      const barWidth = (w - 20) / 32;
+      for (let i = 0; i < 32; i++) {
+        const val = dataArray[i * 4] / 255;
+        const barH = val * (h - 20);
+        const x = 10 + i * barWidth;
+        ctx.fillStyle = `rgba(0, 188, 212, ${0.3 + val * 0.7})`;
+        ctx.fillRect(x + 1, h - 10 - barH, barWidth - 2, barH);
+      }
+    }
+
+    animFrame = requestAnimationFrame(animate);
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    buildWaveSelector();
+    buildMixPanel();
+    buildHarmonicBars();
+    resizeCanvases();
+
+    window.addEventListener('resize', () => {
+      resizeCanvases();
+    });
+
+    document.getElementById('playBtn').addEventListener('click', () => {
+      if (!state.playing) {
+        startAudio();
+        state.playing = true;
+        document.getElementById('playBtn').textContent = '⏹ Стоп';
+        document.getElementById('playBtn').classList.add('playing');
+      } else {
+        stopAudio();
+        state.playing = false;
+        document.getElementById('playBtn').textContent = '▶ Звук';
+        document.getElementById('playBtn').classList.remove('playing');
+      }
+    });
+
+    document.getElementById('animBtn').addEventListener('click', () => {
+      state.animating = !state.animating;
+      document.getElementById('animBtn').textContent = state.animating ? '⏸ Анимация' : '▶ Анимация';
+    });
+
+    document.getElementById('freqSlider').addEventListener('input', (e) => {
+      state.frequency = parseFloat(e.target.value);
+      const note = freqToNote(state.frequency);
+      document.getElementById('freqVal').textContent = state.frequency.toFixed(2) + ' Гц';
+      document.getElementById('freqDisplay').textContent = `${state.frequency.toFixed(2)} Гц (${note.name})`;
+      updateAudio();
+    });
+
+    document.getElementById('ampSlider').addEventListener('input', (e) => {
+      state.amplitude = parseInt(e.target.value) / 100;
+      document.getElementById('ampVal').textContent = e.target.value + '%';
+      updateAudio();
+    });
+
+    document.getElementById('cyclesSlider').addEventListener('input', (e) => {
+      state.cycles = parseInt(e.target.value);
+      document.getElementById('cyclesVal').textContent = e.target.value;
+    });
+
+    document.getElementById('speedSlider').addEventListener('input', (e) => {
+      state.speed = parseFloat(e.target.value);
+      document.getElementById('speedVal').textContent = state.speed.toFixed(1) + '×';
+    });
+
+    animate();
+  });
+})();
+</script>
+</body>
+</html>
