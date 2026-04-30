@@ -23,6 +23,10 @@
 | B | 493.88 Гц | B |
 | C (октава выше) | 523.25 Гц | C |
 
+Пример: все 12 нот хроматической шкалы
+
+<audio controls src="../assets/audio/chromatic-scale.wav"></audio>
+
 !!! note
     Нота **A4 = 440 Гц** — международный стандарт настройки.
     Каждая октава вверх удваивает частоту.
@@ -31,7 +35,7 @@
 
 На клавиатуре пианино (и в любой DAW) ноты расположены так:
 
-![Piano keyboard layout](https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/Piano_Keyboard.svg/1024px-Piano_Keyboard.svg.png)
+![Piano keyboard layout](../assets/piano-keys.png)
 
 - **Белые клавиши** — натуральные ноты (C D E F G A B)
 - **Чёрные клавиши** — диезы/бемоли (C# D# F# G# A#)
@@ -51,20 +55,22 @@
 C → D → E → F → G → A → B → C
 ```
 
+<audio controls src="../assets/audio/c-major-scale.wav"></audio>
+
 ## Интервалы
 
 **Интервал** — расстояние между двумя нотами.
 
-| Интервал | Ноты от C | Характер |
-|----------|-----------|----------|
-| Унисон | C → C | Та же нота |
-| Малая секунда | C → C# | Натяжение |
-| Большая секунда | C → D | Шаг |
-| Малая терция | C → D# | Мрачность |
-| Большая терция | C → E | Радость |
-| Кварта | C → F | Открытость |
-| Квинта | C → G | Стабильность |
-| Октава | C → C | Повторение |
+| Интервал | Ноты от C | Характер | Пример |
+|----------|-----------|----------|--------|
+| Унисон | C → C | Та же нота | [▶](../assets/audio/interval-unison.wav) |
+| Малая секунда | C → C# | Натяжение | [▶](../assets/audio/interval-minor-2nd.wav) |
+| Большая секунда | C → D | Шаг | [▶](../assets/audio/interval-major-2nd.wav) |
+| Малая терция | C → D# | Мрачность | [▶](../assets/audio/interval-minor-3rd.wav) |
+| Большая терция | C → E | Радость | [▶](../assets/audio/interval-major-3rd.wav) |
+| Кварта | C → F | Открытость | [▶](../assets/audio/interval-perfect-4th.wav) |
+| Квинта | C → G | Стабильность | [▶](../assets/audio/interval-perfect-5th.wav) |
+| Октава | C → C | Повторение | [▶](../assets/audio/interval-octave.wav) |
 
 ---
 

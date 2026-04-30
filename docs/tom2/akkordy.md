@@ -17,6 +17,8 @@ C + E + G
 ```
 Звучание: яркое, радостное, стабильное
 
+<audio controls src="../assets/audio/chord-c-major.wav"></audio>
+
 ### Минорный аккорд (Minor)
 
 Формула: **корень + малая терция + чистая квинта**
@@ -26,6 +28,8 @@ C + E + G
 C + D# + G
 ```
 Звучание: мрачное, грустное, напряжённое
+
+<audio controls src="../assets/audio/chord-c-minor.wav"></audio>
 
 !!! tip
     Разница между мажором и минором — всего в **одном полутоне** (терция).
@@ -53,6 +57,8 @@ C + D# + G
 C → G → Am → F
 ```
 
+<audio controls src="../assets/audio/progression-iv-vi-iv.wav"></audio>
+
 Используется в: Let It Be (Beatles), With Or Without You (U2),
 Don't Worry Be Happy (Lionel Richie)
 
@@ -61,6 +67,8 @@ Don't Worry Be Happy (Lionel Richie)
 ```
 Am → F → C → G
 ```
+
+<audio controls src="../assets/audio/progression-vi-iv-i-v.wav"></audio>
 
 Используется в: Someone Like You (Adele), Stay With Me (Sam Smith)
 
@@ -72,17 +80,19 @@ Am → F → C → G
 C → Am → F → G
 ```
 
+<audio controls src="../assets/audio/progression-50s.wav"></audio>
+
 ## Септаккорды
 
 Септаккорды добавляют **четвёртую ноту** (септиму), создавая более
 сложное и «красивое» звучание.
 
-| Тип | Формула от C | Ноты | Звучание |
-|-----|-------------|------|----------|
-| Cmaj7 | C-E-G-B | C-E-G-B | Тёплое, джазовое |
-| Cm7 | C-D#-G-Bb | C-D#-G-Bb | Меланхоличное |
-| C7 | C-E-G-Bb | C-E-G-Bb | Натяжение, блюз |
-| Cminmaj7 | C-D#-G-B | C-D#-G-B | Мистическое |
+| Тип | Формула от C | Ноты | Звучание | Пример |
+|-----|-------------|------|----------|--------|
+| Cmaj7 | C-E-G-B | C-E-G-B | Тёплое, джазовое | [▶](../assets/audio/chord-cmaj7.wav) |
+| Cm7 | C-D#-G-Bb | C-D#-G-Bb | Меланхоличное | [▶](../assets/audio/chord-cm7.wav) |
+| C7 | C-E-G-Bb | C-E-G-Bb | Натяжение, блюз | [▶](../assets/audio/chord-c7.wav) |
+| Cminmaj7 | C-D#-G-B | C-D#-G-B | Мистическое | [▶](../assets/audio/chord-cminmaj7.wav) |
 
 ## Практика
 
