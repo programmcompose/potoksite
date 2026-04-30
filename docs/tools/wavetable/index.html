@@ -259,83 +259,7 @@
     margin: 0 1px;
   }
 
-  .preset-area {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .preset-area textarea {
-    flex: 1;
-    min-width: 200px;
-    height: 60px;
-    background: var(--bg);
-    color: var(--text);
-    border: 1px solid var(--bg-lighter);
-    border-radius: 4px;
-    padding: 8px;
-    font-size: 0.8em;
-    font-family: 'JetBrains Mono', monospace;
-    resize: vertical;
-  }
-
-  .preset-area textarea:focus {
-    outline: none;
-    border-color: var(--accent);
-  }
-
-  .saved-presets {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 8px;
-  }
-
-  .preset-chip {
-    background: var(--bg-lighter);
-    color: var(--text);
-    padding: 4px 10px;
-    border-radius: 12px;
-    font-size: 0.75em;
-    cursor: pointer;
-    border: 1px solid transparent;
-    transition: all 0.15s;
-  }
-
-  .preset-chip:hover {
-    border-color: var(--accent);
-  }
-
-  .preset-chip .del {
-    margin-left: 4px;
-    opacity: 0.4;
-    font-size: 0.9em;
-  }
-
-  .preset-chip .del:hover { opacity: 1; color: var(--danger); }
-
-  .toast {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--success);
-    color: #000;
-    padding: 8px 20px;
-    border-radius: var(--radius);
-    font-size: 0.85em;
-    font-weight: 600;
-    box-shadow: var(--shadow);
-    opacity: 0;
-    transition: opacity 0.3s;
-    pointer-events: none;
-    z-index: 100;
-  }
-
-  .toast.show { opacity: 1; }
-
-  .course-link {
+.course-link {
     text-align: center;
     margin-top: 12px;
     font-size: 0.8em;
@@ -366,7 +290,7 @@
   <a href="../index.html" class="back-link">← Все инструменты</a>
   <header>
     <h1>🎛️ Wavetable-синтезатор</h1>
-    <p>Смешивайте 4 волны, слушайте результат, экспортируйте пресеты</p>
+    <p>Смешивайте 4 волны, настраивайте ADSR, играйте клавиатурой</p>
   </header>
 
   <div class="panel">
@@ -401,25 +325,10 @@
     </div>
   </div>
 
-  <div class="panel">
-    <div class="panel-title">Пресеты</div>
-    <div class="preset-area">
-      <textarea id="presetJson" readonly placeholder="JSON пресета появится здесь..."></textarea>
-      <div style="display:flex; flex-direction:column; gap:6px;">
-        <button class="btn-secondary" id="exportBtn">📋 Копировать</button>
-        <button class="btn-secondary" id="importBtn">📥 Загрузить</button>
-        <button class="btn-secondary" id="savePresetBtn">💾 Сохранить</button>
-      </div>
-    </div>
-    <div class="saved-presets" id="savedPresets"></div>
-  </div>
-
   <div class="course-link">
     Подробнее о формах волны → <a href="../../tom1/osnovy-zvuka.html">Том I: Что такое звук</a>
   </div>
 </div>
-
-<div class="toast" id="toast"></div>
 
 <script>
 (function() {
@@ -464,17 +373,22 @@
     if (audioStarted) return;
     audioStarted = true;
 
-    const merger = new Tone.Merger(4).toDestination();
+    Tone.start();
+
+    const masterGain = new Tone.Gain(1).toDestination();
+    const merger = new Tone.Merger(4).connect(masterGain);
 
     const oscillators = state.waves.map((w, i) => {
-      const osc = new Tone.Oscillator(w.type, 'C4').connect(merger.input(i));
+      const osc = new Tone.Oscillator(w.type, 'C4');
       const gain = new Tone.Gain(w.volume / 100);
-      osc.connect(gain).connect(merger.input(i));
+      osc.connect(gain);
+      gain.connect(merger.input(i));
       return { osc, gain };
     });
 
     synth = {
       oscillators,
+      masterGain,
       start: () => {
         oscillators.forEach(o => o.osc.start());
       },
@@ -485,7 +399,6 @@
         oscillators.forEach(o => o.osc.frequency.value = freq);
       },
       setType: (index, type) => {
-        const wasPlaying = oscillators[index].osc.state === 'started';
         oscillators[index].osc.type = type;
       },
       setVolume: (index, vol) => {
@@ -496,13 +409,14 @@
         oscillators.forEach(o => {
           o.osc.frequency.rampTo(freq, state.adsr.attack);
         });
-        Tone.Destination.gain.value = 1;
-        setTimeout(() => {
-          Tone.Destination.gain.rampTo(state.adsr.sustain, state.adsr.decay);
-        }, state.adsr.attack * 1000);
+        masterGain.gain.cancelScheduledValues(Tone.now());
+        masterGain.gain.setValueAtTime(0, Tone.now());
+        masterGain.gain.linearRampToValueAtTime(1, Tone.now() + state.adsr.attack);
+        masterGain.gain.linearRampToValueAtTime(state.adsr.sustain, Tone.now() + state.adsr.attack + state.adsr.decay);
       },
       triggerRelease: () => {
-        Tone.Destination.gain.rampTo(0, state.adsr.release);
+        masterGain.gain.cancelScheduledValues(Tone.now());
+        masterGain.gain.linearRampToValueAtTime(0, Tone.now() + state.adsr.release);
       }
     };
 
@@ -722,89 +636,13 @@
     }
   }
 
-  function showToast(msg) {
-    const t = document.getElementById('toast');
-    t.textContent = msg;
-    t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2000);
-  }
-
-  function getCurrentPreset() {
-    return JSON.stringify({
-      waves: state.waves.map(w => ({ type: w.type, volume: w.volume })),
-      adsr: { ...state.adsr },
-      octave: state.octave
-    }, null, 2);
-  }
-
-  function savePresetToJson() {
-    document.getElementById('presetJson').value = getCurrentPreset();
-  }
-
-  function loadPresetFromJson(json) {
-    try {
-      const data = JSON.parse(json);
-      if (data.waves) {
-        data.waves.forEach((w, i) => {
-          if (state.waves[i]) {
-            state.waves[i].type = w.type;
-            state.waves[i].volume = w.volume;
-          }
-        });
-      }
-      if (data.adsr) Object.assign(state.adsr, data.adsr);
-      if (data.octave !== undefined) state.octave = data.octave;
-      buildWaveGrid();
-      buildADSRGrid();
-      updateOctaveDisplay();
-      updateNoteDisplay();
-      if (synth) drawWave();
-      showToast('✅ Пресет загружен');
-    } catch (e) {
-      showToast('❌ Ошибка: невалидный JSON');
-    }
-  }
-
-  function loadSavedPresets() {
-    const container = document.getElementById('savedPresets');
-    container.innerHTML = '';
-    const presets = JSON.parse(localStorage.getItem('wavetable_presets') || '[]');
-    presets.forEach((p, i) => {
-      const chip = document.createElement('span');
-      chip.className = 'preset-chip';
-      chip.innerHTML = `${p.name} <span class="del" data-idx="${i}">✕</span>`;
-      chip.addEventListener('click', (e) => {
-        if (e.target.classList.contains('del')) {
-          presets.splice(parseInt(e.target.dataset.idx), 1);
-          localStorage.setItem('wavetable_presets', JSON.stringify(presets));
-          loadSavedPresets();
-          return;
-        }
-        loadPresetFromJson(p.data);
-      });
-      container.appendChild(chip);
-    });
-  }
-
-  function savePreset() {
-    const name = prompt('Название пресета:', 'Мой пресет ' + new Date().toLocaleTimeString());
-    if (!name) return;
-    const presets = JSON.parse(localStorage.getItem('wavetable_presets') || '[]');
-    presets.push({ name, data: getCurrentPreset() });
-    localStorage.setItem('wavetable_presets', JSON.stringify(presets));
-    loadSavedPresets();
-    showToast('💾 Пресет "' + name + '" сохранён');
-  }
-
-  document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     buildWaveGrid();
     buildADSRGrid();
     updateNoteDisplay();
     updateOctaveDisplay();
     resizeCanvas();
     drawWave();
-    loadSavedPresets();
-    savePresetToJson();
 
     window.addEventListener('resize', () => {
       resizeCanvas();
@@ -867,25 +705,6 @@
       }
     });
 
-    document.getElementById('exportBtn').addEventListener('click', () => {
-      savePresetToJson();
-      navigator.clipboard.writeText(getCurrentPreset()).then(() => {
-        showToast('📋 JSON скопирован в буфер');
-      }).catch(() => {
-        showToast('⚠️ Не удалось скопировать');
-      });
-    });
-
-    document.getElementById('importBtn').addEventListener('click', () => {
-      const json = prompt('Вставьте JSON пресета:');
-      if (json) loadPresetFromJson(json);
-    });
-
-    document.getElementById('savePresetBtn').addEventListener('click', savePreset);
-
-    document.getElementById('presetJson').addEventListener('input', () => {
-      savePresetToJson();
-    });
   });
 })();
 </script>
