@@ -877,26 +877,22 @@
   function generateQuestion() {
     const allChords = getAllChordNames();
     const correct = allChords[Math.floor(Math.random() * allChords.length)];
-    const options = new Set([correct]);
-
-    while (options.size < Math.min(4, allChords.length)) {
-      options.add(allChords[Math.floor(Math.random() * allChords.length)]);
-    }
-
-    const shuffled = Array.from(options).sort(() => Math.random() - 0.5);
-    currentQuestion = { correct, options: shuffled };
-
     const data = getChordInfo(correct);
+    const correctType = data ? data.type : 'major';
+
+    currentQuestion = { correct, correctType };
+
     document.getElementById('gamePrompt').innerHTML =
-      `Уровень ${gameLevel}: Какой аккорд вы слышите?<br><small style="opacity:0.5">Тип: ${data ? (data.type === 'major' ? 'мажор' : 'минор') : '?'}</small>`;
+      `Уровень ${gameLevel}: Что звучит — мажорный или минорный аккорд?`;
 
     const optContainer = document.getElementById('gameOptions');
     optContainer.innerHTML = '';
-    shuffled.forEach(opt => {
+
+    ['major', 'minor'].forEach(function(type) {
       const btn = document.createElement('button');
       btn.className = 'game-btn';
-      btn.textContent = opt;
-      btn.addEventListener('click', () => handleAnswer(opt, btn));
+      btn.textContent = type === 'major' ? 'Мажорный' : 'Минорный';
+      btn.addEventListener('click', function() { handleAnswer(type, btn); });
       optContainer.appendChild(btn);
     });
 
@@ -908,7 +904,7 @@
     const buttons = document.querySelectorAll('.game-btn');
     buttons.forEach(b => b.disabled = true);
 
-    if (answer === currentQuestion.correct) {
+    if (answer === currentQuestion.correctType) {
       btn.classList.add('correct');
       gameScore += 10 * gameLevel;
       gameStreak++;
@@ -920,11 +916,14 @@
     } else {
       btn.classList.add('wrong');
       buttons.forEach(b => {
-        if (b.textContent === currentQuestion.correct) b.classList.add('correct');
+        const isCorrect = (currentQuestion.correctType === 'major' && b.textContent === 'Мажорный') ||
+                          (currentQuestion.correctType === 'minor' && b.textContent === 'Минорный');
+        if (isCorrect) b.classList.add('correct');
       });
       gameStreak = 0;
       document.getElementById('gameStreak').textContent = 0;
-      showToast('❌ Это был ' + currentQuestion.correct, 'error');
+      const data = getChordInfo(currentQuestion.correct);
+      showToast('❌ Это был ' + (data ? (data.type === 'major' ? 'мажорный' : 'минорный') : '') + ' аккорд', 'error');
     }
 
     setTimeout(() => generateQuestion(), 1600);
