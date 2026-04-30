@@ -30,6 +30,23 @@
   color: #FDFBDF;
 }
 
+/* Link colors */
+.md-typeset a {
+  color: #64b5f6;
+}
+
+.md-typeset a:hover {
+  color: #90caf9;
+}
+
+.md-nav__link {
+  color: #FDFBDF;
+}
+
+.md-nav__link:hover {
+  color: #64b5f6;
+}
+
 /* Code blocks styling */
 .md-typeset code {
   border-radius: 4px;
