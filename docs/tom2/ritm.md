@@ -88,4 +88,4 @@ Hi-Hat: x  x  x  x  x  x  x  x  x  x  x  x
 
 ---
 
-**← [Назад: Аккорды и гармония](akkordy.md)** | **Далее: Том III →** [../tom3/index.md]
+**← [Назад: Аккорды и гармония](akkordy.md)** | **[Далее: Том III →](../tom3/index.md)**

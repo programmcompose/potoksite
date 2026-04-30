@@ -136,4 +136,4 @@ flowchart LR
 
 ---
 
-**← [Назад: Что такое звук](osnovy-zvuka.md)** | **Далее: DAW →** [daw.md](daw.md)
+**← [Назад: Что такое звук](osnovy-zvuka.md)** | **[Далее: DAW →](daw.md)**

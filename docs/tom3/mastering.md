@@ -91,4 +91,4 @@ Mixer Output → EQ → Compressor → Saturation → Limiter → Dither → Exp
 
 ---
 
-**← [Назад: Сведение](mixing.md)** | **К глоссарию →** [../glossary.md]
+**← [Назад: Сведение](mixing.md)** | **[К глоссарию →](../glossary.md)**
