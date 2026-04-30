@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Карта гармоний — Интерактивный инструмент</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+<style>
+  :root {
+    --bg: #282828;
+    --bg-light: #363636;
+    --bg-lighter: #404040;
+    --text: #FDFBDF;
+    --accent: #00bcd4;
+    --accent-dim: #00838f;
+    --success: #66bb6a;
+    --danger: #ef5350;
+    --warning: #ffa726;
+    --purple: #ab47bc;
+    --orange: #ff7043;
+    --radius: 8px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 16px;
+  }
+
+  .container { max-width: 900px; margin: 0 auto; }
+
+  header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  header h1 {
+    font-size: 1.6em;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4px;
+  }
+
+  header p { font-size: 0.9em; opacity: 0.7; }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 12px;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.85em;
+  }
+
+  .back-link:hover { text-decoration: underline; }
+
+  .panel {
+    background: var(--bg-light);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+
+  .panel-title {
+    font-size: 0.8em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.6;
+    margin-bottom: 12px;
+  }
+
+  .mode-tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+
+  .mode-tab {
+    padding: 8px 16px;
+    border-radius: 20px;
+    border: 1px solid var(--bg-lighter);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 0.85em;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+
+  .mode-tab:hover { border-color: var(--accent); }
+  .mode-tab.active {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+    font-weight: 600;
+  }
+
+  .circle-container {
+    display: flex;
+    justify-content: center;
+    padding: 10px 0;
+  }
+
+  #harmonyCircle {
+    max-width: 100%;
+    cursor: pointer;
+  }
+
+  .chord-info {
+    text-align: center;
+    margin-top: 12px;
+    min-height: 80px;
+  }
+
+  .chord-name {
+    font-size: 1.6em;
+    font-weight: 800;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
+
+  .chord-desc {
+    font-size: 0.85em;
+    opacity: 0.7;
+    line-height: 1.5;
+  }
+
+  .chord-notes {
+    font-size: 0.9em;
+    margin-top: 6px;
+    color: var(--warning);
+  }
+
+  .game-area { text-align: center; }
+
+  .game-score {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    margin-bottom: 16px;
+  }
+
+  .score-item {
+    text-align: center;
+  }
+
+  .score-val {
+    font-size: 1.8em;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .score-label {
+    font-size: 0.7em;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.5;
+  }
+
+  .game-prompt {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+
+  .game-options {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 8px;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  .game-btn {
+    padding: 12px;
+    border-radius: var(--radius);
+    border: 2px solid var(--bg-lighter);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 0.95em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+
+  .game-btn:hover { border-color: var(--accent); }
+  .game-btn.correct {
+    border-color: var(--success);
+    background: rgba(102, 187, 106, 0.2);
+  }
+  .game-btn.wrong {
+    border-color: var(--danger);
+    background: rgba(239, 83, 80, 0.2);
+  }
+
+  .game-btn:disabled { opacity: 0.4; cursor: default; }
+
+  .progression-builder {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    min-height: 50px;
+    padding: 12px;
+    background: var(--bg);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+  }
+
+  .prog-chord {
+    padding: 6px 14px;
+    background: var(--bg-lighter);
+    border-radius: 16px;
+    font-size: 0.85em;
+    font-weight: 600;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .prog-chord:hover { background: var(--accent); color: #000; }
+
+  .prog-chord .remove {
+    margin-left: 4px;
+    font-size: 0.8em;
+    opacity: 0.5;
+  }
+
+  .chord-palette {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 6px;
+  }
+
+  .palette-btn {
+    padding: 8px 4px;
+    border-radius: var(--radius);
+    border: 1px solid var(--bg-lighter);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 0.8em;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+    font-weight: 600;
+  }
+
+  .palette-btn:hover {
+    border-color: var(--accent);
+    background: rgba(0, 188, 212, 0.1);
+  }
+
+  .play-prog-btn {
+    margin-top: 12px;
+    padding: 10px 24px;
+    background: var(--accent);
+    color: #000;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 0.9em;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .play-prog-btn:hover { background: #4dd0e1; }
+
+  .keyboard-row {
+    display: flex;
+    justify-content: center;
+    gap: 3px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+
+  .key-btn {
+    width: 40px;
+    height: 60px;
+    border-radius: 0 0 4px 4px;
+    border: 1px solid var(--bg-lighter);
+    background: var(--bg-lighter);
+    color: var(--text);
+    font-size: 0.7em;
+    cursor: pointer;
+    transition: all 0.1s;
+    font-family: inherit;
+    font-weight: 600;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 4px;
+  }
+
+  .key-btn:hover, .key-btn.active {
+    background: var(--accent);
+    color: #000;
+  }
+
+  .key-btn.black {
+    background: #222;
+    height: 40px;
+    width: 28px;
+    margin: 0 -6px;
+    z-index: 1;
+  }
+
+  .key-btn.black:hover, .key-btn.black.active {
+    background: var(--purple);
+    color: #fff;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 8px 20px;
+    border-radius: var(--radius);
+    font-size: 0.85em;
+    font-weight: 600;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  .toast.show { opacity: 1; }
+  .toast.success { background: var(--success); color: #000; }
+  .toast.error { background: var(--danger); color: #fff; }
+  .toast.info { background: var(--accent); color: #000; }
+
+  .course-link {
+    text-align: center;
+    margin-top: 12px;
+    font-size: 0.8em;
+  }
+
+  .course-link a { color: var(--accent); text-decoration: none; }
+  .course-link a:hover { text-decoration: underline; }
+
+  .hidden { display: none !important; }
+
+  @media (max-width: 600px) {
+    body { padding: 8px; }
+    .panel { padding: 12px; }
+    header h1 { font-size: 1.3em; }
+    .key-btn { width: 30px; height: 45px; font-size: 0.6em; }
+    .key-btn.black { width: 22px; height: 30px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="../index.html" class="back-link">← Все инструменты</a>
+  <header>
+    <h1>🎹 Карта гармоний</h1>
+    <p>Изучайте аккорды, стройте прогрессии, играйте в игру на знание гармоний</p>
+  </header>
+
+  <div class="mode-tabs">
+    <button class="mode-tab active" data-mode="explore">🔍 Исследование</button>
+    <button class="mode-tab" data-mode="game">🎮 Игра</button>
+    <button class="mode-tab" data-mode="builder">🏗️ Прогрессии</button>
+  </div>
+
+  <div class="panel" id="explorePanel">
+    <div class="panel-title">Круг интервалов — нажмите на ноту</div>
+    <div class="circle-container">
+      <canvas id="harmonyCircle" width="500" height="500"></canvas>
+    </div>
+    <div class="chord-info">
+      <div class="chord-name" id="chordName">—</div>
+      <div class="chord-notes" id="chordNotes"></div>
+      <div class="chord-desc" id="chordDesc">Нажмите на круг, чтобы выбрать интервал или аккорд</div>
+    </div>
+    <div class="keyboard-row" id="miniKeyboard"></div>
+  </div>
+
+  <div class="panel hidden" id="gamePanel">
+    <div class="panel-title">Угадай аккорд</div>
+    <div class="game-area">
+      <div class="game-score">
+        <div class="score-item">
+          <div class="score-val" id="gameScore" style="color:var(--success)">0</div>
+          <div class="score-label">Очки</div>
+        </div>
+        <div class="score-item">
+          <div class="score-val" id="gameStreak" style="color:var(--warning)">0</div>
+          <div class="score-label">Серия</div>
+        </div>
+        <div class="score-item">
+          <div class="score-val" id="gameLevel" style="color:var(--purple)">1</div>
+          <div class="score-label">Уровень</div>
+        </div>
+      </div>
+      <div class="game-prompt" id="gamePrompt">Нажмите «Старт» чтобы начать</div>
+      <button class="play-prog-btn" id="gameStartBtn">▶ Старт</button>
+      <div class="game-options" id="gameOptions"></div>
+    </div>
+  </div>
+
+  <div class="panel hidden" id="builderPanel">
+    <div class="panel-title">Конструктор прогрессий</div>
+    <div class="progression-builder" id="progBuilder">
+      <span style="opacity:0.3;font-size:0.85em;">Нажмите на аккорды ниже, чтобы создать прогрессию</span>
+    </div>
+    <div class="chord-palette" id="chordPalette"></div>
+    <div style="text-align:center;">
+      <button class="play-prog-btn" id="playProgBtn">▶ Играть прогрессию</button>
+      <button class="play-prog-btn" id="clearProgBtn" style="background:var(--bg-lighter);color:var(--text);margin-left:8px;">✕ Очистить</button>
+    </div>
+  </div>
+
+  <div class="course-link">
+    Подробнее о гармониях → <a href="../../tom2/akkordy.html">Том II: Аккорды и гармония</a>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function() {
+  'use strict';
+
+  const NOTES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const CHORD_DEFS = {
+    'C': { notes: ['C','E','G'], desc: 'C мажор — яркий, радостный аккорд', type: 'major' },
+    'Cm': { notes: ['C','D#','G'], desc: 'C минор — грустный, меланхоличный', type: 'minor' },
+    'D': { notes: ['D','F#','A'], desc: 'D мажор — тёплый, устойчивый', type: 'major' },
+    'Dm': { notes: ['D','F','A'], desc: 'D минор — мягкая грусть', type: 'minor' },
+    'E': { notes: ['E','G#','B'], desc: 'E мажор — энергичный, мощный', type: 'major' },
+    'Em': { notes: ['E','G','B'], desc: 'E минор — мрачный, драматичный', type: 'minor' },
+    'F': { notes: ['F','A','C'], desc: 'F мажор — светлый, воздушный', type: 'major' },
+    'Fm': { notes: ['F','G#','C'], desc: 'F минор — тёмный, напряжённый', type: 'minor' },
+    'G': { notes: ['G','B','D'], desc: 'G мажор — открытый, свободный', type: 'major' },
+    'Gm': { notes: ['G','A#','D'], desc: 'G минор — глубокая меланхолия', type: 'minor' },
+    'A': { notes: ['A','C#','E'], desc: 'A мажор — яркий, пронзительный', type: 'major' },
+    'Am': { notes: ['A','C','E'], desc: 'A минор — интимный, задумчивый', type: 'minor' },
+    'B': { notes: ['B','D#','F#'], desc: 'B мажор — напряжённый, ожидающий разрешения', type: 'major' },
+    'Bm': { notes: ['B','D','F#'], desc: 'B минор — трагичный, кинематографичный', type: 'minor' },
+    'C7': { notes: ['C','E','G','D#'], desc: 'C доминант-септаккорд — блюзовое напряжение', type: 'dom7' },
+    'Am7': { notes: ['A','C','E','G'], desc: 'A минор-септ — джазовый, расслабленный', type: 'min7' },
+    'Fmaj7': { notes: ['F','A','C','E'], desc: 'F мажор-септ — мечтательный, кинематографичный', type: 'maj7' },
+    'Gsus4': { notes: ['G','C','D'], desc: 'G с подвешенной квартой — ожидание', type: 'sus' }
+  };
+
+  const PROGRESSIONS = {
+    'I-IV-V-I': ['C','F','G','C'],
+    'I-V-vi-IV': ['C','G','Am','F'],
+    'vi-IV-I-V': ['Am','F','C','G'],
+    'I-vi-IV-V': ['C','Am','F','G'],
+    'ii-V-I': ['Dm','G','C'],
+    'I-IV-vi-IV': ['C','F','Am','F'],
+    'Pachelbel': ['C','G','Am','Em','F','C','F','G']
+  };
+
+  let audioStarted = false;
+  let synth = null;
+  let polySynth = null;
+  let currentMode = 'explore';
+  let gameScore = 0;
+  let gameStreak = 0;
+  let gameLevel = 1;
+  let currentQuestion = null;
+  let progression = [];
+  let selectedInterval = 0;
+
+  function initAudio() {
+    if (audioStarted) return;
+    audioStarted = true;
+    Tone.start();
+
+    synth = new Tone.Synth({
+      oscillator: { type: 'triangle' },
+      envelope: { attack: 0.02, decay: 0.1, sustain: 0.3, release: 0.4 }
+    }).toDestination();
+
+    polySynth = new Tone.PolySynth(Tone.Synth, {
+      oscillator: { type: 'triangle' },
+      envelope: { attack: 0.03, decay: 0.15, sustain: 0.4, release: 0.5 }
+    }).toDestination();
+
+    polySynth.volume.value = -6;
+  }
+
+  function playNote(note) {
+    if (!synth) return;
+    synth.triggerAttackRelease(note, '8n');
+  }
+
+  function playChord(chordName) {
+    if (!polySynth || !CHORD_DEFS[chordName]) return;
+    const notes = CHORD_DEFS[chordName].notes.map(n => n + '4');
+    polySynth.triggerAttackRelease(notes, '4n');
+  }
+
+  function showToast(msg, type = 'info') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + type + ' show';
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
+
+  function switchMode(mode) {
+    currentMode = mode;
+    document.querySelectorAll('.mode-tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.mode === mode);
+    });
+    document.getElementById('explorePanel').classList.toggle('hidden', mode !== 'explore');
+    document.getElementById('gamePanel').classList.toggle('hidden', mode !== 'game');
+    document.getElementById('builderPanel').classList.toggle('hidden', mode !== 'builder');
+  }
+
+  document.querySelectorAll('.mode-tab').forEach(tab => {
+    tab.addEventListener('click', () => switchMode(tab.dataset.mode));
+  });
+
+  // === CIRCLE DRAWING ===
+  function drawCircle() {
+    const canvas = document.getElementById('harmonyCircle');
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width;
+    const h = canvas.height;
+    const cx = w / 2;
+    const cy = h / 2;
+    const r = Math.min(w, h) / 2 - 30;
+
+    ctx.clearRect(0, 0, w, h);
+
+    const typeColors = {
+      major: '#00bcd4',
+      minor: '#ab47bc',
+      dom7: '#ff7043',
+      min7: '#66bb6a',
+      maj7: '#42a5f5',
+      sus: '#ffa726'
+    };
+
+    for (let i = 0; i < 12; i++) {
+      const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
+      const x = cx + Math.cos(angle) * r;
+      const y = cy + Math.sin(angle) * r;
+
+      const chordKey = NOTES[i] + (i % 3 === 2 ? 'm' : '');
+      const chordData = CHORD_DEFS[NOTES[i]] || CHORD_DEFS[chordKey];
+      const color = chordData ? typeColors[chordData.type] || '#00bcd4' : '#666';
+
+      const isSelected = i === selectedInterval;
+
+      ctx.beginPath();
+      ctx.arc(x, y, isSelected ? 32 : 26, 0, Math.PI * 2);
+      ctx.fillStyle = isSelected ? color : 'rgba(56,56,56,0.9)';
+      ctx.fill();
+      ctx.strokeStyle = color;
+      ctx.lineWidth = isSelected ? 3 : 1.5;
+      ctx.stroke();
+
+      ctx.fillStyle = isSelected ? '#000' : color;
+      ctx.font = `bold ${isSelected ? 16 : 13}px Inter, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(NOTES[i], x, y);
+    }
+
+    ctx.fillStyle = 'rgba(253,251,223,0.1)';
+    ctx.font = 'bold 14px Inter, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('КРУГ ИНТЕРВАЛОВ', cx, cy - 10);
+    ctx.font = '11px Inter, sans-serif';
+    ctx.fillStyle = 'rgba(253,251,223,0.3)';
+    ctx.fillText('Нажмите для выбора', cx, cy + 10);
+  }
+
+  document.getElementById('harmonyCircle').addEventListener('click', (e) => {
+    initAudio();
+    const canvas = e.target;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = canvas.width / rect.width;
+    const scaleY = canvas.height / rect.height;
+    const x = (e.clientX - rect.left) * scaleX;
+    const y = (e.clientY - rect.top) * scaleY;
+    const cx = canvas.width / 2;
+    const cy = canvas.height / 2;
+    const r = Math.min(canvas.width, canvas.height) / 2 - 30;
+
+    for (let i = 0; i < 12; i++) {
+      const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
+      const nx = cx + Math.cos(angle) * r;
+      const ny = cy + Math.sin(angle) * r;
+      const dist = Math.sqrt((x - nx) ** 2 + (y - ny) ** 2);
+      if (dist < 32) {
+        selectedInterval = i;
+        const noteName = NOTES[i];
+        const chordName = noteName + (i % 3 === 2 ? 'm' : '');
+        const chordData = CHORD_DEFS[noteName] || CHORD_DEFS[chordName];
+
+        document.getElementById('chordName').textContent = chordData ? chordName : noteName;
+        document.getElementById('chordNotes').textContent = chordData ? 'Ноты: ' + chordData.notes.join(' — ') : '';
+        document.getElementById('chordDesc').textContent = chordData ? chordData.desc : 'Выберите аккорд из палитры';
+
+        if (chordData) {
+          const notes = chordData.notes.map(n => n + '4');
+          polySynth.triggerAttackRelease(notes, '2n');
+        } else {
+          playNote(noteName + '4');
+        }
+
+        drawCircle();
+        break;
+      }
+    }
+  });
+
+  // === MINI KEYBOARD ===
+  function buildMiniKeyboard() {
+    const kb = document.getElementById('miniKeyboard');
+    const octaveNotes = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B','C'];
+    kb.innerHTML = '';
+    octaveNotes.forEach((note, i) => {
+      const btn = document.createElement('button');
+      btn.className = 'key-btn' + (note.includes('#') ? ' black' : '');
+      btn.textContent = note;
+      btn.addEventListener('click', () => {
+        initAudio();
+        playNote(note + '4');
+        btn.classList.add('active');
+        setTimeout(() => btn.classList.remove('active'), 200);
+      });
+      kb.appendChild(btn);
+    });
+  }
+
+  // === GAME ===
+  function generateQuestion() {
+    const chordNames = Object.keys(CHORD_DEFS);
+    const correct = chordNames[Math.floor(Math.random() * chordNames.length)];
+    const options = new Set([correct]);
+
+    while (options.size < Math.min(4, chordNames.length)) {
+      options.add(chordNames[Math.floor(Math.random() * chordNames.length)]);
+    }
+
+    const shuffled = Array.from(options).sort(() => Math.random() - 0.5);
+    currentQuestion = { correct, options: shuffled };
+
+    document.getElementById('gamePrompt').innerHTML =
+      `Уровень ${gameLevel}: Какой аккорд вы слышите?<br><small style="opacity:0.5">Тип: ${CHORD_DEFS[correct].type}</small>`;
+
+    const optContainer = document.getElementById('gameOptions');
+    optContainer.innerHTML = '';
+    shuffled.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'game-btn';
+      btn.textContent = opt;
+      btn.addEventListener('click', () => handleAnswer(opt, btn));
+      optContainer.appendChild(btn);
+    });
+
+    setTimeout(() => {
+      const notes = CHORD_DEFS[correct].notes.map(n => n + '4');
+      polySynth.triggerAttackRelease(notes, '2n');
+    }, 500);
+  }
+
+  function handleAnswer(answer, btn) {
+    if (!currentQuestion) return;
+    const buttons = document.querySelectorAll('.game-btn');
+    buttons.forEach(b => b.disabled = true);
+
+    if (answer === currentQuestion.correct) {
+      btn.classList.add('correct');
+      gameScore += 10 * gameLevel;
+      gameStreak++;
+      if (gameStreak % 3 === 0) gameLevel++;
+      document.getElementById('gameScore').textContent = gameScore;
+      document.getElementById('gameStreak').textContent = gameStreak;
+      document.getElementById('gameLevel').textContent = gameLevel;
+      showToast('✅ Правильно! +' + (10 * gameLevel) + ' очков', 'success');
+    } else {
+      btn.classList.add('wrong');
+      buttons.forEach(b => {
+        if (b.textContent === currentQuestion.correct) b.classList.add('correct');
+      });
+      gameStreak = 0;
+      document.getElementById('gameStreak').textContent = 0;
+      showToast('❌ Это был ' + currentQuestion.correct, 'error');
+    }
+
+    setTimeout(() => generateQuestion(), 1500);
+  }
+
+  document.getElementById('gameStartBtn').addEventListener('click', () => {
+    initAudio();
+    gameScore = 0;
+    gameStreak = 0;
+    gameLevel = 1;
+    document.getElementById('gameScore').textContent = 0;
+    document.getElementById('gameStreak').textContent = 0;
+    document.getElementById('gameLevel').textContent = 1;
+    document.getElementById('gameStartBtn').classList.add('hidden');
+    generateQuestion();
+  });
+
+  // === PROGRESSION BUILDER ===
+  function buildChordPalette() {
+    const palette = document.getElementById('chordPalette');
+    palette.innerHTML = '';
+    Object.keys(CHORD_DEFS).forEach(name => {
+      const btn = document.createElement('button');
+      btn.className = 'palette-btn';
+      btn.textContent = name;
+      btn.addEventListener('click', () => {
+        initAudio();
+        progression.push(name);
+        updateProgressionDisplay();
+        playChord(name);
+      });
+      palette.appendChild(btn);
+    });
+  }
+
+  function updateProgressionDisplay() {
+    const container = document.getElementById('progBuilder');
+    if (progression.length === 0) {
+      container.innerHTML = '<span style="opacity:0.3;font-size:0.85em;">Нажмите на аккорды ниже, чтобы создать прогрессию</span>';
+      return;
+    }
+    container.innerHTML = '';
+    progression.forEach((chord, i) => {
+      const span = document.createElement('span');
+      span.className = 'prog-chord';
+      span.textContent = chord + ' <span class="remove">✕</span>';
+      span.addEventListener('click', () => {
+        progression.splice(i, 1);
+        updateProgressionDisplay();
+      });
+      container.appendChild(span);
+    });
+  }
+
+  document.getElementById('playProgBtn').addEventListener('click', () => {
+    if (!progression.length) return;
+    initAudio();
+    showToast('▶ Играем прогрессию...', 'info');
+
+    progression.forEach((chord, i) => {
+      setTimeout(() => {
+        playChord(chord);
+      }, i * 600);
+    });
+  });
+
+  document.getElementById('clearProgBtn').addEventListener('click', () => {
+    progression = [];
+    updateProgressionDisplay();
+  });
+
+  // === KEYBOARD SUPPORT ===
+  const KEY_MAP = {
+    'a': 'C', 'w': 'C#', 's': 'D', 'e': 'D#', 'd': 'E',
+    'f': 'F', 't': 'F#', 'g': 'G', 'y': 'G#', 'h': 'A',
+    'u': 'A#', 'j': 'B', 'k': 'C5'
+  };
+
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+    const key = e.key.toLowerCase();
+    if (key in KEY_MAP && !e.repeat) {
+      initAudio();
+      const note = KEY_MAP[key];
+      if (note === 'C5') playNote('C5');
+      else playNote(note + '4');
+    }
+  });
+
+  // === INIT ===
+  document.addEventListener('DOMContentLoaded', () => {
+    drawCircle();
+    buildMiniKeyboard();
+    buildChordPalette();
+    updateProgressionDisplay();
+  });
+})();
+</script>
+</body>
+</html>

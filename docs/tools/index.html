@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Интерактивные инструменты — Курс по музыкальному продакшену</title>
+<style>
+  :root {
+    --bg: #282828;
+    --bg-light: #363636;
+    --bg-lighter: #404040;
+    --text: #FDFBDF;
+    --accent: #00bcd4;
+    --purple: #ab47bc;
+    --orange: #ff7043;
+    --radius: 12px;
+    --shadow: 0 4px 16px rgba(0,0,0,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 24px 16px;
+  }
+
+  .container { max-width: 800px; margin: 0 auto; }
+
+  header {
+    text-align: center;
+    margin-bottom: 32px;
+  }
+
+  header h1 {
+    font-size: 2em;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--accent), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+
+  header p {
+    font-size: 1em;
+    opacity: 0.6;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 16px;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.9em;
+  }
+
+  .back-link:hover { text-decoration: underline; }
+
+  .tool-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  .tool-card {
+    background: var(--bg-light);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--bg-lighter);
+    transition: all 0.2s;
+    text-decoration: none;
+    color: var(--text);
+    display: block;
+  }
+
+  .tool-card:hover {
+    border-color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  }
+
+  .tool-icon {
+    font-size: 2.5em;
+    margin-bottom: 12px;
+  }
+
+  .tool-card h2 {
+    font-size: 1.2em;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .tool-card p {
+    font-size: 0.9em;
+    opacity: 0.6;
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
+  .tool-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.7em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-right: 4px;
+    margin-bottom: 4px;
+  }
+
+  .tag-synthesis { background: rgba(0,188,212,0.2); color: var(--accent); }
+  .tag-theory { background: rgba(171,71,188,0.2); color: var(--purple); }
+  .tag-game { background: rgba(255,112,67,0.2); color: var(--orange); }
+  .tag-audio { background: rgba(102,187,106,0.2); color: #66bb6a; }
+
+  .coming-soon {
+    opacity: 0.4;
+    border-style: dashed;
+  }
+
+  .coming-soon:hover {
+    transform: none;
+    border-color: var(--bg-lighter);
+  }
+
+  .footer-note {
+    text-align: center;
+    margin-top: 32px;
+    font-size: 0.8em;
+    opacity: 0.4;
+  }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.5em; }
+    .tool-cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="../../index.html" class="back-link">← На главную курса</a>
+  <header>
+    <h1>🎛️ Интерактивные инструменты</h1>
+    <p>Практикуйте теорию музыки с помощью интерактивных инструментов прямо в браузере</p>
+  </header>
+
+  <div class="tool-cards">
+    <a href="wavetable/index.html" class="tool-card">
+      <div class="tool-icon">🌊</div>
+      <h2>Wavetable-синтезатор</h2>
+      <p>Смешивайте 4 формы волны, управляйте ADSR-огибающей, визуализируйте результирующий сигнал и играйте с клавиатуры. Экспортируйте и сохраняйте пресеты.</p>
+      <span class="tool-tag tag-synthesis">Синтез</span>
+      <span class="tool-tag tag-audio">Аудио</span>
+    </a>
+
+    <a href="harmony-map/index.html" class="tool-card">
+      <div class="tool-icon">🎹</div>
+      <h2>Карта гармоний</h2>
+      <p>Исследуйте круг интервалов, играйте в игру на знание аккордов и стройте собственные аккордовые прогрессии. 3 режима: исследование, игра, конструктор.</p>
+      <span class="tool-tag tag-theory">Теория</span>
+      <span class="tool-tag tag-game">Игра</span>
+    </a>
+
+    <div class="tool-card coming-soon">
+      <div class="tool-icon">🥁</div>
+      <h2>Друм-машина</h2>
+      <p>Создавайте биты, экспериментируйте с паттернами и темпом. Встроенные киты: 808, 909, акаустик.</p>
+      <span class="tool-tag tag-synthesis">Синтез</span>
+      <span class="tool-tag tag-game">Скоро</span>
+    </div>
+
+    <div class="tool-card coming-soon">
+      <div class="tool-icon">🎚️</div>
+      <h2>EQ-тренажёр</h2>
+      <p>Научитесь слышать частоты. Упражнения на распознавание и настройку эквалайзера.</p>
+      <span class="tool-tag tag-theory">Теория</span>
+      <span class="tool-tag tag-game">Скоро</span>
+    </div>
+  </div>
+
+  <div class="footer-note">
+    Все инструменты работают локально в вашем браузере · Звук запускается по жести пользователя
+  </div>
+</div>
+</body>
+</html>

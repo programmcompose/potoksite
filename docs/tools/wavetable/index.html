@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wavetable-синтезатор — Интерактивный инструмент</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+<style>
+  :root {
+    --bg: #282828;
+    --bg-light: #363636;
+    --bg-lighter: #404040;
+    --text: #FDFBDF;
+    --accent: #00bcd4;
+    --accent-dim: #00838f;
+    --danger: #ef5350;
+    --success: #66bb6a;
+    --warning: #ffa726;
+    --radius: 8px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 16px;
+  }
+
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  header h1 {
+    font-size: 1.6em;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), #4dd0e1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4px;
+  }
+
+  header p {
+    font-size: 0.9em;
+    opacity: 0.7;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 12px;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.85em;
+  }
+
+  .back-link:hover { text-decoration: underline; }
+
+  .panel {
+    background: var(--bg-light);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+
+  .panel-title {
+    font-size: 0.8em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.6;
+    margin-bottom: 12px;
+  }
+
+  .wave-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+  }
+
+  .wave-card {
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: 12px;
+    border: 1px solid var(--bg-lighter);
+  }
+
+  .wave-card label {
+    display: block;
+    font-weight: 600;
+    font-size: 0.9em;
+    margin-bottom: 8px;
+  }
+
+  .wave-card select {
+    width: 100%;
+    padding: 6px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--bg-lighter);
+    background: var(--bg-light);
+    color: var(--text);
+    font-size: 0.85em;
+    margin-bottom: 8px;
+    cursor: pointer;
+  }
+
+  .wave-card select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .slider-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .slider-row input[type="range"] {
+    flex: 1;
+    accent-color: var(--accent);
+    height: 4px;
+  }
+
+  .slider-row .val {
+    font-size: 0.8em;
+    min-width: 36px;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .tip {
+    font-size: 0.75em;
+    opacity: 0.5;
+    margin-top: 6px;
+    font-style: italic;
+    line-height: 1.3;
+  }
+
+  .adsr-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+  }
+
+  .canvas-wrap {
+    background: #1a1a1a;
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+  }
+
+  canvas {
+    display: block;
+    width: 100%;
+    height: 180px;
+  }
+
+  .canvas-label {
+    position: absolute;
+    top: 8px;
+    left: 12px;
+    font-size: 0.7em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.4;
+  }
+
+  .controls-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 0.9em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+
+  button:active { transform: scale(0.97); }
+
+  .btn-play {
+    background: var(--accent);
+    color: #000;
+    min-width: 120px;
+  }
+
+  .btn-play:hover { background: #4dd0e1; }
+  .btn-play.playing { background: var(--danger); color: #fff; }
+
+  .btn-octave {
+    background: var(--bg-lighter);
+    color: var(--text);
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .btn-octave:hover { background: #555; }
+
+  .octave-display {
+    font-size: 1em;
+    font-weight: 700;
+    min-width: 60px;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .btn-secondary {
+    background: var(--bg-lighter);
+    color: var(--text);
+  }
+
+  .btn-secondary:hover { background: #555; }
+
+  .note-display {
+    font-size: 1.8em;
+    font-weight: 800;
+    text-align: center;
+    margin: 8px 0;
+    font-variant-numeric: tabular-nums;
+    color: var(--accent);
+  }
+
+  .keyboard-hint {
+    text-align: center;
+    font-size: 0.8em;
+    opacity: 0.5;
+    margin-top: 8px;
+  }
+
+  .keyboard-hint kbd {
+    background: var(--bg-lighter);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.9em;
+    margin: 0 1px;
+  }
+
+  .preset-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .preset-area textarea {
+    flex: 1;
+    min-width: 200px;
+    height: 60px;
+    background: var(--bg);
+    color: var(--text);
+    border: 1px solid var(--bg-lighter);
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 0.8em;
+    font-family: 'JetBrains Mono', monospace;
+    resize: vertical;
+  }
+
+  .preset-area textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  .saved-presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 8px;
+  }
+
+  .preset-chip {
+    background: var(--bg-lighter);
+    color: var(--text);
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.75em;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.15s;
+  }
+
+  .preset-chip:hover {
+    border-color: var(--accent);
+  }
+
+  .preset-chip .del {
+    margin-left: 4px;
+    opacity: 0.4;
+    font-size: 0.9em;
+  }
+
+  .preset-chip .del:hover { opacity: 1; color: var(--danger); }
+
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--success);
+    color: #000;
+    padding: 8px 20px;
+    border-radius: var(--radius);
+    font-size: 0.85em;
+    font-weight: 600;
+    box-shadow: var(--shadow);
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    z-index: 100;
+  }
+
+  .toast.show { opacity: 1; }
+
+  .course-link {
+    text-align: center;
+    margin-top: 12px;
+    font-size: 0.8em;
+  }
+
+  .course-link a {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  .course-link a:hover { text-decoration: underline; }
+
+  @media (max-width: 600px) {
+    body { padding: 8px; }
+    .panel { padding: 12px; }
+    .wave-grid { grid-template-columns: 1fr 1fr; }
+    .adsr-grid { grid-template-columns: 1fr 1fr; }
+    header h1 { font-size: 1.3em; }
+  }
+
+  @media (max-width: 400px) {
+    .wave-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="../index.html" class="back-link">← Все инструменты</a>
+  <header>
+    <h1>🎛️ Wavetable-синтезатор</h1>
+    <p>Смешивайте 4 волны, слушайте результат, экспортируйте пресеты</p>
+  </header>
+
+  <div class="panel">
+    <div class="panel-title">Осцилляторы</div>
+    <div class="wave-grid" id="waveGrid"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">ADSR-огибающая</div>
+    <div class="adsr-grid" id="adsrGrid"></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Визуализация</div>
+    <div class="canvas-wrap">
+      <span class="canvas-label">Результирующая волна</span>
+      <canvas id="waveCanvas"></canvas>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Управление</div>
+    <div class="note-display" id="noteDisplay">C4</div>
+    <div class="controls-row">
+      <button class="btn-octave" id="octDown" title="Октава вниз">−</button>
+      <span class="octave-display" id="octaveDisplay">Окт. 4</span>
+      <button class="btn-octave" id="octUp" title="Октава вверх">+</button>
+      <button class="btn-play" id="playBtn">▶ Play</button>
+    </div>
+    <div class="keyboard-hint">
+      Играйте клавишами: <kbd>A</kbd>–<kbd>;</kbd> (белые) · <kbd>W</kbd><kbd>E</kbd><kbd>T</kbd><kbd>Y</kbd><kbd>U</kbd> (чёрные)
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Пресеты</div>
+    <div class="preset-area">
+      <textarea id="presetJson" readonly placeholder="JSON пресета появится здесь..."></textarea>
+      <div style="display:flex; flex-direction:column; gap:6px;">
+        <button class="btn-secondary" id="exportBtn">📋 Копировать</button>
+        <button class="btn-secondary" id="importBtn">📥 Загрузить</button>
+        <button class="btn-secondary" id="savePresetBtn">💾 Сохранить</button>
+      </div>
+    </div>
+    <div class="saved-presets" id="savedPresets"></div>
+  </div>
+
+  <div class="course-link">
+    Подробнее о формах волны → <a href="../../tom1/osnovy-zvuka.html">Том I: Что такое звук</a>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function() {
+  'use strict';
+
+  const WAVE_TYPES = ['sine', 'square', 'sawtooth', 'triangle'];
+  const WAVE_LABELS = { sine: 'Синус', square: 'Квадрат', sawtooth: 'Пила', triangle: 'Треугольник' };
+  const WAVE_TIPS = {
+    sine: 'Чистый тон без обертонов — основа саб-баса',
+    square: 'Чётные гармоники — ретро-гейм синт, флейта',
+    sawtooth: 'Все гармоники — яркий бас, лид, струнные',
+    triangle: 'Мягкий, близок к синусу — орган, флейта'
+  };
+
+  const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
+  const KEY_MAP = {
+    'a': 0, 'w': 1, 's': 2, 'e': 3, 'd': 4,
+    'f': 5, 't': 6, 'g': 7, 'y': 8, 'h': 9,
+    'u': 10, 'j': 11, 'k': 12, 'o': 13, 'l': 14,
+    'p': 15, ';': 16
+  };
+
+  let state = {
+    waves: [
+      { type: 'sine', volume: 100 },
+      { type: 'square', volume: 0 },
+      { type: 'sawtooth', volume: 0 },
+      { type: 'triangle', volume: 0 }
+    ],
+    adsr: { attack: 0.05, decay: 0.2, sustain: 0.7, release: 0.3 },
+    octave: 4,
+    noteIndex: 0
+  };
+
+  let synth = null;
+  let isPlaying = false;
+  let activeNotes = new Set();
+  let audioStarted = false;
+  let animFrame = null;
+
+  function initAudio() {
+    if (audioStarted) return;
+    audioStarted = true;
+
+    const merger = new Tone.Merger(4).toDestination();
+
+    const oscillators = state.waves.map((w, i) => {
+      const osc = new Tone.Oscillator(w.type, 'C4').connect(merger.input(i));
+      const gain = new Tone.Gain(w.volume / 100);
+      osc.connect(gain).connect(merger.input(i));
+      return { osc, gain };
+    });
+
+    synth = {
+      oscillators,
+      start: () => {
+        oscillators.forEach(o => o.osc.start());
+      },
+      stop: () => {
+        oscillators.forEach(o => o.osc.stop());
+      },
+      setFrequency: (freq) => {
+        oscillators.forEach(o => o.osc.frequency.value = freq);
+      },
+      setType: (index, type) => {
+        const wasPlaying = oscillators[index].osc.state === 'started';
+        oscillators[index].osc.type = type;
+      },
+      setVolume: (index, vol) => {
+        oscillators[index].gain.gain.value = vol / 100;
+      },
+      triggerAttack: (note) => {
+        const freq = Tone.Frequency(note).toFrequency();
+        oscillators.forEach(o => {
+          o.osc.frequency.rampTo(freq, state.adsr.attack);
+        });
+        Tone.Destination.gain.value = 1;
+        setTimeout(() => {
+          Tone.Destination.gain.rampTo(state.adsr.sustain, state.adsr.decay);
+        }, state.adsr.attack * 1000);
+      },
+      triggerRelease: () => {
+        Tone.Destination.gain.rampTo(0, state.adsr.release);
+      }
+    };
+
+    synth.start();
+    drawWave();
+  }
+
+  function getNoteName(index) {
+    const baseOctave = state.octave;
+    const noteIdx = index % 12;
+    const octave = baseOctave + Math.floor(index / 12);
+    return NOTE_NAMES[noteIdx] + octave;
+  }
+
+  function getNoteFrequency(index) {
+    return Tone.Frequency(getNoteName(index)).toFrequency();
+  }
+
+  function buildWaveGrid() {
+    const grid = document.getElementById('waveGrid');
+    grid.innerHTML = '';
+    state.waves.forEach((w, i) => {
+      const card = document.createElement('div');
+      card.className = 'wave-card';
+      card.innerHTML = `
+        <label>Волна ${i + 1}</label>
+        <select data-wave="${i}">
+          ${WAVE_TYPES.map(t => `<option value="${t}" ${t === w.type ? 'selected' : ''}>${WAVE_LABELS[t]}</option>`).join('')}
+        </select>
+        <div class="slider-row">
+          <input type="range" min="0" max="100" value="${w.volume}" data-vol="${i}">
+          <span class="val" id="vol${i}">${w.volume}%</span>
+        </div>
+        <div class="tip">${WAVE_TIPS[w.type]}</div>
+      `;
+      grid.appendChild(card);
+    });
+
+    grid.querySelectorAll('select').forEach(sel => {
+      sel.addEventListener('change', (e) => {
+        const idx = parseInt(e.target.dataset.wave);
+        state.waves[idx].type = e.target.value;
+        e.target.parentElement.querySelector('.tip').textContent = WAVE_TIPS[e.target.value];
+        if (synth) synth.setType(idx, e.target.value);
+        drawWave();
+      });
+    });
+
+    grid.querySelectorAll('input[type="range"]').forEach(inp => {
+      inp.addEventListener('input', (e) => {
+        const idx = parseInt(e.target.dataset.vol);
+        const val = parseInt(e.target.value);
+        state.waves[idx].volume = val;
+        document.getElementById('vol' + idx).textContent = val + '%';
+        if (synth) synth.setVolume(idx, val);
+        drawWave();
+      });
+    });
+  }
+
+  function buildADSRGrid() {
+    const grid = document.getElementById('adsrGrid');
+    const params = [
+      { key: 'attack', label: 'Attack', min: 0.001, max: 2, step: 0.001, unit: 'с' },
+      { key: 'decay', label: 'Decay', min: 0.01, max: 2, step: 0.01, unit: 'с' },
+      { key: 'sustain', label: 'Sustain', min: 0, max: 1, step: 0.01, unit: '' },
+      { key: 'release', label: 'Release', min: 0.01, max: 3, step: 0.01, unit: 'с' }
+    ];
+
+    grid.innerHTML = '';
+    params.forEach(p => {
+      const div = document.createElement('div');
+      div.innerHTML = `
+        <div class="slider-row" style="flex-direction:column; align-items:stretch;">
+          <div style="display:flex;justify-content:space-between;font-size:0.8em;font-weight:600;">
+            <span>${p.label}</span><span id="adsr-${p.key}">${state.adsr[p.key]}${p.unit}</span>
+          </div>
+          <input type="range" min="${p.min}" max="${p.max}" step="${p.step}" value="${state.adsr[p.key]}" data-adsr="${p.key}" style="width:100%;">
+        </div>
+      `;
+      grid.appendChild(div);
+    });
+
+    grid.querySelectorAll('input[type="range"]').forEach(inp => {
+      inp.addEventListener('input', (e) => {
+        const key = e.target.dataset.adsr;
+        const val = parseFloat(e.target.value);
+        state.adsr[key] = val;
+        const unit = params.find(p => p.key === key).unit;
+        document.getElementById('adsr-' + key).textContent = val + unit;
+      });
+    });
+  }
+
+  function updateNoteDisplay() {
+    document.getElementById('noteDisplay').textContent = getNoteName(state.noteIndex);
+  }
+
+  function updateOctaveDisplay() {
+    document.getElementById('octaveDisplay').textContent = 'Окт. ' + state.octave;
+  }
+
+  const canvas = document.getElementById('waveCanvas');
+  const ctx = canvas.getContext('2d');
+
+  function resizeCanvas() {
+    const rect = canvas.parentElement.getBoundingClientRect();
+    canvas.width = rect.width * window.devicePixelRatio;
+    canvas.height = 180 * window.devicePixelRatio;
+    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  }
+
+  function drawWave() {
+    const w = canvas.width / window.devicePixelRatio;
+    const h = canvas.height / window.devicePixelRatio;
+
+    ctx.fillStyle = '#1a1a1a';
+    ctx.fillRect(0, 0, w, h);
+
+    ctx.strokeStyle = 'rgba(0, 188, 212, 0.15)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0, h / 2);
+    ctx.lineTo(w, h / 2);
+    ctx.stroke();
+
+    const activeWaves = state.waves.filter(w => w.volume > 0);
+    if (activeWaves.length === 0) return;
+
+    const samples = w * 2;
+    const freq = getNoteFrequency(state.noteIndex);
+    const sampleRate = 44100;
+    const period = sampleRate / freq;
+    const samplesPerPeriod = Math.min(period, samples);
+
+    for (let cycle = 0; cycle < 3; cycle++) {
+      const cycleStart = (samples / 3) * cycle;
+
+      ctx.beginPath();
+      ctx.strokeStyle = 'rgba(0, 188, 212, 0.3)';
+      ctx.lineWidth = 1;
+
+      for (let x = 0; x < w / 3; x++) {
+        let value = 0;
+        activeWaves.forEach(wave => {
+          const t = ((cycleStart + x) / samplesPerPeriod) % 1;
+          value += sampleWaveform(wave.type, t) * (wave.volume / 100);
+        });
+
+        const normValue = value / activeWaves.length;
+        const y = h / 2 - normValue * (h / 2 - 10);
+
+        if (x === 0) ctx.moveTo(cycleStart + x, y);
+        else ctx.lineTo(cycleStart + x, y);
+      }
+      ctx.stroke();
+    }
+
+    ctx.beginPath();
+    ctx.strokeStyle = '#00bcd4';
+    ctx.lineWidth = 2;
+
+    for (let cycle = 0; cycle < 3; cycle++) {
+      const cycleStart = (samples / 3) * cycle;
+
+      for (let x = 0; x < w / 3; x++) {
+        let value = 0;
+        activeWaves.forEach(wave => {
+          const t = ((cycleStart + x) / samplesPerPeriod) % 1;
+          value += sampleWaveform(wave.type, t) * (wave.volume / 100);
+        });
+
+        const normValue = value / activeWaves.reduce((s, w) => s + w.volume, 0) * activeWaves.length;
+        const y = h / 2 - normValue * (h / 2 - 10);
+
+        if (x === 0 && cycle === 0) ctx.moveTo(cycleStart + x, y);
+        else if (x === 0) ctx.moveTo(cycleStart + x, y);
+        else ctx.lineTo(cycleStart + x, y);
+      }
+    }
+    ctx.stroke();
+  }
+
+  function sampleWaveform(type, t) {
+    switch (type) {
+      case 'sine': return Math.sin(2 * Math.PI * t);
+      case 'square': return t < 0.5 ? 1 : -1;
+      case 'sawtooth': return 2 * (t - Math.floor(t + 0.5));
+      case 'triangle': return 2 * Math.abs(2 * (t - Math.floor(t + 0.5))) - 1;
+      default: return 0;
+    }
+  }
+
+  function playNote(noteIndex) {
+    if (!synth) return;
+    const note = getNoteName(noteIndex);
+    state.noteIndex = noteIndex;
+    updateNoteDisplay();
+    synth.triggerAttack(note);
+    activeNotes.add(noteIndex);
+    drawWave();
+  }
+
+  function stopNote(noteIndex) {
+    if (!synth || activeNotes.size <= 1) {
+      activeNotes.clear();
+      synth.triggerRelease();
+      setTimeout(() => {
+        if (activeNotes.size === 0) {
+          document.getElementById('playBtn').textContent = '▶ Play';
+          document.getElementById('playBtn').classList.remove('playing');
+          isPlaying = false;
+        }
+      }, state.adsr.release * 1000);
+    } else {
+      activeNotes.delete(noteIndex);
+    }
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  }
+
+  function getCurrentPreset() {
+    return JSON.stringify({
+      waves: state.waves.map(w => ({ type: w.type, volume: w.volume })),
+      adsr: { ...state.adsr },
+      octave: state.octave
+    }, null, 2);
+  }
+
+  function savePresetToJson() {
+    document.getElementById('presetJson').value = getCurrentPreset();
+  }
+
+  function loadPresetFromJson(json) {
+    try {
+      const data = JSON.parse(json);
+      if (data.waves) {
+        data.waves.forEach((w, i) => {
+          if (state.waves[i]) {
+            state.waves[i].type = w.type;
+            state.waves[i].volume = w.volume;
+          }
+        });
+      }
+      if (data.adsr) Object.assign(state.adsr, data.adsr);
+      if (data.octave !== undefined) state.octave = data.octave;
+      buildWaveGrid();
+      buildADSRGrid();
+      updateOctaveDisplay();
+      updateNoteDisplay();
+      if (synth) drawWave();
+      showToast('✅ Пресет загружен');
+    } catch (e) {
+      showToast('❌ Ошибка: невалидный JSON');
+    }
+  }
+
+  function loadSavedPresets() {
+    const container = document.getElementById('savedPresets');
+    container.innerHTML = '';
+    const presets = JSON.parse(localStorage.getItem('wavetable_presets') || '[]');
+    presets.forEach((p, i) => {
+      const chip = document.createElement('span');
+      chip.className = 'preset-chip';
+      chip.innerHTML = `${p.name} <span class="del" data-idx="${i}">✕</span>`;
+      chip.addEventListener('click', (e) => {
+        if (e.target.classList.contains('del')) {
+          presets.splice(parseInt(e.target.dataset.idx), 1);
+          localStorage.setItem('wavetable_presets', JSON.stringify(presets));
+          loadSavedPresets();
+          return;
+        }
+        loadPresetFromJson(p.data);
+      });
+      container.appendChild(chip);
+    });
+  }
+
+  function savePreset() {
+    const name = prompt('Название пресета:', 'Мой пресет ' + new Date().toLocaleTimeString());
+    if (!name) return;
+    const presets = JSON.parse(localStorage.getItem('wavetable_presets') || '[]');
+    presets.push({ name, data: getCurrentPreset() });
+    localStorage.setItem('wavetable_presets', JSON.stringify(presets));
+    loadSavedPresets();
+    showToast('💾 Пресет "' + name + '" сохранён');
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    buildWaveGrid();
+    buildADSRGrid();
+    updateNoteDisplay();
+    updateOctaveDisplay();
+    resizeCanvas();
+    drawWave();
+    loadSavedPresets();
+    savePresetToJson();
+
+    window.addEventListener('resize', () => {
+      resizeCanvas();
+      drawWave();
+    });
+
+    document.getElementById('playBtn').addEventListener('click', () => {
+      initAudio();
+      if (!isPlaying) {
+        playNote(state.noteIndex);
+        isPlaying = true;
+        document.getElementById('playBtn').textContent = '⏹ Stop';
+        document.getElementById('playBtn').classList.add('playing');
+      } else {
+        stopNote(state.noteIndex);
+        isPlaying = false;
+        document.getElementById('playBtn').textContent = '▶ Play';
+        document.getElementById('playBtn').classList.remove('playing');
+      }
+    });
+
+    document.getElementById('octDown').addEventListener('click', () => {
+      if (state.octave > 1) {
+        state.octave--;
+        updateOctaveDisplay();
+        updateNoteDisplay();
+        if (synth) {
+          synth.setFrequency(getNoteFrequency(state.noteIndex));
+          drawWave();
+        }
+      }
+    });
+
+    document.getElementById('octUp').addEventListener('click', () => {
+      if (state.octave < 7) {
+        state.octave++;
+        updateOctaveDisplay();
+        updateNoteDisplay();
+        if (synth) {
+          synth.setFrequency(getNoteFrequency(state.noteIndex));
+          drawWave();
+        }
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+      const key = e.key.toLowerCase();
+      if (key in KEY_MAP && !e.repeat) {
+        initAudio();
+        playNote(KEY_MAP[key]);
+      }
+    });
+
+    document.addEventListener('keyup', (e) => {
+      if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+      const key = e.key.toLowerCase();
+      if (key in KEY_MAP) {
+        stopNote(KEY_MAP[key]);
+      }
+    });
+
+    document.getElementById('exportBtn').addEventListener('click', () => {
+      savePresetToJson();
+      navigator.clipboard.writeText(getCurrentPreset()).then(() => {
+        showToast('📋 JSON скопирован в буфер');
+      }).catch(() => {
+        showToast('⚠️ Не удалось скопировать');
+      });
+    });
+
+    document.getElementById('importBtn').addEventListener('click', () => {
+      const json = prompt('Вставьте JSON пресета:');
+      if (json) loadPresetFromJson(json);
+    });
+
+    document.getElementById('savePresetBtn').addEventListener('click', savePreset);
+
+    document.getElementById('presetJson').addEventListener('input', () => {
+      savePresetToJson();
+    });
+  });
+})();
+</script>
+</body>
+</html>

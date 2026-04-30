@@ -143,3 +143,7 @@ nav:
       - "Waves CLA": "plugins/waves-cla.md"
       - "Waves MannyM": "plugins/waves-mannym.md"
       - "Waves Maserati": "plugins/waves-maserati.md"
+  - "🎛️ Интерактивные инструменты":
+      - "tools/index.html"
+      - "Wavetable-синтезатор": "tools/wavetable/index.html"
+      - "Карта гармоний": "tools/harmony-map/index.html"

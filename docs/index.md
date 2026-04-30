@@ -98,4 +98,12 @@
 
     [:octicons-arrow-right-24: Открыть](plugins/index.md)
 
+-   :material-tune:{ .lg .middle } __Интерактивные инструменты__
+
+    ---
+
+    Wavetable-синтезатор, карта гармоний и другие
+
+    [:octicons-arrow-right-24: Попробовать](tools/index.html)
+
 </div>
