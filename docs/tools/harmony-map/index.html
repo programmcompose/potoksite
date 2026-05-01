@@ -592,14 +592,17 @@
   let progression = [];
 
   function initAudio() {
-    if (audioStarted) return;
-    audioStarted = true;
-    Tone.start();
-    polySynth = new Tone.PolySynth(Tone.Synth, {
-      oscillator: { type: 'triangle' },
-      envelope: { attack: 0.02, decay: 0.12, sustain: 0.35, release: 0.4 }
-    }).toDestination();
-    polySynth.volume.value = -4;
+    if (audioStarted && polySynth) return Promise.resolve();
+    return Tone.start().then(function() {
+      audioStarted = true;
+      if (!polySynth) {
+        polySynth = new Tone.PolySynth(Tone.Synth, {
+          oscillator: { type: 'triangle' },
+          envelope: { attack: 0.02, decay: 0.12, sustain: 0.35, release: 0.4 }
+        }).toDestination();
+        polySynth.volume.value = -4;
+      }
+    });
   }
 
   function playChordSound(chordName) {
@@ -779,9 +782,18 @@
     ctx.fillText('квinta →', cx + Math.cos(arrowAngle) * (outerR + 20), cy + Math.sin(arrowAngle) * (outerR + 20));
   }
 
+  // Pre-warm audio on first touch/click (mobile autoplay policy)
+  document.addEventListener('touchstart', function warmupAudio() {
+    initAudio();
+    document.removeEventListener('touchstart', warmupAudio);
+  }, { once: true });
+  document.addEventListener('click', function warmupAudioClick() {
+    initAudio();
+    document.removeEventListener('click', warmupAudioClick);
+  }, { once: true });
+
   // Click handler for circle
   document.getElementById('fifthsCircle').addEventListener('click', function(e) {
-    initAudio();
     const canvas = this;
     const rect = canvas.getBoundingClientRect();
     const scaleX = canvas.width / rect.width;
@@ -794,13 +806,17 @@
 
     const RELATIVE_MINORS = ['Am','Em','Bm','F#m','C#m','G#m','D#m','Bbm','Fm','Cm','Gm','Dm'];
 
+    function pickChord(name) {
+      initAudio().then(function() { selectChord(name); });
+    }
+
     // Check outer ring (major)
     for (let i = 0; i < 12; i++) {
       const angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
       const nx = cx + Math.cos(angle) * outerR;
       const ny = cy + Math.sin(angle) * outerR;
       if (Math.sqrt((mx - nx) ** 2 + (my - ny) ** 2) < 34) {
-        selectChord(FIFTHS_ORDER[i]);
+        pickChord(FIFTHS_ORDER[i]);
         return;
       }
     }
@@ -811,7 +827,7 @@
       const nx = cx + Math.cos(angle) * innerR;
       const ny = cy + Math.sin(angle) * innerR;
       if (Math.sqrt((mx - nx) ** 2 + (my - ny) ** 2) < 28) {
-        selectChord(RELATIVE_MINORS[i]);
+        pickChord(RELATIVE_MINORS[i]);
         return;
       }
     }
@@ -857,9 +873,10 @@
       btn.className = 'key-btn' + (note.includes('#') ? ' black' : '');
       btn.textContent = note;
       btn.addEventListener('click', () => {
-        initAudio();
-        if (!polySynth) return;
-        polySynth.triggerAttackRelease(note + '4', '8n');
+        initAudio().then(function() {
+          if (!polySynth) return;
+          polySynth.triggerAttackRelease(note + '4', '8n');
+        });
         btn.classList.add('active');
         setTimeout(() => btn.classList.remove('active'), 200);
       });
@@ -930,13 +947,14 @@
   }
 
   document.getElementById('gameStartBtn').addEventListener('click', () => {
-    initAudio();
-    gameScore = 0; gameStreak = 0; gameLevel = 1;
-    document.getElementById('gameScore').textContent = 0;
-    document.getElementById('gameStreak').textContent = 0;
-    document.getElementById('gameLevel').textContent = 1;
-    document.getElementById('gameStartBtn').classList.add('hidden');
-    generateQuestion();
+    initAudio().then(function() {
+      gameScore = 0; gameStreak = 0; gameLevel = 1;
+      document.getElementById('gameScore').textContent = 0;
+      document.getElementById('gameStreak').textContent = 0;
+      document.getElementById('gameLevel').textContent = 1;
+      document.getElementById('gameStartBtn').classList.add('hidden');
+      generateQuestion();
+    });
   });
 
   // === PROGRESSION BUILDER ===
