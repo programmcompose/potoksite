@@ -570,18 +570,17 @@
   }
 
   // ===== Sample Loading & Synthesis =====
-  let cachedGuitarBuffer = null;
+  const sampleCache = {};
+  const sampleFiles = { guitar: 'guitar.wav', bass: 'bass.wav', piano: 'piano.wav' };
+  const sampleFallbacks = { guitar: synthesizeGuitar, bass: synthesizeBass, piano: synthesizePiano };
 
-  function loadGuitarSample(ctx) {
-    if (cachedGuitarBuffer) return Promise.resolve(cachedGuitarBuffer);
-    return fetch('guitar.wav')
+  function loadFromFile(ctx, type) {
+    if (sampleCache[type]) return Promise.resolve(sampleCache[type]);
+    return fetch(sampleFiles[type])
       .then(r => r.arrayBuffer())
       .then(ab => ctx.decodeAudioData(ab))
-      .then(buf => {
-        cachedGuitarBuffer = buf;
-        return buf;
-      })
-      .catch(() => synthesizeGuitar(ctx));
+      .then(buf => { sampleCache[type] = buf; return buf; })
+      .catch(() => sampleFallbacks[type](ctx));
   }
 
   function createNoiseBuffer(ctx, duration) {
@@ -859,9 +858,7 @@
   }
 
   function getSample(ctx, type) {
-    if (type === 'guitar') {
-      return loadGuitarSample(ctx);
-    }
+    if (sampleFiles[type]) return loadFromFile(ctx, type);
     return Promise.resolve(synthesizeSample(ctx, type));
   }
 
