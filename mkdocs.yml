@@ -119,12 +119,14 @@ markdown_extensions:
 
 nav:
   - "Главная": index.md
+  - "Этап №0: Подготовка к продакшну":
+      - "etap0/index.md"
   - "Том I: Основы звукозаписи":
       - "tom1/index.md"
       - "Что такое звук": "tom1/osnovy-zvuka.md"
       - "Оборудование": "tom1/oborudovanie.md"
       - "DAW — выбор программы": "tom1/daw.md"
-  - "Том II: Теория музыки":
+  - "Этап №5: Теория музыки для продюсеров":
       - "tom2/index.md"
       - "Нотная грамота": "tom2/notnaya-gramota.md"
       - "Аккорды и гармония": "tom2/akkordy.md"
