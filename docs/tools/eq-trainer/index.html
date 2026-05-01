@@ -569,7 +569,21 @@
     });
   }
 
-  // ===== Sample Synthesis =====
+  // ===== Sample Loading & Synthesis =====
+  let cachedGuitarBuffer = null;
+
+  function loadGuitarSample(ctx) {
+    if (cachedGuitarBuffer) return Promise.resolve(cachedGuitarBuffer);
+    return fetch('guitar.wav')
+      .then(r => r.arrayBuffer())
+      .then(ab => ctx.decodeAudioData(ab))
+      .then(buf => {
+        cachedGuitarBuffer = buf;
+        return buf;
+      })
+      .catch(() => synthesizeGuitar(ctx));
+  }
+
   function createNoiseBuffer(ctx, duration) {
     const sampleRate = ctx.sampleRate;
     const length = sampleRate * duration;
@@ -844,6 +858,13 @@
     return buffer;
   }
 
+  function getSample(ctx, type) {
+    if (type === 'guitar') {
+      return loadGuitarSample(ctx);
+    }
+    return Promise.resolve(synthesizeSample(ctx, type));
+  }
+
   function synthesizeSample(ctx, type) {
     switch (type) {
       case 'drums': return synthesizeDrums(ctx);
@@ -973,7 +994,7 @@
     });
 
     // EQ curve
-    if (state.currentBand) {
+    if (state.currentBand && state._showCurve) {
       const band = state.currentBand;
       const dbGain = state.currentDb;
       const Q = 1.4;
@@ -1050,16 +1071,16 @@
     const dbOptions = DB_OPTIONS[state.difficulty];
     state.currentDb = dbOptions[Math.floor(Math.random() * dbOptions.length)];
 
-    // Synthesize sample
+    // Load/synthesize sample
     const ctx = ensureAudioCtx();
-    state.bufferOriginal = synthesizeSample(ctx, state.sample);
-
-    // Apply EQ
-    applyEQToBuffer(ctx, state.bufferOriginal, state.currentBand, state.currentDb)
-      .then(eqBuffer => {
-        state.bufferEQ = eqBuffer;
-        onRoundReady();
-      });
+    getSample(ctx, state.sample).then(originalBuffer => {
+      state.bufferOriginal = originalBuffer;
+      // Apply EQ
+      return applyEQToBuffer(ctx, state.bufferOriginal, state.currentBand, state.currentDb);
+    }).then(eqBuffer => {
+      state.bufferEQ = eqBuffer;
+      onRoundReady();
+    });
 
     // Update UI
     statusDot.className = 'status-indicator waiting';
@@ -1194,18 +1215,17 @@
   }
 
   function previewSample() {
-    if (!state.bufferOriginal) {
-      const ctx = ensureAudioCtx();
-      state.bufferOriginal = synthesizeSample(ctx, state.sample);
-    }
     stopPlayback();
-    playBuffer(state.bufferOriginal);
-    statusDot.className = 'status-indicator playing';
-    statusText.textContent = 'Предпрослушка ' + getSampleName(state.sample);
-    setTimeout(() => {
-      statusDot.className = 'status-indicator';
-      statusText.textContent = 'Готов к работе';
-    }, 3500);
+    const ctx = ensureAudioCtx();
+    getSample(ctx, state.sample).then(buffer => {
+      playBuffer(buffer);
+      statusDot.className = 'status-indicator playing';
+      statusText.textContent = 'Предпрослушка ' + getSampleName(state.sample);
+      setTimeout(() => {
+        statusDot.className = 'status-indicator';
+        statusText.textContent = 'Готов к работе';
+      }, 3500);
+    });
   }
 
   function getSampleName(type) {
