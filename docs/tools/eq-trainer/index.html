@@ -433,6 +433,19 @@
     line-height: 1.5;
   }
 
+  .wave-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75em;
+    opacity: 0.5;
+    margin-top: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .waveform-wrap {
+    cursor: pointer;
+  }
+
   @media (max-width: 600px) {
     header h1 { font-size: 1.3em; }
     .guess-grid { grid-template-columns: 1fr; }
@@ -504,6 +517,17 @@
       <canvas id="eqCanvas" height="200"></canvas>
     </div>
     <div class="eq-info" id="eqInfo">Нажмите «Новый раунд» для начала</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Волна — выберите точку воспроизведения</div>
+    <div class="canvas-wrap waveform-wrap">
+      <canvas id="waveCanvas" height="100"></canvas>
+    </div>
+    <div class="wave-info">
+      <span id="waveTimeLabel">0:00</span>
+      <span id="waveDurationLabel">—</span>
+    </div>
   </div>
 
   <div class="status-bar">
@@ -612,6 +636,7 @@
     bestStreak: 0,
     customBuffer: null,
     customFileName: '',
+    playPosition: 0,
   };
 
   // ===== DOM =====
@@ -631,6 +656,10 @@
   const eqCanvas = $('eqCanvas');
   const eqCtx = eqCanvas.getContext('2d');
   const eqInfo = $('eqInfo');
+  const waveCanvas = $('waveCanvas');
+  const waveCtx = waveCanvas.getContext('2d');
+  const waveTimeLabel = $('waveTimeLabel');
+  const waveDurationLabel = $('waveDurationLabel');
   const uploadZone = $('uploadZone');
   const fileInput = $('fileInput');
   const customFileInfo = $('customFileInfo');
@@ -988,32 +1017,141 @@
   }
 
   // ===== Play audio =====
-  let currentSource = null;
-  let currentGain = null;
+  let activeNodes = [];
   function stopCurrentAudio() {
-    if (currentSource) {
-      try { currentSource.stop(); } catch(e) {}
-      currentSource = null;
-    }
-    if (currentGain) {
-      try { currentGain.disconnect(); } catch(e) {}
-      currentGain = null;
-    }
+    activeNodes.forEach(node => {
+      try { if (node.stop) node.stop(); } catch(e) {}
+      try { node.disconnect(); } catch(e) {}
+    });
+    activeNodes = [];
   }
-  function playBuffer(buffer) {
+  function playBuffer(buffer, startTime) {
     stopCurrentAudio();
+    startTime = startTime || 0;
     const ctx = ensureAudioCtx();
-    const gain = ctx.createGain();
-    gain.gain.value = 1;
-    gain.connect(ctx.destination);
-    currentGain = gain;
     const source = ctx.createBufferSource();
     source.buffer = buffer;
-    source.connect(gain);
-    source.start(0);
-    currentSource = source;
-    source.onended = () => { currentSource = null; currentGain = null; };
+    source.connect(ctx.destination);
+    source.start(0, startTime);
+    activeNodes.push(source);
+    source.onended = () => {
+      const idx = activeNodes.indexOf(source);
+      if (idx > -1) activeNodes.splice(idx, 1);
+    };
   }
+
+  // ===== Waveform =====
+  function drawWaveform() {
+    const canvas = waveCanvas;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = 100 * dpr;
+    waveCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const w = rect.width;
+    const h = 100;
+
+    waveCtx.clearRect(0, 0, w, h);
+    waveCtx.fillStyle = '#1a1a1a';
+    waveCtx.fillRect(0, 0, w, h);
+
+    if (!state.bufferOriginal) {
+      waveCtx.fillStyle = 'rgba(255,255,255,0.2)';
+      waveCtx.font = '13px Inter, sans-serif';
+      waveCtx.textAlign = 'center';
+      waveCtx.fillText('Загрузите раунд для отображения волны', w / 2, h / 2 + 4);
+      return;
+    }
+
+    const buffer = state.bufferOriginal;
+    const data = buffer.getChannelData(0);
+    const len = data.length;
+    const step = Math.max(1, Math.floor(len / w));
+
+    waveCtx.strokeStyle = 'rgba(0,188,212,0.6)';
+    waveCtx.lineWidth = 1;
+    waveCtx.beginPath();
+    for (let x = 0; x < w; x++) {
+      let min = 1, max = -1;
+      const start = Math.floor(x * len / w);
+      for (let j = 0; j < step; j++) {
+        const idx = start + j;
+        if (idx >= len) break;
+        if (data[idx] < min) min = data[idx];
+        if (data[idx] > max) max = data[idx];
+      }
+      waveCtx.moveTo(x, h / 2 + min * h / 2);
+      waveCtx.lineTo(x, h / 2 + max * h / 2);
+    }
+    waveCtx.stroke();
+
+    // Center line
+    waveCtx.strokeStyle = 'rgba(255,255,255,0.08)';
+    waveCtx.beginPath();
+    waveCtx.moveTo(0, h / 2);
+    waveCtx.lineTo(w, h / 2);
+    waveCtx.stroke();
+
+    // Playhead
+    const pos = state.playPosition;
+    const px = (pos / buffer.duration) * w;
+    waveCtx.strokeStyle = '#ff7043';
+    waveCtx.lineWidth = 2;
+    waveCtx.beginPath();
+    waveCtx.moveTo(px, 0);
+    waveCtx.lineTo(px, h);
+    waveCtx.stroke();
+
+    // Playhead dot
+    waveCtx.fillStyle = '#ff7043';
+    waveCtx.beginPath();
+    waveCtx.arc(px, h / 2, 5, 0, Math.PI * 2);
+    waveCtx.fill();
+
+    // Dim region after playhead
+    waveCtx.fillStyle = 'rgba(0,0,0,0.35)';
+    waveCtx.fillRect(px, 0, w - px, h);
+
+    // Update time labels
+    waveTimeLabel.textContent = formatTime(pos);
+    waveDurationLabel.textContent = formatTime(buffer.duration);
+  }
+
+  function formatTime(s) {
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return m + ':' + (sec < 10 ? '0' : '') + sec;
+  }
+
+  function setPlayPosition(clientX) {
+    const rect = waveCanvas.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const ratio = Math.max(0, Math.min(1, x / rect.width));
+    if (state.bufferOriginal) {
+      state.playPosition = ratio * state.bufferOriginal.duration;
+      drawWaveform();
+    }
+  }
+
+  let isDraggingWave = false;
+  waveCanvas.addEventListener('mousedown', (e) => {
+    isDraggingWave = true;
+    setPlayPosition(e.clientX);
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (isDraggingWave) setPlayPosition(e.clientX);
+  });
+  window.addEventListener('mouseup', () => {
+    isDraggingWave = false;
+  });
+  waveCanvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    setPlayPosition(e.touches[0].clientX);
+  }, { passive: false });
+  waveCanvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    setPlayPosition(e.touches[0].clientX);
+  }, { passive: false });
 
   // ===== EQ Curve Drawing =====
   function drawEQCurve() {
@@ -1174,6 +1312,8 @@
     const ctx = ensureAudioCtx();
     getSample(ctx, state.sample).then(originalBuffer => {
       state.bufferOriginal = originalBuffer;
+      state.playPosition = 0;
+      drawWaveform();
       // Apply EQ
       return applyEQToBuffer(ctx, state.bufferOriginal, state.currentBand, state.currentDb);
     }).then(eqBuffer => {
@@ -1213,7 +1353,7 @@
   function playBefore() {
     if (!state.bufferOriginal) return;
     stopPlayback();
-    playBuffer(state.bufferOriginal);
+    playBuffer(state.bufferOriginal, state.playPosition);
     statusDot.className = 'status-indicator playing';
     statusText.textContent = 'Воспроизведение: ДО (без EQ)';
     modeLabel.textContent = 'ДО';
@@ -1221,19 +1361,12 @@
     modeLabel.style.display = 'inline';
     btnBefore.classList.add('active');
     btnAfter.classList.remove('active');
-    setTimeout(() => {
-      btnBefore.classList.remove('active');
-      if (statusDot.classList.contains('playing')) {
-        statusDot.className = 'status-indicator done';
-        statusText.textContent = 'Готово — слушайте ДО / ПОСЛЕ';
-      }
-    }, 3500);
   }
 
   function playAfter() {
     if (!state.bufferEQ) return;
     stopPlayback();
-    playBuffer(state.bufferEQ);
+    playBuffer(state.bufferEQ, state.playPosition);
     statusDot.className = 'status-indicator playing';
     statusText.textContent = 'Воспроизведение: ПОСЛЕ (с EQ)';
     modeLabel.textContent = 'ПОСЛЕ';
@@ -1241,20 +1374,10 @@
     modeLabel.style.display = 'inline';
     btnAfter.classList.add('active');
     btnBefore.classList.remove('active');
-    setTimeout(() => {
-      btnAfter.classList.remove('active');
-      if (statusDot.classList.contains('playing')) {
-        statusDot.className = 'status-indicator done';
-        statusText.textContent = 'Готово — слушайте ДО / ПОСЛЕ';
-      }
-    }, 3500);
   }
 
   function stopPlayback() {
-    if (currentSource) {
-      try { currentSource.stop(); } catch(e) {}
-      currentSource = null;
-    }
+    stopCurrentAudio();
     btnBefore.classList.remove('active');
     btnAfter.classList.remove('active');
     stopLoop();
@@ -1280,15 +1403,16 @@
 
     function switchAndPlay() {
       if (!state.roundActive) { stopLoop(); return; }
+      stopCurrentAudio();
       if (loopPlayingBefore) {
-        playBuffer(state.bufferOriginal);
+        playBuffer(state.bufferOriginal, state.playPosition);
         statusText.textContent = 'Воспроизведение: ДО (без EQ)';
         modeLabel.textContent = 'ДО';
         modeLabel.className = 'mode-label before';
         btnBefore.classList.add('active');
         btnAfter.classList.remove('active');
       } else {
-        playBuffer(state.bufferEQ);
+        playBuffer(state.bufferEQ, state.playPosition);
         statusText.textContent = 'Воспроизведение: ПОСЛЕ (с EQ)';
         modeLabel.textContent = 'ПОСЛЕ';
         modeLabel.className = 'mode-label after';
@@ -1317,13 +1441,9 @@
     stopPlayback();
     const ctx = ensureAudioCtx();
     getSample(ctx, state.sample).then(buffer => {
-      playBuffer(buffer);
+      playBuffer(buffer, state.playPosition);
       statusDot.className = 'status-indicator playing';
       statusText.textContent = 'Предпрослушка ' + getSampleName(state.sample);
-      setTimeout(() => {
-        statusDot.className = 'status-indicator';
-        statusText.textContent = 'Готов к работе';
-      }, 3500);
     });
   }
 
@@ -1443,11 +1563,14 @@
     file.arrayBuffer().then(ab => ctx.decodeAudioData(ab)).then(buf => {
       state.customBuffer = buf;
       state.customFileName = file.name;
+      state.bufferOriginal = buf;
+      state.playPosition = 0;
       customFileName.textContent = file.name;
       customFileInfo.classList.add('visible');
       uploadZone.style.display = 'none';
       statusDot.className = 'status-indicator done';
       statusText.textContent = 'Файл загружен: ' + file.name;
+      drawWaveform();
     }).catch(err => {
       statusText.textContent = 'Ошибка: не удалось декодировать файл';
       console.error(err);
@@ -1457,10 +1580,14 @@
   function removeCustomFile() {
     state.customBuffer = null;
     state.customFileName = '';
+    state.bufferOriginal = null;
+    state.bufferEQ = null;
+    state.playPosition = 0;
     customFileInfo.classList.remove('visible');
     uploadZone.style.display = '';
     fileInput.value = '';
     statusText.textContent = 'Файл удалён';
+    drawWaveform();
   }
 
   fileInput.addEventListener('change', (e) => {
@@ -1529,10 +1656,12 @@
   // Init
   populateDbOptions();
   drawEQCurve();
+  drawWaveform();
 
   // Redraw on resize
   window.addEventListener('resize', () => {
     drawEQCurve();
+    drawWaveform();
   });
 })();
 </script>
