@@ -121,12 +121,6 @@ nav:
   - "Главная": index.md
   - "Этап №0: Подготовка к продакшну":
       - "etap0/index.md"
-  - "Основы звукозаписи":
-      - "zvuk/index.md"
-      - "Что такое звук": "zvuk/osnovy-zvuka.md"
-      - "Оборудование": "zvuk/oborudovanie.md"
-      - "DAW — выбор программы": "zvuk/daw.md"
-      - "Запись инструментов": "zvuk/zapis.md"
   - "Этап №5: Теория музыки для продюсеров":
       - "tom2/index.md"
       - "Нотная грамота": "tom2/notnaya-gramota.md"
@@ -137,7 +131,6 @@ nav:
       - "Сведение (mixing)": "tom3/mixing.md"
       - "Мастеринг": "tom3/mastering.md"
   - "Маршрут обучения": "roadmap.md"
-  - "Глоссарий": "glossary.md"
   - "Плагины — подборка":
       - "plugins/index.md"
       - "Подборка от Meraki": "plugins/meraki-collection.md"
@@ -145,6 +138,13 @@ nav:
       - "Waves CLA": "plugins/waves-cla.md"
       - "Waves MannyM": "plugins/waves-mannym.md"
       - "Waves Maserati": "plugins/waves-maserati.md"
+  - "Основы звукозаписи":
+      - "zvuk/index.md"
+      - "Что такое звук": "zvuk/osnovy-zvuka.md"
+      - "Оборудование": "zvuk/oborudovanie.md"
+      - "DAW — выбор программы": "zvuk/daw.md"
+      - "Запись инструментов": "zvuk/zapis.md"
+  - "Словарь Терминов": "glossary.md"
   - "🎛️ Интерактивные инструменты":
       - "tools/index.html"
       - "Wavetable-синтезатор": "tools/wavetable/index.html"
