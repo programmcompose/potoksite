@@ -433,6 +433,53 @@
     line-height: 1.5;
   }
 
+  .volume-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px 0;
+    font-size: 0.85em;
+  }
+
+  .volume-control input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 180px;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--bg-darker);
+    outline: none;
+    cursor: pointer;
+  }
+
+  .volume-control input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+  }
+
+  .volume-control input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: none;
+  }
+
+  .volume-control #volumeValue {
+    min-width: 36px;
+    text-align: right;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.8;
+  }
+
   .wave-info {
     display: flex;
     justify-content: space-between;
@@ -541,6 +588,12 @@
     <button id="btnPreview">🔊 Предпрослушка</button>
   </div>
 
+  <div class="volume-control">
+    <label for="volumeSlider">🔉 Громкость</label>
+    <input type="range" id="volumeSlider" min="0" max="100" value="70">
+    <span id="volumeValue">70%</span>
+  </div>
+
   <div class="ab-controls">
     <button class="ab-btn btn-before" id="btnBefore" disabled>ДО</button>
     <span style="opacity:0.3; font-weight:700;">⇄</span>
@@ -635,6 +688,7 @@
     customBuffer: null,
     customFileName: '',
     playPosition: 0,
+    volume: 0.7,
   };
 
   // ===== DOM =====
@@ -1016,6 +1070,15 @@
 
   // ===== Play audio =====
   let activeNodes = [];
+  let masterGain = null;
+  function getMasterGain() {
+    if (!masterGain) {
+      masterGain = ensureAudioCtx().createGain();
+      masterGain.gain.value = state.volume;
+      masterGain.connect(ensureAudioCtx().destination);
+    }
+    return masterGain;
+  }
   function stopCurrentAudio() {
     activeNodes.forEach(node => {
       try { if (node.stop) node.stop(); } catch(e) {}
@@ -1029,13 +1092,17 @@
     const ctx = ensureAudioCtx();
     const source = ctx.createBufferSource();
     source.buffer = buffer;
-    source.connect(ctx.destination);
+    source.connect(getMasterGain());
     source.start(0, startTime);
     activeNodes.push(source);
     source.onended = () => {
       const idx = activeNodes.indexOf(source);
       if (idx > -1) activeNodes.splice(idx, 1);
     };
+  }
+  function setVolume(val) {
+    state.volume = val;
+    if (masterGain) masterGain.gain.value = val;
   }
 
   // ===== Waveform =====
@@ -1457,7 +1524,7 @@
     const ctx = ensureAudioCtx();
     const now = ctx.currentTime;
     const master = ctx.createGain();
-    master.gain.setValueAtTime(0.25, now);
+    master.gain.setValueAtTime(0.5, now);
     master.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
     master.connect(ctx.destination);
 
@@ -1469,7 +1536,7 @@
       osc.frequency.value = freq;
       const t0 = now + i * 0.08;
       gain.gain.setValueAtTime(0, t0);
-      gain.gain.linearRampToValueAtTime(0.4, t0 + 0.02);
+      gain.gain.linearRampToValueAtTime(0.6, t0 + 0.02);
       gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.4);
       osc.connect(gain);
       gain.connect(master);
@@ -1484,7 +1551,7 @@
       osc.type = 'triangle';
       osc.frequency.value = freq;
       gain.gain.setValueAtTime(0, now);
-      gain.gain.linearRampToValueAtTime(0.06, now + 0.3);
+      gain.gain.linearRampToValueAtTime(0.12, now + 0.3);
       gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
       osc.connect(gain);
       gain.connect(master);
@@ -1623,6 +1690,15 @@
   btnAfter.addEventListener('click', playAfter);
   btnSubmit.addEventListener('click', submitGuess);
   $('btnLoop').addEventListener('click', toggleLoop);
+
+  // Volume slider
+  const volumeSlider = $('volumeSlider');
+  const volumeValue = $('volumeValue');
+  volumeSlider.addEventListener('input', () => {
+    const val = parseInt(volumeSlider.value);
+    volumeValue.textContent = val + '%';
+    setVolume(val / 100);
+  });
 
   // Keyboard shortcuts
   document.addEventListener('keydown', (e) => {

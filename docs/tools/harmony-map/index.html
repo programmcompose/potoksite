@@ -682,7 +682,7 @@
           <div class="prog-label">4.2 Драматичное чередование тоники и минорной доминанты</div>
           <div class="prog-chords">i – V – i – V (в миноре)</div>
         </div>
-        <div class="progression-item" data-prog="C,C#,Dm,G7">
+         <div class="progression-item" data-prog="C,Cdim,Dm,G7">
           <div class="prog-label">4.3 Резкие, диссонирующие переходы создают ощущение нестабильности и страха</div>
           <div class="prog-chords">C – C° – Dm – G7</div>
         </div>
@@ -735,7 +735,8 @@
     'C#m':{ notes: ['C#','E','A#'],type: 'minor', emotion: 'Интенсивный, эмоциональный, страстный. «Горячая» грусть. Используется в рок-балладах и эмоциональных пассажах.', relativeMajor: 'E', parallel: 'C#' },
     'G#m':{ notes: ['G#','B','E#'],type: 'minor', emotion: 'Экзотический, загадочный минор. Создаёт атмосферу таинственности и напряжения.', relativeMajor: 'B', parallel: 'G#' },
     'D#m':{ notes: ['D#','F##','B#'],type: 'minor', emotion: 'Редкий, экзотический. Используется для создания уникальной атмосферы.', relativeMajor: 'F#', parallel: 'D#' },
-    'C#': { notes: ['C#','F#','G##'],type: 'major', emotion: 'Напряжённый, экзотический мажор.', relativeMinor: 'A#m', dominant: 'G#', subdominant: 'F#' },
+    'C#':  { notes: ['C#','F','G#'],  type: 'major', emotion: 'Напряжённый, экзотический мажор.', relativeMinor: 'A#m', dominant: 'G#', subdominant: 'F#' },
+    'Cdim':{ notes: ['C','Eb','Gb'],  type: 'minor', emotion: 'Уменьшенный аккорд — тревожный, нестабильный, создаёт ощущение напряжения.', relativeMajor: 'Eb', parallel: 'C' },
     'G7':  { notes: ['G','B','D','F'],  type: 'major', emotion: 'Доминантсептаккорд — тяготеет к разрешению в тонику.', relativeMinor: 'Em', dominant: 'D', subdominant: 'C' },
     'Gdim':{ notes: ['G','Bb','Db'],  type: 'minor', emotion: 'Уменьшенный аккорд — тревожный, нестабильный, создаёт ощущение напряжения.', relativeMajor: 'Bb', parallel: 'G' },
   };
@@ -756,7 +757,7 @@
       if (!polySynth) {
         polySynth = new Tone.PolySynth(Tone.Synth, {
           oscillator: { type: 'triangle' },
-          envelope: { attack: 0.02, decay: 0.12, sustain: 0.35, release: 0.2 }
+          envelope: { attack: 0.02, decay: 0.12, sustain: 0.35, release: 0.3 }
         }).toDestination();
         polySynth.volume.value = -4;
       }
