@@ -1314,11 +1314,11 @@
         const ratio = freq / band.freq;
         const A = Math.pow(10, dbGain / 40);
 
-        // Proper peaking EQ magnitude response
-        const epsilon = 2 * (ratio - 1/ratio);
-        const num = Math.sqrt((1 + A) * (1 + A) + 4 * (A - 1) * Q * Q * epsilon * epsilon / 4);
-        const den = Math.sqrt((1 - A) * (1 - A) + 4 * (A + 1) * Q * Q * epsilon * epsilon / 4);
-        const magDb = 20 * Math.log10(num / den);
+        // Peaking EQ magnitude response: |H(jΩ)|² = ((1-Ω²)² + Ω²·A/Q²) / ((1-Ω²)² + Ω²/(A·Q²))
+        const sq = (1 - ratio * ratio);
+        const num = sq * sq + ratio * ratio * A / (Q * Q);
+        const den = sq * sq + ratio * ratio / (A * Q * Q);
+        const magDb = 10 * Math.log10(num / den);
 
         const y = h / 2 - (magDb / 15) * (h / 2);
         if (px === 0) eqCtx.moveTo(px, y);
