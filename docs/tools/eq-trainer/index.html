@@ -1312,12 +1312,12 @@
         const freq = Math.pow(10, logFreq);
 
         const ratio = freq / band.freq;
-        const A = Math.pow(10, dbGain / 40);
+        const db2A = Math.pow(10, dbGain / 20);
 
-        // Peaking EQ magnitude response: |H(jΩ)|² = ((1-Ω²)² + Ω²·A/Q²) / ((1-Ω²)² + Ω²/(A·Q²))
-        const sq = (1 - ratio * ratio);
-        const num = sq * sq + ratio * ratio * A / (Q * Q);
-        const den = sq * sq + ratio * ratio / (A * Q * Q);
+        // Peaking EQ: H(s) = (s² + (A/Q)s + 1) / (s² + (1/(A*Q))s + 1)
+        const sq = 1 - ratio * ratio;
+        const num = sq * sq + (db2A * ratio / Q) * (db2A * ratio / Q);
+        const den = sq * sq + (ratio / (db2A * Q)) * (ratio / (db2A * Q));
         const magDb = 10 * Math.log10(num / den);
 
         const y = h / 2 - (magDb / 15) * (h / 2);
