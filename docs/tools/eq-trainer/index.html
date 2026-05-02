@@ -1321,6 +1321,46 @@
     return names[type] || type;
   }
 
+  function playSuccessSound() {
+    const ctx = ensureAudioCtx();
+    const now = ctx.currentTime;
+    const master = ctx.createGain();
+    master.gain.setValueAtTime(0.25, now);
+    master.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+    master.connect(ctx.destination);
+
+    const notes = [523.25, 659.25, 783.99, 1046.50];
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const t0 = now + i * 0.08;
+      gain.gain.setValueAtTime(0, t0);
+      gain.gain.linearRampToValueAtTime(0.4, t0 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.4);
+      osc.connect(gain);
+      gain.connect(master);
+      osc.start(t0);
+      osc.stop(t0 + 0.45);
+    });
+
+    // Shimmer pad
+    [1046.50, 1318.51, 1567.98].forEach(freq => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(0.06, now + 0.3);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+      osc.connect(gain);
+      gain.connect(master);
+      osc.start(now);
+      osc.stop(now + 1.25);
+    });
+  }
+
   function submitGuess() {
     const guessedBand = guessBand.value;
     const guessedDb = parseInt(guessDb.value);
@@ -1340,6 +1380,7 @@
       state.scoreCorrect++;
       state.scoreStreak++;
       if (state.scoreStreak > state.bestStreak) state.bestStreak = state.scoreStreak;
+      playSuccessSound();
     } else {
       state.scoreStreak = 0;
     }
@@ -1386,7 +1427,8 @@
   // ===== Custom File Upload =====
   function handleFileUpload(file) {
     if (!file) return;
-    ensureAudioCtx().decodeAudioData(file.arrayBuffer()).then(buf => {
+    const ctx = ensureAudioCtx();
+    file.arrayBuffer().then(ab => ctx.decodeAudioData(ab)).then(buf => {
       state.customBuffer = buf;
       state.customFileName = file.name;
       customFileName.textContent = file.name;
