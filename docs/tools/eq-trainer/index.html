@@ -1326,6 +1326,7 @@
     statusText.textContent = 'Генерация...';
     btnBefore.disabled = true;
     btnAfter.disabled = true;
+    btnSubmit.disabled = true;
     $('btnLoop').disabled = true;
     guessSection.classList.remove('visible');
     resultBox.classList.remove('visible');
@@ -1345,6 +1346,7 @@
     statusText.textContent = 'Готово — слушайте ДО / ПОСЛЕ';
     btnBefore.disabled = false;
     btnAfter.disabled = false;
+    btnSubmit.disabled = false;
     $('btnLoop').disabled = false;
     guessSection.classList.add('visible');
     btnNewRound.disabled = true;
