@@ -506,8 +506,7 @@
     <div class="panel-title" style="margin-top:8px;">Сложность</div>
     <div class="difficulty-selector">
       <button class="diff-btn active" data-diff="easy">Лёгкая</button>
-      <button class="diff-btn" data-diff="medium">Средняя</button>
-      <button class="diff-btn" data-diff="hard">Сложная</button>
+      <button class="diff-btn" data-diff="hard">Средняя</button>
     </div>
   </div>
 
@@ -589,7 +588,7 @@
       <p>1. Выберите сэмпл и сложность, нажмите <b>«Новый раунд»</b></p>
       <p>2. Послушайте звук в режимах <b>ДО</b> (без обработки) и <b>ПОСЛЕ</b> (с эквализацией)</p>
       <p>3. Угадайте, какой частотный диапазон был усилен и на сколько дБ</p>
-      <p>4. На лёгкой сложности — 3 варианта дБ, на средней — 5, на сложной — 7</p>
+      <p>4. На лёгкой сложности — 3 варианта дБ, на средней — 5</p>
     </div>
   </div>
 </div>
@@ -616,9 +615,8 @@
   ];
 
   const DB_OPTIONS = {
-    easy:   [3, 6, 9],
-    medium: [2, 4, 6, 8, 10],
-    hard:   [1, 2, 3, 5, 7, 9, 12],
+    easy:   [-6, 0, 6],
+    hard:   [2, 4, 6, 8, 10],
   };
 
   // ===== State =====
@@ -682,7 +680,7 @@
     opts.forEach(db => {
       const o = document.createElement('option');
       o.value = db;
-      o.textContent = '+' + db + ' дБ';
+      o.textContent = (db >= 0 ? '+' : '') + db + ' дБ';
       guessDb.appendChild(o);
     });
   }
@@ -1534,7 +1532,7 @@
     else msg += '<br>🎯 Диапазон: ' + bandName;
 
     if (dbCorrect) msg += '<br>📊 Уровень: верно';
-    else msg += '<br>📊 Уровень: +' + state.currentDb + ' дБ';
+    else msg += '<br>📊 Уровень: ' + (state.currentDb >= 0 ? '+' : '') + state.currentDb + ' дБ';
 
     resultBox.innerHTML = msg;
     resultBox.className = 'result-box visible ' + (allCorrect ? 'correct' : 'wrong');
@@ -1542,7 +1540,7 @@
     // Show EQ curve
     state._showCurve = true;
     drawEQCurve();
-    eqInfo.innerHTML = '<b>' + state.currentBand.label + '</b> на <b>+' + state.currentDb + ' дБ</b> (' + state.currentBand.range[0] + '–' + formatFreq(state.currentBand.range[1]) + ' Гц)';
+    eqInfo.innerHTML = '<b>' + state.currentBand.label + '</b> на <b>' + (state.currentDb >= 0 ? '+' : '') + state.currentDb + ' дБ</b> (' + state.currentBand.range[0] + '–' + formatFreq(state.currentBand.range[1]) + ' Гц)';
 
     // Disable guess buttons
     btnSubmit.disabled = true;
