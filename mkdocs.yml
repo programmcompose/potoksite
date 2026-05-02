@@ -121,15 +121,15 @@ nav:
   - "Главная": index.md
   - "Этап №0: Подготовка к продакшну":
       - "etap0/index.md"
+  - "Этап №2: Сведение и VST Плагины":
+      - "tom3/index.md"
+      - "Сведение (mixing)": "tom3/mixing.md"
+      - "Мастеринг": "tom3/mastering.md"
   - "Этап №5: Теория музыки для продюсеров":
       - "tom2/index.md"
       - "Нотная грамота": "tom2/notnaya-gramota.md"
       - "Аккорды и гармония": "tom2/akkordy.md"
       - "Ритм и перкуссия": "tom2/ritm.md"
-  - "Этап №2: Сведение и VST Плагины":
-      - "tom3/index.md"
-      - "Сведение (mixing)": "tom3/mixing.md"
-      - "Мастеринг": "tom3/mastering.md"
   - "Маршрут обучения": "roadmap.md"
   - "Плагины — подборка":
       - "plugins/index.md"
