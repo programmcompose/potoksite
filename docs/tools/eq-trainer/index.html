@@ -171,6 +171,75 @@
     border-color: var(--accent);
   }
 
+  .upload-zone {
+    margin-top: 12px;
+    border: 2px dashed var(--bg-lighter);
+    border-radius: var(--radius);
+    padding: 14px;
+    text-align: center;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .upload-zone:hover, .upload-zone.dragover {
+    border-color: var(--accent);
+    background: rgba(0,188,212,0.05);
+  }
+
+  .upload-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .upload-zone-label {
+    font-size: 0.82em;
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  .upload-zone-label .icon {
+    font-size: 1.4em;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .custom-file-info {
+    display: none;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: var(--bg-darker);
+    border-radius: var(--radius);
+    font-size: 0.8em;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .custom-file-info.visible {
+    display: flex;
+  }
+
+  .custom-file-info .file-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    opacity: 0.9;
+  }
+
+  .custom-file-info .file-remove {
+    background: var(--danger);
+    color: var(--text);
+    border: none;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 0.85em;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
   .status-bar {
     display: flex;
     align-items: center;
@@ -408,6 +477,19 @@
       <button class="sample-btn" data-sample="vocal">🎤 Вокал</button>
     </div>
 
+    <div class="upload-zone" id="uploadZone">
+      <input type="file" id="fileInput" accept="audio/*,.mp3,.ogg,.wav,.flac,.m4a,.webm">
+      <div class="upload-zone-label">
+        <span class="icon">📂</span>
+        Загрузите свой трек (MP3, OGG, WAV, FLAC…)
+      </div>
+    </div>
+    <div class="custom-file-info" id="customFileInfo">
+      <span>🎵</span>
+      <span class="file-name" id="customFileName"></span>
+      <button class="file-remove" id="btnRemoveFile">✕</button>
+    </div>
+
     <div class="panel-title" style="margin-top:8px;">Сложность</div>
     <div class="difficulty-selector">
       <button class="diff-btn active" data-diff="easy">Лёгкая</button>
@@ -528,6 +610,8 @@
     scoreCorrect: 0,
     scoreStreak: 0,
     bestStreak: 0,
+    customBuffer: null,
+    customFileName: '',
   };
 
   // ===== DOM =====
@@ -547,6 +631,11 @@
   const eqCanvas = $('eqCanvas');
   const eqCtx = eqCanvas.getContext('2d');
   const eqInfo = $('eqInfo');
+  const uploadZone = $('uploadZone');
+  const fileInput = $('fileInput');
+  const customFileInfo = $('customFileInfo');
+  const customFileName = $('customFileName');
+  const btnRemoveFile = $('btnRemoveFile');
 
   // ===== Score =====
   function updateScore() {
@@ -858,6 +947,7 @@
   }
 
   function getSample(ctx, type) {
+    if (state.customBuffer) return Promise.resolve(state.customBuffer);
     if (sampleFiles[type]) return loadFromFile(ctx, type);
     return Promise.resolve(synthesizeSample(ctx, type));
   }
@@ -1226,6 +1316,7 @@
   }
 
   function getSampleName(type) {
+    if (state.customFileName) return '🎵 ' + state.customFileName;
     const names = { drums: '🥁 Барабаны', guitar: '🎸 Гитара', piano: '🎹 Пианино', bass: '🎵 Бас', vocal: '🎤 Вокал' };
     return names[type] || type;
   }
@@ -1291,6 +1382,58 @@
   function formatFreq(f) {
     return f >= 1000 ? (f / 1000) + 'k' : f.toString();
   }
+
+  // ===== Custom File Upload =====
+  function handleFileUpload(file) {
+    if (!file) return;
+    ensureAudioCtx().decodeAudioData(file.arrayBuffer()).then(buf => {
+      state.customBuffer = buf;
+      state.customFileName = file.name;
+      customFileName.textContent = file.name;
+      customFileInfo.classList.add('visible');
+      uploadZone.style.display = 'none';
+      statusDot.className = 'status-indicator done';
+      statusText.textContent = 'Файл загружен: ' + file.name;
+    }).catch(err => {
+      statusText.textContent = 'Ошибка: не удалось декодировать файл';
+      console.error(err);
+    });
+  }
+
+  function removeCustomFile() {
+    state.customBuffer = null;
+    state.customFileName = '';
+    customFileInfo.classList.remove('visible');
+    uploadZone.style.display = '';
+    fileInput.value = '';
+    statusText.textContent = 'Файл удалён';
+  }
+
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+      handleFileUpload(e.target.files[0]);
+    }
+  });
+
+  btnRemoveFile.addEventListener('click', removeCustomFile);
+
+  // Drag and drop
+  uploadZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadZone.classList.add('dragover');
+  });
+
+  uploadZone.addEventListener('dragleave', () => {
+    uploadZone.classList.remove('dragover');
+  });
+
+  uploadZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadZone.classList.remove('dragover');
+    if (e.dataTransfer.files.length > 0) {
+      handleFileUpload(e.dataTransfer.files[0]);
+    }
+  });
 
   // ===== Event Handlers =====
   btnNewRound.addEventListener('click', startNewRound);
