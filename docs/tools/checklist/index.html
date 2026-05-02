@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Чеклист — 18 ПОТОК</title>
+<title>Чеклисты — 18 ПОТОК</title>
 <style>
   :root {
     --bg: #282828;
@@ -13,6 +13,7 @@
     --accent: #00bcd4;
     --purple: #ab47bc;
     --green: #66bb6a;
+    --orange: #ff7043;
     --radius: 12px;
     --shadow: 0 4px 16px rgba(0,0,0,0.4);
   }
@@ -31,7 +32,7 @@
 
   header {
     text-align: center;
-    margin-bottom: 32px;
+    margin-bottom: 28px;
   }
 
   header h1 {
@@ -60,6 +61,47 @@
 
   .back-link:hover { text-decoration: underline; }
 
+  /* ---- Tabs ---- */
+  .tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    flex: 1;
+    min-width: 120px;
+    padding: 12px 16px;
+    background: var(--bg-light);
+    border: 1px solid var(--bg-lighter);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-size: 0.9em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    text-align: center;
+  }
+
+  .tab-btn:hover {
+    border-color: var(--accent);
+  }
+
+  .tab-btn.active {
+    border-color: var(--accent);
+    background: rgba(0, 188, 212, 0.12);
+    color: var(--accent);
+  }
+
+  .tab-btn .tab-icon {
+    display: block;
+    font-size: 1.4em;
+    margin-bottom: 4px;
+  }
+
+  /* ---- Progress ---- */
   .progress-bar-container {
     background: var(--bg-light);
     border-radius: var(--radius);
@@ -90,6 +132,15 @@
     border-radius: 5px;
     transition: width 0.4s ease;
     width: 0%;
+  }
+
+  /* ---- Checklist ---- */
+  .checklist-panel {
+    display: none;
+  }
+
+  .checklist-panel.active {
+    display: block;
   }
 
   .checklist {
@@ -195,12 +246,31 @@
 
   .reset-btn:hover {
     opacity: 1;
-    border-color: var(--orange, #ff7043);
-    color: var(--orange, #ff7043);
+    border-color: var(--orange);
+    color: var(--orange);
+  }
+
+  /* ---- All done banner ---- */
+  .done-banner {
+    display: none;
+    text-align: center;
+    padding: 24px;
+    background: rgba(102, 187, 106, 0.1);
+    border: 1px solid var(--green);
+    border-radius: var(--radius);
+    margin-bottom: 24px;
+    font-weight: 700;
+    font-size: 1.1em;
+    color: var(--green);
+  }
+
+  .done-banner.show {
+    display: block;
   }
 
   @media (max-width: 600px) {
     header h1 { font-size: 1.5em; }
+    .tab-btn { min-width: 90px; padding: 10px 8px; font-size: 0.8em; }
   }
 </style>
 </head>
@@ -208,126 +278,231 @@
 <div class="container">
   <a href="../index.html" class="back-link">← К инструментам</a>
   <header>
-    <h1>✅ Чеклист старта</h1>
-    <p>Отмечай выполненные шаги — прогресс сохраняется в браузере</p>
+    <h1>✅ Чеклисты</h1>
+    <p>Выбери этап — отмечай шаги. Прогресс сохраняется в браузере.</p>
   </header>
 
-  <div class="progress-bar-container">
-    <div class="progress-label">
-      <span>Прогресс</span>
-      <span id="progress-text">0 / 3</span>
+  <div class="tabs" id="tabs">
+    <button class="tab-btn active" data-tab="start">
+      <span class="tab-icon">🚀</span>
+      Старт
+    </button>
+    <button class="tab-btn" data-tab="beats">
+      <span class="tab-icon">🥁</span>
+      Биты
+    </button>
+    <button class="tab-btn" data-tab="mixing">
+      <span class="tab-icon">🎚️</span>
+      Сведение
+    </button>
+  </div>
+
+  <!-- ====== СТАРТ ====== -->
+  <div class="checklist-panel active" id="panel-start">
+    <div class="progress-bar-container">
+      <div class="progress-label">
+        <span>Старт</span>
+        <span class="progress-count">0 / 3</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width:0%"></div>
+      </div>
     </div>
-    <div class="progress-track">
-      <div class="progress-fill" id="progress-fill"></div>
+    <div class="done-banner">🎉 Все пункты выполнены!</div>
+    <div class="checklist">
+      <div class="checklist-item" data-id="start-tg-discord">
+        <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+        <div class="item-content">
+          <div class="item-text">Состоять в чатах Telegram и Discord</div>
+          <div class="item-desc">Присоединяйся к сообществу для общения и поддержки</div>
+        </div>
+      </div>
+      <div class="checklist-item" data-id="start-etap0">
+        <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+        <div class="item-content">
+          <div class="item-text">Установить базовые программы из <a href="../../etap0/index.html" class="item-link">Этап №0</a></div>
+          <div class="item-desc">DAW, плагины и всё необходимое для работы</div>
+        </div>
+      </div>
+      <div class="checklist-item" data-id="start-firstbeat">
+        <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+        <div class="item-content">
+          <div class="item-text">Написать первый бит</div>
+          <div class="item-desc">Создай свой первый трек и поделись им в чате</div>
+        </div>
+      </div>
     </div>
   </div>
 
-  <div class="checklist" id="checklist">
-    <div class="checklist-item" data-id="tg-discord">
-      <div class="checkbox">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="20 6 9 17 4 12"></polyline>
-        </svg>
+  <!-- ====== БИТЫ ====== -->
+  <div class="checklist-panel" id="panel-beats">
+    <div class="progress-bar-container">
+      <div class="progress-label">
+        <span>Биты</span>
+        <span class="progress-count">0 / 3</span>
       </div>
-      <div class="item-content">
-        <div class="item-text">Состоять в чатах Telegram и Discord</div>
-        <div class="item-desc">Присоединяйся к сообществу для общения и поддержки</div>
-      </div>
-    </div>
-
-    <div class="checklist-item" data-id="etap0">
-      <div class="checkbox">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="20 6 9 17 4 12"></polyline>
-        </svg>
-      </div>
-      <div class="item-content">
-        <div class="item-text">Установить базовые программы из <a href="../../etap0/index.html" class="item-link">Этап №0</a></div>
-        <div class="item-desc">DAW, плагины, и всё необходимое для работы</div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width:0%"></div>
       </div>
     </div>
-
-    <div class="checklist-item" data-id="first-beat">
-      <div class="checkbox">
-        <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="20 6 9 17 4 12"></polyline>
-        </svg>
+    <div class="done-banner">🎉 Все пункты выполнены!</div>
+    <div class="checklist">
+      <div class="checklist-item" data-id="beats-3beats">
+        <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+        <div class="item-content">
+          <div class="item-text">Написать 3 бита</div>
+          <div class="item-desc">Три разных бита — практикуй структуру, мелодию и драм-паттерны</div>
+        </div>
       </div>
-      <div class="item-content">
-        <div class="item-text">Написать первый бит</div>
-        <div class="item-desc">Создай свой первый трек и поделись им в чате</div>
+      <div class="checklist-item" data-id="beats-mix-render">
+        <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+        <div class="item-content">
+          <div class="item-text">Свести их и зарендерить</div>
+          <div class="item-desc">Баланс уровней, EQ, компрессия — экспорт в WAV или MP3</div>
+        </div>
+      </div>
+      <div class="checklist-item" data-id="beats-bpm-key">
+        <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+        <div class="item-content">
+          <div class="item-text">Попробовать разный BPM и тональность</div>
+          <div class="item-desc">Экспериментируй с темпом и ключами — найди свой звук</div>
+        </div>
       </div>
     </div>
   </div>
 
-  <button class="reset-btn" id="reset-btn">Сбросить прогресс</button>
+  <!-- ====== СВЕДЕНИЕ ====== -->
+  <div class="checklist-panel" id="panel-mixing">
+    <div class="progress-bar-container">
+      <div class="progress-label">
+        <span>Сведение</span>
+        <span class="progress-count">0 / 3</span>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" style="width:0%"></div>
+      </div>
+    </div>
+    <div class="done-banner">🎉 Все пункты выполнены!</div>
+    <div class="checklist">
+      <div class="checklist-item" data-id="mix-study-eq">
+        <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+        <div class="item-content">
+          <div class="item-text">Изучить основы эквалайзера</div>
+          <div class="item-desc">Понять типы EQ и как они влияют на звук</div>
+        </div>
+      </div>
+      <div class="checklist-item" data-id="mix-compression">
+        <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+        <div class="item-content">
+          <div class="item-text">Разобраться с компрессией</div>
+          <div class="item-desc">Threshold, ratio, attack, release — основа динамической обработки</div>
+        </div>
+      </div>
+      <div class="checklist-item" data-id="mix-space">
+        <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
+        <div class="item-content">
+          <div class="item-text">Освоить реverb и delay</div>
+          <div class="item-desc">Пространственные эффекты для глубины и атмосферы</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <button class="reset-btn" id="reset-btn">Сбросить прогресс текущего чеклиста</button>
 </div>
 
 <script>
-  (function() {
-    const STORAGE_KEY = 'potok_checklist_v1';
-    const checklist = document.getElementById('checklist');
-    const progressFill = document.getElementById('progress-fill');
-    const progressText = document.getElementById('progress-text');
-    const resetBtn = document.getElementById('reset-btn');
-    const items = checklist.querySelectorAll('.checklist-item');
-    const total = items.length;
+(function() {
+  const STORAGE_PREFIX = 'potok_cl_';
+  let currentTab = 'start';
 
-    function loadState() {
-      try {
-        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {};
-      } catch {
-        return {};
-      }
+  /* ---- Tab switching ---- */
+  const tabBtns = document.querySelectorAll('.tab-btn');
+  const panels = document.querySelectorAll('.checklist-panel');
+
+  function switchTab(tab) {
+    currentTab = tab;
+    tabBtns.forEach(function(btn) {
+      btn.classList.toggle('active', btn.getAttribute('data-tab') === tab);
+    });
+    panels.forEach(function(panel) {
+      panel.classList.toggle('active', panel.id === 'panel-' + tab);
+    });
+    renderPanel(tab);
+  }
+
+  tabBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      switchTab(btn.getAttribute('data-tab'));
+    });
+  });
+
+  /* ---- State helpers ---- */
+  function loadState(tab) {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_PREFIX + tab)) || {};
+    } catch {
+      return {};
     }
+  }
 
-    function saveState(state) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    }
+  function saveState(tab, state) {
+    localStorage.setItem(STORAGE_PREFIX + tab, JSON.stringify(state));
+  }
 
-    function updateProgress(state) {
-      const checked = Object.values(state).filter(Boolean).length;
-      const pct = Math.round((checked / total) * 100);
-      progressFill.style.width = pct + '%';
-      progressText.textContent = checked + ' / ' + total;
-    }
+  /* ---- Render a single panel ---- */
+  function renderPanel(tab) {
+    var panel = document.getElementById('panel-' + tab);
+    if (!panel) return;
 
-    function render() {
-      const state = loadState();
-      items.forEach(function(item) {
-        const id = item.getAttribute('data-id');
-        if (state[id]) {
-          item.classList.add('checked');
-        } else {
-          item.classList.remove('checked');
-        }
-      });
-      updateProgress(state);
-    }
+    var state = loadState(tab);
+    var items = panel.querySelectorAll('.checklist-item');
+    var total = items.length;
 
-    checklist.addEventListener('click', function(e) {
-      const item = e.target.closest('.checklist-item');
+    items.forEach(function(item) {
+      var id = item.getAttribute('data-id');
+      item.classList.toggle('checked', !!state[id]);
+    });
+
+    var checked = Object.values(state).filter(Boolean).length;
+    var pct = total ? Math.round((checked / total) * 100) : 0;
+
+    var fill = panel.querySelector('.progress-fill');
+    var count = panel.querySelector('.progress-count');
+    var banner = panel.querySelector('.done-banner');
+
+    if (fill) fill.style.width = pct + '%';
+    if (count) count.textContent = checked + ' / ' + total;
+    if (banner) banner.classList.toggle('show', checked === total && total > 0);
+  }
+
+  /* ---- Click handler (delegated per panel) ---- */
+  panels.forEach(function(panel) {
+    panel.addEventListener('click', function(e) {
+      var item = e.target.closest('.checklist-item');
       if (!item) return;
+      if (e.target.closest('a')) return;
 
-      const link = e.target.closest('a');
-      if (link) return;
-
-      const id = item.getAttribute('data-id');
-      const state = loadState();
+      var tab = panel.id.replace('panel-', '');
+      var id = item.getAttribute('data-id');
+      var state = loadState(tab);
       state[id] = !state[id];
-      saveState(state);
-      render();
+      saveState(tab, state);
+      renderPanel(tab);
     });
+  });
 
-    resetBtn.addEventListener('click', function() {
-      if (confirm('Сбросить весь прогресс чеклиста?')) {
-        localStorage.removeItem(STORAGE_KEY);
-        render();
-      }
-    });
+  /* ---- Reset ---- */
+  document.getElementById('reset-btn').addEventListener('click', function() {
+    if (confirm('Сбросить прогресс текущего чеклиста?')) {
+      localStorage.removeItem(STORAGE_PREFIX + currentTab);
+      renderPanel(currentTab);
+    }
+  });
 
-    render();
-  })();
+  /* ---- Init ---- */
+  renderPanel('start');
+})();
 </script>
 </body>
 </html>
