@@ -118,37 +118,37 @@ markdown_extensions:
         - includes/abbreviations.md
 
 nav:
-  - "Главная": index.md
-  - "Этап №0: Подготовка к продакшну":
+  - "🏠 Главная": index.md
+  - "🎯 Этап №0: Подготовка к продакшну":
       - "etap0/index.md"
-  - "Этап №2: Сведение и VST Плагины":
+  - "🎚️ Этап №2: Сведение и VST Плагины":
       - "tom3/index.md"
-      - "Сведение (mixing)": "tom3/mixing.md"
-      - "Мастеринг": "tom3/mastering.md"
-  - "Этап №5: Теория музыки для продюсеров":
+      - "🔀 Сведение (mixing)": "tom3/mixing.md"
+      - "💿 Мастеринг": "tom3/mastering.md"
+  - "🎼 Этап №5: Теория музыки для продюсеров":
       - "tom2/index.md"
-      - "Нотная грамота": "tom2/notnaya-gramota.md"
-      - "Аккорды и гармония": "tom2/akkordy.md"
-      - "Ритм и перкуссия": "tom2/ritm.md"
-  - "Маршрут обучения": "roadmap.md"
-  - "Плагины — подборка":
+      - "📝 Нотная грамота": "tom2/notnaya-gramota.md"
+      - "🎵 Аккорды и гармония": "tom2/akkordy.md"
+      - "🥁 Ритм и перкуссия": "tom2/ritm.md"
+  - "🗺️ Маршрут обучения": "roadmap.md"
+  - "🔌 Плагины — подборка":
       - "plugins/index.md"
-      - "Подборка от Meraki": "plugins/meraki-collection.md"
-      - "Waves Abbey Road": "plugins/waves-abbey-road.md"
-      - "Waves CLA": "plugins/waves-cla.md"
-      - "Waves MannyM": "plugins/waves-mannym.md"
-      - "Waves Maserati": "plugins/waves-maserati.md"
-  - "Основы звукозаписи":
+      - "📦 Подборка от Meraki": "plugins/meraki-collection.md"
+      - "🏛️ Waves Abbey Road": "plugins/waves-abbey-road.md"
+      - "🎙️ Waves CLA": "plugins/waves-cla.md"
+      - "🎚️ Waves MannyM": "plugins/waves-mannym.md"
+      - "🏎️ Waves Maserati": "plugins/waves-maserati.md"
+  - "🎤 Основы звукозаписи":
       - "zvuk/index.md"
-      - "Что такое звук": "zvuk/osnovy-zvuka.md"
-      - "Оборудование": "zvuk/oborudovanie.md"
-      - "DAW — выбор программы": "zvuk/daw.md"
-      - "Запись инструментов": "zvuk/zapis.md"
-  - "Словарь Терминов": "glossary.md"
+      - "🔊 Что такое звук": "zvuk/osnovy-zvuka.md"
+      - "🔧 Оборудование": "zvuk/oborudovanie.md"
+      - "💻 DAW — выбор программы": "zvuk/daw.md"
+      - "🎸 Запись инструментов": "zvuk/zapis.md"
+  - "📖 Словарь Терминов": "glossary.md"
   - "🎛️ Интерактивные инструменты":
-      - "tools/index.html"
+      - "🔧 Обзор инструментов": "tools/index.html"
       - "✅ Чеклист старта": "tools/checklist/index.html"
-      - "Wavetable-синтезатор": "tools/wavetable/index.html"
-      - "Карта гармоний": "tools/harmony-map/index.html"
-      - "Визуализация волн": "tools/waveforms/index.html"
-      - "Карта частот": "tools/frequency-map/index.html"
+      - "🎹 Wavetable-синтезатор": "tools/wavetable/index.html"
+      - "🎶 Карта гармоний": "tools/harmony-map/index.html"
+      - "🌊 Визуализация волн": "tools/waveforms/index.html"
+      - "📊 Карта частот": "tools/frequency-map/index.html"
