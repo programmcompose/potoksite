@@ -735,6 +735,9 @@
     'C#m':{ notes: ['C#','E','A#'],type: 'minor', emotion: 'Интенсивный, эмоциональный, страстный. «Горячая» грусть. Используется в рок-балладах и эмоциональных пассажах.', relativeMajor: 'E', parallel: 'C#' },
     'G#m':{ notes: ['G#','B','E#'],type: 'minor', emotion: 'Экзотический, загадочный минор. Создаёт атмосферу таинственности и напряжения.', relativeMajor: 'B', parallel: 'G#' },
     'D#m':{ notes: ['D#','F##','B#'],type: 'minor', emotion: 'Редкий, экзотический. Используется для создания уникальной атмосферы.', relativeMajor: 'F#', parallel: 'D#' },
+    'C#': { notes: ['C#','F#','G##'],type: 'major', emotion: 'Напряжённый, экзотический мажор.', relativeMinor: 'A#m', dominant: 'G#', subdominant: 'F#' },
+    'G7':  { notes: ['G','B','D','F'],  type: 'major', emotion: 'Доминантсептаккорд — тяготеет к разрешению в тонику.', relativeMinor: 'Em', dominant: 'D', subdominant: 'C' },
+    'Gdim':{ notes: ['G','Bb','Db'],  type: 'minor', emotion: 'Уменьшенный аккорд — тревожный, нестабильный, создаёт ощущение напряжения.', relativeMajor: 'Bb', parallel: 'G' },
   };
 
   const NOTES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
@@ -753,7 +756,7 @@
       if (!polySynth) {
         polySynth = new Tone.PolySynth(Tone.Synth, {
           oscillator: { type: 'triangle' },
-          envelope: { attack: 0.02, decay: 0.12, sustain: 0.35, release: 0.4 }
+          envelope: { attack: 0.02, decay: 0.12, sustain: 0.35, release: 0.2 }
         }).toDestination();
         polySynth.volume.value = -4;
       }
@@ -779,7 +782,7 @@
     const data = getChordInfo(chordName);
     if (!data) return;
     const notes = data.notes.map(n => cleanNote(n) + '4');
-    polySynth.triggerAttackRelease(notes, '2n');
+    polySynth.triggerAttackRelease(notes, '4n');
   }
 
   function cleanNote(n) {
@@ -1162,7 +1165,7 @@
     initAudio();
     showToast('▶ Играем прогрессию...', 'info');
     progression.forEach((chord, i) => {
-      setTimeout(() => playChordSound(chord), i * 700);
+      setTimeout(() => playChordSound(chord), i * 1200);
     });
   });
 
@@ -1182,7 +1185,7 @@
       updateProgressionDisplay();
       showToast('Прогрессия загружена', 'success');
       progression.forEach(function(chord, i) {
-        setTimeout(function() { playChordSound(chord); }, i * 700);
+        setTimeout(function() { playChordSound(chord); }, i * 1200);
       });
     });
   });

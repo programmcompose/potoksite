@@ -473,7 +473,7 @@ draw();
 
 // === Audio Playback System ===
 let audioCtx = null;
-let currentAudio = null;
+let activeNodes = [];
 const sampleCache = {};
 const playingIndicator = document.getElementById("playingIndicator");
 const playingName = document.getElementById("playingName");
@@ -487,8 +487,17 @@ function initAudio() {
   }
 }
 
+function stopCurrentAudio() {
+  activeNodes.forEach(node => {
+    try { if (node.stop) node.stop(); } catch(e) {}
+    try { node.disconnect(); } catch(e) {}
+  });
+  activeNodes = [];
+}
+
 async function loadSample(url) {
   if (sampleCache[url]) return sampleCache[url];
+  initAudio();
   try {
     const resp = await fetch(url);
     const buf = await resp.arrayBuffer();
@@ -506,11 +515,12 @@ async function playSample(index) {
   const inst = instruments[index];
   if (!inst || !inst.sample) return;
 
-  // Stop current playback
-  if (currentAudio) {
-    currentAudio.stop();
-    currentAudio = null;
-  }
+  // Stop any currently playing audio first
+  stopCurrentAudio();
+  playingIndicator.style.display = "none";
+  document.querySelectorAll(".legend-item.playing").forEach(el => el.classList.remove("playing"));
+  hoveredInstrument = null;
+  draw();
 
   const buffer = await loadSample(inst.sample);
   if (!buffer) return;
@@ -522,7 +532,7 @@ async function playSample(index) {
   source.connect(gain);
   gain.connect(audioCtx.destination);
   source.start();
-  currentAudio = source;
+  activeNodes.push(source);
 
   // Visual feedback
   playingName.textContent = inst.name;
@@ -530,7 +540,8 @@ async function playSample(index) {
   highlightInstrument(index);
 
   source.onended = () => {
-    currentAudio = null;
+    const idx = activeNodes.indexOf(source);
+    if (idx > -1) activeNodes.splice(idx, 1);
     playingIndicator.style.display = "none";
     unhighlightInstrument(index);
   };
