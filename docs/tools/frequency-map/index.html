@@ -80,7 +80,7 @@
     overflow-x: auto;
   }
 
-  canvas { display: block; width: 100%; }
+  canvas { display: block; width: 100%; cursor: pointer; }
 
   .freq-label {
     text-align: center;
@@ -156,8 +156,13 @@
     flex-shrink: 0;
   }
 
-  .legend-text { font-size: 13px; }
+  .legend-text { font-size: 13px; display: flex; align-items: center; gap: 6px; }
   .legend-range { font-size: 11px; color: #888; }
+  .play-icon { font-size: 11px; opacity: 0; transition: opacity 0.2s; }
+  .legend-item:hover .play-icon { opacity: 0.7; }
+  .legend-item.playing .play-icon { opacity: 1; }
+  .legend-item.playing { background: var(--bg-lighter); box-shadow: 0 0 0 1px var(--accent); }
+  .playing-indicator { position: fixed; bottom: 20px; right: 20px; background: var(--accent); color: #000; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; display: none; z-index: 100; box-shadow: 0 4px 20px rgba(0,188,212,0.4); }
 
   @media (max-width: 600px) {
     h1 { font-size: 22px; }
@@ -172,7 +177,7 @@
   <a href="index.html" class="back-link" style="margin-left:12px;">← К инструментам</a>
 
   <h1>📊 Карта частот инструментов</h1>
-  <p class="subtitle">Интерактивная карта, показывающая частотные диапазоны основных инструментов и элементов в музыкальном продакшене. Нажимайте на группы или легенду, чтобы показать/скрыть.</p>
+  <p class="subtitle">Интерактивная карта, показывающая частотные диапазоны основных инструментов и элементов в музыкальном продакшене. Нажимайте на полосу инструмента или элемент легенды, чтобы услышать пример звука. Нажимайте на группы, чтобы показать/скрыть.</p>
 
   <div class="controls" id="controls"></div>
 
@@ -188,6 +193,8 @@
 
   <div class="legend-section" id="legend"></div>
 
+  <div class="playing-indicator" id="playingIndicator">▶ <span id="playingName"></span></div>
+
   <div class="info-panel">
     <h3>Как читать карту</h3>
     <p>
@@ -195,7 +202,7 @@
       Нижняя граница — это фундаментальный тон (базовая частота), верхняя — важные обертоны
       и гармонические составляющие. Пересечения полос показывают, где инструменты конкурируют
       за одно частотное пространство — именно там нужна эквализация.
-      Наведите курсор на полосу, чтобы увидеть подробности.
+      Наведите курсор на полосу, чтобы увидеть подробности. Кликните на полосу или элемент легенды, чтобы воспроизвести пример звука этого инструмента.
     </p>
   </div>
 </div>
@@ -203,40 +210,40 @@
 <script>
 const instruments = [
   // === Барабаны ===
-  { name: "Kick (бочка)",       low: 40,  high: 200,  group: "drums", color: "#e53935", desc: "Фундамент бита. Базовая частота 40–80 Гц, клик атаки до 5–10 кГц" },
-  { name: "Snare (малый)",     low: 150, high: 5000, group: "drums", color: "#e53935", desc: "Корпус 150–250 Гц, щелчок 2–5 кГц" },
-  { name: "Clap (хлопок)",      low: 200, high: 6000, group: "drums", color: "#e53935", desc: "Основной диапазон 200–6000 Гц" },
-  { name: "Hi-Hat (хэт)",      low: 500, high: 10000,group: "drums", color: "#e53935", desc: "Closed: 2–8 кГц, Open: 500 Гц – 10 кГц" },
-  { name: "Перкуссия / FX",    low: 100, high: 8000, group: "drums", color: "#e53935", desc: "Шейкеры, конги, бонго, креши" },
+  { name: "Kick (бочка)",       low: 40,  high: 200,  group: "drums", color: "#e53935", desc: "Фундамент бита. Базовая частота 40–80 Гц, клик атаки до 5–10 кГц", sample: "samples/kick.ogg" },
+  { name: "Snare (малый)",     low: 150, high: 5000, group: "drums", color: "#e53935", desc: "Корпус 150–250 Гц, щелчок 2–5 кГц", sample: "samples/snare.ogg" },
+  { name: "Clap (хлопок)",      low: 200, high: 6000, group: "drums", color: "#e53935", desc: "Основной диапазон 200–6000 Гц", sample: "samples/clap.ogg" },
+  { name: "Hi-Hat (хэт)",      low: 500, high: 10000,group: "drums", color: "#e53935", desc: "Closed: 2–8 кГц, Open: 500 Гц – 10 кГц", sample: "samples/hihat.ogg" },
+  { name: "Перкуссия / FX",    low: 100, high: 8000, group: "drums", color: "#e53935", desc: "Шейкеры, конги, бонго, креши", sample: "samples/percussion.ogg" },
 
   // === Бас ===
-  { name: "808 бас",           low: 30,  high: 300,  group: "bass",  color: "#1e88e5", desc: "Суб-бас 30–60 Гц, тело 60–200 Гц" },
-  { name: "Синт-бас",          low: 40,  high: 800,  group: "bass",  color: "#1e88e5", desc: "Основной диапазон 40–800 Гц" },
-  { name: "Риз-бас (808 slide)",low:30,  high: 500,  group: "bass",  color: "#1e88e5", desc: "Длинный басовый слайд 30–500 Гц" },
-  { name: "Бас-гитара",        low: 40,  high: 1000, group: "bass",  color: "#1e88e5", desc: "Ноты E1–E2: 41–124 Гц, обертоны до 1 кГц" },
+  { name: "808 бас",           low: 30,  high: 300,  group: "bass",  color: "#1e88e5", desc: "Суб-бас 30–60 Гц, тело 60–200 Гц", sample: "samples/bass_808.ogg" },
+  { name: "Синт-бас",          low: 40,  high: 800,  group: "bass",  color: "#1e88e5", desc: "Основной диапазон 40–800 Гц", sample: "samples/bass_synth.ogg" },
+  { name: "Риз-бас (808 slide)",low:30,  high: 500,  group: "bass",  color: "#1e88e5", desc: "Длинный басовый слайд 30–500 Гц", sample: "samples/bass_rise.ogg" },
+  { name: "Бас-гитара",        low: 40,  high: 1000, group: "bass",  color: "#1e88e5", desc: "Ноты E1–E2: 41–124 Гц, обертоны до 1 кГц", sample: "samples/bass_guitar.ogg" },
 
   // === Гитары ===
-  { name: "Акустическая гитара",low:80,  high: 5000, group: "guitar",color: "#43a047", desc: "Корпус 80–400 Гц, обертоны до 5 кГц" },
-  { name: "Электрогитара (чистая)",low:80,high:5000,group: "guitar",color: "#43a047", desc: "Чистый звук: 80 Гц – 5 кГц" },
-  { name: "Электрогитара (овердрайв)",low:100,high:8000,group:"guitar",color:"#43a047",desc:"Дисторшн добавляет обертоны до 8 кГц" },
+  { name: "Акустическая гитара",low:80,  high: 5000, group: "guitar",color: "#43a047", desc: "Корпус 80–400 Гц, обертоны до 5 кГц", sample: "samples/guitar_acoustic.ogg" },
+  { name: "Электрогитара (чистая)",low:80,high:5000,group: "guitar",color: "#43a047", desc: "Чистый звук: 80 Гц – 5 кГц", sample: "samples/guitar_clean.ogg" },
+  { name: "Электрогитара (овердрайв)",low:100,high:8000,group:"guitar",color:"#43a047",desc:"Дисторшн добавляет обертоны до 8 кГц", sample: "samples/guitar_overdrive.ogg" },
 
   // === Синтезаторы ===
-  { name: "Лид-синт",          low: 200, high: 6000, group: "synth", color: "#ab47bc", desc: "Соло-мелодия: 200 Гц – 6 кГц" },
-  { name: "Пэд (pad)",         low: 80,  high: 4000, group: "synth", color: "#ab47bc", desc: "Фоновый аккордовый пэд: 80 Гц – 4 кГц" },
-  { name: "Арпеджиатор",       low: 300, high: 8000, group: "synth", color: "#ab47bc", desc: "Быстрые повторяющиеся ноты: 300 Гц – 8 кГц" },
-  { name: "Сэмпл-мелодия",     low: 100, high: 6000, group: "synth", color: "#ab47bc", desc: "Сэмплированные мелодии: 100 Гц – 6 кГц" },
+  { name: "Лид-синт",          low: 200, high: 6000, group: "synth", color: "#ab47bc", desc: "Соло-мелодия: 200 Гц – 6 кГц", sample: "samples/synth_lead.ogg" },
+  { name: "Пэд (pad)",         low: 80,  high: 4000, group: "synth", color: "#ab47bc", desc: "Фоновый аккордовый пэд: 80 Гц – 4 кГц", sample: "samples/synth_pad.ogg" },
+  { name: "Арпеджиатор",       low: 300, high: 8000, group: "synth", color: "#ab47bc", desc: "Быстрые повторяющиеся ноты: 300 Гц – 8 кГц", sample: "samples/synth_arp.ogg" },
+  { name: "Сэмпл-мелодия",     low: 100, high: 6000, group: "synth", color: "#ab47bc", desc: "Сэмплированные мелодии: 100 Гц – 6 кГц", sample: "samples/synth_melody.ogg" },
 
   // === Вокал ===
-  { name: "Вокал (мужской)",   low: 85,  high: 4000, group: "vocal", color: "#ff7043", desc: "Область: E2–G4, 85–400 Гц, присутствие до 4 кГц" },
-  { name: "Вокал (женский)",   low: 165, high: 6000, group: "vocal", color: "#ff7043", desc: "Область: E3–C6, 165–1050 Гц, присутствие до 6 кГц" },
-  { name: "Речитатив / рэп",   low: 80,  high: 5000, group: "vocal", color: "#ff7043", desc: "Широкий диапазон речи 80 Гц – 5 кГц" },
-  { name: "Бэки / бэк-вокал",  low: 100, high: 4000, group: "vocal", color: "#ff7043", desc: "Фоновый вокал: 100 Гц – 4 кГц" },
+  { name: "Вокал (мужской)",   low: 85,  high: 4000, group: "vocal", color: "#ff7043", desc: "Область: E2–G4, 85–400 Гц, присутствие до 4 кГц", sample: "samples/vocal_male.ogg" },
+  { name: "Вокал (женский)",   low: 165, high: 6000, group: "vocal", color: "#ff7043", desc: "Область: E3–C6, 165–1050 Гц, присутствие до 6 кГц", sample: "samples/vocal_female.ogg" },
+  { name: "Речитатив / рэп",   low: 80,  high: 5000, group: "vocal", color: "#ff7043", desc: "Широкий диапазон речи 80 Гц – 5 кГц", sample: "samples/vocal_rap.ogg" },
+  { name: "Бэки / бэк-вокал",  low: 100, high: 4000, group: "vocal", color: "#ff7043", desc: "Фоновый вокал: 100 Гц – 4 кГц", sample: "samples/vocal_backing.ogg" },
 
   // === Живые инструменты ===
-  { name: "Фортепиано",        low: 27,  high: 8000, group: "live",  color: "#fdd835", desc: "Полный диапазон A0–C8: 27 Гц – 8 кГц+" },
-  { name: "Струнные (скрипка)",low:196, high:8000,  group: "live",  color: "#fdd835", desc: "G3–C7: 196 Гц – 8 кГц" },
-  { name: "Саксофон",          low: 140, high: 5000, group: "live",  color: "#fdd835", desc: "Основной диапазон: 140 Гц – 5 кГц" },
-  { name: "Труба",             low: 130, high: 6000, group: "live",  color: "#fdd835", desc: "Основной диапазон: 130 Гц – 6 кГц" },
+  { name: "Фортепиано",        low: 27,  high: 8000, group: "live",  color: "#fdd835", desc: "Полный диапазон A0–C8: 27 Гц – 8 кГц+", sample: "samples/piano.ogg" },
+  { name: "Струнные (скрипка)",low:196, high:8000,  group: "live",  color: "#fdd835", desc: "G3–C7: 196 Гц – 8 кГц", sample: "samples/strings.ogg" },
+  { name: "Саксофон",          low: 140, high: 5000, group: "live",  color: "#fdd835", desc: "Основной диапазон: 140 Гц – 5 кГц", sample: "samples/saxophone.ogg" },
+  { name: "Труба",             low: 130, high: 6000, group: "live",  color: "#fdd835", desc: "Основной диапазон: 130 Гц – 6 кГц", sample: "samples/trumpet.ogg" },
 ];
 
 const groups = [
@@ -463,6 +470,140 @@ window.addEventListener("resize", draw);
 buildControls();
 buildLegend();
 draw();
+
+// === Audio Playback System ===
+let audioCtx = null;
+let currentAudio = null;
+const sampleCache = {};
+const playingIndicator = document.getElementById("playingIndicator");
+const playingName = document.getElementById("playingName");
+
+function initAudio() {
+  if (!audioCtx) {
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  }
+  if (audioCtx.state === "suspended") {
+    audioCtx.resume();
+  }
+}
+
+async function loadSample(url) {
+  if (sampleCache[url]) return sampleCache[url];
+  try {
+    const resp = await fetch(url);
+    const buf = await resp.arrayBuffer();
+    const decoded = await audioCtx.decodeAudioData(buf);
+    sampleCache[url] = decoded;
+    return decoded;
+  } catch(e) {
+    console.warn("Failed to load sample:", url, e);
+    return null;
+  }
+}
+
+async function playSample(index) {
+  initAudio();
+  const inst = instruments[index];
+  if (!inst || !inst.sample) return;
+
+  // Stop current playback
+  if (currentAudio) {
+    currentAudio.stop();
+    currentAudio = null;
+  }
+
+  const buffer = await loadSample(inst.sample);
+  if (!buffer) return;
+
+  const source = audioCtx.createBufferSource();
+  const gain = audioCtx.createGain();
+  gain.gain.value = 0.5;
+  source.buffer = buffer;
+  source.connect(gain);
+  gain.connect(audioCtx.destination);
+  source.start();
+  currentAudio = source;
+
+  // Visual feedback
+  playingName.textContent = inst.name;
+  playingIndicator.style.display = "block";
+  highlightInstrument(index);
+
+  source.onended = () => {
+    currentAudio = null;
+    playingIndicator.style.display = "none";
+    unhighlightInstrument(index);
+  };
+}
+
+function highlightInstrument(index) {
+  const item = document.querySelector(`.legend-item[data-index="${index}"]`);
+  if (item) item.classList.add("playing");
+  hoveredInstrument = index;
+  draw();
+}
+
+function unhighlightInstrument(index) {
+  const item = document.querySelector(`.legend-item[data-index="${index}"]`);
+  if (item) item.classList.remove("playing");
+  hoveredInstrument = null;
+  draw();
+}
+
+// Add play icon to legend items
+document.querySelectorAll(".legend-item").forEach(item => {
+  const idx = +item.dataset.index;
+  const inst = instruments[idx];
+  if (inst && inst.sample) {
+    const icon = document.createElement("span");
+    icon.className = "play-icon";
+    icon.textContent = "▶";
+    item.querySelector(".legend-text").appendChild(icon);
+
+    item.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      await playSample(idx);
+    });
+  }
+});
+
+// Click on chart bars to play
+canvas.addEventListener("click", async (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  const padL = 10, padT = 10;
+  const rowH = (canvas.height / dpr - padT - 30) / instruments.length;
+
+  for (let i = 0; i < instruments.length; i++) {
+    const inst = instruments[i];
+    if (hiddenGroups.has(inst.group)) continue;
+    const y = padT + i * rowH;
+    if (my >= y && my < y + rowH) {
+      const x1 = padL + freqToX(inst.low) * (canvas.width / dpr - 20);
+      const x2 = padL + freqToX(inst.high) * (canvas.width / dpr - 20);
+      if (mx >= x1 && mx <= x2) {
+        await playSample(i);
+        break;
+      }
+    }
+  }
+});
+
+// Preload all samples on first interaction
+let preloading = false;
+async function preloadAll() {
+  if (preloading) return;
+  preloading = true;
+  for (const inst of instruments) {
+    if (inst.sample) {
+      await loadSample(inst.sample);
+    }
+  }
+}
+document.body.addEventListener("click", () => { initAudio(); preloadAll(); }, { once: true });
 </script>
 
 </body>
