@@ -989,18 +989,30 @@
 
   // ===== Play audio =====
   let currentSource = null;
-  function playBuffer(buffer) {
-    const ctx = ensureAudioCtx();
+  let currentGain = null;
+  function stopCurrentAudio() {
     if (currentSource) {
       try { currentSource.stop(); } catch(e) {}
       currentSource = null;
     }
+    if (currentGain) {
+      try { currentGain.disconnect(); } catch(e) {}
+      currentGain = null;
+    }
+  }
+  function playBuffer(buffer) {
+    stopCurrentAudio();
+    const ctx = ensureAudioCtx();
+    const gain = ctx.createGain();
+    gain.gain.value = 1;
+    gain.connect(ctx.destination);
+    currentGain = gain;
     const source = ctx.createBufferSource();
     source.buffer = buffer;
-    source.connect(ctx.destination);
+    source.connect(gain);
     source.start(0);
     currentSource = source;
-    source.onended = () => { currentSource = null; };
+    source.onended = () => { currentSource = null; currentGain = null; };
   }
 
   // ===== EQ Curve Drawing =====
