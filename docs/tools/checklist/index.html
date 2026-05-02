@@ -14,6 +14,7 @@
     --purple: #ab47bc;
     --green: #66bb6a;
     --orange: #ff7043;
+    --gold: #ffd740;
     --radius: 12px;
     --shadow: 0 4px 16px rgba(0,0,0,0.4);
   }
@@ -61,6 +62,114 @@
 
   .back-link:hover { text-decoration: underline; }
 
+  /* ---- Score Card ---- */
+  .score-card {
+    background: linear-gradient(135deg, rgba(0,188,212,0.12), rgba(171,71,188,0.12));
+    border: 1px solid rgba(0,188,212,0.3);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .score-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--purple), var(--gold));
+  }
+
+  .score-label {
+    font-size: 0.8em;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    opacity: 0.5;
+    margin-bottom: 8px;
+  }
+
+  .score-value {
+    font-size: 3em;
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--gold), var(--orange));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.1;
+    transition: transform 0.2s;
+  }
+
+  .score-value.bump {
+    transform: scale(1.15);
+  }
+
+  .score-rank {
+    margin-top: 8px;
+    font-size: 0.9em;
+    font-weight: 600;
+    color: var(--gold);
+  }
+
+  .score-next {
+    margin-top: 4px;
+    font-size: 0.75em;
+    opacity: 0.4;
+  }
+
+  .score-total-items {
+    margin-top: 12px;
+    font-size: 0.8em;
+    opacity: 0.35;
+  }
+
+  /* ---- Floating points animation ---- */
+  .float-points {
+    position: fixed;
+    pointer-events: none;
+    font-size: 1.4em;
+    font-weight: 900;
+    color: var(--gold);
+    z-index: 9999;
+    text-shadow: 0 0 12px rgba(255,215,64,0.6);
+    animation: floatUp 1.2s ease-out forwards;
+  }
+
+  @keyframes floatUp {
+    0% { opacity: 1; transform: translateY(0) scale(1); }
+    60% { opacity: 1; transform: translateY(-40px) scale(1.2); }
+    100% { opacity: 0; transform: translateY(-80px) scale(0.8); }
+  }
+
+  /* ---- Level bar ---- */
+  .level-bar-container {
+    margin-top: 14px;
+  }
+
+  .level-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75em;
+    opacity: 0.5;
+    margin-bottom: 6px;
+  }
+
+  .level-track {
+    height: 6px;
+    background: rgba(255,255,255,0.08);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .level-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--gold), var(--orange));
+    border-radius: 3px;
+    transition: width 0.5s ease;
+    width: 0%;
+  }
+
   /* ---- Tabs ---- */
   .tabs {
     display: flex;
@@ -83,6 +192,7 @@
     transition: all 0.2s;
     font-family: inherit;
     text-align: center;
+    position: relative;
   }
 
   .tab-btn:hover {
@@ -99,6 +209,18 @@
     display: block;
     font-size: 1.4em;
     margin-bottom: 4px;
+  }
+
+  .tab-points {
+    display: block;
+    font-size: 0.7em;
+    opacity: 0.4;
+    margin-top: 2px;
+  }
+
+  .tab-btn.active .tab-points {
+    opacity: 0.7;
+    color: var(--gold);
   }
 
   /* ---- Progress ---- */
@@ -161,6 +283,7 @@
     cursor: pointer;
     transition: all 0.2s;
     user-select: none;
+    position: relative;
   }
 
   .checklist-item:hover {
@@ -175,6 +298,11 @@
 
   .checklist-item.checked .item-text {
     text-decoration: line-through;
+  }
+
+  .checklist-item.earning {
+    border-color: var(--gold);
+    box-shadow: 0 0 20px rgba(255,215,64,0.3);
   }
 
   .checkbox {
@@ -222,6 +350,18 @@
     line-height: 1.4;
   }
 
+  .item-points {
+    display: inline-block;
+    margin-top: 8px;
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-size: 0.75em;
+    font-weight: 700;
+    background: rgba(255,215,64,0.15);
+    color: var(--gold);
+    letter-spacing: 0.03em;
+  }
+
   .item-link {
     color: var(--accent);
     text-decoration: none;
@@ -250,7 +390,6 @@
     color: var(--orange);
   }
 
-  /* ---- All done banner ---- */
   .done-banner {
     display: none;
     text-align: center;
@@ -271,6 +410,7 @@
   @media (max-width: 600px) {
     header h1 { font-size: 1.5em; }
     .tab-btn { min-width: 90px; padding: 10px 8px; font-size: 0.8em; }
+    .score-value { font-size: 2.4em; }
   }
 </style>
 </head>
@@ -282,18 +422,39 @@
     <p>Выбери этап — отмечай шаги. Прогресс сохраняется в браузере.</p>
   </header>
 
+  <!-- Score Card -->
+  <div class="score-card">
+    <div class="score-label">Общий счёт</div>
+    <div class="score-value" id="score-value">0</div>
+    <div class="score-rank" id="score-rank">Новичок</div>
+    <div class="score-next" id="score-next"></div>
+    <div class="level-bar-container">
+      <div class="level-bar-label">
+        <span id="level-current">Ур. 1</span>
+        <span id="level-next-label">До след. уровня</span>
+      </div>
+      <div class="level-track">
+        <div class="level-fill" id="level-fill"></div>
+      </div>
+    </div>
+    <div class="score-total-items" id="score-total-items">0 / 0 выполнено</div>
+  </div>
+
   <div class="tabs" id="tabs">
     <button class="tab-btn active" data-tab="start">
       <span class="tab-icon">🚀</span>
       Старт
+      <span class="tab-points" id="tab-points-start">0 / 150 XP</span>
     </button>
     <button class="tab-btn" data-tab="beats">
       <span class="tab-icon">🥁</span>
       Биты
+      <span class="tab-points" id="tab-points-beats">0 / 250 XP</span>
     </button>
     <button class="tab-btn" data-tab="mixing">
       <span class="tab-icon">🎚️</span>
       Сведение
+      <span class="tab-points" id="tab-points-mixing">0 / 200 XP</span>
     </button>
   </div>
 
@@ -310,25 +471,28 @@
     </div>
     <div class="done-banner">🎉 Все пункты выполнены!</div>
     <div class="checklist">
-      <div class="checklist-item" data-id="start-tg-discord">
+      <div class="checklist-item" data-id="start-tg-discord" data-points="50">
         <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
         <div class="item-content">
           <div class="item-text">Состоять в чатах Telegram и Discord</div>
           <div class="item-desc">Присоединяйся к сообществу для общения и поддержки</div>
+          <div class="item-points">+50 XP</div>
         </div>
       </div>
-      <div class="checklist-item" data-id="start-etap0">
+      <div class="checklist-item" data-id="start-etap0" data-points="50">
         <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
         <div class="item-content">
           <div class="item-text">Установить базовые программы из <a href="../../etap0/index.html" class="item-link">Этап №0</a></div>
           <div class="item-desc">DAW, плагины и всё необходимое для работы</div>
+          <div class="item-points">+50 XP</div>
         </div>
       </div>
-      <div class="checklist-item" data-id="start-firstbeat">
+      <div class="checklist-item" data-id="start-firstbeat" data-points="50">
         <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
         <div class="item-content">
           <div class="item-text">Написать первый бит</div>
           <div class="item-desc">Создай свой первый трек и поделись им в чате</div>
+          <div class="item-points">+50 XP</div>
         </div>
       </div>
     </div>
@@ -347,25 +511,28 @@
     </div>
     <div class="done-banner">🎉 Все пункты выполнены!</div>
     <div class="checklist">
-      <div class="checklist-item" data-id="beats-3beats">
+      <div class="checklist-item" data-id="beats-3beats" data-points="100">
         <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
         <div class="item-content">
           <div class="item-text">Написать 3 бита</div>
           <div class="item-desc">Три разных бита — практикуй структуру, мелодию и драм-паттерны</div>
+          <div class="item-points">+100 XP</div>
         </div>
       </div>
-      <div class="checklist-item" data-id="beats-mix-render">
+      <div class="checklist-item" data-id="beats-mix-render" data-points="100">
         <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
         <div class="item-content">
           <div class="item-text">Свести их и зарендерить</div>
           <div class="item-desc">Баланс уровней, EQ, компрессия — экспорт в WAV или MP3</div>
+          <div class="item-points">+100 XP</div>
         </div>
       </div>
-      <div class="checklist-item" data-id="beats-bpm-key">
+      <div class="checklist-item" data-id="beats-bpm-key" data-points="50">
         <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
         <div class="item-content">
           <div class="item-text">Попробовать разный BPM и тональность</div>
           <div class="item-desc">Экспериментируй с темпом и ключами — найди свой звук</div>
+          <div class="item-points">+50 XP</div>
         </div>
       </div>
     </div>
@@ -384,25 +551,28 @@
     </div>
     <div class="done-banner">🎉 Все пункты выполнены!</div>
     <div class="checklist">
-      <div class="checklist-item" data-id="mix-study-eq">
+      <div class="checklist-item" data-id="mix-study-eq" data-points="50">
         <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
         <div class="item-content">
           <div class="item-text">Изучить основы эквалайзера</div>
           <div class="item-desc">Понять типы EQ и как они влияют на звук</div>
+          <div class="item-points">+50 XP</div>
         </div>
       </div>
-      <div class="checklist-item" data-id="mix-compression">
+      <div class="checklist-item" data-id="mix-compression" data-points="75">
         <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
         <div class="item-content">
           <div class="item-text">Разобраться с компрессией</div>
           <div class="item-desc">Threshold, ratio, attack, release — основа динамической обработки</div>
+          <div class="item-points">+75 XP</div>
         </div>
       </div>
-      <div class="checklist-item" data-id="mix-space">
+      <div class="checklist-item" data-id="mix-space" data-points="75">
         <div class="checkbox"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>
         <div class="item-content">
-          <div class="item-text">Освоить реverb и delay</div>
+          <div class="item-text">Освоить reverb и delay</div>
           <div class="item-desc">Пространственные эффекты для глубины и атмосферы</div>
+          <div class="item-points">+75 XP</div>
         </div>
       </div>
     </div>
@@ -416,9 +586,20 @@
   const STORAGE_PREFIX = 'potok_cl_';
   let currentTab = 'start';
 
+  /* ---- Ranks ---- */
+  var ranks = [
+    { name: 'Новичок',       min: 0,    emoji: '🌱' },
+    { name: 'Ученик',        min: 100,  emoji: '📚' },
+    { name: 'Практикант',    min: 250,  emoji: '🔧' },
+    { name: 'Продюсер',      min: 400,  emoji: '🎹' },
+    { name: 'Миксер',        min: 600,  emoji: '🎚️' },
+    { name: 'Мастер',        min: 800,  emoji: '🏆' },
+    { name: 'Легенда потока',min: 1000, emoji: '👑' }
+  ];
+
   /* ---- Tab switching ---- */
-  const tabBtns = document.querySelectorAll('.tab-btn');
-  const panels = document.querySelectorAll('.checklist-panel');
+  var tabBtns = document.querySelectorAll('.tab-btn');
+  var panels = document.querySelectorAll('.checklist-panel');
 
   function switchTab(tab) {
     currentTab = tab;
@@ -450,6 +631,130 @@
     localStorage.setItem(STORAGE_PREFIX + tab, JSON.stringify(state));
   }
 
+  /* ---- Compute total score across all tabs ---- */
+  function computeTotalScore() {
+    var total = 0, totalChecked = 0, totalItems = 0;
+
+    panels.forEach(function(panel) {
+      var tab = panel.id.replace('panel-', '');
+      var state = loadState(tab);
+      var items = panel.querySelectorAll('.checklist-item');
+      totalItems += items.length;
+
+      items.forEach(function(item) {
+        var id = item.getAttribute('data-id');
+        var pts = parseInt(item.getAttribute('data-points')) || 0;
+        if (state[id]) {
+          total += pts;
+          totalChecked++;
+        }
+      });
+    });
+
+    return { score: total, checked: totalChecked, total: totalItems };
+  }
+
+  /* ---- Compute tab score ---- */
+  function computeTabScore(tab) {
+    var panel = document.getElementById('panel-' + tab);
+    if (!panel) return { earned: 0, max: 0 };
+    var state = loadState(tab);
+    var items = panel.querySelectorAll('.checklist-item');
+    var earned = 0, max = 0;
+    items.forEach(function(item) {
+      var pts = parseInt(item.getAttribute('data-points')) || 0;
+      max += pts;
+      if (state[item.getAttribute('data-id')]) earned += pts;
+    });
+    return { earned: earned, max: max };
+  }
+
+  /* ---- Get rank ---- */
+  function getRank(score) {
+    var rank = ranks[0];
+    for (var i = ranks.length - 1; i >= 0; i--) {
+      if (score >= ranks[i].min) {
+        rank = ranks[i];
+        break;
+      }
+    }
+    return rank;
+  }
+
+  function getNextRank(score) {
+    for (var i = 0; i < ranks.length; i++) {
+      if (score < ranks[i].min) return ranks[i];
+    }
+    return null;
+  }
+
+  /* ---- Animate score ---- */
+  function animateScore(newScore) {
+    var el = document.getElementById('score-value');
+    el.textContent = newScore;
+    el.classList.add('bump');
+    setTimeout(function() { el.classList.remove('bump'); }, 250);
+  }
+
+  /* ---- Float points animation ---- */
+  function floatPoints(pts, x, y) {
+    var el = document.createElement('div');
+    el.className = 'float-points';
+    el.textContent = '+' + pts + ' XP';
+    el.style.left = x + 'px';
+    el.style.top = y + 'px';
+    document.body.appendChild(el);
+    setTimeout(function() { document.body.removeChild(el); }, 1300);
+  }
+
+  /* ---- Update global score card ---- */
+  function updateScoreCard() {
+    var data = computeTotalScore();
+    var rank = getRank(data.score);
+    var next = getNextRank(data.score);
+
+    animateScore(data.score);
+
+    var rankEl = document.getElementById('score-rank');
+    rankEl.textContent = rank.emoji + ' ' + rank.name;
+
+    var nextEl = document.getElementById('score-next');
+    if (next) {
+      nextEl.textContent = 'До «' + next.name + '»: ' + (next.min - data.score) + ' XP';
+    } else {
+      nextEl.textContent = 'Максимальный уровень!';
+    }
+
+    var currentLevelIdx = ranks.indexOf(rank);
+    document.getElementById('level-current').textContent = 'Ур. ' + (currentLevelIdx + 1);
+
+    var levelFill = document.getElementById('level-fill');
+    if (next) {
+      var prevMin = rank.min;
+      var range = next.min - prevMin;
+      var progress = data.score - prevMin;
+      var pct = Math.min(100, Math.round((progress / range) * 100));
+      levelFill.style.width = pct + '%';
+      document.getElementById('level-next-label').textContent = next.emoji + ' ' + next.name;
+    } else {
+      levelFill.style.width = '100%';
+      document.getElementById('level-next-label').textContent = 'Максимум!';
+    }
+
+    document.getElementById('score-total-items').textContent =
+      data.checked + ' / ' + data.total + ' выполнено';
+
+    /* Update tab point badges */
+    panels.forEach(function(panel) {
+      var tab = panel.id.replace('panel-', '');
+      var tabScore = computeTabScore(tab);
+      var tabEl = document.getElementById('tab-points-' + tab);
+      if (tabEl) {
+        tabEl.textContent = tabScore.earned + ' / ' + tabScore.max + ' XP';
+      }
+    });
+  }
+
   /* ---- Render a single panel ---- */
   function renderPanel(tab) {
     var panel = document.getElementById('panel-' + tab);
@@ -476,7 +781,7 @@
     if (banner) banner.classList.toggle('show', checked === total && total > 0);
   }
 
-  /* ---- Click handler (delegated per panel) ---- */
+  /* ---- Click handler ---- */
   panels.forEach(function(panel) {
     panel.addEventListener('click', function(e) {
       var item = e.target.closest('.checklist-item');
@@ -486,9 +791,21 @@
       var tab = panel.id.replace('panel-', '');
       var id = item.getAttribute('data-id');
       var state = loadState(tab);
+      var wasChecked = !!state[id];
       state[id] = !state[id];
       saveState(tab, state);
+
+      if (!wasChecked) {
+        var pts = parseInt(item.getAttribute('data-points')) || 0;
+        item.classList.add('earning');
+        setTimeout(function() { item.classList.remove('earning'); }, 600);
+
+        var rect = item.getBoundingClientRect();
+        floatPoints(pts, rect.right - 60, rect.top - 10);
+      }
+
       renderPanel(tab);
+      updateScoreCard();
     });
   });
 
@@ -497,11 +814,13 @@
     if (confirm('Сбросить прогресс текущего чеклиста?')) {
       localStorage.removeItem(STORAGE_PREFIX + currentTab);
       renderPanel(currentTab);
+      updateScoreCard();
     }
   });
 
   /* ---- Init ---- */
   renderPanel('start');
+  updateScoreCard();
 })();
 </script>
 </body>
