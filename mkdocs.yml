@@ -1,4 +1,4 @@
-site_name: "Создание музыки — Интерактивный курс"
+site_name: "18 ПОТОК - Статьи и WIKI"
 site_description: "Полный курс по созданию музыки: от основ звука до мастеринга"
 site_url: "https://programmcompose.github.io/potoksite"
 docs_dir: "docs"
@@ -121,19 +121,19 @@ nav:
   - "Главная": index.md
   - "Этап №0: Подготовка к продакшну":
       - "etap0/index.md"
-  - "Том I: Основы звукозаписи":
-      - "tom1/index.md"
-      - "Что такое звук": "tom1/osnovy-zvuka.md"
-      - "Оборудование": "tom1/oborudovanie.md"
-      - "DAW — выбор программы": "tom1/daw.md"
+  - "Основы звукозаписи":
+      - "zvuk/index.md"
+      - "Что такое звук": "zvuk/osnovy-zvuka.md"
+      - "Оборудование": "zvuk/oborudovanie.md"
+      - "DAW — выбор программы": "zvuk/daw.md"
+      - "Запись инструментов": "zvuk/zapis.md"
   - "Этап №5: Теория музыки для продюсеров":
       - "tom2/index.md"
       - "Нотная грамота": "tom2/notnaya-gramota.md"
       - "Аккорды и гармония": "tom2/akkordy.md"
       - "Ритм и перкуссия": "tom2/ritm.md"
-  - "Том III: Практика производства":
+  - "Этап №2: Сведение и VST Плагины":
       - "tom3/index.md"
-      - "Запись инструментов": "tom3/zapis.md"
       - "Сведение (mixing)": "tom3/mixing.md"
       - "Мастеринг": "tom3/mastering.md"
   - "Маршрут обучения": "roadmap.md"
