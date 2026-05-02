@@ -147,6 +147,7 @@ nav:
   - "Словарь Терминов": "glossary.md"
   - "🎛️ Интерактивные инструменты":
       - "tools/index.html"
+      - "✅ Чеклист старта": "tools/checklist/index.html"
       - "Wavetable-синтезатор": "tools/wavetable/index.html"
       - "Карта гармоний": "tools/harmony-map/index.html"
       - "Визуализация волн": "tools/waveforms/index.html"
