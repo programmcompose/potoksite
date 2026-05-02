@@ -2,7 +2,7 @@ site_name: "18 ПОТОК - Статьи и WIKI"
 site_description: "Полный курс по созданию музыки: от основ звука до мастеринга"
 site_url: "https://programmcompose.github.io/potoksite"
 docs_dir: "docs"
-copyright: "© 2024 Создание музыки. Все права защищены."
+copyright: "© 2026 - 18 ПОТОК - IY BEATS"
 
 theme:
   name: material
@@ -56,6 +56,7 @@ plugins:
         theme: dark
 
 extra:
+  generator: false
   fonts:
     text: Inter
     code: JetBrains Mono
@@ -126,10 +127,10 @@ nav:
       - "🔀 Сведение (mixing)": "tom3/mixing.md"
       - "💿 Мастеринг": "tom3/mastering.md"
   - "🎼 Этап №5: Теория музыки для продюсеров":
-      - "tom2/index.md"
-      - "📝 Нотная грамота": "tom2/notnaya-gramota.md"
-      - "🎵 Аккорды и гармония": "tom2/akkordy.md"
-      - "🥁 Ритм и перкуссия": "tom2/ritm.md"
+      - "etap5/index.md"
+      - "📝 Нотная грамота": "etap5/notnaya-gramota.md"
+      - "🎵 Аккорды и гармония": "etap5/akkordy.md"
+      - "🥁 Ритм и перкуссия": "etap5/ritm.md"
   - "🗺️ Маршрут обучения": "roadmap.md"
   - "🔌 Плагины — подборка":
       - "plugins/index.md"

@@ -43,7 +43,7 @@ C + E + G
 ```
 Звучание: яркое, радостное, стабильное
 
-<audio class="audio-player" controls preload="none" src="../../assets/audio/chord-c-major.wav"></audio>
+<audio class="audio-player" controls preload="none" src="../../assets/audio/chord-c-major.ogg"></audio>
 
 ### Минорный аккорд (Minor)
 
@@ -55,7 +55,7 @@ C + D# + G
 ```
 Звучание: мрачное, грустное, напряжённое
 
-<audio class="audio-player" controls preload="none" src="../../assets/audio/chord-c-minor.wav"></audio>
+<audio class="audio-player" controls preload="none" src="../../assets/audio/chord-c-minor.ogg"></audio>
 
 !!! tip
     Разница между мажором и минором — всего в **одном полутоне** (терция).
@@ -83,7 +83,7 @@ C + D# + G
 C → G → Am → F
 ```
 
-<audio class="audio-player" controls preload="none" src="../../assets/audio/progression-iv-vi-iv.wav"></audio>
+<audio class="audio-player" controls preload="none" src="../../assets/audio/progression-iv-vi-iv.ogg"></audio>
 
 Используется в: Let It Be (Beatles), With Or Without You (U2),
 Don't Worry Be Happy (Lionel Richie)
@@ -94,7 +94,7 @@ Don't Worry Be Happy (Lionel Richie)
 Am → F → C → G
 ```
 
-<audio class="audio-player" controls preload="none" src="../../assets/audio/progression-vi-iv-i-v.wav"></audio>
+<audio class="audio-player" controls preload="none" src="../../assets/audio/progression-vi-iv-i-v.ogg"></audio>
 
 Используется в: Someone Like You (Adele), Stay With Me (Sam Smith)
 
@@ -106,7 +106,7 @@ Am → F → C → G
 C → Am → F → G
 ```
 
-<audio class="audio-player" controls preload="none" src="../../assets/audio/progression-50s.wav"></audio>
+<audio class="audio-player" controls preload="none" src="../../assets/audio/progression-50s.ogg"></audio>
 
 ## Септаккорды
 
@@ -115,10 +115,10 @@ C → Am → F → G
 
 | Тип | Формула от C | Ноты | Звучание | Пример |
 |-----|-------------|------|----------|--------|
-| Cmaj7 | C-E-G-B | C-E-G-B | Тёплое, джазовое | <audio class="audio-player" controls preload="none" src="../../assets/audio/chord-cmaj7.wav"></audio> |
-| Cm7 | C-D#-G-Bb | C-D#-G-Bb | Меланхоличное | <audio class="audio-player" controls preload="none" src="../../assets/audio/chord-cm7.wav"></audio> |
-| C7 | C-E-G-Bb | C-E-G-Bb | Натяжение, блюз | <audio class="audio-player" controls preload="none" src="../../assets/audio/chord-c7.wav"></audio> |
-| Cminmaj7 | C-D#-G-B | C-D#-G-B | Мистическое | <audio class="audio-player" controls preload="none" src="../../assets/audio/chord-cminmaj7.wav"></audio> |
+| Cmaj7 | C-E-G-B | C-E-G-B | Тёплое, джазовое | <audio class="audio-player" controls preload="none" src="../../assets/audio/chord-cmaj7.ogg"></audio> |
+| Cm7 | C-D#-G-Bb | C-D#-G-Bb | Меланхоличное | <audio class="audio-player" controls preload="none" src="../../assets/audio/chord-cm7.ogg"></audio> |
+| C7 | C-E-G-Bb | C-E-G-Bb | Натяжение, блюз | <audio class="audio-player" controls preload="none" src="../../assets/audio/chord-c7.ogg"></audio> |
+| Cminmaj7 | C-D#-G-B | C-D#-G-B | Мистическое | <audio class="audio-player" controls preload="none" src="../../assets/audio/chord-cminmaj7.ogg"></audio> |
 
 ## Практика
 

@@ -25,7 +25,7 @@
 
 Пример: все 12 нот хроматической шкалы
 
-<audio class="audio-player" controls preload="none" src="../../assets/audio/chromatic-scale.wav"></audio>
+<audio class="audio-player" controls preload="none" src="../../assets/audio/chromatic-scale.ogg"></audio>
 
 !!! note
     Нота **A4 = 440 Гц** — международный стандарт настройки.
@@ -55,7 +55,7 @@
 C → D → E → F → G → A → B → C
 ```
 
-<audio class="audio-player" controls preload="none" src="../../assets/audio/c-major-scale.wav"></audio>
+<audio class="audio-player" controls preload="none" src="../../assets/audio/c-major-scale.ogg"></audio>
 
 ## Интервалы
 
@@ -63,14 +63,14 @@ C → D → E → F → G → A → B → C
 
 | Интервал | Ноты от C | Характер | Пример |
 |----------|-----------|----------|--------|
-| Унисон | C → C | Та же нота | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-unison.wav"></audio> |
-| Малая секунда | C → C# | Натяжение | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-minor-2nd.wav"></audio> |
-| Большая секунда | C → D | Шаг | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-major-2nd.wav"></audio> |
-| Малая терция | C → D# | Мрачность | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-minor-3rd.wav"></audio> |
-| Большая терция | C → E | Радость | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-major-3rd.wav"></audio> |
-| Кварта | C → F | Открытость | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-perfect-4th.wav"></audio> |
-| Квинта | C → G | Стабильность | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-perfect-5th.wav"></audio> |
-| Октава | C → C | Повторение | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-octave.wav"></audio> |
+| Унисон | C → C | Та же нота | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-unison.ogg"></audio> |
+| Малая секунда | C → C# | Натяжение | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-minor-2nd.ogg"></audio> |
+| Большая секунда | C → D | Шаг | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-major-2nd.ogg"></audio> |
+| Малая терция | C → D# | Мрачность | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-minor-3rd.ogg"></audio> |
+| Большая терция | C → E | Радость | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-major-3rd.ogg"></audio> |
+| Кварта | C → F | Открытость | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-perfect-4th.ogg"></audio> |
+| Квинта | C → G | Стабильность | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-perfect-5th.ogg"></audio> |
+| Октава | C → C | Повторение | <audio class="audio-player" controls preload="none" src="../../assets/audio/interval-octave.ogg"></audio> |
 
 ---
 
