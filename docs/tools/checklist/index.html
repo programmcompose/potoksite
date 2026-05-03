@@ -31,6 +31,75 @@
 
   .container { max-width: 640px; margin: 0 auto; }
 
+  /* ---- Layout: sidebar + main ---- */
+  .app-layout {
+    display: flex;
+    gap: 20px;
+    align-items: flex-start;
+  }
+
+  .side-panel {
+    width: 180px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: sticky;
+    top: 24px;
+  }
+
+  .side-btn {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    background: var(--bg-light);
+    border: 1px solid var(--bg-lighter);
+    border-radius: var(--radius);
+    color: var(--text);
+    font-size: 0.95em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: inherit;
+    text-align: left;
+    width: 100%;
+  }
+
+  .side-btn:hover {
+    border-color: var(--accent);
+    background: rgba(0, 188, 212, 0.08);
+  }
+
+  .side-btn.active {
+    border-color: var(--accent);
+    background: rgba(0, 188, 212, 0.15);
+    color: var(--accent);
+    box-shadow: 0 0 12px rgba(0, 188, 212, 0.15);
+  }
+
+  .side-btn .tab-icon {
+    font-size: 1.3em;
+    flex-shrink: 0;
+  }
+
+  .side-btn .tab-points {
+    margin-left: auto;
+    font-size: 0.7em;
+    opacity: 0.4;
+    font-weight: 400;
+  }
+
+  .side-btn.active .tab-points {
+    opacity: 0.7;
+    color: var(--gold);
+  }
+
+  .main-content {
+    flex: 1;
+    min-width: 0;
+  }
+
   header {
     text-align: center;
     margin-bottom: 28px;
@@ -407,10 +476,32 @@
     display: block;
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 768px) {
     header h1 { font-size: 1.5em; }
-    .tab-btn { min-width: 90px; padding: 10px 8px; font-size: 0.8em; }
     .score-value { font-size: 2.4em; }
+
+    /* Sidebar → горизонтальный ряд сверху */
+    .app-layout {
+      flex-direction: column;
+    }
+
+    .side-panel {
+      position: static;
+      width: 100%;
+      flex-direction: row;
+      gap: 8px;
+    }
+
+    .side-btn {
+      flex: 1;
+      justify-content: center;
+      padding: 10px 8px;
+      font-size: 0.85em;
+    }
+
+    .side-btn .tab-points {
+      display: none;
+    }
   }
 </style>
 </head>
@@ -440,24 +531,28 @@
     <div class="score-total-items" id="score-total-items">0 / 0 выполнено</div>
   </div>
 
-  <div class="tabs" id="tabs">
-    <button class="tab-btn active" data-tab="start">
-      <span class="tab-icon">🚀</span>
-      Старт
-      <span class="tab-points" id="tab-points-start">0 / 150 XP</span>
-    </button>
-    <button class="tab-btn" data-tab="beats">
-      <span class="tab-icon">🥁</span>
-      Биты
-      <span class="tab-points" id="tab-points-beats">0 / 250 XP</span>
-    </button>
-    <button class="tab-btn" data-tab="mixing">
-      <span class="tab-icon">🎚️</span>
-      Сведение
-      <span class="tab-points" id="tab-points-mixing">0 / 200 XP</span>
-    </button>
-  </div>
+  <div class="app-layout">
+    <!-- Side Panel -->
+    <nav class="side-panel" id="side-panel">
+      <button class="side-btn active" data-tab="start">
+        <span class="tab-icon">🚀</span>
+        Старт
+        <span class="tab-points" id="tab-points-start">0 / 150 XP</span>
+      </button>
+      <button class="side-btn" data-tab="beats">
+        <span class="tab-icon">🥁</span>
+        Биты
+        <span class="tab-points" id="tab-points-beats">0 / 250 XP</span>
+      </button>
+      <button class="side-btn" data-tab="mixing">
+        <span class="tab-icon">🎚️</span>
+        Сведение
+        <span class="tab-points" id="tab-points-mixing">0 / 200 XP</span>
+      </button>
+    </nav>
 
+    <!-- Main Content -->
+    <div class="main-content">
   <!-- ====== СТАРТ ====== -->
   <div class="checklist-panel active" id="panel-start">
     <div class="progress-bar-container">
@@ -578,6 +673,9 @@
     </div>
   </div>
 
+  </div>
+  </div>
+
   <button class="reset-btn" id="reset-btn">Сбросить прогресс текущего чеклиста</button>
 </div>
 
@@ -598,7 +696,7 @@
   ];
 
   /* ---- Tab switching ---- */
-  var tabBtns = document.querySelectorAll('.tab-btn');
+  var tabBtns = document.querySelectorAll('.side-btn');
   var panels = document.querySelectorAll('.checklist-panel');
 
   function switchTab(tab) {
