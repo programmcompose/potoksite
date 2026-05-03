@@ -259,8 +259,8 @@ export class RotaryKnob {
     cx.setTransform(px, 0, 0, px, 0, 0);
     cx.clearRect(0, 0, cw / px, ch / px);
 
-    const xc = sCss;
-    const yc = sCss;
+    const xc = sCss / 2;
+    const yc = sCss / 2;
     const r = sCss * 0.42;
 
     // Normalized value 0..1

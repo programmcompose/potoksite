@@ -5,7 +5,6 @@ import { AudioEngine } from "./audio/AudioEngine.js";
 import { buildDemoBuffer } from "./audio/demoBuffer.js";
 import { EQVisualizer } from "./ui/EQVisualizer.js";
 import { RotaryKnob } from "./ui/RotaryKnob.js";
-import { applyPreset, PRESET_LIST } from "./ui/PresetManager.js";
 import { BAND_PALETTE } from "./utils/palette.js";
 import { generateRandomTargetBands } from "./audio/targetGenerator.js";
 import { compareEqCurves } from "./audio/guessCompare.js";
@@ -25,7 +24,6 @@ import { compareEqCurves } from "./audio/guessCompare.js";
  * @typedef {{
  *   bands: EQParamsBand[],
  *   wet: number,
- *   preset?: string,
  * }} ExportedEQSettings
  */
 
@@ -184,7 +182,6 @@ export class EQComparisonWidget {
       });
     }
     this.engine.eq?.resetFlat();
-    /** @type {HTMLSelectElement} */ (this._elements.preset).value = "flat";
     this._syncUIFromEngine();
     this.engine.refreshAutoGain();
     this._updateGameResultNeutral();
@@ -280,22 +277,11 @@ export class EQComparisonWidget {
 </section>
 
 <section class="eq-ab-panel eq-ab-presets-panel">
-  <label>Пресеты
-    <select data-field="preset"></select>
-  </label>
   <button type="button" class="eq-ab-btn eq-ab-secondary" data-act="export">Экспорт JSON</button>
   <button type="button" class="eq-ab-btn eq-ab-secondary" data-act="importPrompt">Импорт…</button>
 </section>`;
 
     this._gatherRefs(root);
-
-    /** @type {HTMLSelectElement} */ const sel = /** @type {any} */ (this._elements.preset);
-    for (const p of PRESET_LIST) {
-      const o = document.createElement("option");
-      o.value = p.id;
-      o.textContent = p.label;
-      sel.appendChild(o);
-    }
   }
 
   /** @private @param {HTMLElement} root */
@@ -308,7 +294,6 @@ export class EQComparisonWidget {
       time: q('[data-field="time"]'),
       loop: q('[data-field="loop"]'),
       file: q('[data-field="file"]'),
-      preset: q('[data-field="preset"]'),
       bandsRoot: q(".eq-ab-bands-root"),
       gameResult: q('[data-field="gameResult"]'),
     };
@@ -445,15 +430,6 @@ export class EQComparisonWidget {
       this._updateTimeUi();
     });
 
-    /** @type {HTMLSelectElement} */ const presetEl /** @type {any} */ = this._elements.preset;
-    presetEl.addEventListener("change", () => {
-      if (!this.engine.eq) return;
-      applyPreset(this.engine.eq, presetEl.value);
-      this._syncUIFromEngine();
-      this._updateGameResultNeutral();
-      this._scheduleEqHook();
-    });
-
     this._buttons.forEach((btn) => {
       btn.addEventListener("click", () => this._onButton(/** @type {HTMLElement} */ (btn).dataset.act));
     });
@@ -525,7 +501,6 @@ export class EQComparisonWidget {
       case "reset": {
         await this._ensureAudio();
         this.engine.eq?.resetFlat();
-        /** @type {HTMLSelectElement} */ (this._elements.preset).value = "flat";
         this._syncUIFromEngine();
         this._updateGameResultNeutral();
         this._scheduleEqHook();
@@ -703,17 +678,6 @@ export class EQComparisonWidget {
     return this._flipDryWetExtreme();
   }
 
-  /** @param {string} name */
-  setPreset(name) {
-    void this._ensureAudio().then(() => {
-      if (!this.engine.eq) return;
-      applyPreset(this.engine.eq, name);
-      /** @type {HTMLSelectElement} */ (this._elements.preset).value = PRESET_LIST.some((x) => x.id === name) ? name : "flat";
-      this._syncUIFromEngine();
-      this._scheduleEqHook();
-    });
-  }
-
   /**
    * @param {number} bandIndex
    * @param {Partial<{ frequency: number, gain: number, q: number, type: EqFilterType }>} params
@@ -736,12 +700,9 @@ export class EQComparisonWidget {
         q: 1,
         type: /** @type {EqFilterType} */ ("peaking"),
       }));
-    /** @type {HTMLSelectElement} */
-    const pr /** @type {any} */ = this._elements.preset;
     return {
       bands,
       wet: this._initialized ? this.engine.getDryWet() : 0.5,
-      preset: pr?.value,
     };
   }
 
@@ -760,9 +721,6 @@ export class EQComparisonWidget {
         });
       });
       if (typeof json.wet === "number") this.setDryWet(json.wet);
-      if (json.preset && typeof json.preset === "string") {
-        /** @type {HTMLSelectElement} */ (this._elements.preset).value = json.preset;
-      }
       this._syncUIFromEngine();
       this._updateGameResultNeutral();
       this._scheduleEqHook();
