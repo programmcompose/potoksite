@@ -234,61 +234,6 @@
   color: rgba(232, 234, 240, 0.7);
 }
 
-.eq-ab-diff-band {
-  padding: 8px 10px;
-}
-
-.eq-ab-diff-cell {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  flex-wrap: wrap;
-  margin-top: 3px;
-}
-
-.eq-ab-diff-label {
-  font-weight: 700;
-  color: var(--eq-muted);
-  font-size: 0.65em;
-  min-width: 12px;
-}
-
-.eq-ab-diff-target {
-  color: #f43f5e;
-  font-weight: 600;
-}
-
-.eq-ab-diff-user {
-  color: #fef08a;
-  font-weight: 600;
-}
-
-.eq-ab-diff-arrow {
-  color: var(--eq-muted);
-  font-size: 0.85em;
-}
-
-.eq-ab-diff-sign {
-  color: rgba(232, 234, 240, 0.5);
-  font-size: 0.85em;
-}
-
-.eq-ab-diff-warn {
-  color: #f87171;
-  font-weight: 700;
-}
-
-.eq-ab-diff-type {
-  display: inline-block;
-  margin-top: 3px;
-  padding: 2px 6px;
-  border-radius: 4px;
-  background: rgba(248, 113, 113, 0.15);
-  color: #f87171;
-  font-size: 0.85em;
-  font-weight: 600;
-}
-
 .eq-ab-seek-row {
   margin-top: 12px;
 }
