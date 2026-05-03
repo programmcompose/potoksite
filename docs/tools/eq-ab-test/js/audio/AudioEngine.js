@@ -11,7 +11,9 @@ import { SpectrumAnalyser } from "./Analyser.js";
  */
 
 /**
- * Parallel dry + EQ wet paths with gain crossfade, single shared buffer playback.
+ * Две параллельные цепочки из одного буфера:
+ * канал A — целевой (скрытый) EQ, канал B — EQ пользователя.
+ * Переключение / кроссфейд между A и B.
  */
 export class AudioEngine {
   /** @type {Emitter | null} */
@@ -23,21 +25,29 @@ export class AudioEngine {
     /** @private @type {AudioBuffer | null} */ this._buffer = null;
 
     /** @type {AudioContext | null} */ this.ctx = null;
+    /** Целевая эквализация «на угадывание». */
+    /** @type {EQProcessor | null} */ this.eqTarget = null;
+    /** Эквалайзер пользователя (режим B). */
     /** @type {EQProcessor | null} */ this.eq = null;
+
     /** @readonly */ this.eqBands = 5;
 
     /** @type {SpectrumAnalyser | null} */ this.spectrum = null;
 
-    /** @private @type {GainNode | null} */ this._dryGain = null;
-    /** @private @type {GainNode | null} */ this._wetGain = null;
+    /** @private @type {GainNode | null} */ this._gainA = null;
+    /** @private @type {GainNode | null} */ this._gainB = null;
     /** @private @type {GainNode | null} */ this._mergeOut = null;
     /** @private @type {DynamicsCompressorNode | null} */ this._comp = null;
     /** @private @type {AnalyserNode | null} */ this._outAnalyser = null;
 
-    /** @private 0=dry … 1=wet */
-    this._wet = 0.5;
-    /** @private */ this._dryPeak = 0.5;
-    /** @private */ this._wetPeak = 0.5;
+    /** @private 1 = услышать только B (пользователя), 0 = только A (цель) */
+    this._wet = 0;
+    /** @private базовый пик буфера */
+    this._bufferPeak = 0.45;
+    /** @private множитель нормализации после цели / пользователя */
+    this._peakMulA = 0.45;
+    /** @private */
+    this._peakMulB = 0.45;
 
     /** @private @type {AudioBufferSourceNode | null} */ this._source = null;
     /** @private */ this._playing = false;
@@ -47,7 +57,6 @@ export class AudioEngine {
   }
 
   /**
-   * Wire graph after user gesture AudioContext resume.
    * @param {AudioContext} ctx
    * @param {AttachOpts} [opts]
    */
@@ -57,9 +66,10 @@ export class AudioEngine {
     this.eqBands = Math.min(16, Math.max(1, opts.eqBands ?? 5));
     this.events = opts.events ?? null;
 
+    this.eqTarget = new EQProcessor(ctx, this.eqBands, null);
     this.eq = new EQProcessor(ctx, this.eqBands, this.events);
-    this._dryGain = ctx.createGain();
-    this._wetGain = ctx.createGain();
+    this._gainA = ctx.createGain();
+    this._gainB = ctx.createGain();
     this._mergeOut = ctx.createGain();
     this._mergeOut.gain.value = 0.95;
 
@@ -74,9 +84,10 @@ export class AudioEngine {
     this._outAnalyser.fftSize = 2048;
     this._outAnalyser.smoothingTimeConstant = 0.65;
 
-    this.eq.output.connect(this._wetGain);
-    this._dryGain.connect(this._mergeOut);
-    this._wetGain.connect(this._mergeOut);
+    this.eqTarget.output.connect(this._gainA);
+    this.eq.output.connect(this._gainB);
+    this._gainA.connect(this._mergeOut);
+    this._gainB.connect(this._mergeOut);
     this._mergeOut.connect(this._comp);
     this._comp.connect(this._outAnalyser);
     this._outAnalyser.connect(ctx.destination);
@@ -99,15 +110,21 @@ export class AudioEngine {
       if (x > peak) peak = x;
     }
     peak = Math.max(peak, 0.001);
-    this._dryPeak = peak;
-    this._wetPeak = peak;
+    this._bufferPeak = peak;
+    this._peakMulA = peak;
+    this._peakMulB = peak;
   }
 
-  /**
-   * @param {boolean} full if true, close context-related nodes
-   */
   dispose(full = true) {
     this.stopImmediate();
+    if (this.eqTarget) {
+      try {
+        this.eqTarget.dispose();
+      } catch {
+        /* noop */
+      }
+      this.eqTarget = null;
+    }
     if (this.eq) {
       try {
         this.eq.dispose();
@@ -117,16 +134,16 @@ export class AudioEngine {
       this.eq = null;
     }
     try {
-      this._dryGain?.disconnect();
-      this._wetGain?.disconnect();
+      this._gainA?.disconnect();
+      this._gainB?.disconnect();
       this._mergeOut?.disconnect();
       this._comp?.disconnect();
       this._outAnalyser?.disconnect();
     } catch {
       /* noop */
     }
-    this._dryGain = null;
-    this._wetGain = null;
+    this._gainA = null;
+    this._gainB = null;
     this._mergeOut = null;
     this._comp = null;
     this._outAnalyser = null;
@@ -134,9 +151,6 @@ export class AudioEngine {
     if (full) this.ctx = null;
   }
 
-  /**
-   * @param {string} audioSrc
-   */
   async loadBuffer(audioSrc) {
     const url = audioSrc ?? this._srcUrl;
     if (!url || !this.ctx) throw new Error("AudioEngine: missing URL or context");
@@ -150,46 +164,39 @@ export class AudioEngine {
     return buf;
   }
 
-  /**
-   * Use an existing buffer (e.g. generated demo).
-   * @param {AudioBuffer} buf
-   */
   setExternalBuffer(buf) {
     this._buffer = buf;
     this._estimateNormalization();
   }
 
-  /**
-   * @param {boolean} [ramp]
-   */
   updateCrossfadeGains(ramp = true) {
     const ctx = this.ctx;
-    const d = this._dryGain;
-    const w = this._wetGain;
-    if (!ctx || !d || !w) return;
+    const ga = this._gainA;
+    const gb = this._gainB;
+    if (!ctx || !ga || !gb) return;
 
-    const wet = Math.max(0, Math.min(1, this._wet));
-    const dry = 1 - wet;
+    const bAmt = Math.max(0, Math.min(1, this._wet));
+    const aAmt = 1 - bAmt;
 
-    const dryGain = (dry / this._dryPeak) * 0.85;
-    const wetGain = (wet / this._wetPeak) * 0.85;
+    const gAlinear = (aAmt / Math.max(this._peakMulA, 1e-6)) * 0.85;
+    const gBlinear = (bAmt / Math.max(this._peakMulB, 1e-6)) * 0.85;
 
     const t = ctx.currentTime;
     const rampT = ramp ? 0.02 : 0;
     if (rampT > 0) {
-      d.gain.cancelScheduledValues(t);
-      w.gain.cancelScheduledValues(t);
-      d.gain.setValueAtTime(d.gain.value, t);
-      w.gain.setValueAtTime(w.gain.value, t);
-      d.gain.linearRampToValueAtTime(dryGain, t + rampT);
-      w.gain.linearRampToValueAtTime(wetGain, t + rampT);
+      ga.gain.cancelScheduledValues(t);
+      gb.gain.cancelScheduledValues(t);
+      ga.gain.setValueAtTime(ga.gain.value, t);
+      gb.gain.setValueAtTime(gb.gain.value, t);
+      ga.gain.linearRampToValueAtTime(gAlinear, t + rampT);
+      gb.gain.linearRampToValueAtTime(gBlinear, t + rampT);
     } else {
-      d.gain.setValueAtTime(dryGain, t);
-      w.gain.setValueAtTime(wetGain, t);
+      ga.gain.setValueAtTime(gAlinear, t);
+      gb.gain.setValueAtTime(gBlinear, t);
     }
   }
 
-  /** @param {number} ratio 0..1 */
+  /** @param {number} ratio 0 = только A (цель), 1 = только B (пользователь), между — микс */
   setDryWet(ratio) {
     this._wet = Math.max(0, Math.min(1, ratio));
     this.updateCrossfadeGains(true);
@@ -202,14 +209,14 @@ export class AudioEngine {
   play() {
     const ctx = this.ctx;
     const buf = this._buffer;
-    if (!ctx || !buf || !this.eq || !this._dryGain || !this._wetGain) return;
+    if (!ctx || !buf || !this.eq || !this.eqTarget || !this._gainA || !this._gainB) return;
     this.stopImmediate();
 
     const src = ctx.createBufferSource();
     src.buffer = buf;
     src.loop = this._loop;
 
-    src.connect(this._dryGain);
+    src.connect(this.eqTarget.input);
     src.connect(this.eq.input);
 
     this._scheduledStart = ctx.currentTime + 0.02;
@@ -272,7 +279,6 @@ export class AudioEngine {
     this._playing = false;
   }
 
-  /** @param {number} t seconds */
   seek(t) {
     const buf = this._buffer;
     if (!buf) return;
@@ -303,14 +309,21 @@ export class AudioEngine {
   }
 
   refreshAutoGain() {
-    if (!this.eq) return;
-    const bands = this.eq.exportAllBands();
-    let sumDb = 0;
-    for (const b of bands) {
-      if (b.type === "peaking" || b.type === "lowshelf" || b.type === "highshelf") sumDb += b.gain;
+    if (!this.eq || !this.eqTarget) return;
+
+    let sumA = 0;
+    let sumB = 0;
+    for (const b of this.eqTarget.exportAllBands()) {
+      if (b.type === "peaking" || b.type === "lowshelf" || b.type === "highshelf") sumA += b.gain;
     }
-    const trim = Math.max(-6, Math.min(6, -sumDb * 0.15));
-    this._wetPeak = this._dryPeak * Math.pow(10, -trim / 20);
+    for (const b of this.eq.exportAllBands()) {
+      if (b.type === "peaking" || b.type === "lowshelf" || b.type === "highshelf") sumB += b.gain;
+    }
+    const trimA = Math.max(-8, Math.min(8, -sumA * 0.14));
+    const trimB = Math.max(-8, Math.min(8, -sumB * 0.14));
+    const base = Math.max(this._bufferPeak, 0.001);
+    this._peakMulA = base * Math.pow(10, -trimA / 20);
+    this._peakMulB = base * Math.pow(10, -trimB / 20);
     this.updateCrossfadeGains(true);
   }
 

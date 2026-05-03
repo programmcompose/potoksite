@@ -261,57 +261,43 @@ button.accent {
 .diff-btn[data-diff="hard"].active { background: var(--red); color: #fff; }
 .diff-btn[data-diff="god"].active { background: var(--pink); color: #fff; box-shadow: 0 0 12px rgba(233,69,96,0.4); }
 
-/* Sliders */
-.slider-row {
+/* VST-style Knobs */
+.knob-row {
   display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 10px;
-  font-size: 0.85em;
+  justify-content: center;
+  gap: 24px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
 }
 
-.slider-row label {
-  min-width: 100px;
-  font-weight: 600;
+.knob-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.knob-label {
+  font-size: 0.7em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
   color: var(--text-dim);
 }
 
-.slider-row input[type="range"] {
-  flex: 1;
-  -webkit-appearance: none;
-  appearance: none;
-  height: 6px;
-  border-radius: 3px;
-  background: var(--bg);
-  outline: none;
-  cursor: pointer;
-}
-
-.slider-row input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--pink);
-  cursor: pointer;
-  box-shadow: 0 0 8px rgba(233,69,96,0.4);
-}
-
-.slider-row input[type="range"]::-moz-range-thumb {
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background: var(--pink);
-  cursor: pointer;
-  border: none;
-}
-
-.slider-val {
-  min-width: 60px;
-  text-align: right;
+.knob-value {
+  font-size: 0.75em;
   font-weight: 700;
-  font-variant-numeric: tabular-nums;
   color: var(--pink);
+  font-variant-numeric: tabular-nums;
+  min-height: 1em;
+}
+
+.knob-canvas {
+  cursor: ns-resize;
+  border-radius: 50%;
 }
 
 /* Toggle switch */
@@ -794,22 +780,22 @@ kbd {
       <div class="toggle-switch" id="phoneToggle"></div>
     </div>
 
-    <div class="slider-row">
-      <label>🔊 Boost (дБ)</label>
-      <input type="range" id="boostSlider" min="0" max="30" value="20" step="1">
-      <span class="slider-val" id="boostVal">+20 дБ</span>
-    </div>
-
-    <div class="slider-row">
-      <label>🎯 Q (ширина)</label>
-      <input type="range" id="qSlider" min="0.1" max="10" value="3" step="0.1">
-      <span class="slider-val" id="qVal">3.0</span>
-    </div>
-
-    <div class="slider-row">
-      <label>🔉 Громкость</label>
-      <input type="range" id="volumeSlider" min="0" max="100" value="50" step="1">
-      <span class="slider-val" id="volumeVal">50%</span>
+    <div class="knob-row">
+      <div class="knob-wrap">
+        <span class="knob-label">Boost</span>
+        <canvas class="knob-canvas" id="knobBoost" width="100" height="100"></canvas>
+        <span class="knob-value" id="knobBoostVal">+20 дБ</span>
+      </div>
+      <div class="knob-wrap">
+        <span class="knob-label">Q</span>
+        <canvas class="knob-canvas" id="knobQ" width="100" height="100"></canvas>
+        <span class="knob-value" id="knobQVal">3.0</span>
+      </div>
+      <div class="knob-wrap">
+        <span class="knob-label">Volume</span>
+        <canvas class="knob-canvas" id="knobVolume" width="100" height="100"></canvas>
+        <span class="knob-value" id="knobVolumeVal">50%</span>
+      </div>
     </div>
   </div>
 
@@ -1235,29 +1221,6 @@ kbd {
         ctx.fillRect(x, h - barH, barWidth - 1, barH);
       }
 
-      // Target freq marker
-      if (state.targetFreq && state.roundActive) {
-        const logMin = Math.log10(20);
-        const logMax = Math.log10(20000);
-        const logFreq = Math.log10(state.targetFreq);
-        const ratio = (logFreq - logMin) / (logMax - logMin);
-        const x = ratio * w;
-
-        ctx.strokeStyle = 'rgba(233,69,96,0.8)';
-        ctx.lineWidth = 2;
-        ctx.setLineDash([4, 4]);
-        ctx.beginPath();
-        ctx.moveTo(x, 0);
-        ctx.lineTo(x, h);
-        ctx.stroke();
-        ctx.setLineDash([]);
-
-        ctx.fillStyle = 'rgba(233,69,96,0.9)';
-        ctx.font = 'bold 11px Inter, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.fillText(state.targetFreq + ' Гц', x, 14);
-      }
-
       // Freq labels
       ctx.fillStyle = 'rgba(255,255,255,0.25)';
       ctx.font = '9px Inter, sans-serif';
@@ -1307,9 +1270,9 @@ kbd {
       const st = localStorage.getItem('eqpink_settings');
       if (st) {
         const s = JSON.parse(st);
-        if (s.boost != null) { state.boost = s.boost; $('boostSlider').value = s.boost; $('boostVal').textContent = '+' + s.boost + ' дБ'; }
-        if (s.q != null) { state.q = s.q; $('qSlider').value = s.q; $('qVal').textContent = s.q.toFixed(1); }
-        if (s.volume != null) { state.volume = s.volume; $('volumeSlider').value = s.volume * 100; $('volumeVal').textContent = Math.round(s.volume * 100) + '%'; }
+        if (s.boost != null) { knobs.boost.value = s.boost; state.boost = s.boost; }
+        if (s.q != null) { knobs.q.value = s.q; state.q = s.q; }
+        if (s.volume != null) { knobs.volume.value = s.volume; state.volume = s.volume; }
         if (s.difficulty) { state.difficulty = s.difficulty; document.querySelectorAll('.diff-btn').forEach(b => { b.classList.toggle('active', b.dataset.diff === s.difficulty); }); }
         if (s.phoneMode) { state.phoneMode = true; $('phoneToggle').classList.add('active'); }
       }
@@ -1374,27 +1337,217 @@ kbd {
     $('btnBypass').classList.remove('active');
   });
 
-  // Sliders
-  $('boostSlider').addEventListener('input', () => {
-    const v = parseInt($('boostSlider').value);
-    $('boostVal').textContent = '+' + v + ' дБ';
-    setBoost(v);
-    saveScore();
+  // ===== VST-style Knobs =====
+  const knobs = {
+    boost:  { value: state.boost,  min: 0,   max: 30,  step: 1,   onSet: (v) => { setBoost(v); state.boost = v; } },
+    q:      { value: state.q,      min: 0.1, max: 10,  step: 0.1, onSet: (v) => { setQ(v); state.q = v; } },
+    volume: { value: state.volume, min: 0,   max: 1,   step: 0.01,onSet: (v) => { setVolume(v); state.volume = v; } },
+  };
+
+  function knobValueToAngle(knob) {
+    const range = knob.max - knob.min;
+    if (range === 0) return 0;
+    return (knob.value - knob.min) / range;
+  }
+
+  function knobAngleToValue(knob, t) {
+    return knob.min + Math.max(0, Math.min(1, t)) * (knob.max - knob.min);
+  }
+
+  function drawKnob(canvasId, valId, knob, dragging) {
+    const canvas = $(canvasId);
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    const size = 80;
+    const dpr = window.devicePixelRatio || 1;
+    canvas.width = size * dpr;
+    canvas.height = size * dpr;
+    canvas.style.width = size + 'px';
+    canvas.style.height = size + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const cx = size / 2;
+    const cy = size / 2;
+    const r = size / 2 - 6;
+
+    ctx.clearRect(0, 0, size, size);
+
+    // Outer ring shadow
+    ctx.beginPath();
+    ctx.arc(cx, cy, r + 2, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    ctx.fill();
+
+    // Outer ring
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    const ringGrad = ctx.createLinearGradient(cx - r, cy - r, cx + r, cy + r);
+    ringGrad.addColorStop(0, '#3a3a5c');
+    ringGrad.addColorStop(0.5, '#2a2a4c');
+    ringGrad.addColorStop(1, '#1a1a3c');
+    ctx.fillStyle = ringGrad;
+    ctx.fill();
+
+    // Ring border
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)';
+    ctx.lineWidth = 1;
+    ctx.stroke();
+
+    // Arc track (270 degree sweep)
+    const startAngle = Math.PI * 0.75;
+    const endAngle = Math.PI * 2.25;
+    const sweep = endAngle - startAngle;
+
+    ctx.beginPath();
+    ctx.arc(cx, cy, r - 4, startAngle, endAngle);
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // Arc fill based on value
+    const t = knobValueToAngle(knob);
+    const valAngle = startAngle + t * sweep;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r - 4, startAngle, valAngle);
+    const arcGrad = ctx.createLinearGradient(0, 0, size, size);
+    arcGrad.addColorStop(0, '#e94560');
+    arcGrad.addColorStop(0.5, '#ff6b8a');
+    arcGrad.addColorStop(1, '#00d4ff');
+    ctx.strokeStyle = arcGrad;
+    ctx.lineWidth = 3;
+    ctx.stroke();
+
+    // Tick marks
+    for (let i = 0; i <= 10; i++) {
+      const tickAngle = startAngle + (i / 10) * sweep;
+      const innerR = r - 10;
+      const outerR = r - 6;
+      ctx.beginPath();
+      ctx.moveTo(cx + Math.cos(tickAngle) * innerR, cy + Math.sin(tickAngle) * innerR);
+      ctx.lineTo(cx + Math.cos(tickAngle) * outerR, cy + Math.sin(tickAngle) * outerR);
+      ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+    }
+
+    // Inner knob body
+    const innerR = r - 14;
+    ctx.beginPath();
+    ctx.arc(cx, cy, innerR, 0, Math.PI * 2);
+    const innerGrad = ctx.createRadialGradient(cx, cy - 4, 0, cx, cy, innerR);
+    innerGrad.addColorStop(0, '#3a3a5c');
+    innerGrad.addColorStop(1, '#1a1a3c');
+    ctx.fillStyle = innerGrad;
+    ctx.fill();
+
+    // Indicator line
+    const indAngle = startAngle + t * sweep;
+    const indInner = innerR * 0.35;
+    const indOuter = innerR * 0.85;
+    ctx.beginPath();
+    ctx.moveTo(cx + Math.cos(indAngle) * indInner, cy + Math.sin(indAngle) * indInner);
+    ctx.lineTo(cx + Math.cos(indAngle) * indOuter, cy + Math.sin(indAngle) * indOuter);
+    ctx.strokeStyle = dragging ? '#00d4ff' : '#e94560';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.stroke();
+    ctx.lineCap = 'butt';
+
+    // Center dot
+    ctx.beginPath();
+    ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+    ctx.fillStyle = dragging ? '#00d4ff' : '#e94560';
+    ctx.fill();
+
+    // Glow when dragging
+    if (dragging) {
+      ctx.beginPath();
+      ctx.arc(cx, cy, innerR + 2, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(0,212,255,0.3)';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+  }
+
+  function formatKnobValue(name, val) {
+    if (name === 'boost') return '+' + Math.round(val) + ' дБ';
+    if (name === 'q') return val.toFixed(1);
+    if (name === 'volume') return Math.round(val * 100) + '%';
+    return val;
+  }
+
+  function updateKnobDisplay(name) {
+    const knob = knobs[name];
+    const valId = 'knob' + name.charAt(0).toUpperCase() + name.slice(1) + 'Val';
+    $(valId).textContent = formatKnobValue(name, knob.value);
+    drawKnob('knob' + name.charAt(0).toUpperCase() + name.slice(1), valId, knob, false);
+  }
+
+  // Initial knob draw
+  ['boost', 'q', 'volume'].forEach(updateKnobDisplay);
+
+  // Knob interaction
+  let activeKnob = null;
+  let activeKnobName = '';
+  let lastMouseY = 0;
+
+  ['boost', 'q', 'volume'].forEach(name => {
+    const canvasId = 'knob' + name.charAt(0).toUpperCase() + name.slice(1);
+    const canvas = $(canvasId);
+    if (!canvas) return;
+    const knob = knobs[name];
+
+    function onDown(e) {
+      e.preventDefault();
+      activeKnob = knob;
+      activeKnobName = name;
+      lastMouseY = e.clientY || (e.touches && e.touches[0].clientY);
+      drawKnob(canvasId, 'knob' + name.charAt(0).toUpperCase() + name.slice(1) + 'Val', knob, true);
+    }
+
+    canvas.addEventListener('mousedown', onDown);
+    canvas.addEventListener('touchstart', onDown, { passive: false });
+
+    // Mouse wheel support
+    canvas.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const delta = -e.deltaY * 0.002;
+      knob.value = Math.max(knob.min, Math.min(knob.max, knob.value + delta * (knob.max - knob.min)));
+      knob.onSet(knob.value);
+      updateKnobDisplay(name);
+      saveScore();
+    }, { passive: false });
   });
 
-  $('qSlider').addEventListener('input', () => {
-    const v = parseFloat($('qSlider').value);
-    $('qVal').textContent = v.toFixed(1);
-    setQ(v);
+  function onKnobMove(clientY) {
+    if (!activeKnob) return;
+    const delta = (lastMouseY - clientY) * 0.005;
+    lastMouseY = clientY;
+    activeKnob.value = Math.max(activeKnob.min, Math.min(activeKnob.max, activeKnob.value + delta * (activeKnob.max - activeKnob.min)));
+    activeKnob.onSet(activeKnob.value);
+    updateKnobDisplay(activeKnobName);
     saveScore();
-  });
+  }
 
-  $('volumeSlider').addEventListener('input', () => {
-    const v = parseInt($('volumeSlider').value);
-    $('volumeVal').textContent = v + '%';
-    setVolume(v / 100);
-    saveScore();
-  });
+  function onKnobUp() {
+    if (activeKnob) {
+      ['boost', 'q', 'volume'].forEach(n => {
+        const canvasId = 'knob' + n.charAt(0).toUpperCase() + n.slice(1);
+        drawKnob(canvasId, 'knob' + n.charAt(0).toUpperCase() + n.slice(1) + 'Val', knobs[n], false);
+      });
+    }
+    activeKnob = null;
+    activeKnobName = '';
+  }
+
+  document.addEventListener('mousemove', (e) => onKnobMove(e.clientY));
+  document.addEventListener('mouseup', onKnobUp);
+  document.addEventListener('touchmove', (e) => {
+    if (activeKnob) { e.preventDefault(); onKnobMove(e.touches[0].clientY); }
+  }, { passive: false });
+  document.addEventListener('touchend', onKnobUp);
 
   // Freq guess sync
   $('freqSlider').addEventListener('input', () => {
@@ -1544,6 +1697,7 @@ kbd {
 
   // Init
   loadState();
+  ['boost', 'q', 'volume'].forEach(updateKnobDisplay);
   drawSpectrum();
 })();
 </script>

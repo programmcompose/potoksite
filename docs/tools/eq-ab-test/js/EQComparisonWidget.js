@@ -7,6 +7,8 @@ import { EQVisualizer } from "./ui/EQVisualizer.js";
 import { RotaryKnob } from "./ui/RotaryKnob.js";
 import { applyPreset, PRESET_LIST } from "./ui/PresetManager.js";
 import { BAND_PALETTE } from "./utils/palette.js";
+import { generateRandomTargetBands } from "./audio/targetGenerator.js";
+import { compareEqCurves } from "./audio/guessCompare.js";
 
 /** @typedef {'peaking' | 'lowshelf' | 'highshelf' | 'lowpass' | 'highpass'} EqFilterType */
 
@@ -128,9 +130,70 @@ export class EQComparisonWidget {
 
     this._emitter.on("eqchange", () => this._scheduleEqHook());
     this._initialized = true;
+    this._rollTargetBands();
+    /* Слушать сначала цель (A): чистый сигнал только с скрытым EQ цели */
+    this.engine.setDryWet(0);
+    /** @type {HTMLInputElement} */ (this._elements.dryWet).value = "0";
     this._syncUIFromEngine();
     if (typeof this._opts.onReady === "function") this._opts.onReady();
     this.engine.refreshAutoGain();
+  }
+
+  /** @private */
+  _rollTargetBands() {
+    const et = this.engine.eqTarget;
+    if (!et) return;
+    const rnd = generateRandomTargetBands(this._eqBands);
+    for (let i = 0; i < et.numBands; i++) {
+      const b = rnd[i] ?? { frequency: 500, gain: 0, q: 1, type: /** @type {EqFilterType} */ ("peaking") };
+      et.setBandParams(i, {
+        frequency: b.frequency,
+        gain: b.gain,
+        q: b.q,
+        type: /** @type {EqFilterType} */ (b.type),
+      });
+    }
+    this.engine.eq?.resetFlat();
+    /** @type {HTMLSelectElement} */ (this._elements.preset).value = "flat";
+    this._syncUIFromEngine();
+    this.engine.refreshAutoGain();
+    this._updateGameResultNeutral();
+  }
+
+  /** @private */
+  _updateGameResultNeutral() {
+    const el /** @type {HTMLElement|null} */ = /** @type {any} */ (this._elements.gameResult);
+    if (!el) return;
+    el.classList.remove("eq-ab-game-result--ok", "eq-ab-game-result--bad");
+    if (!this._initialized) {
+      el.textContent = "";
+      return;
+    }
+    const wet = this.engine.getDryWet();
+    if (wet <= 0.02) el.textContent = "Слышите сейчас: цель A (скрытый эквалайзер). Переключитесь на B — настраивайте полосы под слух.";
+    else if (wet >= 0.98) el.textContent = "Слышите сейчас: ваш режим B. Подстройте крутилки и граф, затем CHECK.";
+    else el.textContent = "Микс A↔B. Для точной проверки лучше CHECK на сугубо B против эталона.";
+  }
+
+  /** @private */
+  _runCheckGuess() {
+    /** @type {HTMLElement|null} */ const el /** @type {any} */ = this._elements.gameResult;
+    const et = this.engine.eqTarget;
+    const ue = this.engine.eq;
+    if (!el || !et || !ue) return;
+    const wet = this.engine.getDryWet();
+    const mixNote =
+      wet >= 0.97 ? "" : " <em>(режим смеси A+B: для честной оценки сдвиньте ползунок на B).</em>";
+    const r = compareEqCurves(et, ue);
+    if (r.pass) {
+      el.classList.add("eq-ab-game-result--ok");
+      el.classList.remove("eq-ab-game-result--bad");
+      el.innerHTML = `<strong>Угадал.</strong> Сходство формы фильтров ≈ ${r.scorePct} %, ошибка по АЧХ в среднем ${r.rmseDb.toFixed(2)} dB.${mixNote} Можно взять «Новую цель».`;
+      return;
+    }
+    el.classList.add("eq-ab-game-result--bad");
+    el.classList.remove("eq-ab-game-result--ok");
+    el.innerHTML = `<strong>Пока мимо.</strong> Сходство ≈ ${r.scorePct} %, средняя ошибка по кривой ${r.rmseDb.toFixed(2)} dB (пик ${r.maxDb.toFixed(1)} dB).${mixNote} Переключайте A⇄B и докручивайте полосы.`;
   }
 
   /** @private */ _scheduleEqHook() {
@@ -142,8 +205,12 @@ export class EQComparisonWidget {
   _buildSkeleton() {
     const root = this.containerEl;
     root.innerHTML = `
-<section class="eq-ab-panel eq-ab-intro" aria-label="EQ сравнение">
-  <p class="eq-ab-hint">Play — старт движка. График: цвет = полоса, узел — перетаскивание по частоте и gain/Q.</p>
+<section class="eq-ab-panel eq-ab-intro" aria-label="Игра EQ">
+  <p class="eq-ab-hint">
+    Режим <strong>A</strong> — сигнал с <em>скрытым эквалайзером</em> (этот звук нужно повторить).
+    Переключитесь на <strong>B</strong> и подстройте полосы. <strong>CHECK</strong> сравнивает вашу форму фильтров с целью.
+    График — только ваш режим <strong>B</strong>.
+  </p>
 </section>
 
 <section class="eq-ab-panel" aria-label="Плеер">
@@ -159,16 +226,19 @@ export class EQComparisonWidget {
   </div>
 </section>
 
-<section class="eq-ab-panel" aria-label="Dry и Wet">
+<section class="eq-ab-panel" aria-label="A цель или B ваш EQ">
   <div class="eq-ab-crossfade-wrap">
-    <span class="eq-ab-ab-label"><span>A</span> <abbr title="без эквалайзера">Dry</abbr></span>
-    <input type="range" data-field="dryWet" min="0" max="100" value="50" aria-label="Смешение dry и wet" />
-    <span class="eq-ab-ab-label"><span>B</span> <abbr title="с эквалайзером">Wet</abbr></span>
+    <span class="eq-ab-ab-label"><span>A</span> <abbr title="скрытая цель угадайки">Цель</abbr></span>
+    <input type="range" data-field="dryWet" min="0" max="100" value="0" aria-label="A цель или B ваш микшер" />
+    <span class="eq-ab-ab-label"><span>B</span> <abbr title="ваш эквалайзер">Вы</abbr></span>
   </div>
   <div class="eq-ab-quick-row">
-    <button type="button" class="eq-ab-btn" data-act="toggleAB">A/B: мгновенно</button>
-    <button type="button" class="eq-ab-btn eq-ab-secondary" data-act="reset">Сброс EQ</button>
+    <button type="button" class="eq-ab-btn" data-act="toggleAB">A ⇄ B</button>
+    <button type="button" class="eq-ab-btn eq-ab-check" data-act="checkGuess">CHECK</button>
+    <button type="button" class="eq-ab-btn eq-ab-secondary" data-act="newRound">Новая цель</button>
+    <button type="button" class="eq-ab-btn eq-ab-secondary" data-act="reset">Сброс B</button>
   </div>
+  <div class="eq-ab-game-result" data-field="gameResult" aria-live="polite"></div>
 </section>
 
 <section class="eq-ab-panel eq-ab-viz-panel" aria-label="Кривая эквалайзера">
@@ -210,6 +280,7 @@ export class EQComparisonWidget {
       file: q('[data-field="file"]'),
       preset: q('[data-field="preset"]'),
       bandsRoot: q(".eq-ab-bands-root"),
+      gameResult: q('[data-field="gameResult"]'),
     };
     this._buttons = root.querySelectorAll("[data-act]");
   }
@@ -313,6 +384,7 @@ export class EQComparisonWidget {
       if (!this._initialized) return;
       const ratio = dw.valueAsNumber / 100;
       this.engine.setDryWet(ratio);
+      this._updateGameResultNeutral();
       this._scheduleEqHook();
     });
 
@@ -348,6 +420,7 @@ export class EQComparisonWidget {
       if (!this.engine.eq) return;
       applyPreset(this.engine.eq, presetEl.value);
       this._syncUIFromEngine();
+      this._updateGameResultNeutral();
       this._scheduleEqHook();
     });
 
@@ -381,15 +454,16 @@ export class EQComparisonWidget {
   }
 
   /**
-   * Мгновенное переключение Dry ↔ Wet на крайних положениях.
+   * Переключение между A (цель) и B (ваш EQ) по краям ползунка.
    * @private
-   * @returns {boolean} true если сейчас сторона B (wet)
+   * @returns {boolean} true если слышится B
    */
   _flipDryWetExtreme() {
     const wetNow = this.engine.getDryWet();
     const next = wetNow < 0.5 ? 1 : 0;
     this.engine.setDryWet(next);
     /** @type {HTMLInputElement} */ (this._elements.dryWet).value = String(next * 100);
+    this._updateGameResultNeutral();
     if (typeof this._opts.onA_BToggle === "function") this._opts.onA_BToggle(next >= 0.5);
     return next >= 0.5;
   }
@@ -423,7 +497,18 @@ export class EQComparisonWidget {
         this.engine.eq?.resetFlat();
         /** @type {HTMLSelectElement} */ (this._elements.preset).value = "flat";
         this._syncUIFromEngine();
+        this._updateGameResultNeutral();
         this._scheduleEqHook();
+        return;
+      }
+      case "checkGuess": {
+        await this._ensureAudio();
+        this._runCheckGuess();
+        return;
+      }
+      case "newRound": {
+        await this._ensureAudio();
+        this._rollTargetBands();
         return;
       }
       case "export": {
@@ -486,6 +571,7 @@ export class EQComparisonWidget {
       void this._ensureAudio().then(() => {
         this.engine.setDryWet(0);
         /** @type {HTMLInputElement} */ (this._elements.dryWet).value = "0";
+        this._updateGameResultNeutral();
         if (typeof this._opts.onA_BToggle === "function") this._opts.onA_BToggle(false);
       });
       return;
@@ -495,6 +581,7 @@ export class EQComparisonWidget {
       void this._ensureAudio().then(() => {
         this.engine.setDryWet(1);
         /** @type {HTMLInputElement} */ (this._elements.dryWet).value = "100";
+        this._updateGameResultNeutral();
         if (typeof this._opts.onA_BToggle === "function") this._opts.onA_BToggle(true);
       });
       return;
@@ -506,6 +593,7 @@ export class EQComparisonWidget {
         const next = cur < 0.5 ? 1 : 0;
         this.engine.setDryWet(next);
         /** @type {HTMLInputElement} */ (this._elements.dryWet).value = String(next * 100);
+        this._updateGameResultNeutral();
         if (typeof this._opts.onA_BToggle === "function") this._opts.onA_BToggle(next >= 0.5);
       });
       return;
@@ -569,12 +657,13 @@ export class EQComparisonWidget {
     void this._ensureAudio().then(() => {
       this.engine.setDryWet(ratio);
       /** @type {HTMLInputElement} */ (this._elements.dryWet).value = String(ratio * 100);
+      this._updateGameResultNeutral();
     });
   }
 
   /**
-   * Мгновенное переключение A/B (сухая / через EQ).
-   * @returns {boolean} текущее состояние после переключения (true = B / wet), если движок ещё не готов — false
+   * Переключение только A ⇄ только B.
+   * @returns {boolean} после переключения true если слышится B (пользователь)
    */
   toggleAB() {
     if (!this._initialized) {
@@ -645,6 +734,7 @@ export class EQComparisonWidget {
         /** @type {HTMLSelectElement} */ (this._elements.preset).value = json.preset;
       }
       this._syncUIFromEngine();
+      this._updateGameResultNeutral();
       this._scheduleEqHook();
     });
   }
