@@ -333,7 +333,7 @@ export class EQComparisonWidget {
 
       const bi = b;
       const freqKnob = new RotaryKnob({
-        label: "Freq",
+        label: `F${bi}`,
         min: 0,
         max: 1,
         value: 0.5,
@@ -346,7 +346,7 @@ export class EQComparisonWidget {
         },
       });
       const gainKnob = new RotaryKnob({
-        label: "Gain",
+        label: `G${bi}`,
         min: -24,
         max: 24,
         value: 0,
@@ -360,7 +360,7 @@ export class EQComparisonWidget {
         },
       });
       const qKnob = new RotaryKnob({
-        label: "Q",
+        label: `Q${bi}`,
         min: 0.1,
         max: 10,
         value: 1,

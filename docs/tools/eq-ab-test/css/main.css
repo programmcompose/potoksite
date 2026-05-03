@@ -274,7 +274,7 @@
 
 .eq-ab-knob-slot {
   flex: 1 1 calc(33% - 6px);
-  min-width: 58px;
+  min-width: 48px;
   display: flex;
   justify-content: center;
 }
@@ -293,8 +293,8 @@
 
 .eq-ab-knob-ring {
   display: block;
-  width: 72px;
-  height: 72px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
   cursor: ns-resize;
   touch-action: none;
