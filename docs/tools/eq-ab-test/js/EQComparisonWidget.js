@@ -185,6 +185,10 @@ export class EQComparisonWidget {
     this._syncUIFromEngine();
     this.engine.refreshAutoGain();
     this._updateGameResultNeutral();
+    // Скрываем целевую кривую при новом раунде
+    if (this._viz) {
+      this._viz.hideTarget();
+    }
   }
 
   /** @private */
@@ -215,12 +219,33 @@ export class EQComparisonWidget {
     if (r.pass) {
       el.classList.add("eq-ab-game-result--ok");
       el.classList.remove("eq-ab-game-result--bad");
-      el.innerHTML = `<strong>Угадал.</strong> Сходство формы фильтров ≈ ${r.scorePct} %, ошибка по АЧХ в среднем ${r.rmseDb.toFixed(2)} dB.${mixNote} Можно взять «Новую цель».`;
+      // Раскрываем целевую кривую на графике
+      if (this._viz) {
+        this._viz.setShowTarget(() => this.engine.eqTarget);
+      }
+      // Показываем скрытые настройки EQ цели
+      const targetBands = et.exportAllBands();
+      let bandsHtml = "<div class='eq-ab-target-reveal'><strong>Скрытый EQ (цель):</strong><div class='eq-ab-target-bands'>";
+      for (let i = 0; i < targetBands.length; i++) {
+        const b = targetBands[i];
+        const col = BAND_PALETTE[i % BAND_PALETTE.length];
+        const freqLabel = b.frequency >= 1000 ? `${(b.frequency / 1000).toFixed(1)} k` : `${Math.round(b.frequency)}`;
+        const gainLabel = `${b.gain >= 0 ? "+" : ""}${b.gain.toFixed(1)} dB`;
+        bandsHtml += `<div class='eq-ab-target-band' style='--band-color: ${col}'>
+          <span class='eq-ab-target-band-num'>Полоса ${i + 1}</span>
+          <span class='eq-ab-target-band-type'>${b.type}</span>
+          <span class='eq-ab-target-band-val'>${freqLabel}</span>
+          <span class='eq-ab-target-band-val'>${gainLabel}</span>
+          <span class='eq-ab-target-band-val'>Q ${b.q.toFixed(2)}</span>
+        </div>`;
+      }
+      bandsHtml += "</div></div>";
+      el.innerHTML = `<strong>Угадал.</strong> Сходство формы фильтров ≈ ${r.scorePct} %, ошибка по АЧХ в среднем ${r.rmseDb.toFixed(2)} dB.${mixNote} Можно взять «Новую цель».${bandsHtml}`;
       return;
     }
     el.classList.add("eq-ab-game-result--bad");
     el.classList.remove("eq-ab-game-result--ok");
-    el.innerHTML = `<strong>Пока мимо.</strong> Сходство ≈ ${r.scorePct} %, средняя ошибка по кривой ${r.rmseDb.toFixed(2)} dB (пик ${r.maxDb.toFixed(1)} dB).${mixNote} Переключайте A⇄B и докручивайте полосы.`;
+    el.innerHTML = `<strong>Пока мимо.</strong> Сходство ≈ ${r.scorePct} %, средняя ошибка по кривой ${r.rmseDb.toFixed(2)} dB (пик ${r.maxDb.toFixed(1)} dB).${mixNote} Переключайте A⇄B и докручивайте полосы.`;
   }
 
   /** @private */ _scheduleEqHook() {

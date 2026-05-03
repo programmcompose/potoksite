@@ -191,6 +191,49 @@
   background: rgba(127, 29, 29, 0.18);
 }
 
+.eq-ab-target-reveal {
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.eq-ab-target-bands {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.eq-ab-target-band {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  padding: 6px 8px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.25);
+  border-left: 3px solid var(--band-color, #fde047);
+  font-size: clamp(0.68rem, 1vw + 0.4rem, 0.76rem);
+  font-variant-numeric: tabular-nums;
+}
+
+.eq-ab-target-band-num {
+  font-weight: 700;
+  color: var(--band-color, #fde047);
+  margin-right: 2px;
+}
+
+.eq-ab-target-band-type {
+  color: var(--eq-muted);
+  font-size: 0.65em;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.eq-ab-target-band-val {
+  color: rgba(232, 234, 240, 0.7);
+}
+
 .eq-ab-seek-row {
   margin-top: 12px;
 }

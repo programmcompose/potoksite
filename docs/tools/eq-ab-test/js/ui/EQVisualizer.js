@@ -44,12 +44,27 @@ export class EQVisualizer {
 
     /** @private */ this._isMobile = /Android|iPhone|iPad|iPod|webOS/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1);
 
+    /** @private */ this._targetEq = /** @type {() => EQProcessor | null} */ (() => null);
+    /** @private */ this._showTarget = false;
+
     this._pointerDownBound = /** @type {(e: PointerEvent)=>void} */ ((e) => this._pointerDown(e));
-    this._pointerMoveBound = /** @type {(e: PointerEvent)=>void} */ ((e) => this._pointerMove(e));
-    this._pointerUpBound = /** @type {(e: PointerEvent)=>void} */ ((e) => this._pointerUp(e));
     this.canvas.addEventListener("pointerdown", this._pointerDownBound);
 
     this._buildLogGrid();
+  }
+
+  /**
+   * Set target EQ getter and whether to draw it.
+   * @param {() => EQProcessor | null} getTargetEq
+   */
+  setShowTarget(getTargetEq) {
+    this._targetEq = getTargetEq;
+    this._showTarget = true;
+  }
+
+  /** Reset target reveal (for new round). */
+  hideTarget() {
+    this._showTarget = false;
   }
 
   stop() {
@@ -299,6 +314,83 @@ export class EQVisualizer {
     ctx2d.lineWidth = isMobile ? 2.5 : 3;
     ctx2d.stroke();
     ctx2d.shadowBlur = 0;
+
+    // Рисуем целевую кривую, если она раскрыта
+    if (this._showTarget) {
+      const targetEq = this._targetEq();
+      if (targetEq) {
+        const tMags = new Float32Array(this._freqs.length);
+        targetEq.getCombinedMagnitudeAt(this._freqs, tMags);
+        const tPts /** @type {number[]} */ = [];
+        for (let i = 0; i < tMags.length; i++) {
+          const db = gainToDb(tMags[i]);
+          const clamped = Math.max(this.dbExtent.bot, Math.min(this.dbExtent.top, db));
+          tPts.push(ly.xForHz(this._freqs[i]), ly.yForDb(clamped));
+        }
+        // Заполнение целевой кривой
+        ctx2d.beginPath();
+        ctx2d.moveTo(tPts[0], ly.yForDb(0));
+        for (let i = 0; i < tPts.length; i += 2) ctx2d.lineTo(tPts[i], tPts[i + 1]);
+        ctx2d.lineTo(tPts[tPts.length - 2], ly.yForDb(0));
+        ctx2d.closePath();
+        ctx2d.fillStyle = "rgba(244,63,94,0.1)";
+        ctx2d.fill();
+        // Линия целевой кривой
+        ctx2d.beginPath();
+        ctx2d.moveTo(tPts[0], tPts[1]);
+        for (let i = 2; i < tPts.length; i += 2) ctx2d.lineTo(tPts[i], tPts[i + 1]);
+        ctx2d.strokeStyle = "#f43f5e";
+        ctx2d.shadowColor = "rgba(244,63,94,0.5)";
+        ctx2d.shadowBlur = isMobile ? 6 : 10;
+        ctx2d.lineWidth = isMobile ? 2 : 2.5;
+        ctx2d.setLineDash([8, 4]);
+        ctx2d.stroke();
+        ctx2d.setLineDash([]);
+        ctx2d.shadowBlur = 0;
+        // Узлы целевой кривой
+        const tNb = targetEq.numBands;
+        const tOneHzMag = new Float32Array(1);
+        /** @type {Float32Array} */
+        const tHzBuf = new Float32Array(1);
+        const tLabelR = isMobile ? 10 : 9;
+        for (let bi = 0; bi < tNb; bi++) {
+          const tbp = targetEq.getBandParams(bi);
+          tHzBuf[0] = tbp.frequency;
+          targetEq.getCombinedMagnitudeAt(tHzBuf, tOneHzMag);
+          const tpdb = gainToDb(tOneHzMag[0]);
+          const tdbg = Math.max(this.dbExtent.bot, Math.min(this.dbExtent.top, tpdb));
+          const thx = ly.xForHz(tbp.frequency);
+          const thy = ly.yForDb(tdbg);
+          ctx2d.beginPath();
+          ctx2d.arc(thx, thy, tLabelR * 0.55, 0, Math.PI * 2);
+          ctx2d.fillStyle = "#f43f5e";
+          ctx2d.strokeStyle = "rgba(255,255,255,0.7)";
+          ctx2d.lineWidth = isMobile ? 1.5 : 1.25;
+          ctx2d.fill();
+          ctx2d.stroke();
+          // Соединительная линия: узел цели → узел пользователя
+          if (bi < eq.numBands) {
+            const ubp = eq.getBandParams(bi);
+            const uOneHzMag = new Float32Array(1);
+            const uHzBuf = new Float32Array(1);
+            uHzBuf[0] = ubp.frequency;
+            eq.getCombinedMagnitudeAt(uHzBuf, uOneHzMag);
+            const updb = gainToDb(uOneHzMag[0]);
+            const udbg = Math.max(this.dbExtent.bot, Math.min(this.dbExtent.top, updb));
+            const uhx = ly.xForHz(ubp.frequency);
+            const uhy = ly.yForDb(udbg);
+            ctx2d.beginPath();
+            ctx2d.moveTo(thx, thy);
+            ctx2d.lineTo(uhx, uhy);
+            ctx2d.strokeStyle = "rgba(255,255,255,0.2)";
+            ctx2d.lineWidth = 1;
+            ctx2d.setLineDash([3, 3]);
+            ctx2d.stroke();
+            ctx2d.setLineDash([]);
+          }
+        }
+      }
+    }
 
     /* Узлы + хит-боксы по полосам — увеличенные на мобильных */
     const nb = eq.numBands;
