@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>MusicQuest — Курс Создания Музыки</title>
+<style>
+@import url('https://cdn.fontsource.org/sf-pro-text/sf-pro-text-400-normal.css');
+@import url('https://cdn.fontsource.org/sf-pro-text/sf-pro-text-500-normal.css');
+@import url('https://cdn.fontsource.org/sf-pro-text/sf-pro-text-700-normal.css');
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,sans-serif;background:#1a1a2e;overflow:hidden;height:100vh;width:100vw;user-select:none}
+.app-container{width:100%;height:100vh;max-width:480px;margin:0 auto;position:relative;display:flex;flex-direction:column;overflow:hidden;background:#1a1a2e}
+.daw-bg{position:absolute;top:0;left:0;right:0;bottom:0;z-index:0;overflow:hidden}
+.daw-grid{position:absolute;top:0;left:0;right:0;bottom:0;background-image:linear-gradient(rgba(255,255,255,0.025) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:30px 30px}
+.daw-grid-sub{position:absolute;top:0;left:0;right:0;bottom:0;background-image:linear-gradient(rgba(255,255,255,0.01) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.01) 1px,transparent 1px);background-size:6px 6px}
+.daw-track-lines{position:absolute;top:0;left:0;right:0;bottom:0}
+.daw-track-line{position:absolute;left:0;right:0;height:1px;background:rgba(255,255,255,0.03)}
+.transport-bar{background:linear-gradient(180deg,#2a2a3e 0%,#1e1e30 100%);border-bottom:1px solid #333355;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;z-index:10;position:relative}
+.transport-left{display:flex;align-items:center;gap:10px}
+.transport-logo{width:36px;height:36px;background:linear-gradient(135deg,#4caf50,#2e7d32);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:white;box-shadow:0 2px 8px rgba(76,175,80,0.3)}
+.transport-title{color:#e0e0f0;font-size:20px;font-weight:700}
+.transport-right{display:flex;align-items:center;gap:10px}
+.achievement-btn{width:36px;height:36px;border-radius:8px;border:1px solid #333355;background:rgba(255,255,255,0.05);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;transition:all 0.2s;position:relative}
+.achievement-btn:hover{background:rgba(255,255,255,0.1)}
+.achievement-btn .ach-badge{position:absolute;top:-4px;right:-4px;width:18px;height:18px;background:#ff4757;border-radius:50%;font-size:10px;font-weight:700;color:white;display:flex;align-items:center;justify-content:center;display:none}
+.achievement-btn .ach-badge.show{display:flex;animation:popBadge 0.3s cubic-bezier(0.4,0,0.2,1)}
+@keyframes popBadge{from{transform:scale(0)}to{transform:scale(1)}}
+.eq-bars{display:flex;align-items:flex-end;gap:2px;height:20px}
+.eq-bar{width:3px;background:#4caf50;border-radius:2px;animation:eqBounce 0.8s ease-in-out infinite}
+.eq-bar:nth-child(1){animation-delay:0s;height:8px}
+.eq-bar:nth-child(2){animation-delay:0.1s;height:14px}
+.eq-bar:nth-child(3){animation-delay:0.2s;height:10px}
+.eq-bar:nth-child(4){animation-delay:0.3s;height:18px}
+.eq-bar:nth-child(5){animation-delay:0.15s;height:6px}
+@keyframes eqBounce{0%,100%{transform:scaleY(1)}50%{transform:scaleY(0.4)}}
+.info-bar{background:rgba(0,0,0,0.2);border-bottom:1px solid rgba(255,255,255,0.05);padding:8px 16px;display:flex;align-items:center;gap:10px;z-index:10;position:relative}
+.info-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;border:2px solid rgba(255,255,255,0.1)}
+.info-bubble{flex:1;background:rgba(255,255,255,0.06);border-radius:12px;border-top-left-radius:4px;padding:10px 14px;font-size:13px;line-height:1.45;color:#b0b0cc;border:1px solid rgba(255,255,255,0.06)}
+.game-world{flex:1;position:relative;overflow-y:auto;overflow-x:hidden;padding:10px 0 120px;-webkit-overflow-scrolling:touch;z-index:5}
+.deco-area{position:absolute;top:0;left:0;right:0;bottom:0;z-index:3;pointer-events:none}
+.tree-path{position:relative;z-index:5;display:flex;flex-direction:column;align-items:center;padding:20px 0}
+.path-row{display:flex;align-items:center;justify-content:center;width:100%;padding:4px 0;transition:all 0.5s}
+.path-row.offset-right{transform:translateX(55px)}
+.path-row.offset-left{transform:translateX(-55px)}
+.path-row.offset-right2{transform:translateX(80px)}
+.path-row.offset-left2{transform:translateX(-80px)}
+.path-row.center{transform:translateX(0)}
+.path-connector{width:2px;height:16px;background:rgba(255,255,255,0.08);margin:-2px auto;position:relative}
+.path-connector.active{background:linear-gradient(180deg,rgba(76,175,80,0.4),rgba(76,175,80,0.1))}
+.path-connector.completed{background:rgba(76,175,80,0.3)}
+.step-node{width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:white;cursor:pointer;position:relative;transition:transform 0.2s;-webkit-tap-highlight-color:transparent;flex-shrink:0;z-index:2}
+.step-node:active{transform:scale(0.92)}
+.step-locked{background:linear-gradient(145deg,#2a2a3e,#222240);box-shadow:0 4px 0 #1a1a2e,0 5px 12px rgba(0,0,0,0.4),inset 0 2px 0 rgba(255,255,255,0.05);color:rgba(255,255,255,0.2);font-size:15px;cursor:default}
+.step-locked:active{transform:none}
+.step-available{background:linear-gradient(145deg,#4caf50,#388e3c);box-shadow:0 4px 0 #2e7d32,0 5px 15px rgba(76,175,80,0.4),inset 0 2px 0 rgba(255,255,255,0.3);animation:pulse-glow-green 2s ease-in-out infinite}
+.step-completed{background:linear-gradient(145deg,#4caf50,#388e3c);box-shadow:0 4px 0 #2e7d32,0 5px 12px rgba(0,0,0,0.3),inset 0 2px 0 rgba(255,255,255,0.2)}
+.step-current{background:linear-gradient(145deg,#f0c040,#d4a020);box-shadow:0 4px 0 #b08018,0 5px 15px rgba(240,192,64,0.5),inset 0 2px 0 rgba(255,255,255,0.4);animation:bounce 1.5s ease-in-out infinite}
+.step-current .crown{position:absolute;top:-12px;font-size:16px}
+.step-completed .checkmark{position:absolute;bottom:-3px;right:-3px;width:20px;height:20px;background:#4caf50;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;border:2px solid rgba(255,255,255,0.8)}
+.step-milestone{width:66px;height:66px;background:linear-gradient(145deg,#667eea,#764ba2);box-shadow:0 4px 0 #4a5aaa,0 5px 15px rgba(102,126,234,0.5),inset 0 2px 0 rgba(255,255,255,0.3)}
+@keyframes pulse-glow-green{0%,100%{box-shadow:0 4px 0 #2e7d32,0 5px 15px rgba(76,175,80,0.4),inset 0 2px 0 rgba(255,255,255,0.3)}50%{box-shadow:0 4px 0 #2e7d32,0 5px 25px rgba(76,175,80,0.6),inset 0 2px 0 rgba(255,255,255,0.3)}}
+@keyframes bounce{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+.deco-headphones{position:absolute;left:8px;top:50px;z-index:4;opacity:0.35}
+.deco-midi{position:absolute;right:5px;top:180px;z-index:4;opacity:0.35}
+.deco-speakers{position:absolute;left:5px;top:340px;z-index:4;opacity:0.3}
+.deco-mixer{position:absolute;right:8px;top:380px;z-index:4;opacity:0.3}
+.deco-records{position:absolute;left:10px;top:520px;z-index:4;opacity:0.3}
+.deco-mic{position:absolute;right:8px;top:560px;z-index:4;opacity:0.3}
+.xp-area{position:absolute;bottom:80px;left:0;right:0;padding:10px 20px;z-index:10}
+.xp-stats{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.xp-number{color:#e0e0f0;font-size:20px;font-weight:700}
+.xp-fire{color:#ff6b35;font-size:15px;display:flex;align-items:center;gap:4px}
+.xp-fire .flame-icon{font-size:18px}
+.level-display{color:#8888aa;font-size:13px;font-weight:500}
+.xp-progress-container{width:100%;height:14px;background:rgba(255,255,255,0.08);border-radius:10px;overflow:hidden;position:relative;border:1px solid rgba(255,255,255,0.05)}
+.xp-progress-fill{height:100%;background:linear-gradient(90deg,#4caf50,#66bb6a);border-radius:10px;transition:width 0.8s cubic-bezier(0.4,0,0.2,1);position:relative;box-shadow:0 0 12px rgba(76,175,80,0.4)}
+.xp-progress-fill::after{content:'';position:absolute;top:2px;left:4px;right:4px;height:4px;background:rgba(255,255,255,0.25);border-radius:4px}
+.streak-badge{position:absolute;right:-8px;top:-6px;background:linear-gradient(135deg,#4caf50,#388e3c);color:white;font-size:12px;font-weight:700;width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(76,175,80,0.3)}
+.bottom-section{position:absolute;bottom:0;left:0;right:0;z-index:20;background:linear-gradient(180deg,transparent 0%,rgba(26,26,46,0.95) 100%);padding:20px 16px 16px}
+.solve-btn{width:100%;padding:16px;background:linear-gradient(145deg,#4caf50,#388e3c);border:none;border-radius:14px;color:white;font-size:18px;font-weight:700;cursor:pointer;box-shadow:0 5px 0 #2e7d32,0 8px 20px rgba(76,175,80,0.3);transition:all 0.15s;text-shadow:0 1px 2px rgba(0,0,0,0.2);-webkit-tap-highlight-color:transparent;letter-spacing:0.5px}
+.solve-btn:active{transform:translateY(3px);box-shadow:0 2px 0 #2e7d32,0 4px 10px rgba(76,175,80,0.3)}
+.solve-btn:disabled{background:linear-gradient(145deg,#555,#444);box-shadow:0 5px 0 #333;cursor:not-allowed}
+.ach-notification{position:fixed;top:20px;left:50%;transform:translateX(-50%) translateY(-200px);z-index:500;background:linear-gradient(135deg,#2a2a4a,#1e1e38);border:1px solid #ffd700;border-radius:20px;padding:16px 20px;display:flex;align-items:center;gap:14px;box-shadow:0 8px 30px rgba(255,215,0,0.3),0 0 60px rgba(255,215,0,0.1);animation:achSlideIn 0.6s cubic-bezier(0.4,0,0.2,1) forwards;max-width:380px;width:calc(100% - 40px)}
+.ach-notification.hiding{animation:achSlideOut 0.5s cubic-bezier(0.4,0,0.2,1) forwards}
+@keyframes achSlideIn{from{transform:translateX(-50%) translateY(-200px);opacity:0}to{transform:translateX(-50%) translateY(0);opacity:1}}
+@keyframes achSlideOut{from{transform:translateX(-50%) translateY(0);opacity:1}to{transform:translateX(-50%) translateY(-200px);opacity:0}}
+.ach-notification .ach-icon{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,#ffd700,#ffaa00);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0;box-shadow:0 2px 10px rgba(255,215,0,0.4);animation:achIconPulse 1s ease-in-out infinite}
+@keyframes achIconPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.ach-notification .ach-info{flex:1}
+.ach-notification .ach-info .ach-label{font-size:11px;font-weight:700;color:#ffd700;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+.ach-notification .ach-info .ach-name{font-size:16px;font-weight:700;color:#e0e0f0;margin-bottom:2px}
+.ach-notification .ach-info .ach-xp{font-size:13px;color:#ff8855;font-weight:600}
+.ach-modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);z-index:100;display:none;align-items:flex-end;justify-content:center}
+.ach-modal-overlay.active{display:flex}
+.ach-modal-content{background:#2a2a3e;width:100%;max-width:480px;border-radius:24px 24px 0 0;padding:24px 20px 32px;animation:slideUp 0.4s cubic-bezier(0.4,0,0.2,1);max-height:85vh;overflow-y:auto;border:1px solid #3a3a55;border-bottom:none}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.ach-modal-handle{width:40px;height:4px;background:#4a4a60;border-radius:4px;margin:0 auto 16px}
+.ach-modal-title{font-size:22px;font-weight:700;color:#e0e0f0;margin-bottom:4px}
+.ach-modal-subtitle{font-size:14px;color:#8888aa;margin-bottom:20px}
+.ach-counter{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:20px;padding:12px;background:rgba(255,215,0,0.1);border-radius:12px;border:1px solid rgba(255,215,0,0.2)}
+.ach-counter-icon{font-size:28px}
+.ach-counter-text{font-size:18px;font-weight:700;color:#ffd700}
+.ach-counter-text span{color:#8888aa;font-weight:400}
+.ach-list{display:flex;flex-direction:column;gap:10px}
+.ach-item{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:14px;background:rgba(255,255,255,0.03);border:1px solid #3a3a55;transition:all 0.3s}
+.ach-item.unlocked{background:linear-gradient(145deg,rgba(255,215,0,0.1),rgba(255,170,0,0.05));border-color:rgba(255,215,0,0.3)}
+.ach-item.locked{opacity:0.5}
+.ach-item .ach-item-icon{width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.ach-item.unlocked .ach-item-icon{background:linear-gradient(135deg,#ffd700,#ffaa00);box-shadow:0 2px 8px rgba(255,215,0,0.3)}
+.ach-item.locked .ach-item-icon{background:#3a3a50;filter:grayscale(1)}
+.ach-item .ach-item-info{flex:1}
+.ach-item .ach-item-name{font-size:15px;font-weight:700;color:#e0e0f0;margin-bottom:2px}
+.ach-item.locked .ach-item-name{color:#8888aa}
+.ach-item .ach-item-desc{font-size:12px;color:#8888aa;line-height:1.3}
+.ach-item .ach-item-xp{font-size:13px;font-weight:700;color:#ff8855;flex-shrink:0}
+.ach-item.locked .ach-item-xp{color:#555}
+.ach-item .ach-item-check{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.ach-item.unlocked .ach-item-check{background:#4caf50;color:white}
+.ach-item.locked .ach-item-check{background:#3a3a50;color:#555}
+.modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);backdrop-filter:blur(8px);z-index:100;display:none;align-items:flex-end;justify-content:center;animation:fadeIn 0.3s}
+.modal-overlay.active{display:flex}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-content{background:#2a2a3e;width:100%;max-width:480px;border-radius:24px 24px 0 0;padding:24px 20px 32px;animation:slideUp 0.4s cubic-bezier(0.4,0,0.2,1);max-height:85vh;overflow-y:auto;border:1px solid #3a3a55;border-bottom:none}
+.modal-handle{width:40px;height:4px;background:#4a4a60;border-radius:4px;margin:0 auto 20px}
+.modal-header{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.modal-avatar{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;font-size:24px;flex-shrink:0;border:2px solid rgba(255,255,255,0.1)}
+.modal-bubble{flex:1}
+.modal-bubble h3{font-size:18px;color:#e0e0f0;margin-bottom:4px}
+.modal-bubble p{font-size:14px;color:#8888aa;line-height:1.4}
+.task-card{background:linear-gradient(145deg,#32324a,#2a2a3e);border-radius:16px;padding:20px;margin:16px 0;border:1px solid #3a3a55;position:relative;overflow:hidden}
+.task-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#4caf50,#66bb6a,#667eea)}
+.task-card .task-label{font-size:11px;font-weight:700;color:#4caf50;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px}
+.task-card .task-stage{font-size:12px;font-weight:700;color:#667eea;margin-bottom:6px}
+.task-card .task-title{font-size:20px;font-weight:700;color:#e0e0f0;margin-bottom:10px;line-height:1.3}
+.task-card .task-desc{font-size:14px;color:#9090b0;line-height:1.5}
+.task-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.task-tag{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;border:1px solid}
+.tag-style{background:rgba(102,126,234,0.15);color:#8899ee;border-color:rgba(102,126,234,0.3)}
+.tag-synth{background:rgba(255,107,53,0.15);color:#ff8855;border-color:rgba(255,107,53,0.3)}
+.tag-plugin{background:rgba(76,175,80,0.15);color:#66bb6a;border-color:rgba(76,175,80,0.3)}
+.tag-bpm{background:rgba(255,235,59,0.1);color:#e0c040;border-color:rgba(255,235,59,0.25)}
+.modal-buttons{display:flex;gap:10px;margin-top:20px}
+.btn-skip{flex:1;padding:14px;border:1px solid #3a3a55;border-radius:14px;background:rgba(255,255,255,0.03);color:#8888aa;font-size:16px;font-weight:600;cursor:pointer;transition:all 0.2s}
+.btn-skip:active{background:rgba(255,255,255,0.08)}
+.btn-accept{flex:2;padding:14px;border:none;border-radius:14px;background:linear-gradient(145deg,#4caf50,#388e3c);color:white;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 4px 0 #2e7d32;transition:all 0.15s}
+.btn-accept:active{transform:translateY(3px);box-shadow:0 1px 0 #2e7d32}
+.complete-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);z-index:200;display:none;align-items:center;justify-content:center;animation:fadeIn 0.3s}
+.complete-overlay.active{display:flex}
+.complete-content{text-align:center;color:white;animation:popIn 0.5s cubic-bezier(0.4,0,0.2,1)}
+@keyframes popIn{from{transform:scale(0.5);opacity:0}to{transform:scale(1);opacity:1}}
+.complete-content .big-icon{font-size:80px;margin-bottom:16px}
+.complete-content h2{font-size:28px;margin-bottom:8px;color:#e0e0f0}
+.complete-content .xp-gained{font-size:36px;font-weight:700;color:#4caf50;margin:12px 0;text-shadow:0 0 20px rgba(76,175,80,0.5)}
+.complete-content .xp-label{font-size:16px;color:#8888aa}
+.btn-continue{margin-top:24px;padding:16px 48px;background:linear-gradient(145deg,#4caf50,#388e3c);border:none;border-radius:14px;color:white;font-size:18px;font-weight:700;cursor:pointer;box-shadow:0 4px 0 #2e7d32}
+.btn-continue:active{transform:translateY(3px);box-shadow:0 1px 0 #2e7d32}
+.confetti-piece{position:fixed;z-index:250;width:10px;height:10px;border-radius:2px;animation:confetti-fall 2s ease-out forwards}
+@keyframes confetti-fall{0%{transform:translateY(-100vh) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.game-world::-webkit-scrollbar{width:0}
+.milestone-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.85);z-index:300;display:none;align-items:center;justify-content:center}
+.milestone-overlay.active{display:flex}
+.milestone-content{text-align:center;color:white;animation:popIn 0.5s cubic-bezier(0.4,0,0.2,1)}
+.milestone-content .milestone-icon{font-size:80px;margin-bottom:16px}
+.milestone-content h2{font-size:32px;margin-bottom:8px;background:linear-gradient(90deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.milestone-content p{font-size:18px;color:#8888aa;margin-bottom:8px}
+.milestone-content .bonus-xp{font-size:28px;font-weight:700;color:#f0c040;margin:12px 0}
+.stage-label{display:flex;align-items:center;justify-content:center;width:100%;padding:8px 0;margin:4px 0}
+.stage-label-inner{text-align:center;padding:8px 20px;border-radius:20px;font-size:13px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;max-width:90%;}
+.stage-label-inner .stage-icon{font-size:18px;margin-right:6px}
+.zone-e0{background:rgba(76,175,80,0.15);color:#66bb6a;border:1px solid rgba(76,175,80,0.3)}
+.zone-e1{background:rgba(33,150,243,0.15);color:#42a5f5;border:1px solid rgba(33,150,243,0.3)}
+.zone-e2{background:rgba(255,107,53,0.15);color:#ff8855;border:1px solid rgba(255,107,53,0.3)}
+.zone-e3{background:rgba(156,39,176,0.15);color:#ba68c8;border:1px solid rgba(156,39,176,0.3)}
+.zone-e4{background:rgba(102,126,234,0.15);color:#8899ee;border:1px solid rgba(102,126,234,0.3)}
+.zone-e5{background:rgba(255,193,7,0.15);color:#ffc107;border:1px solid rgba(255,193,7,0.3)}
+.zone-e6{background:rgba(76,175,80,0.15);color:#4caf50;border:1px solid rgba(76,175,80,0.3)}
+.zone-e7{background:rgba(0,188,212,0.15);color:#00bcd4;border:1px solid rgba(0,188,212,0.3)}
+.zone-e8{background:rgba(156,39,176,0.15);color:#9c27b0;border:1px solid rgba(156,39,176,0.3)}
+.zone-e9{background:rgba(255,215,0,0.15);color:#ffd700;border:1px solid rgba(255,215,0,0.3)}
+.back-link{position:absolute;top:12px;left:12px;z-index:50;color:rgba(255,255,255,0.5);text-decoration:none;font-size:13px;font-weight:500;transition:color 0.2s}
+.back-link:hover{color:rgba(255,255,255,0.9)}
+</style>
+</head>
+<body>
+<div class="app-container">
+  <a href="../index.html" class="back-link">← Инструменты</a>
+  <div class="daw-bg">
+    <div class="daw-grid"></div>
+    <div class="daw-grid-sub"></div>
+    <div class="daw-track-lines" id="trackLines"></div>
+  </div>
+  <div class="transport-bar">
+    <div class="transport-left">
+      <div class="transport-logo">♫</div>
+      <span class="transport-title">MusicQuest</span>
+    </div>
+    <div class="transport-right">
+      <div class="eq-bars"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>
+      <div class="achievement-btn" onclick="showAchievements()">🏆<div class="ach-badge" id="achBadge">0</div></div>
+      <div class="transport-btn" onclick="showTask()">▶</div>
+    </div>
+  </div>
+  <div class="info-bar">
+    <div class="info-avatar">🎧</div>
+    <div class="info-bubble" id="infoBubble">Проходи все 100 заданий курса: от установки DAW до саундтреков и коммерции!</div>
+  </div>
+  <div class="game-world" id="gameWorld">
+    <div class="deco-area">
+      <div class="deco-headphones"><svg width="80" height="70" viewBox="0 0 100 90"><path d="M20 50 Q20 15 50 15 Q80 15 80 50" fill="none" stroke="#4a4a6a" stroke-width="6" stroke-linecap="round"/><rect x="12" y="48" width="18" height="30" rx="8" fill="#3a3a55" stroke="#555577" stroke-width="1.5"/><rect x="70" y="48" width="18" height="30" rx="8" fill="#3a3a55" stroke="#555577" stroke-width="1.5"/><ellipse cx="21" cy="63" rx="6" ry="10" fill="#4caf50" opacity="0.3"/><ellipse cx="79" cy="63" rx="6" ry="10" fill="#4caf50" opacity="0.3"/></svg></div>
+      <div class="deco-midi"><svg width="100" height="60" viewBox="0 0 120 80"><rect x="5" y="10" width="110" height="55" rx="6" fill="#2a2a3e" stroke="#3a3a55" stroke-width="1.5"/><rect x="10" y="15" width="12" height="40" rx="2" fill="#e0e0e0"/><rect x="24" y="15" width="12" height="40" rx="2" fill="#e0e0e0"/><rect x="38" y="15" width="12" height="40" rx="2" fill="#e0e0e0"/><rect x="52" y="15" width="12" height="40" rx="2" fill="#e0e0e0"/><rect x="66" y="15" width="12" height="40" rx="2" fill="#e0e0e0"/><rect x="80" y="15" width="12" height="40" rx="2" fill="#e0e0e0"/><rect x="94" y="15" width="12" height="40" rx="2" fill="#e0e0e0"/><rect x="19" y="15" width="8" height="25" rx="2" fill="#333"/><rect x="33" y="15" width="8" height="25" rx="2" fill="#333"/><rect x="61" y="15" width="8" height="25" rx="2" fill="#333"/><rect x="75" y="15" width="8" height="25" rx="2" fill="#333"/><rect x="89" y="15" width="8" height="25" rx="2" fill="#333"/><rect x="38" y="15" width="12" height="40" rx="2" fill="#4caf50" opacity="0.5"/></svg></div>
+      <div class="deco-speakers"><svg width="60" height="80" viewBox="0 0 80 100"><rect x="5" y="10" width="30" height="70" rx="6" fill="#2a2a3e" stroke="#3a3a55" stroke-width="1.5"/><rect x="45" y="10" width="30" height="70" rx="6" fill="#2a2a3e" stroke="#3a3a55" stroke-width="1.5"/><circle cx="20" cy="60" r="10" fill="#1a1a2e" stroke="#4a4a6a" stroke-width="1"/><circle cx="20" cy="60" r="5" fill="#2a2a3e"/><circle cx="60" cy="60" r="10" fill="#1a1a2e" stroke="#4a4a6a" stroke-width="1"/><circle cx="60" cy="60" r="5" fill="#2a2a3e"/><circle cx="20" cy="78" r="2" fill="#4caf50" opacity="0.8"><animate attributeName="opacity" values="0.8;0.3;0.8" dur="2s" repeatCount="indefinite"/></circle><circle cx="60" cy="78" r="2" fill="#4caf50" opacity="0.8"><animate attributeName="opacity" values="0.8;0.3;0.8" dur="2s" repeatCount="indefinite"/></circle></svg></div>
+      <div class="deco-mixer"><svg width="80" height="100" viewBox="0 0 100 120"><rect x="5" y="5" width="90" height="110" rx="6" fill="#222240" stroke="#3a3a55" stroke-width="1.5"/><rect x="15" y="20" width="8" height="70" rx="2" fill="#1a1a2e"/><rect x="35" y="20" width="8" height="70" rx="2" fill="#1a1a2e"/><rect x="55" y="20" width="8" height="70" rx="2" fill="#1a1a2e"/><rect x="75" y="20" width="8" height="70" rx="2" fill="#1a1a2e"/><rect x="33" y="30" width="12" height="16" rx="3" fill="#4caf50" opacity="0.5"/></svg></div>
+      <div class="deco-records"><svg width="60" height="60" viewBox="0 0 80 80"><circle cx="40" cy="40" r="35" fill="#1a1a2e" stroke="#3a3a55" stroke-width="1.5"/><circle cx="40" cy="40" r="25" fill="none" stroke="#2a2a3e" stroke-width="1"/><circle cx="40" cy="40" r="8" fill="#4caf50" opacity="0.3"/><circle cx="40" cy="40" r="4" fill="#2a2a3e"/></svg></div>
+      <div class="deco-mic"><svg width="40" height="90" viewBox="0 0 60 110"><rect x="27" y="60" width="6" height="45" rx="3" fill="#3a3a55"/><rect x="15" y="100" width="30" height="6" rx="3" fill="#3a3a55"/><rect x="22" y="20" width="16" height="42" rx="8" fill="#2a2a3e" stroke="#3a3a55" stroke-width="1.5"/><ellipse cx="30" cy="18" rx="10" ry="14" fill="#333355" stroke="#4a4a6a" stroke-width="1"/></svg></div>
+    </div>
+    <div class="tree-path" id="treePath"></div>
+  </div>
+  <div class="xp-area">
+    <div class="xp-stats">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="xp-number" id="xpNumber">0 XP</span>
+        <span class="xp-fire"><span class="flame-icon">🔥</span><span id="streakNumber">8</span></span>
+        <span class="level-display" id="levelDisplay">Ранг: Новичок</span>
+      </div>
+      <div class="streak-badge" id="rankBadge">1</div>
+    </div>
+    <div class="xp-progress-container"><div class="xp-progress-fill" id="xpProgress" style="width:0%"></div></div>
+  </div>
+  <div class="bottom-section"><button class="solve-btn" id="solveBtn" onclick="showTask()">▶ Начать задание</button></div>
+
+  <div class="modal-overlay" id="taskModal">
+    <div class="modal-content">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <div class="modal-avatar">🎵</div>
+        <div class="modal-bubble"><h3 id="modalTaskTitle">Задание</h3><p id="modalTaskDesc">Выполни задание</p></div>
+      </div>
+      <div class="task-card">
+        <div class="task-stage" id="taskStage">Этап №0</div>
+        <div class="task-label" id="taskLabel">ПОДГОТОВКА</div>
+        <div class="task-title" id="taskTitle">Загрузка...</div>
+        <div class="task-desc" id="taskDesc">Описание...</div>
+        <div class="task-tags" id="taskTags"></div>
+      </div>
+      <div class="modal-buttons">
+        <button class="btn-skip" onclick="skipTask()">Пропустить</button>
+        <button class="btn-accept" id="btnAccept" onclick="completeTask()">Готово!</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="complete-overlay" id="completeModal">
+    <div class="complete-content"><div class="big-icon" id="completeIcon">✅</div><h2 id="completeTitle">Задание выполнено!</h2><div class="xp-gained" id="xpGained">+15 XP</div><div class="xp-label" id="completeLabel">Задание #1 завершено</div><button class="btn-continue" onclick="closeComplete()">Дальше →</button></div>
+  </div>
+
+  <div class="milestone-overlay" id="milestoneModal">
+    <div class="milestone-content"><div class="milestone-icon" id="milestoneIcon">🏆</div><h2 id="milestoneTitle">Этап завершён!</h2><p id="milestoneDesc">Поздравляем!</p><div class="bonus-xp" id="milestoneBonus">+100 бонус XP!</div><button class="btn-continue" onclick="closeMilestone()">Продолжить</button></div>
+  </div>
+
+  <div class="ach-modal-overlay" id="achModal">
+    <div class="ach-modal-content">
+      <div class="ach-modal-handle"></div>
+      <div class="ach-modal-title">🏆 Достижения</div>
+      <div class="ach-modal-subtitle">Выполняй задания и собирай ачивки!</div>
+      <div class="ach-counter"><span class="ach-counter-icon">⭐</span><span class="ach-counter-text" id="achCountText">0 <span>/ 10</span></span></div>
+      <div class="ach-list" id="achList"></div>
+      <div style="text-align:center;margin-top:20px"><button class="btn-continue" onclick="closeAchievements()" style="padding:14px 40px;font-size:16px">Закрыть</button></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const STAGES=[
+  {id:0,name:"Этап 0",title:"Подготовка работы и DAW",cls:"zone-e0",icon:"🖥️",start:1,end:10},
+  {id:1,name:"Этап 1",title:"Первые Биты",cls:"zone-e1",icon:"",start:11,end:20},
+  {id:2,name:"Этап 2",title:"Обработка звука и VST",cls:"zone-e2",icon:"🎛️",start:21,end:30},
+  {id:3,name:"Этап 3",title:"Усложненные биты",cls:"zone-e3",icon:"🎹",start:31,end:40},
+  {id:4,name:"Этап 4",title:"Теория музыки и Аккорды",cls:"zone-e4",icon:"🎼",start:41,end:50},
+  {id:5,name:"Этап 5",title:"EDM и Саунд-дизайн",cls:"zone-e5",icon:"⚡",start:51,end:60},
+  {id:6,name:"Этап 6",title:"Живая Музыка",cls:"zone-e6",icon:"🎸",start:61,end:70},
+  {id:7,name:"Этап 7",title:"Сведение Вокала",cls:"zone-e7",icon:"🎤",start:71,end:80},
+  {id:8,name:"Этап 8",title:"Саундтреки и Эмбиент",cls:"zone-e8",icon:"🎬",start:81,end:90},
+  {id:9,name:"Этап 9",title:"Продвижение и Коммерция",cls:"zone-e9",icon:"💰",start:91,end:100}
+];
+
+const MILESTONE_TASKS=[10,20,30,40,50,60,70,80,90,100];
+const TOTAL_TASKS=100;
+const OFFSET_PATTERNS=['center','offset-right','offset-left','center','offset-right2','offset-left2','offset-right','center','offset-left','offset-right2'];
+
+const STAGE_TASKS=[
+  [
+    {label:"DAW ВЫБОР",title:"Выбор основной DAW: FL Studio vs Ableton",desc:"Сравни FL Studio 25 и Ableton Live 12: интерфейс, логика работы, визуальная составляющая. Определи какую DAW выбрать.",tags:[{text:"FL Studio",cls:"tag-plugin"},{text:"Ableton",cls:"tag-plugin"},{text:"DAW",cls:"tag-style"}]},
+    {label:"ОБОРУДОВАНИЕ",title:"Наушники и мониторы для продакшена",desc:"Выбери наушники для продакшена. Настрой колонки-мониторы. Определи позицию для мониторов в комнате.",tags:[{text:"Мониторы",cls:"tag-synth"},{text:"Наушники",cls:"tag-synth"}]},
+    {label:"ОБОРУДОВАНИЕ",title:"Микрофон, MIDI-клавиатура, аудиокарта",desc:"Подключи микрофон для записи. Настрой MIDI-клавиатуру в DAW. Подключи аудиокарту.",tags:[{text:"Микрофон",cls:"tag-synth"},{text:"MIDI",cls:"tag-synth"},{text:"Аудиокарта",cls:"tag-plugin"}]},
+    {label:"НАСТРОЙКА",title:"ASIO драйвер и настройка буфера",desc:"Установи ASIO драйвер. Настрой буфер для минимальной задержки. Проверь работу звуковой карты.",tags:[{text:"ASIO",cls:"tag-plugin"},{text:"Буфер",cls:"tag-plugin"}]},
+    {label:"УСТАНОВКА",title:"Установка VST плагинов и сэмпл-паков",desc:"Установи VST плагины последовательно. Организуй библиотеку сэмпл-паков. Не ставь всё сразу.",tags:[{text:"VST",cls:"tag-plugin"},{text:"Сэмпл-паки",cls:"tag-style"}]},
+    {label:"ОПТИМИЗАЦИЯ",title:"Оптимизация компьютера: ЦП и ресурсы",desc:"Настрой DAW для оптимальной работы ЦП. Увеличь буфер при прослушивании.",tags:[{text:"Оптимизация",cls:"tag-plugin"},{text:"CPU",cls:"tag-style"}]},
+    {label:"РАБОЧЕЕ МЕСТО",title:"Организация рабочего места",desc:"Организуй рабочий стол. Подбери место для мониторов. Расставь оборудование.",tags:[{text:"Организация",cls:"tag-style"}]},
+    {label:"ЗАМЕТКИ",title:"Xmind и Obsidian для заметок",desc:"Создай карту курса в Xmind. Веди заметки в Obsidian или тетрадке.",tags:[{text:"Xmind",cls:"tag-plugin"},{text:"Obsidian",cls:"tag-plugin"}]},
+    {label:"ОРГАНИЗАЦИЯ",title:"Чаты курса и стримы с вопросами",desc:"Присоединись к чатам курса. Запишись на стрим. Разберись с домашками.",tags:[{text:"Чаты",cls:"tag-style"}]},
+    {label:"ИТОГО",title:"Итоговая проверка: всё готово к работе",desc:"Проверь: DAW установлена, плагины работают, ASIO настроен. Готов к битам!",tags:[{text:"Чек-лист",cls:"tag-style"},{text:"Готово!",cls:"tag-plugin"}]}
+  ],
+  [
+    {label:"СЭМПЛЫ",title:"Что такое сэмпл: ударка, мелодия, паки",desc:"Разбери виды сэмплов: ударные (дрямка), мелодические, сэмпл-паки.",tags:[{text:"Сэмплы",cls:"tag-style"},{text:"Драмка",cls:"tag-synth"}]},
+    {label:"ДРАМКА",title:"Построение драм-паттерна: Kick, Snare, Hat",desc:"Создай драм-паттерн: кик на 1 и 3, снейр на 2 и 4, хай-хэты на каждую 1/8.",tags:[{text:"Kick",cls:"tag-synth"},{text:"Snare",cls:"tag-synth"},{text:"Hi-Hat",cls:"tag-synth"}]},
+    {label:"ЧАСТОТЫ",title:"Частотный диапазон драмки",desc:"Разбери частоты: кик 50-100Hz, снейр 200-400Hz, хэты 5kHz+.",tags:[{text:"Частоты",cls:"tag-plugin"}]},
+    {label:"ПАТТЕРН",title:"Расстановка ударки: темп и сетка",desc:"Установи темп 140 BPM. Расставь драмку по стандартной сетке.",tags:[{text:"BPM",cls:"tag-bpm"},{text:"Сетка",cls:"tag-style"}]},
+    {label:"КАЧ",title:"Работа с качем: движение головы и ритм",desc:"Настрой драмку так чтобы хотелось двигать головой. Создай луп драмки.",tags:[{text:"Грув",cls:"tag-style"},{text:"Кач",cls:"tag-style"}]},
+    {label:"ПОДБОР",title:"Подбор сэмплов друг к другу",desc:"Подбери сэмплы из одного пака или жанра. Настрой баланс громкости.",tags:[{text:"Баланс",cls:"tag-plugin"}]},
+    {label:"МЕЛОДИЯ",title:"Поиск мелодического сэмпла",desc:"Найди мелодический сэмпл из пака или YouTube. Определи BPM сэмпла.",tags:[{text:"Мелодия",cls:"tag-synth"},{text:"Warp",cls:"tag-plugin"}]},
+    {label:"БАС",title:"Создание 808 баса в паттерне",desc:"Добавь 808 бас в паттерн. Определи корневую ноту баса через SPAN.",tags:[{text:"808",cls:"tag-synth"},{text:"Тональность",cls:"tag-style"}]},
+    {label:"СТРУКТУРА",title:"Структура бита: пирамида и лестница",desc:"Построй структуру: интро, основная часть, аутро. Принцип пирамиды.",tags:[{text:"Структура",cls:"tag-style"}]},
+    {label:"РЕНДЕР",title:"Рендер трека: выгрузка в mp3",desc:"Проверь громкость. Выбери зону рендера. Экспортируй в mp3 320kbps.",tags:[{text:"Рендер",cls:"tag-plugin"},{text:"MP3",cls:"tag-style"}]}
+  ],
+  [
+    {label:"EQ",title:"Эквализация: срез частот",desc:"Срежь суб-частоты ниже 30Hz. Добавь high-pass фильтр на мелодию.",tags:[{text:"EQ",cls:"tag-plugin"},{text:"Фильтр",cls:"tag-plugin"}]},
+    {label:"EQ",title:"Добавление частот: основа и яркость",desc:"Добавь плотность около 500Hz. Подними яркость выше 5kHz.",tags:[{text:"EQ",cls:"tag-plugin"},{text:"Яркость",cls:"tag-style"}]},
+    {label:"САТУРАЦИЯ",title:"Сатурация: гармоники и уплотнение",desc:"Добавь сатурацию на бас. Попробуй дисторшн на драм-шине.",tags:[{text:"Сатурация",cls:"tag-plugin"},{text:"Дисторшн",cls:"tag-plugin"}]},
+    {label:"РЕВЕРБ",title:"Реверберация: пространство и хвост",desc:"Настрой реверб через Send/Return. Добавь глубину в трек.",tags:[{text:"Reverb",cls:"tag-plugin"},{text:"Send",cls:"tag-plugin"}]},
+    {label:"ДЕЛЭЙ",title:"Delay: повтор звука",desc:"Настрой дилей с частотой повторений. Попробуй Ping Pong режим.",tags:[{text:"Delay",cls:"tag-plugin"},{text:"Ping Pong",cls:"tag-plugin"}]},
+    {label:"ХОРУС",title:"Chorus: водянистый звук",desc:"Добавь хорус на пэд для ширины. Винтажное звучание.",tags:[{text:"Chorus",cls:"tag-plugin"},{text:"Ширина",cls:"tag-style"}]},
+    {label:"КОМПРЕССИЯ",title:"Компрессия: уравнивание громкости",desc:"Настрой компрессор: Threshold, Ratio, Attack, Release. Multiband.",tags:[{text:"Компрессор",cls:"tag-plugin"},{text:"Multiband",cls:"tag-plugin"}]},
+    {label:"ЛИМИТЕР",title:"Limiter и Clipper: потолок громкости",desc:"Поставь лимитер на мастер. Ceiling -0.3dB. Standard Clip.",tags:[{text:"Лимитер",cls:"tag-plugin"},{text:"Clipper",cls:"tag-plugin"}]},
+    {label:"СТИЛИЗАЦИЯ",title:"Стилизация: ретро и RC-20",desc:"Добавь RC-20 на мелодию для ретро-звучания. Tape эмуляция.",tags:[{text:"RC-20",cls:"tag-plugin"},{text:"Tape",cls:"tag-plugin"}]},
+    {label:"МАСТЕР",title:"Мастер канал: чек перед рендером",desc:"Проверь тональный баланс. Уплотни пачку лимитером. Референс.",tags:[{text:"Мастер",cls:"tag-plugin"},{text:"Референс",cls:"tag-style"}]}
+  ],
+  [
+    {label:"СИНТЫ",title:"Первая мелодия через VST синт",desc:"Выбери синт (Serum, Repro-5). Настрой ADSR. Напиши мелодию.",tags:[{text:"Serum",cls:"tag-synth"},{text:"ADSR",cls:"tag-plugin"}]},
+    {label:"СИНТЫ",title:"Melody из One Shot сэмплов",desc:"Возьми One Shot. Определи ноту. Настрой ADSR. Pitch и Warp.",tags:[{text:"One Shot",cls:"tag-synth"},{text:"Pitch",cls:"tag-plugin"}]},
+    {label:"CHOP",title:"Chop мелодий: нарезка и ритмика",desc:"Нарежь мелодию в Fruity Slicer. Переставь куски. Новый ритм.",tags:[{text:"Chop",cls:"tag-style"},{text:"Slicer",cls:"tag-plugin"}]},
+    {label:"ДРАМКА",title:"Усложнение драм-партии: перкуссия и FX",desc:"Добавь перкуссию. Креши и импакты. Foley для FX и шумов.",tags:[{text:"Перкуссия",cls:"tag-synth"},{text:"Foley",cls:"tag-style"}]},
+    {label:"ЛЕЕРИНГ",title:"Лееринг сэмплов: уплотнение",desc:"Слой два кика. Уникальный звук через лееринг. Ресемплинг.",tags:[{text:"Лееринг",cls:"tag-style"},{text:"Ресемплинг",cls:"tag-plugin"}]},
+    {label:"BOOMBAP",title:"BoomBap бит: сэмплирование лупов",desc:"Найди винтажный сэмпл. Нарезай через Serato Sample. Грув.",tags:[{text:"BoomBap",cls:"tag-style"},{text:"Сэмплирование",cls:"tag-style"}]},
+    {label:"ROCK",title:"Rock Beat: альтернатива 2000х",desc:"Rock-бит в стиле Deftones/Limp Bizkit. Дисторшн гитары.",tags:[{text:"Rock",cls:"tag-style"},{text:"Гитара",cls:"tag-synth"}]},
+    {label:"PHONK",title:"Жёсткий Phonk: Bass Boosted",desc:"Phonk: cowbell, дисторшн 808 через RIFT, клипинг.",tags:[{text:"Phonk",cls:"tag-style"},{text:"RIFT",cls:"tag-plugin"}]},
+    {label:"FX",title:"FX манипуляции: ShaperBox, Portal",desc:"Обработай мелодию через ShaperBox 3. Portal для гранулярного FX.",tags:[{text:"ShaperBox",cls:"tag-plugin"},{text:"Portal",cls:"tag-plugin"}]},
+    {label:"СТРУКТУРА",title:"Построение бита: куплет, припев, интро",desc:"Интро → куплет → припев → аутро. Проанализируй референс.",tags:[{text:"Структура",cls:"tag-style"},{text:"Аранжировка",cls:"tag-style"}]}
+  ],
+  [
+    {label:"НОТЫ",title:"7 нот: тона, полутона, диезы",desc:"Изучи 7 нот на Piano Roll. Диезы (#) и бемоли (b). Тон и полутон.",tags:[{text:"Ноты",cls:"tag-style"},{text:"Piano Roll",cls:"tag-synth"}]},
+    {label:"ИНТЕРВАЛЫ",title:"Интервалы: терции и квинта",desc:"Минорная терция (3 полутона). Мажорная терция (4). Октава = 12.",tags:[{text:"Интервалы",cls:"tag-style"},{text:"Терция",cls:"tag-style"}]},
+    {label:"ТОНАЛЬНОСТЬ",title:"Тональность: мажор, минор, лады",desc:"Определи тональность. Построй мажорную и минорную гаммы. Лады.",tags:[{text:"Мажор",cls:"tag-style"},{text:"Минор",cls:"tag-style"},{text:"Лады",cls:"tag-style"}]},
+    {label:"АККОРДЫ",title:"Построение аккордов: трезвучия",desc:"Мажорный аккорд (1-3-5). Минорный (1-b3-5). Бас в аккорде.",tags:[{text:"Аккорды",cls:"tag-style"},{text:"Трезвучие",cls:"tag-style"}]},
+    {label:"АККОРДЫ",title:"Сочетания аккордов: прогрессии",desc:"Прогрессия I-vi-iii-V. i-iii-vi. Добавь 7 и 9 ступени.",tags:[{text:"Прогрессия",cls:"tag-style"},{text:"Аккорды",cls:"tag-style"}]},
+    {label:"МЕЛОДИЯ",title:"Мелодия к аккордам: арпеджио",desc:"Арпеджио по аккордам. Повторяющийся мотив. Вопрос-ответ.",tags:[{text:"Арпеджио",cls:"tag-synth"},{text:"Мотив",cls:"tag-style"}]},
+    {label:"РИТМИКА",title:"Ритмика мелодии: кач и паузы",desc:"Ритмический рисунок мелодии. Паузы для пространства.",tags:[{text:"Ритм",cls:"tag-style"},{text:"Кач",cls:"tag-style"}]},
+    {label:"ТЕМБРЫ",title:"Тембры звука: яркость и стиль",desc:"Подбери тембры под стиль. Читаемость в миксе.",tags:[{text:"Тембр",cls:"tag-style"},{text:"Микс",cls:"tag-plugin"}]},
+    {label:"ПРИМЕНЕНИЕ",title:"Применение в битах: поп, минимал",desc:"Поп-аккорды. Минималистичная прогрессия. Криповое сочетание.",tags:[{text:"Поп",cls:"tag-style"},{text:"Минимал",cls:"tag-style"}]},
+    {label:"ИМПРОВИЗАЦИЯ",title:"Импровизации: запись и MIDI паттерны",desc:"Запиши импровизацию на MIDI-клавиатуре. MIDI паттерны.",tags:[{text:"Импровизация",cls:"tag-style"},{text:"MIDI",cls:"tag-synth"}]}
+  ],
+  [
+    {label:"СИНТЕЗ",title:"Синтез: Wavetable в Serum",desc:"Синус, квадрат, треугольник. Настрой ADSR в Serum. Свой пресет.",tags:[{text:"Serum",cls:"tag-synth"},{text:"Wavetable",cls:"tag-synth"}]},
+    {label:"СИНТЕЗ",title:"LFO и фильтры в синтезаторе",desc:"LFO на фильтр в Serum. Движение в звуке. Phase Plant / Vital.",tags:[{text:"LFO",cls:"tag-plugin"},{text:"Фильтр",cls:"tag-plugin"}]},
+    {label:"ЛЕЕРИНГ",title:"Лееринг синтов: атмосфера",desc:"Слой синтов для уникальности. Атмосфера через лееринг.",tags:[{text:"Лееринг",cls:"tag-style"},{text:"Текстура",cls:"tag-style"}]},
+    {label:"HOUSE",title:"House: прямая бочка и сайдчейн",desc:"4-on-the-floor kick. Сайдчейн на бас. Ambient house аккорды.",tags:[{text:"House",cls:"tag-style"},{text:"Сайдчейн",cls:"tag-plugin"}]},
+    {label:"DNB",title:"Drum and Bass: 174 BPM",desc:"DnB: 174 BPM, жирный Reese bass. Нарезай драм-лупы.",tags:[{text:"DnB",cls:"tag-style"},{text:"174 BPM",cls:"tag-bpm"}]},
+    {label:"DUBSTEP",title:"Dubstep: жёсткий бас и дроп",desc:"Dubstep: 140 BPM, прямая драмка. Жёсткий бас. Дроп структура.",tags:[{text:"Dubstep",cls:"tag-style"},{text:"140 BPM",cls:"tag-bpm"}]},
+    {label:"CRYSTAL",title:"Crystal Castles: синты и крипота",desc:"Crystal Castles: риз бас, шум, перегруз. Андерграунд.",tags:[{text:"Crystal Castles",cls:"tag-style"},{text:"Риз Бас",cls:"tag-synth"}]},
+    {label:"2HOLLIS",title:"2hollis стиль: перегруз и арпеджиатор",desc:"2hollis: перегруз арпеджиаторы, жирный бас, сайдчейн.",tags:[{text:"EDM",cls:"tag-style"},{text:"Арп",cls:"tag-synth"}]},
+    {label:"СЭМПЛИРОВАНИЕ",title:"Сэмплирование: Serato Sample",desc:"Нарежь мелодию в Serato Sample. Fruity Slicer. Sampler Ableton.",tags:[{text:"Serato",cls:"tag-plugin"},{text:"Chop",cls:"tag-style"}]},
+    {label:"МАСТЕР",title:"Мастеринг EDM: OTT и лимитер",desc:"OTT на мастере. Сайдчейн. Лимитер. Референс.",tags:[{text:"OTT",cls:"tag-plugin"},{text:"Лимитер",cls:"tag-plugin"}]}
+  ],
+  [
+    {label:"РОК",title:"Рок: гитара, бас, драмка через Kontakt",desc:"Библиотека Kontakt для гитары. Рок-трек с нуля. Альтернатива.",tags:[{text:"Kontakt",cls:"tag-synth"},{text:"Гитара",cls:"tag-synth"}]},
+    {label:"ГИТАРА",title:"Оживление VST гитары",desc:"Вариации велосити. Мимо сетки. Удачная библиотека.",tags:[{text:"Велосити",cls:"tag-style"},{text:"Грув",cls:"tag-style"}]},
+    {label:"СВЕДЕНИЕ",title:"Сведение рок-гитар: кранч и хорус",desc:"Кранч или клин на гитаре. Хорус. Стерео.",tags:[{text:"Кранч",cls:"tag-plugin"},{text:"Хорус",cls:"tag-plugin"}]},
+    {label:"ПОСТ-ПАНК",title:"Пост-Панк: гитары и реверб",desc:"Гитары с ревербом, электронная драмка. Атмосферность.",tags:[{text:"Пост-Панк",cls:"tag-style"},{text:"Реверб",cls:"tag-plugin"}]},
+    {label:"ГРАНЖ",title:"Гранж: гаражный звук",desc:"Гаражный звук, модуляционные обработки. Энергетика.",tags:[{text:"Гранж",cls:"tag-style"},{text:"Модуляция",cls:"tag-plugin"}]},
+    {label:"МЕТАЛ",title:"Метал: Shreddage 3 и Perfect Drums",desc:"Shreddage 3 для гитар, Perfect Drums для ударных. Низкий строй.",tags:[{text:"Shreddage",cls:"tag-synth"},{text:"Метал",cls:"tag-style"}]},
+    {label:"СВЕДЕНИЕ МЕТАЛ",title:"Сведение метал-гитар: стерео",desc:"Разведи гитары в стерео. Уплотни низ. 3-4kHz нюанс.",tags:[{text:"Стерео",cls:"tag-style"},{text:"Distressor",cls:"tag-plugin"}]},
+    {label:"ДЖАЗ",title:"Джаз: клавиши, трубы, дабл-бас",desc:"ii-V-I прогрессия. Джазовые стандарты. Трубы и дабл-бас.",tags:[{text:"Джаз",cls:"tag-style"},{text:"ii-V-I",cls:"tag-style"}]},
+    {label:"ДЖАЗ ПРОГРЕССИИ",title:"Джазовые прогрессии: 7-9-11-13",desc:"7, 9, 11, 13 ступени в аккорды. Noir Jazz.",tags:[{text:"Ступени",cls:"tag-style"},{text:"Noir Jazz",cls:"tag-style"}]},
+    {label:"ЗАПИСЬ",title:"Запись реальных инструментов",desc:"Подключи микрофон. Запиши гитару. Убери шум.",tags:[{text:"Запись",cls:"tag-style"},{text:"Микрофон",cls:"tag-synth"}]}
+  ],
+  [
+    {label:"ЗАПИСЬ",title:"Запись вокала: микрофон",desc:"Настрой микрофон для записи вокала. Правильная позиция.",tags:[{text:"Микрофон",cls:"tag-synth"},{text:"Запись",cls:"tag-style"}]},
+    {label:"РЕДАКЦИЯ",title:"Редакция вокала: нарезка и ритмика",desc:"Нарежь вокал по ритму. Поправь сибилянты. Автоматизация.",tags:[{text:"Нарезка",cls:"tag-style"},{text:"Ритмика",cls:"tag-style"}]},
+    {label:"TUNE",title:"Ручной тюн: Melodyne и Auto-Tune",desc:"Melodyne для ручного тюна. Auto-Tune. Скорость тюна.",tags:[{text:"Melodyne",cls:"tag-plugin"},{text:"Auto-Tune",cls:"tag-plugin"}]},
+    {label:"ОЧИСТКА",title:"Очистка вокала: RX 11 и AI",desc:"Очисти вокал через RX 11. AI сервисы. Референс.",tags:[{text:"RX 11",cls:"tag-plugin"},{text:"AI",cls:"tag-plugin"}]},
+    {label:"EQ ВОКАЛ",title:"EQ вокала: срез и яркость",desc:"Срежь низкие частоты. Добавь яркость. Динамический EQ.",tags:[{text:"EQ",cls:"tag-plugin"},{text:"Вокал",cls:"tag-style"}]},
+    {label:"КОМПРЕССИЯ",title:"Компрессия вокала: 1176, LA2A",desc:"Threshold, Ratio, Attack, Release. Distressor, 1176, LA2A.",tags:[{text:"1176",cls:"tag-plugin"},{text:"LA2A",cls:"tag-plugin"}]},
+    {label:"РЕВЕРБ ВОКАЛ",title:"Реверб на вокал: комната и зал",desc:"Реверб через Send. Ощущение комнаты. Несколько реверов.",tags:[{text:"Reverb",cls:"tag-plugin"},{text:"Send",cls:"tag-plugin"}]},
+    {label:"ДЕЛЭЙ ВОКАЛ",title:"Delay на вокал: уплотнение",desc:"Дилей на вокал. Ping Pong. Темп и фидбэк.",tags:[{text:"Delay",cls:"tag-plugin"},{text:"Ping Pong",cls:"tag-plugin"}]},
+    {label:"БЭКИ",title:"Работа с бэками: панорама",desc:"Бэк-вокал. Панорама. Дилей и реверб. Ритмика.",tags:[{text:"Бэки",cls:"tag-style"},{text:"Панорама",cls:"tag-plugin"}]},
+    {label:"МАСТЕР ВОКАЛ",title:"Мастеринг вокала: Soothe2",desc:"Soothe2, клиперы. LUFS. Референс. Чек на устройствах.",tags:[{text:"Soothe2",cls:"tag-plugin"},{text:"LUFS",cls:"tag-style"}]}
+  ],
+  [
+    {label:"KONTAKT",title:"Библиотеки Kontakt для оркестра",desc:"Настрой Kontakt. Струнные, духовые, пиано, арфа, перкуссия.",tags:[{text:"Kontakt",cls:"tag-synth"},{text:"Оркестр",cls:"tag-style"}]},
+    {label:"ОРКЕСТР",title:"Оркестровка: струнные, духовые, пиано",desc:"Strings, Winds, пиано. Узнай диапазон инструментов.",tags:[{text:"Strings",cls:"tag-synth"},{text:"Winds",cls:"tag-synth"}]},
+    {label:"НАСТРОЕНИЕ",title:"Написание с нуля: настроение",desc:"Определи настроение. Подбери референсы. Основные инструменты.",tags:[{text:"Настроение",cls:"tag-style"},{text:"Референс",cls:"tag-style"}]},
+    {label:"ГАРМОНИЯ",title:"Гармония: лады и прогрессии",desc:"Лады для оркестровой гармонии. Прогрессии аккордов.",tags:[{text:"Лады",cls:"tag-style"},{text:"Гармония",cls:"tag-style"}]},
+    {label:"ТЕМА",title:"Создание основной темы",desc:"Главная тема. Звукоряд. Восходящий/нисходящий движение.",tags:[{text:"Тема",cls:"tag-style"},{text:"Звукоряд",cls:"tag-style"}]},
+    {label:"АККОРДЫ",title:"Оркестровые аккорды: трезвучия",desc:"Оркестровые трезвучия. Тесное и широкое расположение. сус2, сус4.",tags:[{text:"Аккорды",cls:"tag-style"},{text:"Обращения",cls:"tag-style"}]},
+    {label:"РИТМ",title:"Оркестровый ритм: остинато",desc:"Создай остинато. Акцентировку и пульсацию. Перкуссия.",tags:[{text:"Остинато",cls:"tag-style"},{text:"Перкуссия",cls:"tag-synth"}]},
+    {label:"КАРТИНКА",title:"Саундтрек под картинку: концепт",desc:"Настроение под концепт-арт. Разработай тему. Инструменты.",tags:[{text:"Концепт",cls:"tag-style"},{text:"Картинка",cls:"tag-style"}]},
+    {label:"ФИЛЬМ",title:"Музыка для фильма: функциональная",desc:"Функциональная музыка. Основная тема. Нарастание. Эмбиент.",tags:[{text:"Фильм",cls:"tag-style"},{text:"Эмбиент",cls:"tag-style"}]},
+    {label:"МАСТЕР",title:"Сведение оркестра: компрессия",desc:"Склей оркестр через компрессию. Пространство. Мастеринг.",tags:[{text:"Оркестр",cls:"tag-style"},{text:"Мастер",cls:"tag-plugin"}]}
+  ],
+  [
+    {label:"VK",title:"Продвижение в VK: паблики",desc:"Создай паблик с битами. Тематические группы. Сарафан.",tags:[{text:"VK",cls:"tag-style"},{text:"Паблики",cls:"tag-style"}]},
+    {label:"TIKTOK",title:"Продвижение в TikTok",desc:"Контент для TikTok. Российский и зарубежный. Рилсы с битами.",tags:[{text:"TikTok",cls:"tag-style"},{text:"Рилсы",cls:"tag-style"}]},
+    {label:"YOUTUBE",title:"YouTube канал: биты и контент",desc:"Создай YouTube канал. Биты и туториалы. Рилсы.",tags:[{text:"YouTube",cls:"tag-style"}]},
+    {label:"ПРОДАЖА",title:"Продажа битов: анализ",desc:"Проанализируй зарубежных битмейкеров. Найди свой звук.",tags:[{text:"Продажа",cls:"tag-style"},{text:"BeatStars",cls:"tag-plugin"}]},
+    {label:"СТОКИ",title:"Стоки: BeatStars, Pond5",desc:"Загрузи на BeatStars. Pond5 и AudioJungle. Лицензирование.",tags:[{text:"BeatStars",cls:"tag-plugin"},{text:"Pond5",cls:"tag-plugin"}]},
+    {label:"ДИСТРИБУЦИЯ",title:"Дистрибуция треков на стриминги",desc:"Выбери дистрибьютора. Загрузи на стриминги.",tags:[{text:"Дистрибуция",cls:"tag-style"},{text:"Стриминги",cls:"tag-style"}]},
+    {label:"АРТИСТЫ",title:"Работа с артистами: договоры",desc:"Общение с клиентами. Запросы. Договор: авторское право.",tags:[{text:"Клиенты",cls:"tag-style"},{text:"Договор",cls:"tag-style"}]},
+    {label:"КОЛЛАБЫ",title:"Коллабы с битмейкерами",desc:"Предложи коллаб. Обменивайся демками. Анализируй.",tags:[{text:"Коллаб",cls:"tag-style"},{text:"Демо",cls:"tag-style"}]},
+    {label:"СТУДИЯ",title:"Работа на студии: услуги",desc:"Предложи услуги сведения. Набери опыта. Мелкие заказы.",tags:[{text:"Студия",cls:"tag-style"},{text:"Сведение",cls:"tag-plugin"}]},
+    {label:"КАРЬЕРА",title:"Монетизация творчества",desc:"Когда начать монетизировать. Набери скилл. Двигайся к цели.",tags:[{text:"Монетизация",cls:"tag-style"},{text:"Карьера",cls:"tag-style"}]}
+  ]
+];
+
+const ACHIEVEMENTS=[
+  {id:"first_step",name:"Первый шаг",desc:"Выполни первое задание",icon:"🎯",xp:25,check:s=>s.completedTasks>=1},
+  {id:"daw_ready",name:"DAW готов!",desc:"Пройди Этап 0 — Подготовка",icon:"🖥️",xp:50,check:s=>s.completedTasks>=10},
+  {id:"ten_beats",name:"Десяточка битов",desc:"Выполни 10 заданий",icon:"🔟",xp:50,check:s=>s.completedTasks>=10},
+  {id:"plugin_master",name:"Плагин-мастер",desc:"Пройди Этап 2 — VST",icon:"🎛️",xp:100,check:s=>s.completedTasks>=30},
+  {id:"theory_done",name:"Теоретик",desc:"Пройди Этап 4 — Теория музыки",icon:"🎼",xp:150,check:s=>s.completedTasks>=50},
+  {id:"sound_designer",name:"Саунд-дизайнер",desc:"Пройди Этап 5 — EDM",icon:"⚡",xp:150,check:s=>s.completedTasks>=60},
+  {id:"vocal_pro",name:"Вокальный про",desc:"Пройди Этап 7 — Сведение вокала",icon:"🎤",xp:200,check:s=>s.completedTasks>=80},
+  {id:"composer",name:"Композитор",desc:"Пройди Этап 8 — Саундтреки",icon:"🎬",xp:250,check:s=>s.completedTasks>=90},
+  {id:"all_done",name:"Курс пройден!",desc:"Выполни все 100 заданий!",icon:"👑",xp:500,check:s=>s.completedTasks>=100},
+  {id:"centurion",name:"Центурион",desc:"Выполни 50 заданий",icon:"🏅",xp:200,check:s=>s.completedTasks>=50}
+];
+
+const RANKS=[
+  {name:"Новичок",min:0,icon:"🌱"},{name:"Ученик",min:100,icon:"📖"},{name:"Битмейкер",min:300,icon:"🥁"},
+  {name:"Продюсер",min:600,icon:"🎧"},{name:"Саунд-дизайнер",min:1000,icon:"⚡"},{name:"Мастер",min:1500,icon:"👑"},
+  {name:"Легенда",min:2200,icon:"🏆"}
+];
+
+// --- Persistent state via localStorage ---
+function loadState(){
+  try{
+    const raw=localStorage.getItem('iyquest_state');
+    if(raw){
+      const parsed=JSON.parse(raw);
+      return{
+        completedTasks:parsed.completedTasks||0,
+        completedSet:new Set(parsed.completedSet||[]),
+        xp:parsed.xp||0,
+        streak:parsed.streak||8,
+        achievements:new Set(parsed.achievements||[])
+      };
+    }
+  }catch(e){}
+  return{completedTasks:0,completedSet:new Set(),xp:0,streak:8,achievements:new Set()};
+}
+
+function saveState(){
+  try{
+    localStorage.setItem('iyquest_state',JSON.stringify({
+      completedTasks:gameState.completedTasks,
+      completedSet:[...gameState.completedSet],
+      xp:gameState.xp,
+      streak:gameState.streak,
+      achievements:[...gameState.achievements]
+    }));
+  }catch(e){}
+}
+
+let gameState=loadState();
+let audioCtx=null;
+
+function initAudio(){if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)()}
+function playAchSound(){
+  initAudio();if(!audioCtx)return;
+  const now=audioCtx.currentTime;
+  [523.25,659.25,783.99,1046.50].forEach((f,i)=>{
+    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+    o.type='sine';o.frequency.setValueAtTime(f,now+i*0.12);
+    g.gain.setValueAtTime(0,now+i*0.12);g.gain.linearRampToValueAtTime(0.15,now+i*0.12+0.02);
+    g.gain.exponentialRampToValueAtTime(0.001,now+i*0.12+0.6);
+    o.connect(g);g.connect(audioCtx.destination);o.start(now+i*0.12);o.stop(now+i*0.12+0.6);
+  });
+  for(let i=0;i<8;i++){const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+    o.type='sine';o.frequency.setValueAtTime(2000+Math.random()*4000,now+0.5+i*0.05);
+    g.gain.setValueAtTime(0.03,now+0.5+i*0.05);g.gain.exponentialRampToValueAtTime(0.001,now+0.5+i*0.05+0.3);
+    o.connect(g);g.connect(audioCtx.destination);o.start(now+0.5+i*0.05);o.stop(now+0.5+i*0.05+0.3);}
+}
+function playTaskSound(){
+  initAudio();if(!audioCtx)return;
+  const now=audioCtx.currentTime;
+  [440,554.37,659.25].forEach((f,i)=>{
+    const o=audioCtx.createOscillator(),g=audioCtx.createGain();
+    o.type='triangle';o.frequency.setValueAtTime(f,now+i*0.1);
+    g.gain.setValueAtTime(0,now+i*0.1);g.gain.linearRampToValueAtTime(0.12,now+i*0.1+0.02);
+    g.gain.exponentialRampToValueAtTime(0.001,now+i*0.1+0.4);
+    o.connect(g);g.connect(audioCtx.destination);o.start(now+i*0.1);o.stop(now+i*0.1+0.4);
+  });
+}
+
+function getTaskForNum(num){
+  const stageIdx=Math.min(Math.floor((num-1)/10),9);
+  const taskIdx=(num-1)%10;
+  const tasks=STAGE_TASKS[stageIdx];
+  if(!tasks||!tasks[taskIdx])return null;
+  return{...tasks[taskIdx],stage:STAGES[stageIdx],num:num,xp:Math.floor(15+num*2)};
+}
+
+function getStageForTask(num){
+  return STAGES.find(s=>num>=s.start&&num<=s.end)||STAGES[9];
+}
+
+function getRank(xp){
+  let rank=RANKS[0];
+  for(const r of RANKS){if(xp>=r.min)rank=r;}
+  return rank;
+}
+
+function showTask(){
+  const nextTask=gameState.completedTasks+1;
+  if(nextTask>TOTAL_TASKS){alert('🎉 Поздравляем! Вы прошли весь курс из 100 заданий!');return;}
+  const task=getTaskForNum(nextTask);
+  if(!task)return;
+  document.getElementById('taskLabel').textContent=task.label;
+  document.getElementById('taskTitle').textContent=task.title;
+  document.getElementById('taskDesc').textContent=task.desc;
+  document.getElementById('taskStage').textContent=`${task.stage.icon} ${task.stage.name}: ${task.stage.title}`;
+  document.getElementById('modalTaskTitle').textContent=`Задание #${nextTask}`;
+  document.getElementById('modalTaskDesc').textContent=`Этап ${task.stage.id}: ${task.stage.title}`;
+  const tc=document.getElementById('taskTags');tc.innerHTML='';
+  task.tags.forEach(t=>{const e=document.createElement('span');e.className='task-tag '+t.cls;e.textContent=t.text;tc.appendChild(e);});
+  document.getElementById('btnAccept').textContent=`Готово! +${task.xp} XP`;
+  document.getElementById('taskModal').classList.add('active');
+}
+
+function skipTask(){document.getElementById('taskModal').classList.remove('active');}
+
+function completeTask(){
+  document.getElementById('taskModal').classList.remove('active');
+  const taskNum=gameState.completedTasks+1;
+  const task=getTaskForNum(taskNum);
+  if(!task)return;
+  const xpGain=task.xp;
+  gameState.xp+=xpGain;
+  gameState.completedTasks++;
+  gameState.completedSet.add(taskNum);
+  saveState();
+  playTaskSound();
+  setTimeout(()=>checkAchievements(),600);
+  if(MILESTONE_TASKS.includes(taskNum)){
+    setTimeout(()=>{
+      const stage=getStageForTask(taskNum);
+      document.getElementById('milestoneIcon').textContent=stage.icon;
+      document.getElementById('milestoneTitle').textContent=`${stage.name} завершён!`;
+      document.getElementById('milestoneDesc').textContent=stage.title;
+      const bonus=taskNum*2;
+      document.getElementById('milestoneBonus').textContent=`+${bonus} бонус XP!`;
+      document.getElementById('milestoneModal').classList.add('active');
+      gameState.xp+=bonus;updateUI();
+    },1500);
+  }
+  if(taskNum===TOTAL_TASKS){
+    setTimeout(()=>{
+      document.getElementById('completeIcon').textContent='👑';
+      document.getElementById('completeTitle').textContent='КУРС ПРОЙДЕН!';
+      document.getElementById('completeLabel').textContent='Все 100 заданий выполнены!';
+    },1500);
+  }
+  updateUI();
+  setTimeout(()=>{
+    document.getElementById('xpGained').textContent='+'+xpGain+' XP';
+    document.getElementById('completeLabel').textContent=`Задание #${taskNum} завершено`;
+    document.getElementById('completeModal').classList.add('active');
+    spawnConfetti();buildTreePath();
+  },400);
+}
+
+function closeComplete(){document.getElementById('completeModal').classList.remove('active');}
+function closeMilestone(){document.getElementById('milestoneModal').classList.remove('active');}
+function spawnConfetti(){
+  const c=['#4caf50','#66bb6a','#667eea','#764ba2','#ff6b35','#f0c040','#42a5f5','#ffd700'];
+  for(let i=0;i<35;i++){const p=document.createElement('div');p.className='confetti-piece';p.style.left=Math.random()*100+'vw';p.style.background=c[Math.floor(Math.random()*c.length)];p.style.animationDelay=Math.random()*0.5+'s';p.style.animationDuration=(1.5+Math.random())+'s';p.style.width=(6+Math.random()*8)+'px';p.style.height=(6+Math.random()*8)+'px';p.style.borderRadius=Math.random()>0.5?'50%':'2px';document.body.appendChild(p);setTimeout(()=>p.remove(),2500);}
+}
+
+function updateUI(){
+  document.getElementById('xpNumber').textContent=gameState.xp+' XP';
+  document.getElementById('streakNumber').textContent=gameState.streak;
+  const rank=getRank(gameState.xp);
+  document.getElementById('levelDisplay').textContent=`Ранг: ${rank.name}`;
+  document.getElementById('rankBadge').textContent=rank.icon;
+  const nextRankIdx=RANKS.findIndex(r=>r.min>gameState.xp);
+  const currentRankMin=nextRankIdx>0?RANKS[nextRankIdx-1].min:0;
+  const nextRankMin=nextRankIdx>=0&&nextRankIdx<RANKS.length?RANKS[nextRankIdx].min:RANKS[RANKS.length-1].min;
+  const progress=Math.min(((gameState.xp-currentRankMin)/(nextRankMin-currentRankMin))*100,100);
+  document.getElementById('xpProgress').style.width=progress+'%';
+  const badge=document.getElementById('achBadge');badge.textContent=gameState.achievements.size;
+  if(gameState.achievements.size>0)badge.classList.add('show');
+  const nextTask=gameState.completedTasks+1;
+  if(nextTask<=TOTAL_TASKS){
+    const stage=getStageForTask(nextTask);
+    document.getElementById('infoBubble').textContent=`Задание ${nextTask}/100 — ${stage.name}: ${stage.title}`;
+  }else{
+    document.getElementById('infoBubble').textContent='🎉 Курс полностью пройден!';
+  }
+  const btn=document.getElementById('solveBtn');
+  if(nextTask>TOTAL_TASKS){btn.textContent='🎉 Курс пройден!';btn.disabled=true;}
+  else{btn.textContent=`▶ Задание #${nextTask}`;btn.disabled=false;}
+}
+
+function checkAchievements(){
+  ACHIEVEMENTS.forEach(a=>{if(!gameState.achievements.has(a.id)&&a.check(gameState)){gameState.achievements.add(a.id);showAchNotification(a);}});
+  saveState();
+}
+
+function showAchNotification(a){
+  document.querySelectorAll('.ach-notification').forEach(n=>n.remove());
+  const n=document.createElement('div');n.className='ach-notification';
+  n.innerHTML=`<div class="ach-icon">${a.icon}</div><div class="ach-info"><div class="ach-label">🏆 Достижение!</div><div class="ach-name">${a.name}</div><div class="ach-xp">+${a.xp} XP</div></div>`;
+  document.body.appendChild(n);
+  setTimeout(()=>playAchSound(),100);
+  gameState.xp+=a.xp;updateUI();
+  setTimeout(()=>{n.classList.add('hiding');setTimeout(()=>n.remove(),500);},4000);
+}
+
+function showAchievements(){
+  const list=document.getElementById('achList');list.innerHTML='';
+  ACHIEVEMENTS.forEach(a=>{
+    const u=gameState.achievements.has(a.id);
+    const d=document.createElement('div');d.className='ach-item '+(u?'unlocked':'locked');
+    d.innerHTML=`<div class="ach-item-icon">${u?a.icon:'❓'}</div><div class="ach-item-info"><div class="ach-item-name">${u?a.name:'???'}</div><div class="ach-item-desc">${u?a.desc:'Выполни задания чтобы открыть'}</div></div><div class="ach-item-xp">${u?'+'+a.xp+' XP':'???'}</div><div class="ach-item-check">${u?'✓':'🔒'}</div>`;
+    list.appendChild(d);
+  });
+  document.getElementById('achCountText').innerHTML=`${gameState.achievements.size} <span>/ ${ACHIEVEMENTS.length}</span>`;
+  document.getElementById('achModal').classList.add('active');
+}
+
+function closeAchievements(){document.getElementById('achModal').classList.remove('active');}
+
+function buildTreePath(){
+  const container=document.getElementById('treePath');container.innerHTML='';
+  const ws=25;let sl=Math.max(1,gameState.completedTasks-8),el=Math.min(TOTAL_TASKS,sl+ws);
+  if(el-sl<ws&&sl>1)sl=Math.max(1,el-ws);
+  container.appendChild(Object.assign(document.createElement('div'),{style:{height:'16px'}}));
+  let lz=null;
+  for(let num=sl;num<=el;num++){
+    const stage=getStageForTask(num);
+    if(stage!==lz){
+      lz=stage;
+      const zd=document.createElement('div');zd.className='stage-label';
+      const zl=document.createElement('div');zl.className='stage-label-inner '+stage.cls;
+      zl.innerHTML=`<span class="stage-icon">${stage.icon}</span> ${stage.name}: ${stage.title}`;
+      zd.appendChild(zl);container.appendChild(zd);
+    }
+    if(num>sl){
+      const c=document.createElement('div');c.className='path-connector';
+      if(gameState.completedSet.has(num-1))c.classList.add('completed');
+      if(num===gameState.completedTasks+1)c.classList.add('active');
+      container.appendChild(c);
+    }
+    const rd=document.createElement('div');
+    rd.className='path-row '+OFFSET_PATTERNS[(num-1)%OFFSET_PATTERNS.length];
+    const nd=document.createElement('div');nd.className='step-node';
+    const ms=MILESTONE_TASKS.includes(num);
+    if(gameState.completedSet.has(num)){
+      if(ms){nd.className='step-node step-milestone';nd.innerHTML=`<span style="font-size:24px">${stage.icon}</span><div class="checkmark">✓</div>`;}
+      else{nd.className='step-node step-completed';nd.innerHTML=`<span style="font-size:20px">${num}</span><div class="checkmark">✓</div>`;}
+    }else if(num===gameState.completedTasks+1){
+      nd.className='step-node step-current';
+      nd.innerHTML=`<span class="crown">👑</span><span style="font-size:18px">${num}</span>`;
+      nd.onclick=()=>showTask();
+    }else{
+      nd.className='step-node step-locked';
+      nd.innerHTML=ms?`<span style="font-size:14px">🔒</span>`:`<span style="font-size:15px">${num}</span>`;
+    }
+    rd.appendChild(nd);container.appendChild(rd);
+  }
+  if(el<TOTAL_TASKS){
+    container.appendChild(Object.assign(document.createElement('div'),{className:'path-connector'}));
+    const mr=document.createElement('div');mr.className='path-row center';mr.style.opacity='0.25';
+    const mn=document.createElement('div');mn.className='step-node step-locked';
+    mn.innerHTML=`<span style="font-size:14px">⬇ ${el+1}-${TOTAL_TASKS}</span>`;
+    mr.appendChild(mn);container.appendChild(mr);
+  }
+  setTimeout(()=>{const w=document.getElementById('gameWorld');const ce=w.querySelector('.step-current');if(ce)ce.scrollIntoView({behavior:'smooth',block:'center'});},100);
+}
+
+function generateTrackLines(){
+  const c=document.getElementById('trackLines');
+  for(let i=0;i<30;i++){const l=document.createElement('div');l.className='daw-track-line';l.style.top=(i*3.5+1)+'%';c.appendChild(l);}
+}
+
+generateTrackLines();buildTreePath();updateUI();
+
+['taskModal','completeModal','milestoneModal','achModal'].forEach(id=>{
+  document.getElementById(id).addEventListener('click',function(e){if(e.target===this)this.classList.remove('active');});
+});
+</script>
+</body>
+</html>
