@@ -603,19 +603,6 @@ canvas {
 }
 
 /* Daily challenge badge */
-.daily-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 4px 12px;
-  background: linear-gradient(135deg, var(--yellow), var(--orange));
-  color: #000;
-  border-radius: 20px;
-  font-size: 0.75em;
-  font-weight: 700;
-  margin-left: 8px;
-}
-
 /* Key hints */
 .key-hint {
   font-size: 0.7em;
@@ -738,14 +725,11 @@ kbd {
   <!-- Mode tabs -->
   <div class="mode-tabs">
     <button class="mode-tab active" data-mode="training">🎯 Тренировка</button>
-    <button class="mode-tab" data-mode="daily">📅 День</button>
     <button class="mode-tab" data-mode="free">🎵 Свободный</button>
   </div>
 
   <!-- Settings panel -->
   <div class="panel">
-    <div class="panel-title">Настройки</div>
-
     <div class="panel-title" style="margin-bottom:8px; font-size:0.7em;">Источник звука</div>
     <div class="source-selector">
       <button class="source-btn active" data-source="pink">🩷 Розовый шум</button>
@@ -864,7 +848,6 @@ kbd {
     <div class="panel-title">Как это работает</div>
     <div class="help-section">
       <p><b>Тренировка:</b> Система применяет усиление на случайной частоте. Слушайте и угадайте, какая частота усилена.</p>
-      <p><b>День:</b> Одна задача в день с фиксированным seed. Сравнивайте прогресс с друзьями!</p>
       <p><b>Свободный:</b> Экспериментируйте с настройками EQ без проверки ответов.</p>
       <p><b>Bypass:</b> Удерживайте кнопку (или <kbd>B</kbd>) для сравнения "до/после" в реальном времени.</p>
       <p><b>Уровни:</b> Лёгкий ±25%, Средний ±15%, Сложный ±5%, God ±2% от целевой частоты.</p>
@@ -890,7 +873,6 @@ kbd {
     roundActive: false,
     targetFreq: 0,
     score: { total: 0, correct: 0, streak: 0, best: 0 },
-    dailySeed: 0,
     customBuffer: null,
     customFileName: '',
   };
@@ -1050,23 +1032,11 @@ kbd {
     return Math.round(Math.pow(10, logFreq));
   }
 
-  function dailyChallengeFreq() {
-    const today = new Date();
-    const seed = today.getFullYear() * 10000 + (today.getMonth()+1) * 100 + today.getDate();
-    return randomFreq(seed);
-  }
-
   // ===== Training Logic =====
   function startRound() {
     initAudio();
     state.roundActive = true;
-
-    if (state.mode === 'daily') {
-      state.targetFreq = dailyChallengeFreq();
-    } else {
-      state.targetFreq = randomFreq();
-    }
-
+    state.targetFreq = randomFreq();
     setTargetFreq(state.targetFreq);
 
     // Reset UI
@@ -1076,7 +1046,7 @@ kbd {
     $('freqSlider').value = 1000;
     $('btnSubmit').disabled = false;
 
-    status('training', state.mode === 'daily' ? 'Дневной вызов: угадайте частоту!' : 'Новый раунд! Слушайте и угадайте частоту.');
+    status('training', 'Новый раунд! Слушайте и угадайте частоту.');
     $('guessSection').classList.add('visible');
   }
 
@@ -1608,9 +1578,6 @@ kbd {
       if (state.mode === 'training') {
         $('guessSection').classList.add('visible');
         status('idle', 'Готов к тренировке');
-      } else if (state.mode === 'daily') {
-        $('guessSection').classList.add('visible');
-        status('idle', 'Дневной вызов готов');
       } else {
         $('guessSection').classList.remove('visible');
         state.roundActive = false;
@@ -1701,6 +1668,14 @@ kbd {
   loadState();
   ['boost', 'q', 'volume'].forEach(updateKnobDisplay);
   drawSpectrum();
+
+  // Auto-start training round
+  state.mode = 'training';
+  document.querySelectorAll('.mode-tab').forEach(t => {
+    t.classList.toggle('active', t.dataset.mode === 'training');
+  });
+  $('guessSection').classList.add('visible');
+  startRound();
 })();
 </script>
 </body>
