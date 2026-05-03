@@ -8,6 +8,31 @@
   --eq-accent-dim: #ca8a04;
   --eq-radius: 10px;
   --eq-shadow: 0 4px 28px rgba(0, 0, 0, 0.45);
+  --eq-font-size: clamp(0.82rem, 1.2vw + 0.6rem, 0.95rem);
+  --eq-knob-size: 60px;
+  --eq-btn-min: 44px;
+}
+
+/* Светлая тема (системная) */
+@media (prefers-color-scheme: light) {
+  :root {
+    --eq-bg: #f4f5f9;
+    --eq-panel: #ffffff;
+    --eq-border: rgba(0, 0, 0, 0.1);
+    --eq-text: #1a1b26;
+    --eq-muted: #5a6270;
+    --eq-accent: #ca8a04;
+    --eq-accent-dim: #a16207;
+  }
+  .eq-ab-band-strip {
+    background: rgba(240, 241, 245, 0.95);
+  }
+  .eq-ab-viz-panel {
+    background: linear-gradient(180deg, #e8eaf0 0%, #dde0e8 100%);
+  }
+  .eq-ab-canvas {
+    background: #dde0e8;
+  }
 }
 
 .eq-ab-widget-root {
@@ -15,12 +40,100 @@
   color: var(--eq-text);
   max-width: 980px;
   margin: 0 auto;
+  font-size: var(--eq-font-size);
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
 }
 
 .eq-ab-widget-root *,
 .eq-ab-widget-root *::before,
 .eq-ab-widget-root *::after {
   box-sizing: border-box;
+}
+
+/* Ссылка "назад" */
+.eq-ab-back-link {
+  display: inline-block;
+  margin: 8px auto 14px 4px;
+  color: #00bcd4;
+  text-decoration: none;
+  font-family: Inter, sans-serif;
+  font-size: clamp(0.78rem, 1.2vw + 0.5rem, 0.86rem);
+  min-height: var(--eq-btn-min);
+  line-height: var(--eq-btn-min);
+}
+
+/* Стартовый экран для мобильных */
+.eq-ab-welcome {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(7, 8, 13, 0.96);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.eq-ab-welcome-inner {
+  text-align: center;
+  max-width: 340px;
+  color: var(--eq-text, #e8eaf0);
+  font-family: Inter, system-ui, sans-serif;
+}
+
+.eq-ab-welcome-icon {
+  font-size: 3rem;
+  margin-bottom: 16px;
+  line-height: 1;
+}
+
+.eq-ab-welcome-title {
+  font-size: clamp(1.3rem, 4vw + 0.5rem, 1.8rem);
+  font-weight: 800;
+  margin: 0 0 12px;
+  color: #fde047;
+}
+
+.eq-ab-welcome-desc {
+  font-size: clamp(0.88rem, 2.5vw + 0.4rem, 1rem);
+  line-height: 1.5;
+  margin: 0 0 24px;
+  color: var(--eq-muted, #7e8696);
+}
+
+.eq-ab-welcome-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 200px;
+  min-height: 56px;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #22d3ee, #06b6d4);
+  color: #07080d;
+  font-size: 1.1rem;
+  font-weight: 700;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 6px 24px rgba(34, 211, 238, 0.35);
+  transition: transform 0.12s ease, box-shadow 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
+.eq-ab-welcome-btn:active {
+  transform: scale(0.96);
+  box-shadow: 0 2px 12px rgba(34, 211, 238, 0.25);
+}
+
+.eq-ab-welcome-hint {
+  margin-top: 14px;
+  font-size: 0.78rem;
+  color: var(--eq-muted, #7e8696);
 }
 
 .eq-ab-panel {
@@ -34,7 +147,7 @@
 
 .eq-ab-intro .eq-ab-hint {
   margin: 0;
-  font-size: 0.82rem;
+  font-size: clamp(0.75rem, 1.2vw + 0.5rem, 0.85rem);
   line-height: 1.4;
   color: var(--eq-muted);
 }
@@ -60,7 +173,7 @@
   margin-top: 14px;
   padding: 12px 14px;
   border-radius: 8px;
-  font-size: 0.875rem;
+  font-size: clamp(0.8rem, 1.2vw + 0.55rem, 0.875rem);
   line-height: 1.48;
   color: rgba(232, 234, 240, 0.88);
   background: rgba(0, 0, 0, 0.35);
@@ -89,7 +202,7 @@
 
 .eq-ab-time {
   font-variant-numeric: tabular-nums;
-  font-size: 0.82rem;
+  font-size: clamp(0.75rem, 1.2vw + 0.5rem, 0.82rem);
   color: var(--eq-muted);
   min-width: 8.5rem;
 }
@@ -106,7 +219,7 @@
 }
 
 .eq-ab-ab-label {
-  font-size: 0.72rem;
+  font-size: clamp(0.68rem, 1.2vw + 0.45rem, 0.76rem);
   font-weight: 800;
   color: var(--eq-muted);
   min-width: 4.75rem;
@@ -123,9 +236,16 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.78rem;
+  font-size: clamp(0.72rem, 1.2vw + 0.5rem, 0.82rem);
   color: var(--eq-muted);
   cursor: pointer;
+  min-height: var(--eq-btn-min);
+}
+
+.eq-ab-loop input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  min-width: 22px;
 }
 
 .eq-ab-btn {
@@ -137,8 +257,15 @@
   color: #fff;
   font-weight: 600;
   padding: 8px 14px;
-  font-size: 0.825rem;
+  font-size: clamp(0.78rem, 1.2vw + 0.55rem, 0.86rem);
+  min-height: var(--eq-btn-min);
+  min-width: var(--eq-btn-min);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   transition: transform 0.06s ease, filter 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 .eq-ab-btn:hover {
@@ -154,9 +281,10 @@
 }
 
 .eq-ab-file {
-  font-size: 0.72rem;
+  font-size: clamp(0.68rem, 1.2vw + 0.45rem, 0.76rem);
   color: var(--eq-muted);
   max-width: 100%;
+  min-height: var(--eq-btn-min);
 }
 
 .eq-ab-presets-panel {
@@ -169,17 +297,20 @@
   align-items: center;
   gap: 8px;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: clamp(0.78rem, 1.2vw + 0.55rem, 0.88rem);
   margin-right: auto;
 }
 
 .eq-ab-presets-panel select {
-  padding: 6px 10px;
+  padding: 8px 12px;
   border-radius: var(--eq-radius);
   border: 1px solid var(--eq-border);
   background: var(--eq-bg);
   color: var(--eq-text);
   font-family: inherit;
+  font-size: clamp(0.78rem, 1.2vw + 0.55rem, 0.86rem);
+  min-height: var(--eq-btn-min);
+  touch-action: manipulation;
 }
 
 .eq-ab-viz-panel {
@@ -196,6 +327,7 @@
   background: #05060a;
   touch-action: none;
   cursor: crosshair;
+  will-change: transform;
 }
 
 .eq-ab-canvas--drag {
@@ -244,7 +376,7 @@
 }
 
 .eq-ab-band-title {
-  font-size: 0.68rem;
+  font-size: clamp(0.62rem, 1vw + 0.45rem, 0.72rem);
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -253,15 +385,17 @@
 
 .eq-ab-type-mini {
   margin-left: auto;
-  font-size: 0.65rem;
+  font-size: clamp(0.62rem, 1vw + 0.45rem, 0.7rem);
   font-weight: 700;
-  padding: 4px 6px;
+  padding: 6px 8px;
   border-radius: 6px;
   border: 1px solid var(--eq-border);
   background: #0c0e14;
   color: var(--eq-text);
   font-family: inherit;
   max-width: 5.2rem;
+  min-height: var(--eq-btn-min);
+  touch-action: manipulation;
 }
 
 .eq-ab-knob-row {
@@ -285,6 +419,7 @@
   align-items: center;
   gap: 5px;
   user-select: none;
+  -webkit-user-select: none;
 }
 
 .eq-ab-knob--active .eq-ab-knob-value {
@@ -293,8 +428,8 @@
 
 .eq-ab-knob-ring {
   display: block;
-  width: 60px;
-  height: 60px;
+  width: var(--eq-knob-size);
+  height: var(--eq-knob-size);
   border-radius: 50%;
   cursor: ns-resize;
   touch-action: none;
@@ -311,7 +446,7 @@
 }
 
 .eq-ab-knob-caption {
-  font-size: 0.58rem;
+  font-size: clamp(0.52rem, 0.8vw + 0.35rem, 0.62rem);
   font-weight: 700;
   letter-spacing: 0.14em;
   color: rgba(248, 250, 252, 0.38);
@@ -319,7 +454,7 @@
 }
 
 .eq-ab-knob-value {
-  font-size: 0.73rem;
+  font-size: clamp(0.68rem, 1vw + 0.5rem, 0.78rem);
   font-variant-numeric: tabular-nums;
   font-weight: 600;
   color: rgba(253, 224, 71, 0.9);
@@ -330,18 +465,184 @@ input[type="range"] {
   touch-action: manipulation;
 }
 
-@media (max-width: 520px) {
+/* Увеличенные зоны касания для ползунков на мобильных */
+.eq-ab-mobile input[type="range"] {
+  min-height: 44px;
+  padding: 8px 0;
+}
+
+.eq-ab-mobile .eq-ab-canvas {
+  min-height: 200px;
+  height: min(28vh, 280px);
+}
+
+/* ===== МОБИЛЬНЫЕ СТИЛИ (≤768px) ===== */
+@media (max-width: 768px) {
+  :root {
+    --eq-knob-size: 72px;
+    --eq-btn-min: 48px;
+  }
+
+  body {
+    padding: 8px !important;
+  }
+
+  .eq-ab-panel {
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+  }
+
+  .eq-ab-intro {
+    display: none;
+  }
+
+  .eq-ab-bands-root {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .eq-ab-band-strip {
+    padding: 12px;
+  }
+
+  .eq-ab-knob-ring {
+    width: var(--eq-knob-size);
+    height: var(--eq-knob-size);
+  }
+
+  .eq-ab-knob-row {
+    gap: 4px;
+  }
+
   .eq-ab-ab-label {
     min-width: auto;
     width: 100%;
     text-align: center;
   }
+
   .eq-ab-crossfade-wrap {
     flex-wrap: wrap;
     justify-content: center;
+    gap: 8px;
   }
+
+  .eq-ab-crossfade-wrap input[type="range"] {
+    width: 100%;
+  }
+
+  .eq-ab-player-row {
+    justify-content: center;
+  }
+
+  .eq-ab-quick-row {
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .eq-ab-presets-panel {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+
+  .eq-ab-presets-panel label {
+    margin-right: 0;
+    justify-content: center;
+  }
+
+  .eq-ab-presets-panel select {
+    width: 100%;
+  }
+
+  .eq-ab-presets-panel .eq-ab-btn {
+    width: 100%;
+  }
+
+  .eq-ab-file {
+    display: none;
+  }
+
+  .eq-ab-time {
+    min-width: auto;
+    font-size: clamp(0.72rem, 2vw + 0.4rem, 0.82rem);
+  }
+
+  .eq-ab-game-result {
+    font-size: clamp(0.76rem, 2vw + 0.45rem, 0.86rem);
+    padding: 10px 12px;
+  }
+
+  /* Аккордеон для вторичных кнопок на мобильных */
+  .eq-ab-presets-panel .eq-ab-btn[data-act="export"],
+  .eq-ab-presets-panel .eq-ab-btn[data-act="importPrompt"] {
+    font-size: clamp(0.76rem, 2vw + 0.45rem, 0.84rem);
+  }
+}
+
+/* ===== УЗКИЕ ЭКРАНЫ (≤380px) ===== */
+@media (max-width: 380px) {
+  :root {
+    --eq-knob-size: 64px;
+  }
+
+  .eq-ab-knob-caption {
+    font-size: 0.52rem;
+  }
+
+  .eq-ab-knob-value {
+    font-size: 0.66rem;
+  }
+
+  .eq-ab-btn {
+    padding: 6px 10px;
+    font-size: 0.76rem;
+  }
+
+  .eq-ab-band-title {
+    font-size: 0.62rem;
+  }
+
+  .eq-ab-type-mini {
+    font-size: 0.62rem;
+    padding: 4px 6px;
+  }
+
   .eq-ab-canvas {
-    min-height: 240px;
-    height: 42vh;
+    min-height: 180px;
+    height: min(24vh, 220px);
+  }
+}
+
+/* ===== ЛАНДШАФТ НА МОБИЛЬНЫХ ===== */
+@media (max-height: 500px) and (orientation: landscape) {
+  .eq-ab-canvas {
+    min-height: 150px;
+    height: min(60vh, 200px);
+  }
+
+  .eq-ab-panel {
+    padding: 8px 10px;
+    margin-bottom: 8px;
+  }
+
+  .eq-ab-intro {
+    display: none;
+  }
+}
+
+/* ===== PREFER REDUCED MOTION ===== */
+@media (prefers-reduced-motion: reduce) {
+  .eq-ab-btn {
+    transition: none;
+  }
+}
+
+/* ===== SAFE AREAS (notch, etc.) ===== */
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(8px, env(safe-area-inset-left)) !important;
+    padding-right: max(8px, env(safe-area-inset-right)) !important;
+    padding-bottom: max(8px, env(safe-area-inset-bottom)) !important;
   }
 }

@@ -63,20 +63,44 @@ export class EQComparisonWidget {
 
     /** @private */ this._initialized = false;
     /** @private */ this._building = false;
+    /** @private */ this._mobile = !!options.mobile;
 
     /** @private @type {{ freq: RotaryKnob, gain: RotaryKnob, q: RotaryKnob }[]} */
     this._bandKnobs = [];
 
     this.containerEl.innerHTML = "";
     this.containerEl.classList.add("eq-ab-widget-root");
+    if (this._mobile) this.containerEl.classList.add("eq-ab-mobile");
     this._buildSkeleton();
     options.loop ??= true;
     this._eqBands = Math.min(16, Math.max(1, options.eqBands ?? 5));
 
     document.addEventListener("keydown", this._keydown);
 
+    // Мобильная обработка видимости страницы
+    if (this._mobile) {
+      this._visibilityHandler = () => this._onVisibilityChange();
+      document.addEventListener("visibilitychange", this._visibilityHandler);
+      window.addEventListener("pagehide", () => this._onPageHide());
+    }
+
     queueMicrotask(() => this._wireUi());
     this.engine.eqBands = this._eqBands;
+  }
+
+  /** Обработка смены видимости вкладки — пауза при уходе */
+  _onVisibilityChange() {
+    if (document.hidden && this._initialized && this.engine.isPlaying()) {
+      this.pause();
+      this._updatePlayButton();
+    }
+  }
+
+  /** Сохранение состояния при закрытии вкладки */
+  _onPageHide() {
+    if (this._initialized && this.engine.isPlaying()) {
+      this.pause();
+    }
   }
 
   /**
@@ -89,6 +113,12 @@ export class EQComparisonWidget {
       window.AudioContext || /** @type {typeof AudioContext | undefined} */ (window.webkitAudioContext);
     if (!AudioContextCtor) throw new Error("Web Audio unsupported");
     this._ctx = new AudioContextCtor();
+
+    // Критично для iOS/Android: явный resume после создания
+    if (this._ctx.state === "suspended") {
+      await this._ctx.resume();
+    }
+
     this.engine.attachContext(this._ctx, { eqBands: this._eqBands, events: this._emitter });
 
     const src = this._opts.audioSrc;
@@ -741,6 +771,9 @@ export class EQComparisonWidget {
 
   destroy() {
     document.removeEventListener("keydown", this._keydown);
+    if (this._mobile) {
+      document.removeEventListener("visibilitychange", this._visibilityHandler);
+    }
     if (this._tickId) cancelAnimationFrame(this._tickId);
     this._tickId = 0;
     for (const kb of this._bandKnobs) {
@@ -771,6 +804,6 @@ export class EQComparisonWidget {
     }
     this._ctx = null;
     this.containerEl.innerHTML = "";
-    this.containerEl.classList.remove("eq-ab-widget-root");
+    this.containerEl.classList.remove("eq-ab-widget-root", "eq-ab-mobile");
   }
 }

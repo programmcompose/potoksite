@@ -42,6 +42,8 @@ export class EQVisualizer {
 
     /** @private */ this._paintLayout = /** @type {null | LayoutInfo} */ (null);
 
+    /** @private */ this._isMobile = /Android|iPhone|iPad|iPod|webOS/i.test(navigator.userAgent) || (navigator.maxTouchPoints > 1);
+
     this._pointerDownBound = /** @type {(e: PointerEvent)=>void} */ ((e) => this._pointerDown(e));
     this._pointerMoveBound = /** @type {(e: PointerEvent)=>void} */ ((e) => this._pointerMove(e));
     this._pointerUpBound = /** @type {(e: PointerEvent)=>void} */ ((e) => this._pointerUp(e));
@@ -85,6 +87,9 @@ export class EQVisualizer {
   }
 
   draw() {
+    // Пропуск кадров при неактивной вкладке
+    if (document.hidden) return;
+
     const canvas = this.canvas;
     const ctx2d = canvas.getContext("2d");
     if (!ctx2d) return;
@@ -92,8 +97,9 @@ export class EQVisualizer {
     const w = canvas.clientWidth | 0;
     const h = canvas.clientHeight | 0;
     if (w < 2 || h < 2) return;
-    const tw = Math.max(1, Math.floor(w * dpr));
-    const th = Math.max(1, Math.floor(h * dpr));
+    // Ограничение разрешения для производительности
+    const tw = Math.max(1, Math.min(1600, Math.floor(w * dpr)));
+    const th = Math.max(1, Math.min(1200, Math.floor(h * dpr)));
     if (canvas.width !== tw || canvas.height !== th) {
       canvas.width = tw;
       canvas.height = th;
@@ -141,8 +147,7 @@ export class EQVisualizer {
         const u = Math.max(0, Math.min(1, (px - padL) / plotW));
         return freqRange.min * Math.pow(10, u * freqSpan);
       },
-      /** @type {(db: number) => number} */
-      yForDb: (db) => {
+      /** @type {(db: number) => number} */ yForDb: (db) => {
         const dTop = this.dbExtent.top;
         const dBot = this.dbExtent.bot;
         return padT + ((dTop - db) / (dTop - dBot)) * plotH;
@@ -170,9 +175,13 @@ export class EQVisualizer {
 
     const eq = this.getEq();
 
+    // Упрощённая сетка на мобильных
+    const isMobile = this._isMobile;
+    const xticks = isMobile ? [100, 1000, 10000] : [20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000];
+    const dBticks = isMobile ? [-12, 0, 12] : [-24, -12, -6, 0, 6, 12, 24];
+
     ctx2d.strokeStyle = grid;
     ctx2d.lineWidth = 1;
-    const xticks = [20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000];
     for (const hz of xticks) {
       if (hz < freqRange.min || hz > freqRange.max) continue;
       const x = ly.xForHz(hz);
@@ -181,7 +190,7 @@ export class EQVisualizer {
       ctx2d.lineTo(x, padT + plotH);
       ctx2d.stroke();
     }
-    for (const db of [-24, -12, -6, 0, 6, 12, 24]) {
+    for (const db of dBticks) {
       const y = ly.yForDb(db);
       ctx2d.globalAlpha = db === 0 ? 0.35 : 0.12;
       ctx2d.strokeStyle = db === 0 ? "rgba(255,236,153,0.45)" : grid;
@@ -193,13 +202,16 @@ export class EQVisualizer {
       ctx2d.strokeStyle = grid;
       ctx2d.globalAlpha = 1;
       ctx2d.lineWidth = 1;
-      ctx2d.fillStyle = "rgba(248,248,248,0.35)";
-      ctx2d.font = "10px system-ui,sans-serif";
-      ctx2d.textAlign = "right";
-      ctx2d.fillText(`${db > 0 ? "+" : ""}${db} dB`, padL - 6, y + 3);
-      ctx2d.textAlign = "left";
-      ctx2d.fillStyle = "rgba(248,248,248,0.35)";
-      ctx2d.fillText(`${db > 0 ? "+" : ""}${db}`, padL + plotW + 6, y + 3);
+
+      // Меньше текста на мобильных
+      if (!isMobile || h > 200) {
+        ctx2d.fillStyle = "rgba(248,248,248,0.35)";
+        ctx2d.font = isMobile ? "9px system-ui,sans-serif" : "10px system-ui,sans-serif";
+        ctx2d.textAlign = "right";
+        ctx2d.fillText(`${db > 0 ? "+" : ""}${db}${isMobile ? "" : " dB"}`, padL - 6, y + 3);
+        ctx2d.textAlign = "left";
+        ctx2d.fillText(`${db > 0 ? "+" : ""}${db}`, padL + plotW + 6, y + 3);
+      }
     }
 
     if (eq) {
@@ -229,9 +241,10 @@ export class EQVisualizer {
       }
     }
 
+    // Спектр только если играет аудио (оптимизация для мобильных)
     const spec = this.getSpectrum();
     const specData = spec?.readSpectrum();
-    if (specData && specData.length > 4 && spec.analyser) {
+    if (specData && specData.length > 4 && spec.analyser && !isMobile) {
       const sr = spec.analyser.context.sampleRate;
       const fft = spec.analyser.fftSize;
       const sn = specData.length;
@@ -256,7 +269,7 @@ export class EQVisualizer {
 
     if (!eq) {
       ctx2d.fillStyle = "rgba(255,255,255,0.28)";
-      ctx2d.font = "13px system-ui,sans-serif";
+      ctx2d.font = isMobile ? "11px system-ui,sans-serif" : "13px system-ui,sans-serif";
       ctx2d.fillText("Запустите воспроизведение для графика EQ", padL, padT + plotH / 2);
       return;
     }
@@ -282,17 +295,18 @@ export class EQVisualizer {
     for (let i = 2; i < pts.length; i += 2) ctx2d.lineTo(pts[i], pts[i + 1]);
     ctx2d.strokeStyle = curveClr;
     ctx2d.shadowColor = "rgba(250,204,21,0.55)";
-    ctx2d.shadowBlur = 14;
-    ctx2d.lineWidth = 3;
+    ctx2d.shadowBlur = isMobile ? 8 : 14;
+    ctx2d.lineWidth = isMobile ? 2.5 : 3;
     ctx2d.stroke();
     ctx2d.shadowBlur = 0;
 
-    /* Узлы + хит-боксы по полосам */
+    /* Узлы + хит-боксы по полосам — увеличенные на мобильных */
     const nb = eq.numBands;
     const oneHzMag = new Float32Array(1);
     /** @type {Float32Array} */
     const hzBuf = new Float32Array(1);
-    const handleR = 12;
+    const handleR = isMobile ? 18 : 12; // Увеличенные хит-зоны на мобильных
+    const labelR = isMobile ? 14 : 12;
     for (let bi = 0; bi < nb; bi++) {
       const bp = eq.getBandParams(bi);
       hzBuf[0] = bp.frequency;
@@ -303,32 +317,37 @@ export class EQVisualizer {
       const hy = ly.yForDb(dbg);
       const col = palette[bi % palette.length] ?? "#fff";
       ctx2d.beginPath();
-      ctx2d.arc(hx, hy, handleR * 0.68, 0, Math.PI * 2);
+      ctx2d.arc(hx, hy, labelR * 0.68, 0, Math.PI * 2);
       ctx2d.fillStyle = col;
       ctx2d.strokeStyle = "rgba(255,255,255,0.92)";
-      ctx2d.lineWidth = 2.25;
+      ctx2d.lineWidth = isMobile ? 2.5 : 2.25;
       ctx2d.fill();
       ctx2d.stroke();
       ctx2d.fillStyle = "rgba(255,255,255,0.95)";
-      ctx2d.font = "700 11px ui-sans-serif,system-ui,sans-serif";
+      ctx2d.font = `700 ${isMobile ? 10 : 11}px ui-sans-serif,system-ui,sans-serif`;
       const label =
         bp.frequency >= 1000 ? `${(bp.frequency / 1000).toFixed(2).replace(/\.?0+$/, "")} k` : `${Math.round(bp.frequency)}`;
       ctx2d.textAlign = "center";
       ctx2d.shadowColor = "#000";
       ctx2d.shadowBlur = 4;
-      ctx2d.fillText(label, hx, hy - handleR + 12);
+      ctx2d.fillText(label, hx, hy - handleR * 0.68 + (isMobile ? 14 : 12));
       ctx2d.shadowBlur = 0;
       ctx2d.textAlign = "left";
-      this._hitTargets.push({ x: hx, y: hy, r: handleR + 4, band: bi });
+      this._hitTargets.push({ x: hx, y: hy, r: handleR + (isMobile ? 8 : 4), band: bi });
     }
 
-    ctx2d.fillStyle = "rgba(200,206,217,0.55)";
-    ctx2d.font = "10px system-ui,sans-serif";
-    ctx2d.fillText("20 Hz", padL, h - 10);
-    ctx2d.textAlign = "right";
-    ctx2d.fillText("20 kHz", padL + plotW, h - 10);
-    ctx2d.textAlign = "left";
-    ctx2d.fillText("АЧХ (сумма полос) · перетаскивайте узлы", padL, 14);
+    // Подписи оси X
+    if (!isMobile || h > 180) {
+      ctx2d.fillStyle = "rgba(200,206,217,0.55)";
+      ctx2d.font = isMobile ? "9px system-ui,sans-serif" : "10px system-ui,sans-serif";
+      ctx2d.fillText("20 Hz", padL, h - 10);
+      ctx2d.textAlign = "right";
+      ctx2d.fillText("20 kHz", padL + plotW, h - 10);
+      ctx2d.textAlign = "left";
+    }
+    if (!isMobile) {
+      ctx2d.fillText("АЧХ (сумма полос) · перетаскивайте узлы", padL, 14);
+    }
   }
 
   /** @private @param {PointerEvent} e */

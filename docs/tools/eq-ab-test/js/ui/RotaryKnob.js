@@ -3,6 +3,7 @@
  * vertical drag, mouse wheel, cyan glow on drag, localStorage persistence.
  */
 export class RotaryKnob {
+  /** @private */ static _defaultSize = 60;
   /**
    * @param {{
    *   label: string,
@@ -58,6 +59,21 @@ export class RotaryKnob {
     this._canvas.addEventListener("pointerdown", (e) => this._pointerDown(e));
     this._canvas.addEventListener("wheel", this._onWheel, { passive: false });
 
+    // Resize observer для адаптивного размера на мобильных
+    /** @private */ this._resizeObserver = null;
+    try {
+      this._resizeObserver = new ResizeObserver(() => {
+        const newSize = this._getCssSize();
+        if (Math.abs(newSize - this._sizeCss) > 1) {
+          this._resizeCanvas();
+          this._paint();
+        }
+      });
+      this._resizeObserver.observe(this._canvas);
+    } catch {
+      /* ResizeObserver не поддерживается */
+    }
+
     /** @private */ this._initValue = opts.value ?? opts.min;
     this.value = this._loadValue() ?? this._clamp(opts.value ?? opts.min);
     /** @readonly */ this.element = this._wrap;
@@ -75,10 +91,26 @@ export class RotaryKnob {
   /** @private */
   _resizeCanvas() {
     const pr = Math.min(window.devicePixelRatio || 1, 2);
-    this._canvas.width = Math.round(this._sizeCss * pr);
-    this._canvas.height = Math.round(this._sizeCss * pr);
-    this._canvas.style.width = this._sizeCss + "px";
-    this._canvas.style.height = this._sizeCss + "px";
+    const computedSize = this._getCssSize();
+    this._sizeCss = computedSize;
+    this._canvas.width = Math.round(computedSize * pr);
+    this._canvas.height = Math.round(computedSize * pr);
+    this._canvas.style.width = computedSize + "px";
+    this._canvas.style.height = computedSize + "px";
+  }
+
+  /** Получить размер из CSS-переменной или fallback */
+  _getCssSize() {
+    const optSize = this.constructor.prototype._defaultSize;
+    try {
+      const style = getComputedStyle(document.documentElement);
+      const val = style.getPropertyValue("--eq-knob-size").trim();
+      if (val) {
+        const num = parseInt(val, 10);
+        if (!isNaN(num) && num > 0) return num;
+      }
+    } catch { /* noop */ }
+    return optSize ?? 60;
   }
 
   /** @private @returns {number | null} */
@@ -126,6 +158,10 @@ export class RotaryKnob {
     window.removeEventListener("pointerup", this._onUp);
     this._canvas.removeEventListener("keydown", this._keydown);
     this._canvas.removeEventListener("wheel", this._onWheel);
+    if (this._resizeObserver) {
+      this._resizeObserver.disconnect();
+      this._resizeObserver = null;
+    }
     this.detach();
   }
 

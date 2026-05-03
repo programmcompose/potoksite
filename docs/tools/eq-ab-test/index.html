@@ -2,16 +2,34 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="description" content="EQ A/B — сравнение обработки: dry/wet, параметрический эквалайзер, пресеты" />
+  <meta name="theme-color" content="#07080d" />
   <title>EQ‑AB‑test — сравнение до/после эквалайзера</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" />
   <link rel="stylesheet" href="./css/main.css" />
 </head>
 <body style="margin: 0; background: #1a1b26; min-height: 100vh; padding: 14px;">
-  <a href="../index.html" style="display: inline-block; margin: 8px auto 14px 4px; color: #00bcd4; text-decoration: none; font-family: Inter, sans-serif; font-size: 0.86rem;"
+  <a href="../index.html" class="eq-ab-back-link"
     >← К инструментам</a>
+
+  <!-- Мобильный стартовый экран для инициализации AudioContext -->
+  <div id="mobile-welcome" class="eq-ab-welcome" role="dialog" aria-modal="true" aria-label="Запуск EQ тренировки">
+    <div class="eq-ab-welcome-inner">
+      <div class="eq-ab-welcome-icon" aria-hidden="true">🎧</div>
+      <h1 class="eq-ab-welcome-title">EQ A/B Тренировка</h1>
+      <p class="eq-ab-welcome-desc">
+        Слушайте скрытый эквалайзер в режиме <strong>A</strong>,<br>
+        затем повторите его в режиме <strong>B</strong>.
+      </p>
+      <button type="button" class="eq-ab-welcome-btn" data-act="start" aria-label="Начать тренировку">
+        <span aria-hidden="true">▶</span> Начать тренировку
+      </button>
+      <p class="eq-ab-welcome-hint">Нажмите для включения звука</p>
+    </div>
+  </div>
+
   <div id="eq-widget"
     role="application"
     aria-label="EQ A B сравнение"
