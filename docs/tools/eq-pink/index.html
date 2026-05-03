@@ -6,20 +6,20 @@
 <title>EQ-PINK — Тренажёр слуха | Курс по музыкальному продакшену</title>
 <style>
 :root {
-  --bg: #1a1a2e;
-  --bg-light: #16213e;
-  --bg-lighter: #0f3460;
-  --bg-card: #1a1a3e;
-  --text: #e8e8e8;
-  --text-dim: #8892b0;
-  --pink: #e94560;
-  --pink-glow: #ff6b8a;
-  --cyan: #00d4ff;
-  --cyan-dim: #0088aa;
-  --green: #00ff88;
-  --red: #ff4466;
-  --yellow: #ffaa00;
-  --purple: #aa44ff;
+  --bg: #1c1c1c;
+  --bg-light: #2a2a2a;
+  --bg-lighter: #383838;
+  --bg-card: #242424;
+  --text: #FDFBDF;
+  --text-dim: #9a9680;
+  --accent: #e8d5a3;
+  --accent-glow: #f0e2b8;
+  --cyan: #c8b88a;
+  --cyan-dim: #8a7e62;
+  --green: #a8c48a;
+  --red: #c47a7a;
+  --yellow: #d4c088;
+  --purple: #b8a890;
   --radius: 12px;
   --shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
@@ -46,7 +46,7 @@ header {
 header h1 {
   font-size: 2em;
   font-weight: 900;
-  background: linear-gradient(135deg, var(--pink), var(--purple), var(--cyan));
+  background: linear-gradient(135deg, var(--accent), var(--purple), var(--cyan));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -58,17 +58,17 @@ header h1 .pink-dot {
   display: inline-block;
   width: 12px;
   height: 12px;
-  background: var(--pink);
+  background: var(--accent);
   border-radius: 50%;
   margin-left: 4px;
   vertical-align: middle;
-  box-shadow: 0 0 12px var(--pink-glow);
+  box-shadow: 0 0 12px var(--accent-glow);
   animation: pulse-glow 2s infinite;
 }
 
 @keyframes pulse-glow {
-  0%, 100% { box-shadow: 0 0 8px var(--pink-glow); }
-  50% { box-shadow: 0 0 20px var(--pink-glow), 0 0 40px rgba(233,69,96,0.3); }
+  0%, 100% { box-shadow: 0 0 8px var(--accent-glow); }
+  50% { box-shadow: 0 0 20px var(--accent-glow), 0 0 40px rgba(232,213,163,0.3); }
 }
 
 header p {
@@ -115,7 +115,7 @@ header p {
   display: inline-block;
   width: 4px;
   height: 14px;
-  background: var(--pink);
+  background: var(--accent);
   border-radius: 2px;
 }
 
@@ -150,7 +150,7 @@ header p {
   margin-top: 2px;
 }
 
-.sv-pink { color: var(--pink); }
+.sv-pink { color: var(--accent); }
 .sv-cyan { color: var(--cyan); }
 .sv-green { color: var(--green); }
 .sv-yellow { color: var(--yellow); }
@@ -171,7 +171,7 @@ button {
 }
 
 button:hover {
-  background: rgba(0,212,255,0.15);
+  background: rgba(232,213,163,0.15);
   border-color: var(--cyan);
 }
 
@@ -183,14 +183,14 @@ button:disabled {
 }
 
 button.primary {
-  background: var(--pink);
+  background: var(--accent);
   color: #fff;
-  border-color: var(--pink);
+  border-color: var(--accent);
 }
 
 button.primary:hover {
-  background: var(--pink-glow);
-  box-shadow: 0 0 20px rgba(233,69,96,0.3);
+  background: var(--accent-glow);
+  box-shadow: 0 0 20px rgba(232,213,163,0.3);
 }
 
 button.success {
@@ -230,10 +230,10 @@ button.accent {
 }
 
 .source-btn.active {
-  background: var(--pink);
+  background: var(--accent);
   color: #fff;
-  border-color: var(--pink);
-  box-shadow: 0 0 12px rgba(233,69,96,0.3);
+  border-color: var(--accent);
+  box-shadow: 0 0 12px rgba(232,213,163,0.3);
 }
 
 /* Difficulty */
@@ -259,7 +259,7 @@ button.accent {
 .diff-btn[data-diff="easy"].active { background: var(--green); color: #000; }
 .diff-btn[data-diff="medium"].active { background: var(--yellow); color: #000; }
 .diff-btn[data-diff="hard"].active { background: var(--red); color: #fff; }
-.diff-btn[data-diff="god"].active { background: var(--pink); color: #fff; box-shadow: 0 0 12px rgba(233,69,96,0.4); }
+.diff-btn[data-diff="god"].active { background: var(--accent); color: #000; box-shadow: 0 0 12px rgba(232,213,163,0.4); }
 
 /* VST-style Knobs */
 .knob-row {
@@ -290,7 +290,7 @@ button.accent {
 .knob-value {
   font-size: 0.75em;
   font-weight: 700;
-  color: var(--pink);
+  color: var(--accent);
   font-variant-numeric: tabular-nums;
   min-height: 1em;
 }
@@ -321,8 +321,8 @@ button.accent {
 }
 
 .toggle-switch.active {
-  background: var(--pink);
-  border-color: var(--pink);
+  background: var(--accent);
+  border-color: var(--accent);
 }
 
 .toggle-switch::after {
@@ -363,7 +363,7 @@ button.accent {
 
 .status-dot.idle { background: var(--text-dim); }
 .status-dot.playing { background: var(--green); animation: pulse 0.8s infinite; }
-.status-dot.training { background: var(--pink); animation: pulse 1s infinite; }
+.status-dot.training { background: var(--accent); animation: pulse 1s infinite; }
 .status-dot.result { background: var(--cyan); }
 
 @keyframes pulse {
@@ -435,8 +435,8 @@ canvas {
 
 .freq-guess-input input[type="number"]:focus {
   outline: none;
-  border-color: var(--pink);
-  box-shadow: 0 0 12px rgba(233,69,96,0.2);
+  border-color: var(--accent);
+  box-shadow: 0 0 12px rgba(232,213,163,0.2);
 }
 
 .freq-unit {
@@ -456,7 +456,7 @@ canvas {
   appearance: none;
   height: 8px;
   border-radius: 4px;
-  background: linear-gradient(to right, #333, var(--pink), var(--purple), var(--cyan));
+  background: linear-gradient(to right, #333, var(--accent), var(--purple), var(--cyan));
   outline: none;
   cursor: pointer;
 }
@@ -527,7 +527,7 @@ canvas {
 
 .freq-ref-item .freq {
   font-weight: 700;
-  color: var(--pink);
+  color: var(--accent);
 }
 
 .freq-ref-item .desc {
@@ -547,8 +547,8 @@ canvas {
 }
 
 .upload-zone:hover, .upload-zone.dragover {
-  border-color: var(--pink);
-  background: rgba(233,69,96,0.05);
+  border-color: var(--accent);
+  background: rgba(232,213,163,0.05);
 }
 
 .upload-zone input[type="file"] {
@@ -659,7 +659,7 @@ kbd {
 }
 
 .mode-tab.active {
-  background: var(--pink);
+  background: var(--accent);
   color: #fff;
 }
 
@@ -1178,9 +1178,9 @@ kbd {
 
     function render() {
       if (!state.playing) {
-        ctx.fillStyle = '#0a0a1a';
+        ctx.fillStyle = '#141414';
         ctx.fillRect(0, 0, w, h);
-        ctx.fillStyle = 'rgba(255,255,255,0.15)';
+        ctx.fillStyle = 'rgba(232,213,163,0.15)';
         ctx.font = '14px Inter, sans-serif';
         ctx.textAlign = 'center';
         ctx.fillText('Нажмите Play для визуализации', w/2, h/2 + 5);
@@ -1190,7 +1190,7 @@ kbd {
       requestAnimationFrame(render);
       analyser.getByteFrequencyData(dataArray);
 
-      ctx.fillStyle = '#0a0a1a';
+      ctx.fillStyle = '#141414';
       ctx.fillRect(0, 0, w, h);
 
       // Grid
@@ -1211,27 +1211,29 @@ kbd {
         const val = dataArray[i] / 255;
         const barH = val * h * 0.9;
 
-        // Gradient color based on frequency
-        const hue = 330 + (i / barCount) * 150;
-        const sat = 80;
-        const light = 40 + val * 30;
+        // Beige gradient based on frequency
+        const hue = 40 + (i / barCount) * 20;
+        const sat = 30 + val * 20;
+        const light = 30 + val * 40;
         ctx.fillStyle = `hsl(${hue}, ${sat}%, ${light}%)`;
 
         const x = i * barWidth;
         ctx.fillRect(x, h - barH, barWidth - 1, barH);
       }
 
-      // Freq labels
-      ctx.fillStyle = 'rgba(255,255,255,0.25)';
-      ctx.font = '9px Inter, sans-serif';
-      ctx.textAlign = 'center';
-      const labels = [30, 100, 300, 1000, 3000, 10000, 16000];
-      labels.forEach(f => {
-        const logMin = Math.log10(20);
-        const logMax = Math.log10(20000);
-        const ratio = (Math.log10(f) - logMin) / (logMax - logMin);
-        ctx.fillText(f >= 1000 ? (f/1000)+'k' : f, ratio * w, h - 4);
-      });
+      // Freq labels — only after answer submitted
+      if (!state.roundActive && state.targetFreq) {
+        ctx.fillStyle = 'rgba(255,255,255,0.25)';
+        ctx.font = '9px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        const labels = [30, 100, 300, 1000, 3000, 10000, 16000];
+        labels.forEach(f => {
+          const logMin = Math.log10(20);
+          const logMax = Math.log10(20000);
+          const ratio = (Math.log10(f) - logMin) / (logMax - logMin);
+          ctx.fillText(f >= 1000 ? (f/1000)+'k' : f, ratio * w, h - 4);
+        });
+      }
     }
 
     render();
@@ -1382,9 +1384,9 @@ kbd {
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
     const ringGrad = ctx.createLinearGradient(cx - r, cy - r, cx + r, cy + r);
-    ringGrad.addColorStop(0, '#3a3a5c');
-    ringGrad.addColorStop(0.5, '#2a2a4c');
-    ringGrad.addColorStop(1, '#1a1a3c');
+    ringGrad.addColorStop(0, '#3e3e3e');
+    ringGrad.addColorStop(0.5, '#343434');
+    ringGrad.addColorStop(1, '#2a2a2a');
     ctx.fillStyle = ringGrad;
     ctx.fill();
 
@@ -1412,9 +1414,9 @@ kbd {
     ctx.beginPath();
     ctx.arc(cx, cy, r - 4, startAngle, valAngle);
     const arcGrad = ctx.createLinearGradient(0, 0, size, size);
-    arcGrad.addColorStop(0, '#e94560');
-    arcGrad.addColorStop(0.5, '#ff6b8a');
-    arcGrad.addColorStop(1, '#00d4ff');
+    arcGrad.addColorStop(0, '#e8d5a3');
+    arcGrad.addColorStop(0.5, '#f0e2b8');
+    arcGrad.addColorStop(1, '#c8b88a');
     ctx.strokeStyle = arcGrad;
     ctx.lineWidth = 3;
     ctx.stroke();
@@ -1437,8 +1439,8 @@ kbd {
     ctx.beginPath();
     ctx.arc(cx, cy, innerR, 0, Math.PI * 2);
     const innerGrad = ctx.createRadialGradient(cx, cy - 4, 0, cx, cy, innerR);
-    innerGrad.addColorStop(0, '#3a3a5c');
-    innerGrad.addColorStop(1, '#1a1a3c');
+    innerGrad.addColorStop(0, '#3e3e3e');
+    innerGrad.addColorStop(1, '#2a2a2a');
     ctx.fillStyle = innerGrad;
     ctx.fill();
 
@@ -1449,7 +1451,7 @@ kbd {
     ctx.beginPath();
     ctx.moveTo(cx + Math.cos(indAngle) * indInner, cy + Math.sin(indAngle) * indInner);
     ctx.lineTo(cx + Math.cos(indAngle) * indOuter, cy + Math.sin(indAngle) * indOuter);
-    ctx.strokeStyle = dragging ? '#00d4ff' : '#e94560';
+    ctx.strokeStyle = dragging ? '#f0e2b8' : '#e8d5a3';
     ctx.lineWidth = 3;
     ctx.lineCap = 'round';
     ctx.stroke();
@@ -1458,14 +1460,14 @@ kbd {
     // Center dot
     ctx.beginPath();
     ctx.arc(cx, cy, 3, 0, Math.PI * 2);
-    ctx.fillStyle = dragging ? '#00d4ff' : '#e94560';
+    ctx.fillStyle = dragging ? '#f0e2b8' : '#e8d5a3';
     ctx.fill();
 
     // Glow when dragging
     if (dragging) {
       ctx.beginPath();
       ctx.arc(cx, cy, innerR + 2, 0, Math.PI * 2);
-      ctx.strokeStyle = 'rgba(0,212,255,0.3)';
+      ctx.strokeStyle = 'rgba(240,226,184,0.3)';
       ctx.lineWidth = 2;
       ctx.stroke();
     }
