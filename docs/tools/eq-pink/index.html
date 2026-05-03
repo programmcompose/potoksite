@@ -1,0 +1,1550 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EQ-PINK — Тренажёр слуха | Курс по музыкальному продакшену</title>
+<style>
+:root {
+  --bg: #1a1a2e;
+  --bg-light: #16213e;
+  --bg-lighter: #0f3460;
+  --bg-card: #1a1a3e;
+  --text: #e8e8e8;
+  --text-dim: #8892b0;
+  --pink: #e94560;
+  --pink-glow: #ff6b8a;
+  --cyan: #00d4ff;
+  --cyan-dim: #0088aa;
+  --green: #00ff88;
+  --red: #ff4466;
+  --yellow: #ffaa00;
+  --purple: #aa44ff;
+  --radius: 12px;
+  --shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 16px;
+  overflow-x: hidden;
+}
+
+.container { max-width: 960px; margin: 0 auto; }
+
+header {
+  text-align: center;
+  margin-bottom: 24px;
+  position: relative;
+}
+
+header h1 {
+  font-size: 2em;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--pink), var(--purple), var(--cyan));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+
+header h1 .pink-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  background: var(--pink);
+  border-radius: 50%;
+  margin-left: 4px;
+  vertical-align: middle;
+  box-shadow: 0 0 12px var(--pink-glow);
+  animation: pulse-glow 2s infinite;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 8px var(--pink-glow); }
+  50% { box-shadow: 0 0 20px var(--pink-glow), 0 0 40px rgba(233,69,96,0.3); }
+}
+
+header p {
+  font-size: 0.95em;
+  color: var(--text-dim);
+  max-width: 600px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.back-link {
+  display: inline-block;
+  margin-bottom: 16px;
+  color: var(--cyan);
+  text-decoration: none;
+  font-size: 0.85em;
+  font-weight: 600;
+}
+.back-link:hover { text-decoration: underline; }
+
+.panel {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.panel-title {
+  font-size: 0.75em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-dim);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.panel-title::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 14px;
+  background: var(--pink);
+  border-radius: 2px;
+}
+
+/* Score Bar */
+.score-bar {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.score-item {
+  background: var(--bg-card);
+  border-radius: var(--radius);
+  padding: 12px 8px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.score-value {
+  font-size: 1.5em;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.score-label {
+  font-size: 0.65em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+.sv-pink { color: var(--pink); }
+.sv-cyan { color: var(--cyan); }
+.sv-green { color: var(--green); }
+.sv-yellow { color: var(--yellow); }
+.sv-purple { color: var(--purple); }
+
+/* Buttons */
+button {
+  background: var(--bg-lighter);
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 0.85em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+button:hover {
+  background: rgba(0,212,255,0.15);
+  border-color: var(--cyan);
+}
+
+button:active { transform: scale(0.97); }
+
+button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+button.primary {
+  background: var(--pink);
+  color: #fff;
+  border-color: var(--pink);
+}
+
+button.primary:hover {
+  background: var(--pink-glow);
+  box-shadow: 0 0 20px rgba(233,69,96,0.3);
+}
+
+button.success {
+  background: var(--green);
+  color: #000;
+  border-color: var(--green);
+}
+
+button.accent {
+  background: var(--cyan);
+  color: #000;
+  border-color: var(--cyan);
+}
+
+/* Controls row */
+.controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+/* Source selector */
+.source-selector {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.source-btn {
+  flex: 1;
+  text-align: center;
+  padding: 10px 6px;
+  font-size: 0.8em;
+  border-radius: 8px;
+}
+
+.source-btn.active {
+  background: var(--pink);
+  color: #fff;
+  border-color: var(--pink);
+  box-shadow: 0 0 12px rgba(233,69,96,0.3);
+}
+
+/* Difficulty */
+.difficulty-selector {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.diff-btn {
+  flex: 1;
+  padding: 8px 6px;
+  font-size: 0.75em;
+  border-radius: 8px;
+}
+
+.diff-btn.active {
+  background: var(--purple);
+  color: #fff;
+  border-color: var(--purple);
+}
+
+.diff-btn[data-diff="easy"].active { background: var(--green); color: #000; }
+.diff-btn[data-diff="medium"].active { background: var(--yellow); color: #000; }
+.diff-btn[data-diff="hard"].active { background: var(--red); color: #fff; }
+.diff-btn[data-diff="god"].active { background: var(--pink); color: #fff; box-shadow: 0 0 12px rgba(233,69,96,0.4); }
+
+/* Sliders */
+.slider-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+  font-size: 0.85em;
+}
+
+.slider-row label {
+  min-width: 100px;
+  font-weight: 600;
+  color: var(--text-dim);
+}
+
+.slider-row input[type="range"] {
+  flex: 1;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg);
+  outline: none;
+  cursor: pointer;
+}
+
+.slider-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--pink);
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(233,69,96,0.4);
+}
+
+.slider-row input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--pink);
+  cursor: pointer;
+  border: none;
+}
+
+.slider-val {
+  min-width: 60px;
+  text-align: right;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--pink);
+}
+
+/* Toggle switch */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 0;
+  font-size: 0.85em;
+}
+
+.toggle-switch {
+  position: relative;
+  width: 48px;
+  height: 26px;
+  background: var(--bg);
+  border-radius: 13px;
+  cursor: pointer;
+  transition: background 0.2s;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.toggle-switch.active {
+  background: var(--pink);
+  border-color: var(--pink);
+}
+
+.toggle-switch::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  background: #fff;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.toggle-switch.active::after {
+  transform: translateX(22px);
+}
+
+/* Status bar */
+.status-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--bg);
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+  font-size: 0.85em;
+}
+
+.status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--bg-lighter);
+  flex-shrink: 0;
+}
+
+.status-dot.idle { background: var(--text-dim); }
+.status-dot.playing { background: var(--green); animation: pulse 0.8s infinite; }
+.status-dot.training { background: var(--pink); animation: pulse 1s infinite; }
+.status-dot.result { background: var(--cyan); }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+/* Canvas */
+.canvas-wrap {
+  background: var(--bg);
+  border-radius: var(--radius);
+  overflow: hidden;
+  position: relative;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+}
+
+/* Bypass button */
+.bypass-btn {
+  padding: 14px 24px;
+  font-size: 0.9em;
+  font-weight: 700;
+  border-radius: 10px;
+  min-width: 160px;
+  background: var(--bg-lighter);
+  border: 2px solid var(--yellow);
+  color: var(--yellow);
+  user-select: none;
+}
+
+.bypass-btn.active {
+  background: var(--yellow);
+  color: #000;
+  box-shadow: 0 0 20px rgba(255,170,0,0.3);
+}
+
+/* Guess section */
+.guess-section {
+  display: none;
+}
+
+.guess-section.visible {
+  display: block;
+}
+
+.freq-guess-input {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.freq-guess-input input[type="number"] {
+  flex: 1;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 1.1em;
+  font-weight: 700;
+  font-family: inherit;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.freq-guess-input input[type="number"]:focus {
+  outline: none;
+  border-color: var(--pink);
+  box-shadow: 0 0 12px rgba(233,69,96,0.2);
+}
+
+.freq-unit {
+  font-weight: 700;
+  color: var(--text-dim);
+  font-size: 0.9em;
+}
+
+.freq-slider {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.freq-slider input[type="range"] {
+  width: 100%;
+  -webkit-appearance: none;
+  appearance: none;
+  height: 8px;
+  border-radius: 4px;
+  background: linear-gradient(to right, #333, var(--pink), var(--purple), var(--cyan));
+  outline: none;
+  cursor: pointer;
+}
+
+.freq-slider input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.freq-slider input[type="range"]::-moz-range-thumb {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+  border: none;
+}
+
+/* Result box */
+.result-box {
+  display: none;
+  padding: 16px;
+  border-radius: var(--radius);
+  margin-top: 12px;
+  font-size: 0.9em;
+  line-height: 1.7;
+}
+
+.result-box.visible { display: block; }
+.result-box.correct {
+  background: rgba(0,255,136,0.1);
+  border: 1px solid var(--green);
+}
+.result-box.wrong {
+  background: rgba(255,68,102,0.1);
+  border: 1px solid var(--red);
+}
+
+.result-box .big-num {
+  font-size: 1.8em;
+  font-weight: 900;
+}
+
+.result-box .correct-num { color: var(--green); }
+.result-box .wrong-num { color: var(--red); }
+
+/* Freq reference */
+.freq-ref {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 6px;
+  font-size: 0.75em;
+}
+
+.freq-ref-item {
+  padding: 6px 10px;
+  background: var(--bg);
+  border-radius: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.freq-ref-item .freq {
+  font-weight: 700;
+  color: var(--pink);
+}
+
+.freq-ref-item .desc {
+  color: var(--text-dim);
+}
+
+/* Upload zone */
+.upload-zone {
+  border: 2px dashed rgba(255,255,255,0.1);
+  border-radius: var(--radius);
+  padding: 16px;
+  text-align: center;
+  transition: all 0.2s;
+  cursor: pointer;
+  position: relative;
+  margin-top: 10px;
+}
+
+.upload-zone:hover, .upload-zone.dragover {
+  border-color: var(--pink);
+  background: rgba(233,69,96,0.05);
+}
+
+.upload-zone input[type="file"] {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.upload-label {
+  font-size: 0.82em;
+  color: var(--text-dim);
+  pointer-events: none;
+}
+
+.upload-label .icon {
+  font-size: 1.5em;
+  display: block;
+  margin-bottom: 4px;
+}
+
+.custom-file-info {
+  display: none;
+  margin-top: 8px;
+  padding: 8px 12px;
+  background: var(--bg);
+  border-radius: 8px;
+  font-size: 0.8em;
+  align-items: center;
+  gap: 8px;
+}
+
+.custom-file-info.visible { display: flex; }
+
+.custom-file-info .file-name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-dim);
+}
+
+.file-remove {
+  background: var(--red);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 2px 8px;
+  font-size: 0.85em;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* Daily challenge badge */
+.daily-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: linear-gradient(135deg, var(--yellow), var(--orange));
+  color: #000;
+  border-radius: 20px;
+  font-size: 0.75em;
+  font-weight: 700;
+  margin-left: 8px;
+}
+
+/* Key hints */
+.key-hint {
+  font-size: 0.7em;
+  color: var(--text-dim);
+  text-align: center;
+  margin-top: 6px;
+  opacity: 0.6;
+}
+
+kbd {
+  background: var(--bg-lighter);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  font-family: inherit;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Mode tabs */
+.mode-tabs {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 12px;
+  background: var(--bg);
+  border-radius: 8px;
+  padding: 4px;
+}
+
+.mode-tab {
+  flex: 1;
+  padding: 8px;
+  text-align: center;
+  font-size: 0.8em;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  color: var(--text-dim);
+  transition: all 0.15s;
+}
+
+.mode-tab.active {
+  background: var(--pink);
+  color: #fff;
+}
+
+/* Help section */
+.help-section {
+  font-size: 0.82em;
+  color: var(--text-dim);
+  line-height: 1.7;
+}
+
+.help-section p { margin-bottom: 6px; }
+.help-section b { color: var(--text); }
+
+/* Animations */
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.shake { animation: shake 0.3s ease-in-out; }
+
+@keyframes celebrate {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+.celebrate { animation: celebrate 0.4s ease-in-out; }
+
+/* Responsive */
+@media (max-width: 640px) {
+  header h1 { font-size: 1.5em; }
+  .score-bar { grid-template-columns: repeat(3, 1fr); }
+  .source-selector { flex-wrap: wrap; }
+  .source-btn { min-width: calc(50% - 3px); }
+  .difficulty-selector { flex-wrap: wrap; }
+  .diff-btn { min-width: calc(25% - 3px); }
+  .freq-ref { grid-template-columns: 1fr 1fr; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="../index.html" class="back-link">← К инструментам</a>
+
+  <header>
+    <h1>EQ-PINK <span class="pink-dot"></span></h1>
+    <p>Тренажёр слуха: угадай усиленную частоту в розовом шуме или музыку. Развивай свой слух шаг за шагом.</p>
+  </header>
+
+  <!-- Score bar -->
+  <div class="score-bar">
+    <div class="score-item">
+      <div class="score-value sv-pink" id="sTotal">0</div>
+      <div class="score-label">Раундов</div>
+    </div>
+    <div class="score-item">
+      <div class="score-value sv-green" id="sCorrect">0</div>
+      <div class="score-label">Верно</div>
+    </div>
+    <div class="score-item">
+      <div class="score-value sv-cyan" id="sStreak">0</div>
+      <div class="score-label">Серия</div>
+    </div>
+    <div class="score-item">
+      <div class="score-value sv-yellow" id="sAccuracy">0%</div>
+      <div class="score-label">Точность</div>
+    </div>
+    <div class="score-item">
+      <div class="score-value sv-purple" id="sBest">0</div>
+      <div class="score-label">Рекорд</div>
+    </div>
+  </div>
+
+  <!-- Mode tabs -->
+  <div class="mode-tabs">
+    <button class="mode-tab active" data-mode="training">🎯 Тренировка</button>
+    <button class="mode-tab" data-mode="daily">📅 День</button>
+    <button class="mode-tab" data-mode="free">🎵 Свободный</button>
+  </div>
+
+  <!-- Settings panel -->
+  <div class="panel">
+    <div class="panel-title">Настройки</div>
+
+    <div class="panel-title" style="margin-bottom:8px; font-size:0.7em;">Источник звука</div>
+    <div class="source-selector">
+      <button class="source-btn active" data-source="pink">🩷 Розовый шум</button>
+      <button class="source-btn" data-source="music">🎵 Музыка</button>
+    </div>
+
+    <div id="uploadArea" style="display:none;">
+      <div class="upload-zone" id="uploadZone">
+        <input type="file" id="fileInput" accept="audio/*,.mp3,.ogg,.wav,.flac,.m4a">
+        <div class="upload-label">
+          <span class="icon">📂</span>
+          Перетащите файл или нажмите для выбора (MP3, WAV, OGG…)
+        </div>
+      </div>
+      <div class="custom-file-info" id="customFileInfo">
+        <span>🎵</span>
+        <span class="file-name" id="customFileName"></span>
+        <button class="file-remove" id="btnRemoveFile">✕</button>
+      </div>
+    </div>
+
+    <div class="panel-title" style="margin-top:12px; margin-bottom:8px; font-size:0.7em;">Сложность</div>
+    <div class="difficulty-selector">
+      <button class="diff-btn active" data-diff="easy">Лёгкий ±25%</button>
+      <button class="diff-btn" data-diff="medium">Средний ±15%</button>
+      <button class="diff-btn" data-diff="hard">Сложный ±5%</button>
+      <button class="diff-btn" data-diff="god">God ±2%</button>
+    </div>
+
+    <div class="toggle-row">
+      <span>📱 Режим динамика телефона (300 Гц – 8 кГц)</span>
+      <div class="toggle-switch" id="phoneToggle"></div>
+    </div>
+
+    <div class="slider-row">
+      <label>🔊 Boost (дБ)</label>
+      <input type="range" id="boostSlider" min="0" max="30" value="20" step="1">
+      <span class="slider-val" id="boostVal">+20 дБ</span>
+    </div>
+
+    <div class="slider-row">
+      <label>🎯 Q (ширина)</label>
+      <input type="range" id="qSlider" min="0.1" max="10" value="3" step="0.1">
+      <span class="slider-val" id="qVal">3.0</span>
+    </div>
+
+    <div class="slider-row">
+      <label>🔉 Громкость</label>
+      <input type="range" id="volumeSlider" min="0" max="100" value="50" step="1">
+      <span class="slider-val" id="volumeVal">50%</span>
+    </div>
+  </div>
+
+  <!-- Spectrum panel -->
+  <div class="panel">
+    <div class="panel-title">Спектр (FFT)</div>
+    <div class="canvas-wrap">
+      <canvas id="spectrumCanvas" height="200"></canvas>
+    </div>
+  </div>
+
+  <!-- Status -->
+  <div class="status-bar">
+    <div class="status-dot idle" id="statusDot"></div>
+    <span id="statusText">Готов к тренировке</span>
+  </div>
+
+  <!-- Play controls -->
+  <div class="controls" style="justify-content:center;">
+    <button class="primary" id="btnPlay">▶ Play</button>
+    <button id="btnStop">⏹ Stop</button>
+    <button class="bypass-btn" id="btnBypass">🔇 Hold Bypass</button>
+  </div>
+  <div class="key-hint"><kbd>Space</kbd> Play/Stop &nbsp; <kbd>B</kbd> Bypass &nbsp; <kbd>Enter</kbd> Отправить ответ</div>
+
+  <!-- Guess section (training mode) -->
+  <div class="guess-section" id="guessSection">
+    <div class="panel">
+      <div class="panel-title">Ваш ответ</div>
+
+      <div class="freq-slider">
+        <input type="range" id="freqSlider" min="20" max="20000" value="1000" step="1">
+      </div>
+
+      <div class="freq-guess-input">
+        <input type="number" id="freqInput" min="20" max="20000" value="1000" placeholder="Частота">
+        <span class="freq-unit">Гц</span>
+      </div>
+
+      <div style="text-align:center;">
+        <button class="success" id="btnSubmit">✓ Отправить ответ</button>
+        <button id="btnNewRound" style="margin-left:8px;">🎲 Новый раунд</button>
+      </div>
+
+      <div class="result-box" id="resultBox"></div>
+    </div>
+  </div>
+
+  <!-- Frequency reference -->
+  <div class="panel">
+    <div class="panel-title">Справочник частот</div>
+    <div class="freq-ref">
+      <div class="freq-ref-item"><span class="freq">60 Гц</span><span class="desc">Бум, гул</span></div>
+      <div class="freq-ref-item"><span class="freq">100 Гц</span><span class="desc">Thud kick</span></div>
+      <div class="freq-ref-item"><span class="freq">200 Гц</span><span class="desc">Тепло, body</span></div>
+      <div class="freq-ref-item"><span class="freq">500 Гц</span><span class="desc">Boxy, полость</span></div>
+      <div class="freq-ref-item"><span class="freq">1 кГц</span><span class="desc">Телефон, honky</span></div>
+      <div class="freq-ref-item"><span class="freq">2 кГц</span><span class="desc">Bite, чёткость</span></div>
+      <div class="freq-ref-item"><span class="freq">5 кГц</span><span class="desc">Crispness, S/T</span></div>
+      <div class="freq-ref-item"><span class="freq">10 кГц</span><span class="desc">Sizzle, воздух</span></div>
+    </div>
+  </div>
+
+  <!-- How it works -->
+  <div class="panel">
+    <div class="panel-title">Как это работает</div>
+    <div class="help-section">
+      <p><b>Тренировка:</b> Система применяет усиление на случайной частоте. Слушайте и угадайте, какая частота усилена.</p>
+      <p><b>День:</b> Одна задача в день с фиксированным seed. Сравнивайте прогресс с друзьями!</p>
+      <p><b>Свободный:</b> Экспериментируйте с настройками EQ без проверки ответов.</p>
+      <p><b>Bypass:</b> Удерживайте кнопку (или <kbd>B</kbd>) для сравнения "до/после" в реальном времени.</p>
+      <p><b>Уровни:</b> Лёгкий ±25%, Средний ±15%, Сложный ±5%, God ±2% от целевой частоты.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  // ===== State =====
+  const state = {
+    mode: 'training',
+    source: 'pink',
+    difficulty: 'easy',
+    phoneMode: false,
+    boost: 20,
+    q: 3,
+    volume: 0.5,
+    playing: false,
+    bypass: false,
+    roundActive: false,
+    targetFreq: 0,
+    score: { total: 0, correct: 0, streak: 0, best: 0 },
+    dailySeed: 0,
+    customBuffer: null,
+    customFileName: '',
+  };
+
+  const diffTolerance = { easy: 0.25, medium: 0.15, hard: 0.05, god: 0.02 };
+
+  // ===== Audio Context & Nodes =====
+  let audioCtx = null;
+  let pinkNoiseNode = null;
+  let musicSource = null;
+  let eqFilter = null;
+  let masterGain = null;
+  let analyser = null;
+  let noiseGain = null;
+  let musicGain = null;
+
+  function initAudio() {
+    if (audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = state.volume;
+
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 2048;
+    analyser.smoothingTimeConstant = 0.8;
+
+    eqFilter = audioCtx.createBiquadFilter();
+    eqFilter.type = 'peaking';
+    eqFilter.Q.value = state.q;
+    eqFilter.gain.value = state.boost;
+
+    noiseGain = audioCtx.createGain();
+    noiseGain.gain.value = 0.3;
+
+    musicGain = audioCtx.createGain();
+    musicGain.gain.value = 0;
+
+    // Chain: source -> eqFilter -> masterGain -> analyser -> destination
+    eqFilter.connect(masterGain);
+    noiseGain.connect(eqFilter);
+    musicGain.connect(eqFilter);
+    masterGain.connect(analyser);
+    analyser.connect(audioCtx.destination);
+
+    startPinkNoise();
+    drawSpectrum();
+  }
+
+  // ===== Pink Noise Generator (Paul Kellett algorithm) =====
+  function startPinkNoise() {
+    if (pinkNoiseNode) return;
+    const bufferSize = 4096;
+    pinkNoiseNode = audioCtx.createScriptProcessor(bufferSize, 0, 1);
+
+    let b0=0, b1=0, b2=0, b3=0, b4=0, b5=0, b6=0;
+    pinkNoiseNode.onaudioprocess = function(e) {
+      const output = e.outputBuffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        const white = Math.random() * 2 - 1;
+        b0 = 0.99886 * b0 + white * 0.0555179;
+        b1 = 0.99332 * b1 + white * 0.0750759;
+        b2 = 0.96900 * b2 + white * 0.1538520;
+        b3 = 0.86650 * b3 + white * 0.3124700;
+        b4 = 0.55000 * b4 + white * 0.5371580;
+        b5 = -0.7616 * b5 - white * 0.0270000;
+        output[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
+        b6 = white * 0.115926;
+      }
+    };
+    pinkNoiseNode.connect(noiseGain);
+  }
+
+  function stopPinkNoise() {
+    if (pinkNoiseNode) {
+      pinkNoiseNode.disconnect();
+      pinkNoiseNode = null;
+    }
+  }
+
+  // ===== Music source =====
+  function loadMusic(buffer) {
+    stopMusic();
+    state.customBuffer = buffer;
+    musicSource = audioCtx.createBufferSource();
+    musicSource.buffer = buffer;
+    musicSource.loop = true;
+    musicSource.connect(musicGain);
+  }
+
+  function playMusic() {
+    if (musicSource && state.customBuffer) {
+      musicSource.start(0);
+      musicGain.gain.value = 0.5;
+      noiseGain.gain.value = 0;
+    }
+  }
+
+  function stopMusic() {
+    if (musicSource) {
+      try { musicSource.stop(); } catch(e) {}
+      musicSource.disconnect();
+      musicSource = null;
+    }
+    musicGain.gain.value = 0;
+  }
+
+  // ===== EQ Controls =====
+  function setTargetFreq(freq) {
+    if (eqFilter) {
+      eqFilter.frequency.value = freq;
+    }
+    state.targetFreq = freq;
+  }
+
+  function setBoost(db) {
+    if (eqFilter) {
+      eqFilter.gain.value = db;
+    }
+    state.boost = db;
+  }
+
+  function setQ(q) {
+    if (eqFilter) {
+      eqFilter.Q.value = q;
+    }
+    state.q = q;
+  }
+
+  function setVolume(v) {
+    if (masterGain) {
+      masterGain.gain.value = v;
+    }
+    state.volume = v;
+  }
+
+  function toggleBypass(on) {
+    state.bypass = on;
+    if (eqFilter) {
+      eqFilter.gain.value = on ? 0 : state.boost;
+    }
+  }
+
+  // ===== Random frequency generation =====
+  function randomFreq(seed) {
+    const lo = state.phoneMode ? 300 : 20;
+    const hi = state.phoneMode ? 8000 : 20000;
+    const logLo = Math.log10(lo);
+    const logHi = Math.log10(hi);
+
+    let s = seed || (Math.random() * 100000);
+    s = (s * 16807 + 0) % 2147483647;
+    const r = s / 2147483647;
+
+    const logFreq = logLo + r * (logHi - logLo);
+    return Math.round(Math.pow(10, logFreq));
+  }
+
+  function dailyChallengeFreq() {
+    const today = new Date();
+    const seed = today.getFullYear() * 10000 + (today.getMonth()+1) * 100 + today.getDate();
+    return randomFreq(seed);
+  }
+
+  // ===== Training Logic =====
+  function startRound() {
+    initAudio();
+    state.roundActive = true;
+
+    if (state.mode === 'daily') {
+      state.targetFreq = dailyChallengeFreq();
+    } else {
+      state.targetFreq = randomFreq();
+    }
+
+    setTargetFreq(state.targetFreq);
+
+    // Reset UI
+    $('resultBox').className = 'result-box';
+    $('resultBox').innerHTML = '';
+    $('freqInput').value = 1000;
+    $('freqSlider').value = 1000;
+    $('btnSubmit').disabled = false;
+
+    status('training', state.mode === 'daily' ? 'Дневной вызов: угадайте частоту!' : 'Новый раунд! Слушайте и угадайте частоту.');
+    $('guessSection').classList.add('visible');
+  }
+
+  function submitGuess() {
+    if (!state.roundActive) return;
+
+    const guessed = parseInt($('freqInput').value);
+    if (isNaN(guessed) || guessed < 20 || guessed > 20000) {
+      showResult('⚠️ Введите корректную частоту (20–20000 Гц)', false);
+      return;
+    }
+
+    const tolerance = diffTolerance[state.difficulty];
+    const error = Math.abs(guessed - state.targetFreq) / state.targetFreq;
+    const isCorrect = error <= tolerance;
+    const octaves = Math.log2(guessed / state.targetFreq);
+
+    state.score.total++;
+    if (isCorrect) {
+      state.score.correct++;
+      state.score.streak++;
+      if (state.score.streak > state.score.best) state.score.best = state.score.streak;
+      playSuccessSound();
+    } else {
+      state.score.streak = 0;
+    }
+
+    updateScoreUI();
+    saveScore();
+
+    const pctError = (error * 100).toFixed(1);
+    const octStr = Math.abs(octaves).toFixed(2);
+    const direction = octaves > 0 ? 'выше' : 'ниже';
+
+    let html = '';
+    if (isCorrect) {
+      html = `<div class="big-num correct-num">✅ Верно!</div>`;
+      html += `<div>Цель: <b>${state.targetFreq} Гц</b> · Ваш ответ: <b>${guessed} Гц</b></div>`;
+      html += `<div>Ошибка: ${pctError}% · Октав: ±${octStr} ${direction}</div>`;
+      html += `<div>🔥 Серия: ${state.score.streak}</div>`;
+    } else {
+      html = `<div class="big-num wrong-num">❌ Мимо</div>`;
+      html += `<div>Цель: <b>${state.targetFreq} Гц</b> · Ваш ответ: <b>${guessed} Гц</b></div>`;
+      html += `<div>Ошибка: ${pctError}% (допуск: ${(tolerance*100).toFixed(0)}%)</div>`;
+      html += `<div>Октав: ±${octStr} ${direction}</div>`;
+    }
+
+    showResult(html, isCorrect);
+    state.roundActive = false;
+    $('btnSubmit').disabled = true;
+    status('result', isCorrect ? 'Отлично!' : 'Попробуйте ещё раз!');
+  }
+
+  function showResult(html, correct) {
+    const box = $('resultBox');
+    box.innerHTML = html;
+    box.className = 'result-box visible ' + (correct ? 'correct' : 'wrong');
+    box.classList.add(correct ? 'celebrate' : 'shake');
+  }
+
+  // ===== Success Sound =====
+  function playSuccessSound() {
+    if (!audioCtx) return;
+    const now = audioCtx.currentTime;
+    const notes = [523.25, 659.25, 783.99];
+    notes.forEach((freq, i) => {
+      const osc = audioCtx.createOscillator();
+      const g = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const t0 = now + i * 0.08;
+      g.gain.setValueAtTime(0, t0);
+      g.gain.linearRampToValueAtTime(0.3, t0 + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.001, t0 + 0.3);
+      osc.connect(g);
+      g.connect(audioCtx.destination);
+      osc.start(t0);
+      osc.stop(t0 + 0.35);
+    });
+  }
+
+  // ===== Spectrum Visualization =====
+  function drawSpectrum() {
+    if (!analyser) return;
+
+    const canvas = $('spectrumCanvas');
+    const ctx = canvas.getContext('2d');
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = 200 * dpr;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const w = rect.width;
+    const h = 200;
+
+    const bufferLength = analyser.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+    analyser.getByteFrequencyData(dataArray);
+
+    function render() {
+      if (!state.playing) {
+        ctx.fillStyle = '#0a0a1a';
+        ctx.fillRect(0, 0, w, h);
+        ctx.fillStyle = 'rgba(255,255,255,0.15)';
+        ctx.font = '14px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Нажмите Play для визуализации', w/2, h/2 + 5);
+        return;
+      }
+
+      requestAnimationFrame(render);
+      analyser.getByteFrequencyData(dataArray);
+
+      ctx.fillStyle = '#0a0a1a';
+      ctx.fillRect(0, 0, w, h);
+
+      // Grid
+      ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+      ctx.lineWidth = 1;
+      for (let y = 0; y < h; y += 40) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y);
+        ctx.stroke();
+      }
+
+      // Bars
+      const barCount = Math.min(128, bufferLength);
+      const barWidth = w / barCount;
+
+      for (let i = 0; i < barCount; i++) {
+        const val = dataArray[i] / 255;
+        const barH = val * h * 0.9;
+
+        // Gradient color based on frequency
+        const hue = 330 + (i / barCount) * 150;
+        const sat = 80;
+        const light = 40 + val * 30;
+        ctx.fillStyle = `hsl(${hue}, ${sat}%, ${light}%)`;
+
+        const x = i * barWidth;
+        ctx.fillRect(x, h - barH, barWidth - 1, barH);
+      }
+
+      // Target freq marker
+      if (state.targetFreq && state.roundActive) {
+        const logMin = Math.log10(20);
+        const logMax = Math.log10(20000);
+        const logFreq = Math.log10(state.targetFreq);
+        const ratio = (logFreq - logMin) / (logMax - logMin);
+        const x = ratio * w;
+
+        ctx.strokeStyle = 'rgba(233,69,96,0.8)';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, h);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = 'rgba(233,69,96,0.9)';
+        ctx.font = 'bold 11px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(state.targetFreq + ' Гц', x, 14);
+      }
+
+      // Freq labels
+      ctx.fillStyle = 'rgba(255,255,255,0.25)';
+      ctx.font = '9px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      const labels = [30, 100, 300, 1000, 3000, 10000, 16000];
+      labels.forEach(f => {
+        const logMin = Math.log10(20);
+        const logMax = Math.log10(20000);
+        const ratio = (Math.log10(f) - logMin) / (logMax - logMin);
+        ctx.fillText(f >= 1000 ? (f/1000)+'k' : f, ratio * w, h - 4);
+      });
+    }
+
+    render();
+  }
+
+  // ===== Status =====
+  function status(type, text) {
+    $('statusDot').className = 'status-dot ' + type;
+    $('statusText').textContent = text;
+  }
+
+  // ===== Score UI =====
+  function updateScoreUI() {
+    $('sTotal').textContent = state.score.total;
+    $('sCorrect').textContent = state.score.correct;
+    $('sStreak').textContent = state.score.streak;
+    $('sAccuracy').textContent = state.score.total > 0
+      ? Math.round(state.score.correct / state.score.total * 100) + '%' : '0%';
+    $('sBest').textContent = state.score.best;
+  }
+
+  function saveScore() {
+    try {
+      localStorage.setItem('eqpink_score', JSON.stringify(state.score));
+      localStorage.setItem('eqpink_settings', JSON.stringify({
+        boost: state.boost, q: state.q, volume: state.volume,
+        difficulty: state.difficulty, phoneMode: state.phoneMode
+      }));
+    } catch(e) {}
+  }
+
+  function loadState() {
+    try {
+      const sc = localStorage.getItem('eqpink_score');
+      if (sc) state.score = JSON.parse(sc);
+      const st = localStorage.getItem('eqpink_settings');
+      if (st) {
+        const s = JSON.parse(st);
+        if (s.boost != null) { state.boost = s.boost; $('boostSlider').value = s.boost; $('boostVal').textContent = '+' + s.boost + ' дБ'; }
+        if (s.q != null) { state.q = s.q; $('qSlider').value = s.q; $('qVal').textContent = s.q.toFixed(1); }
+        if (s.volume != null) { state.volume = s.volume; $('volumeSlider').value = s.volume * 100; $('volumeVal').textContent = Math.round(s.volume * 100) + '%'; }
+        if (s.difficulty) { state.difficulty = s.difficulty; document.querySelectorAll('.diff-btn').forEach(b => { b.classList.toggle('active', b.dataset.diff === s.difficulty); }); }
+        if (s.phoneMode) { state.phoneMode = true; $('phoneToggle').classList.add('active'); }
+      }
+    } catch(e) {}
+    updateScoreUI();
+  }
+
+  // ===== DOM helpers =====
+  function $(id) { return document.getElementById(id); }
+
+  // ===== Event Handlers =====
+
+  // Play/Stop
+  $('btnPlay').addEventListener('click', () => {
+    initAudio();
+    if (!state.playing) {
+      state.playing = true;
+      $('btnPlay').textContent = '⏸ Pause';
+      if (state.source === 'music' && state.customBuffer) {
+        playMusic();
+      }
+      status('playing', 'Воспроизведение...');
+      drawSpectrum();
+    } else {
+      state.playing = false;
+      $('btnPlay').textContent = '▶ Play';
+      if (state.source === 'music') stopMusic();
+      status('idle', 'Пауза');
+      drawSpectrum();
+    }
+  });
+
+  $('btnStop').addEventListener('click', () => {
+    state.playing = false;
+    $('btnPlay').textContent = '▶ Play';
+    if (state.source === 'music') stopMusic();
+    status('idle', 'Остановлено');
+    drawSpectrum();
+  });
+
+  // Bypass (hold)
+  let bypassInterval = null;
+  $('btnBypass').addEventListener('mousedown', () => {
+    toggleBypass(true);
+    $('btnBypass').classList.add('active');
+  });
+  $('btnBypass').addEventListener('mouseup', () => {
+    toggleBypass(false);
+    $('btnBypass').classList.remove('active');
+  });
+  $('btnBypass').addEventListener('mouseleave', () => {
+    if (state.bypass) {
+      toggleBypass(false);
+      $('btnBypass').classList.remove('active');
+    }
+  });
+  $('btnBypass').addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    toggleBypass(true);
+    $('btnBypass').classList.add('active');
+  });
+  $('btnBypass').addEventListener('touchend', () => {
+    toggleBypass(false);
+    $('btnBypass').classList.remove('active');
+  });
+
+  // Sliders
+  $('boostSlider').addEventListener('input', () => {
+    const v = parseInt($('boostSlider').value);
+    $('boostVal').textContent = '+' + v + ' дБ';
+    setBoost(v);
+    saveScore();
+  });
+
+  $('qSlider').addEventListener('input', () => {
+    const v = parseFloat($('qSlider').value);
+    $('qVal').textContent = v.toFixed(1);
+    setQ(v);
+    saveScore();
+  });
+
+  $('volumeSlider').addEventListener('input', () => {
+    const v = parseInt($('volumeSlider').value);
+    $('volumeVal').textContent = v + '%';
+    setVolume(v / 100);
+    saveScore();
+  });
+
+  // Freq guess sync
+  $('freqSlider').addEventListener('input', () => {
+    $('freqInput').value = $('freqSlider').value;
+  });
+  $('freqInput').addEventListener('input', () => {
+    $('freqSlider').value = $('freqInput').value;
+  });
+
+  // Submit
+  $('btnSubmit').addEventListener('click', submitGuess);
+  $('btnNewRound').addEventListener('click', startRound);
+
+  // Source selector
+  document.querySelectorAll('.source-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.source-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.source = btn.dataset.source;
+      $('uploadArea').style.display = state.source === 'music' ? 'block' : 'none';
+
+      if (state.source === 'pink' && state.playing) {
+        stopMusic();
+        noiseGain.gain.value = 0.3;
+      }
+    });
+  });
+
+  // Difficulty
+  document.querySelectorAll('.diff-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.difficulty = btn.dataset.diff;
+      saveScore();
+    });
+  });
+
+  // Phone mode toggle
+  $('phoneToggle').addEventListener('click', () => {
+    state.phoneMode = !state.phoneMode;
+    $('phoneToggle').classList.toggle('active', state.phoneMode);
+    saveScore();
+  });
+
+  // Mode tabs
+  document.querySelectorAll('.mode-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      state.mode = tab.dataset.mode;
+
+      if (state.mode === 'training') {
+        $('guessSection').classList.add('visible');
+        status('idle', 'Готов к тренировке');
+      } else if (state.mode === 'daily') {
+        $('guessSection').classList.add('visible');
+        status('idle', 'Дневной вызов готов');
+      } else {
+        $('guessSection').classList.remove('visible');
+        state.roundActive = false;
+        status('idle', 'Свободный режим — экспериментируйте!');
+      }
+    });
+  });
+
+  // File upload
+  $('fileInput').addEventListener('change', (e) => {
+    if (e.target.files.length > 0) handleFile(e.target.files[0]);
+  });
+
+  $('uploadZone').addEventListener('dragover', (e) => {
+    e.preventDefault();
+    $('uploadZone').classList.add('dragover');
+  });
+  $('uploadZone').addEventListener('dragleave', () => {
+    $('uploadZone').classList.remove('dragover');
+  });
+  $('uploadZone').addEventListener('drop', (e) => {
+    e.preventDefault();
+    $('uploadZone').classList.remove('dragover');
+    if (e.dataTransfer.files.length > 0) handleFile(e.dataTransfer.files[0]);
+  });
+
+  $('btnRemoveFile').addEventListener('click', () => {
+    state.customBuffer = null;
+    state.customFileName = '';
+    $('customFileInfo').classList.remove('visible');
+    $('uploadZone').style.display = '';
+    if (state.playing) {
+      stopMusic();
+      if (state.source === 'pink') noiseGain.gain.value = 0.3;
+    }
+  });
+
+  function handleFile(file) {
+    initAudio();
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      audioCtx.decodeAudioData(e.target.result).then(buf => {
+        state.customBuffer = buf;
+        state.customFileName = file.name;
+        $('customFileName').textContent = file.name;
+        $('customFileInfo').classList.add('visible');
+        $('uploadZone').style.display = 'none';
+        loadMusic(buf);
+        if (state.source === 'music' && state.playing) playMusic();
+        status('idle', 'Файл загружен: ' + file.name);
+      }).catch(() => {
+        status('idle', 'Ошибка: не удалось декодировать файл');
+      });
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT' && e.target.type !== 'range') return;
+
+    if (e.code === 'Space') {
+      e.preventDefault();
+      $('btnPlay').click();
+    }
+    if (e.key === 'b' || e.key === 'B' || e.key === 'и' || e.key === 'И') {
+      toggleBypass(true);
+      $('btnBypass').classList.add('active');
+      const release = () => {
+        toggleBypass(false);
+        $('btnBypass').classList.remove('active');
+        document.removeEventListener('keyup', release);
+      };
+      document.addEventListener('keyup', release);
+    }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      if (state.roundActive) submitGuess();
+    }
+  });
+
+  // Resize handler
+  window.addEventListener('resize', () => {
+    if (state.playing) drawSpectrum();
+  });
+
+  // Init
+  loadState();
+  drawSpectrum();
+})();
+</script>
+</body>
+</html>
