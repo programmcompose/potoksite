@@ -412,6 +412,239 @@
     margin-top: 4px;
   }
 
+  .reference-block {
+    margin-top: 12px;
+    padding: 12px;
+    background: var(--bg-darker);
+    border-radius: var(--radius);
+    font-size: 0.75em;
+    line-height: 1.6;
+  }
+
+  .reference-block .title {
+    font-weight: 700;
+    opacity: 0.7;
+    margin-bottom: 8px;
+  }
+
+  .reference-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+    gap: 6px;
+    text-align: center;
+  }
+
+  .ref-item {
+    padding: 6px 4px;
+    background: var(--bg-light);
+    border-radius: 4px;
+  }
+
+  .ref-freq {
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .ref-item:nth-child(1) .ref-freq { color: #ff6b6b; }
+  .ref-item:nth-child(2) .ref-freq { color: #ffa502; }
+  .ref-item:nth-child(3) .ref-freq { color: #ffd93d; }
+  .ref-item:nth-child(4) .ref-freq { color: #6bcb77; }
+  .ref-item:nth-child(5) .ref-freq { color: #4d96ff; }
+  .ref-item:nth-child(6) .ref-freq { color: #9b59b6; }
+  .ref-item:nth-child(7) .ref-freq { color: #ff6b9d; }
+
+  .toggle-switch {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 8px 0;
+    cursor: pointer;
+  }
+
+  .toggle-switch input {
+    display: none;
+  }
+
+  .toggle-track {
+    width: 36px;
+    height: 20px;
+    background: var(--bg-lighter);
+    border-radius: 10px;
+    position: relative;
+    transition: background 0.2s;
+  }
+
+  .toggle-switch input:checked + .toggle-track {
+    background: var(--accent);
+  }
+
+  .toggle-thumb {
+    width: 16px;
+    height: 16px;
+    background: var(--text);
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+    transition: left 0.2s;
+  }
+
+  .toggle-switch input:checked + .toggle-track .toggle-thumb {
+    left: 18px;
+  }
+
+  .phone-mode-warning {
+    display: none;
+    padding: 8px 12px;
+    background: rgba(255,112,67,0.15);
+    border: 1px solid var(--orange);
+    border-radius: var(--radius);
+    font-size: 0.8em;
+    color: var(--orange);
+    margin-bottom: 12px;
+  }
+
+  .phone-mode-warning.visible {
+    display: block;
+  }
+
+  .freq-input-container {
+    position: relative;
+    margin-top: 8px;
+  }
+
+  .freq-slider {
+    width: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    height: 8px;
+    background: var(--bg-darker);
+    border-radius: 4px;
+    outline: none;
+    cursor: pointer;
+  }
+
+  .freq-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+
+  .freq-slider::-moz-range-thumb {
+    width: 20px;
+    height: 20px;
+    background: var(--accent);
+    border-radius: 50%;
+    cursor: pointer;
+    border: none;
+  }
+
+  .freq-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.7em;
+    opacity: 0.4;
+    margin-top: 4px;
+  }
+
+  .training-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    font-size: 0.8em;
+  }
+
+  .stat-card {
+    background: var(--bg-darker);
+    border-radius: var(--radius);
+    padding: 8px;
+    text-align: center;
+  }
+
+  .stat-card .value {
+    font-size: 1.3em;
+    font-weight: 800;
+    color: var(--accent);
+  }
+
+  .stat-card .label {
+    font-size: 0.7em;
+    opacity: 0.5;
+  }
+
+  .mode-tabs {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 12px;
+  }
+
+  .mode-tab {
+    flex: 1;
+    padding: 8px 6px;
+    font-size: 0.75em;
+    text-align: center;
+  }
+
+  .daily-badge {
+    display: inline-block;
+    padding: 2px 6px;
+    background: var(--warning);
+    color: var(--bg);
+    border-radius: 10px;
+    font-size: 0.65em;
+    font-weight: 700;
+    margin-left: 4px;
+  }
+
+  .result-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    margin-top: 8px;
+  }
+
+  .result-detail {
+    background: var(--bg-darker);
+    padding: 8px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    text-align: center;
+  }
+
+  .result-detail.good {
+    background: rgba(102,187,106,0.15);
+    color: var(--success);
+  }
+
+  .result-detail.bad {
+    background: rgba(239,83,80,0.15);
+    color: var(--danger);
+  }
+
+  .eq-params {
+    display: flex;
+    gap: 12px;
+    margin: 8px 0;
+    flex-wrap: wrap;
+  }
+
+  .eq-params label {
+    font-size: 0.8em;
+    opacity: 0.7;
+  }
+
+  .eq-params input[type="range"] {
+    width: 80px;
+  }
+
+  .eq-params .value {
+    font-weight: 600;
+    min-width: 40px;
+  }
+
   .loop-btn {
     padding: 8px 14px;
     font-size: 0.8em;
@@ -505,7 +738,11 @@
   <a href="../index.html" class="back-link">← К инструментам</a>
   <header>
     <h1>🎚️ EQ-тренажёр</h1>
-    <p>Слушайте звук до и после эквализации, угадайте, какой диапазон частот был усилен и на сколько</p>
+    <p>Слушайте звук до и после эквализации, угадайте, какой диапазон частот был усилен</p>
+    <div class="mode-selector" style="display:flex; gap:8px; margin-top:8px;">
+      <button class="mode-tab active" data-mode="classic" id="btnModeClassic">🎯 Угадывание диапазона</button>
+      <button class="mode-tab" data-mode="training" id="btnModeTraining">🎚️ Точная частота</button>
+    </div>
   </header>
 
   <div class="score-bar">
@@ -643,6 +880,100 @@
       <p>3. Угадайте, какой частотный диапазон был усилен и на сколько дБ</p>
       <p>4. На лёгкой сложности — 3 варианта дБ, на средней — 5</p>
     </div>
+  </div>
+
+  <div class="panel" style="margin-top:12px; display:none;" id="refPanel">
+    <div class="panel-title">📖 Справочник частот</div>
+    <div class="reference-block">
+      <div class="title">Основные частоты в миксе</div>
+      <div class="reference-grid">
+        <div class="ref-item"><div class="ref-freq">100 Hz</div><div style="opacity:0.6">Kick, бум</div></div>
+        <div class="ref-item"><div class="ref-freq">200 Hz</div><div style="opacity:0.6">Вокал, тепло</div></div>
+        <div class="ref-item"><div class="ref-freq">500 Hz</div><div style="opacity:0.6">Гитара, полость</div></div>
+        <div class="ref-item"><div class="ref-freq">1 kHz</div><div style="opacity:0.6">Телефон</div></div>
+        <div class="ref-item"><div class="ref-freq">2 kHz</div><div style="opacity:0.6">С snare, бит</div></div>
+        <div class="ref-item"><div class="ref-freq">5 kHz</div><div style="opacity:0.6">S/T, хруст</div></div>
+        <div class="ref-item"><div class="ref-freq">10 kHz</div><div style="opacity:0.6">Hi-hat, воздух</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="trainingContainer" style="display:none;">
+  <div class="panel">
+    <div class="panel-title">Режим тренировки</div>
+    <div class="mode-tabs">
+      <button class="mode-tab active" id="modeTraining" data-mode="training">🎯 Тренировка</button>
+      <button class="mode-tab" id="modeDaily" data-mode="daily">📅 Daily <span class="daily-badge">NEW</span></button>
+    </div>
+    <label class="toggle-switch">
+        <input type="checkbox" id="phoneModeCheck">
+        <div class="toggle-track"><div class="toggle-thumb"></div></div>
+        <span>📱 Phone Speakers Mode (300 Гц – 8 кГц)</span>
+      </label>
+    <div class="phone-mode-warning" id="phoneModeWarning">
+      Ограниченный диапазон для тренировки восприятия телефонных / наушников
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Параметры EQ</div>
+    <div class="eq-params">
+      <div><label>Boost: </label><span class="value" id="boostValue">+20 дБ</span></div>
+      <div><input type="range" id="boostSlider" min="3" max="30" value="20"></div>
+    </div>
+    <div class="eq-params">
+      <div><label>Q: </label><span class="value" id="qValue">3.0</span></div>
+      <div><input type="range" id="qSlider" min="1" max="100" value="30"></div>
+    </div>
+    <div class="panel-title" style="margin-top:8px;">Сложность</div>
+    <div class="difficulty-selector">
+      <button class="diff-btn active" data-diff="easy" id="diffEasy">Easy ±25%</button>
+      <button class="diff-btn" data-diff="medium" id="diffMedium">Medium ±15%</button>
+      <button class="diff-btn" data-diff="hard" id="diffHard">Hard ±5%</button>
+      <button class="diff-btn" data-diff="god" id="diffGod">God ±2%</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">🎚️ EQ Bypass</div>
+    <div class="controls" style="justify-content: center;">
+      <button class="loop-btn" id="btnBypass">🔊 Hold to Bypass / сравнение</button>
+    </div>
+    <div class="key-hint">[B] — Bypass</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Ваш ответ — укажите частоту</div>
+    <div class="freq-input-container">
+      <input type="range" class="freq-slider" id="freqSlider" min="0" max="100" value="50">
+      <div class="freq-labels">
+        <span>20 Hz</span>
+        <span>100</span>
+        <span>1 k</span>
+        <span>10 k</span>
+        <span>20 kHz</span>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:12px;">
+      <span style="font-size:1.8em; font-weight:800; color:var(--accent);" id="freqGuessDisplay">500</span>
+      <span style="opacity:0.6;">Гц</span>
+    </div>
+    <div style="text-align:center; margin-top:12px;">
+      <button class="success" id="btnSubmitGuess">✓ Проверить</button>
+    </div>
+  </div>
+
+  <div class="result-box" id="resultBoxTraining"></div>
+  <div class="training-stats" id="trainingStats">
+    <div class="stat-card"><div class="value" id="trainTotal">0</div><div class="label">Всего</div></div>
+    <div class="stat-card"><div class="value" id="trainCorrect">0</div><div class="label">Верно</div></div>
+    <div class="stat-card"><div class="value" id="trainStreak">0</div><div class="label">Серия</div></div>
+    <div class="stat-card"><div class="value" id="trainBest">0</div><div class="label">Лучшая</div></div>
+  </div>
+
+  <div class="panel" style="margin-top:12px;">
+    <button class="primary" id="btnNewTrainingRound">🎲 Новый раунд</button>
   </div>
 </div>
 
@@ -1740,6 +2071,443 @@
     drawWaveform();
   });
 })();
-</script>
-</body>
-</html>
+// ===== Pink Noise Generation (Paul Kellet algorithm) =====
+class PinkNoiseProcessor {
+  constructor(ctx) {
+    this.ctx = ctx;
+    this.b0 = 0; this.b1 = 0; this.b2 = 0;
+    this.b3 = 0; this.b4 = 0; this.b5 = 0; this.b6 = 0;
+  }
+  
+  reset() {
+    this.b0 = this.b1 = this.b2 = this.b3 = this.b4 = this.b5 = this.b6 = 0;
+  }
+  
+  process(input) {
+    const output = this.ctx.createBuffer(1, input.length, this.ctx.sampleRate);
+    const outData = output.getChannelData(0);
+    const inData = input.getChannelData(0);
+    
+    for (let i = 0; i < input.length; i++) {
+      const white = inData[i];
+      
+      this.b0 = 0.99886 * this.b0 + white * 0.0555179;
+      this.b1 = 0.99332 * this.b1 + white * 0.0750759;
+      this.b2 = 0.96900 * this.b2 + white * 0.1538520;
+      this.b3 = 0.86650 * this.b3 + white * 0.3104856;
+      this.b4 = 0.55000 * this.b4 + white * 0.5329522;
+      this.b5 = -0.7616 * this.b5 - white * 0.0168980;
+      
+      outData[i] = (this.b0 + this.b1 + this.b2 + this.b3 + this.b4 + this.b5 + this.b6 + white * 0.5362) * 0.11;
+      this.b6 = white * 0.115926;
+    }
+    return output;
+  }
+}
+
+// ===== Training Mode State =====
+let trainingState = {
+  active: false,
+  mode: 'training',
+  targetFreq: 1000,
+  boost: 20,
+  q: 3.0,
+  difficulty: 'easy',
+  phoneMode: false,
+  scoreTotal: 0,
+  scoreCorrect: 0,
+  streak: 0,
+  bestStreak: 0,
+};
+
+const DIFFICULTY_TOLERANCE = {
+  easy: 0.25,
+  medium: 0.15,
+  hard: 0.05,
+  god: 0.02,
+};
+
+function getDailySeed() {
+  const now = new Date();
+  const y = now.getFullYear();
+  const m = now.getMonth() + 1;
+  const d = now.getDate();
+  return y * 10000 + m * 100 + d;
+}
+
+function seededRandom(seed) {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
+function getTrainingFreqRange() {
+  if (trainingState.phoneMode) return { min: 300, max: 8000 };
+  return { min: 20, max: 20000 };
+}
+
+function pickTrainingFrequency() {
+  const range = getTrainingFreqRange();
+  const seed = trainingState.mode === 'daily' ? getDailySeed() : Date.now();
+  const r = seededRandom(seed);
+  
+  const logMin = Math.log10(range.min);
+  const logMax = Math.log10(range.max);
+  const logFreq = logMin + r * (logMax - logMin);
+  return Math.pow(10, logFreq);
+}
+
+// ===== Audio Setup for Training =====
+let trainingAudio = {
+  ctx: null,
+  noiseSource: null,
+  eq: null,
+  gain: null,
+  pink: null,
+  buffer: null,
+  isPlaying: false,
+  bypassOn: false,
+};
+
+function initTrainingAudio() {
+  if (!trainingAudio.ctx) {
+    trainingAudio.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    trainingAudio.pink = new PinkNoiseProcessor(trainingAudio.ctx);
+    
+    trainingAudio.gain = trainingAudio.ctx.createGain();
+    trainingAudio.gain.gain.value = state.volume;
+    
+    trainingAudio.eq = trainingAudio.ctx.createBiquadFilter();
+    trainingAudio.eq.type = 'peaking';
+    trainingAudio.eq.frequency.value = trainingState.targetFreq;
+    trainingAudio.eq.Q.value = trainingState.q;
+    trainingAudio.eq.gain.value = trainingState.boost;
+    
+    trainingAudio.eq.connect(trainingAudio.gain);
+    trainingAudio.gain.connect(trainingAudio.ctx.destination);
+  }
+  return trainingAudio.ctx;
+}
+
+function generatePinkNoiseBuffer(duration) {
+  const ctx = initTrainingAudio();
+  const sr = ctx.sampleRate;
+  const length = sr * duration;
+  const buffer = ctx.createBuffer(1, length, sr);
+  const data = buffer.getChannelData(0);
+  
+  for (let i = 0; i < length; i++) {
+    data[i] = Math.random() * 2 - 1;
+  }
+  
+  return trainingAudio.pink.process(buffer);
+}
+
+function startTrainingPlayback() {
+  stopTrainingPlayback();
+  const ctx = initTrainingAudio();
+  
+  if (trainingAudio.ctx.state === 'suspended') {
+    trainingAudio.ctx.resume();
+  }
+  
+  if (!trainingAudio.buffer) {
+    trainingAudio.buffer = generatePinkNoiseBuffer(8);
+  }
+  
+  trainingAudio.noiseSource = ctx.createBufferSource();
+  trainingAudio.noiseSource.buffer = trainingAudio.buffer;
+  trainingAudio.noiseSource.loop = true;
+  
+  trainingAudio.eq.frequency.value = trainingState.targetFreq;
+  trainingAudio.eq.Q.value = trainingState.q;
+  trainingAudio.eq.gain.value = trainingState.bypassOn ? 0 : trainingState.boost;
+  
+  trainingAudio.noiseSource.connect(trainingAudio.eq);
+  trainingAudio.noiseSource.start();
+  trainingAudio.isPlaying = true;
+}
+
+function stopTrainingPlayback() {
+  if (trainingAudio.noiseSource) {
+    try { trainingAudio.noiseSource.stop(); } catch(e) {}
+    try { trainingAudio.noiseSource.disconnect(); } catch(e) {}
+    trainingAudio.noiseSource = null;
+  }
+  trainingAudio.isPlaying = false;
+}
+
+function setTrainingBypass(enabled) {
+  trainingState.bypassOn = enabled;
+  if (trainingAudio.eq) {
+    trainingAudio.eq.gain.value = enabled ? 0 : trainingState.boost;
+  }
+}
+
+// ===== Training UI Functions =====
+function updateTrainingFreqDisplay() {
+  const slider = document.getElementById('freqSlider');
+  const display = document.getElementById('freqGuessDisplay');
+  const range = { min: 20, max: 20000 };
+  
+  const logMin = Math.log10(range.min);
+  const logMax = Math.log10(range.max);
+  const logFreq = logMin + (slider.value / 100) * (logMax - logMin);
+  const freq = Math.pow(10, logFreq);
+  
+  display.textContent = freq >= 1000 ? (freq / 1000).toFixed(1) + 'k' : Math.round(freq);
+}
+
+function startTrainingRound() {
+  stopTrainingPlayback();
+  trainingState.active = true;
+  trainingState.targetFreq = pickTrainingFrequency();
+  
+  if (trainingState.mode === 'daily') {
+    const seed = getDailySeed();
+    trainingState.targetFreq = 100 * Math.pow(10, seededRandom(seed) * Math.log10(200));
+  }
+  
+  startTrainingPlayback();
+  
+  document.getElementById('statusText').textContent = trainingState.mode === 'daily' 
+    ? '📅 Daily Challenge — угадайте частоту!' 
+    : 'Слушайте и угадайте частоту!';
+  document.getElementById('statusDot').className = 'status-indicator playing';
+  
+  if (trainingAudio.eq) {
+    trainingAudio.eq.frequency.value = trainingState.targetFreq;
+    trainingAudio.eq.Q.value = trainingState.q;
+    trainingAudio.eq.gain.value = trainingState.boost;
+  }
+}
+
+function submitTrainingGuess() {
+  if (!trainingState.active) return;
+  
+  const slider = document.getElementById('freqSlider');
+  const range = { min: 20, max: 20000 };
+  const logMin = Math.log10(range.min);
+  const logMax = Math.log10(range.max);
+  const logFreq = logMin + (slider.value / 100) * (logMax - logMin);
+  const guessedFreq = Math.pow(10, logFreq);
+  
+  trainingState.scoreTotal++;
+  const tolerance = DIFFICULTY_TOLERANCE[trainingState.difficulty];
+  const error = Math.abs(guessedFreq - trainingState.targetFreq) / trainingState.targetFreq;
+  const isCorrect = error <= tolerance;
+  
+  if (isCorrect) {
+    trainingState.scoreCorrect++;
+    trainingState.streak++;
+    if (trainingState.streak > trainingState.bestStreak) trainingState.bestStreak = trainingState.streak;
+    playSuccessSound();
+  } else {
+    trainingState.streak = 0;
+  }
+  
+  document.getElementById('trainTotal').textContent = trainingState.scoreTotal;
+  document.getElementById('trainCorrect').textContent = trainingState.scoreCorrect;
+  document.getElementById('trainStreak').textContent = trainingState.streak;
+  document.getElementById('trainBest').textContent = trainingState.bestStreak;
+  
+  const realFreq = trainingState.targetFreq >= 1000 
+    ? (trainingState.targetFreq / 1000).toFixed(1) + 'k Гц' 
+    : Math.round(trainingState.targetFreq) + ' Гц';
+  const guessedStr = guessedFreq >= 1000 
+    ? (guessedFreq / 1000).toFixed(1) + 'k Гц' 
+    : Math.round(guessedFreq) + ' Гц';
+  const errorPct = (error * 100).toFixed(1);
+  const octaves = Math.abs(Math.log2(guessedFreq / trainingState.targetFreq)).toFixed(2);
+  
+  const resultBox = document.getElementById('resultBoxTraining');
+  if (isCorrect) {
+    resultBox.className = 'result-box visible correct';
+    resultBox.innerHTML = `✅ <b>Верно!</b> Правильная частота: <b>${realFreq}</b>`;
+  } else {
+    resultBox.className = 'result-box visible wrong';
+    resultBox.innerHTML = `❌ <b>Мимо!</b> Ваш ответ: ${guessedStr}<br>Правильно: <b>${realFreq}</b> (ошибка: ${errorPct}%, ${octaves}) октав)`;
+  }
+  
+  trainingState.active = false;
+  saveTrainingStats();
+}
+
+// ===== LocalStorage =====
+function saveTrainingStats() {
+  try {
+    localStorage.setItem('eqTrainerStats', JSON.stringify({
+      scoreTotal: trainingState.scoreTotal,
+      scoreCorrect: trainingState.scoreCorrect,
+      streak: trainingState.streak,
+      bestStreak: trainingState.bestStreak,
+      difficulty: trainingState.difficulty,
+      phoneMode: trainingState.phoneMode,
+      volume: state.volume,
+    }));
+  } catch(e) {}
+}
+
+function loadTrainingStats() {
+  try {
+    const data = JSON.parse(localStorage.getItem('eqTrainerStats'));
+    if (data) {
+      trainingState.scoreTotal = data.scoreTotal || 0;
+      trainingState.scoreCorrect = data.scoreCorrect || 0;
+      trainingState.streak = data.streak || 0;
+      trainingState.bestStreak = data.bestStreak || 0;
+      trainingState.difficulty = data.difficulty || 'easy';
+      trainingState.phoneMode = data.phoneMode || false;
+      state.volume = data.volume || 0.7;
+      
+      document.getElementById('trainTotal').textContent = trainingState.scoreTotal;
+      document.getElementById('trainCorrect').textContent = trainingState.scoreCorrect;
+      document.getElementById('trainStreak').textContent = trainingState.streak;
+      document.getElementById('trainBest').textContent = trainingState.bestStreak;
+    }
+  } catch(e) {}
+}
+
+// ===== Event Handlers for Training =====
+function setupTrainingHandlers() {
+  const boostSlider = document.getElementById('boostSlider');
+  const qSlider = document.getElementById('qSlider');
+  const freqSlider = document.getElementById('freqSlider');
+  const phoneModeCheck = document.getElementById('phoneModeCheck');
+  const bypassBtn = document.getElementById('btnBypass');
+  
+  boostSlider.addEventListener('input', () => {
+    trainingState.boost = parseInt(boostSlider.value);
+    document.getElementById('boostValue').textContent = '+' + trainingState.boost + ' дБ';
+    if (trainingAudio.eq) trainingAudio.eq.gain.value = trainingState.bypassOn ? 0 : trainingState.boost;
+  });
+  
+  qSlider.addEventListener('input', () => {
+    trainingState.q = qSlider.value / 10;
+    document.getElementById('qValue').textContent = trainingState.q.toFixed(1);
+    if (trainingAudio.eq) trainingAudio.eq.Q.value = trainingState.q;
+  });
+  
+  freqSlider.addEventListener('input', updateTrainingFreqDisplay);
+  
+  phoneModeCheck.addEventListener('change', () => {
+    trainingState.phoneMode = phoneModeCheck.checked;
+    document.getElementById('phoneModeWarning').classList.toggle('visible', trainingState.phoneMode);
+    saveTrainingStats();
+  });
+  
+  // Bypass button
+  const handleBypassOn = (e) => {
+    e.preventDefault();
+    setTrainingBypass(true);
+    bypassBtn.classList.add('active');
+    bypassBtn.textContent = '🔇 Bypass ON (отключено)';
+  };
+  const handleBypassOff = () => {
+    setTrainingBypass(false);
+    bypassBtn.classList.remove('active');
+    bypassBtn.textContent = '🔊 Hold to Bypass / сравнение';
+  };
+  
+  bypassBtn.addEventListener('mousedown', handleBypassOn);
+  bypassBtn.addEventListener('mouseup', handleBypassOff);
+  bypassBtn.addEventListener('mouseleave', handleBypassOff);
+  bypassBtn.addEventListener('touchstart', handleBypassOn, { passive: false });
+  bypassBtn.addEventListener('touchend', handleBypassOff);
+  
+  // Mode tabs
+  document.getElementById('modeTraining').addEventListener('click', () => {
+    trainingState.mode = 'training';
+    document.getElementById('modeTraining').classList.add('active');
+    document.getElementById('modeDaily').classList.remove('active');
+  });
+  
+  document.getElementById('modeDaily').addEventListener('click', () => {
+    trainingState.mode = 'daily';
+    document.getElementById('modeDaily').classList.add('active');
+    document.getElementById('modeTraining').classList.remove('active');
+  });
+  
+  // Difficulty buttons
+  document.getElementById('diffEasy').addEventListener('click', () => {
+    trainingState.difficulty = 'easy';
+    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('diffEasy').classList.add('active');
+    saveTrainingStats();
+  });
+  
+  document.getElementById('diffMedium').addEventListener('click', () => {
+    trainingState.difficulty = 'medium';
+    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('diffMedium').classList.add('active');
+    saveTrainingStats();
+  });
+  
+  document.getElementById('diffHard').addEventListener('click', () => {
+    trainingState.difficulty = 'hard';
+    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('diffHard').classList.add('active');
+    saveTrainingStats();
+  });
+  
+  document.getElementById('diffGod').addEventListener('click', () => {
+    trainingState.difficulty = 'god';
+    document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('diffGod').classList.add('active');
+    saveTrainingStats();
+  });
+  
+  // Submit and new round buttons
+  document.getElementById('btnSubmitGuess').addEventListener('click', submitTrainingGuess);
+  document.getElementById('btnNewTrainingRound').addEventListener('click', startTrainingRound);
+  
+  // Keyboard shortcuts for training
+  document.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT') return;
+    
+    if (e.code === 'Space') {
+      e.preventDefault();
+      if (!trainingState.active) startTrainingRound();
+    }
+    if (e.key === 'b' || e.key === 'B' || e.key === 'и' || e.key === 'И') {
+      setTrainingBypass(true);
+    }
+    if (e.code === 'Enter') {
+      if (trainingState.active) submitTrainingGuess();
+    }
+  });
+  
+  document.addEventListener('keyup', (e) => {
+    if (e.key === 'b' || e.key === 'B' || e.key === 'и' || e.key === 'И') {
+      setTrainingBypass(false);
+    }
+  });
+
+  // ===== Initialize Training =====
+  loadTrainingStats();
+  updateTrainingFreqDisplay();
+  setupTrainingHandlers();
+
+  // Mode switching
+  let currentMode = 'classic';
+  const classicContainer = document.querySelector('.container > .panel');
+  const trainingContainer = document.getElementById('trainingContainer');
+
+  document.getElementById('btnModeClassic').addEventListener('click', () => {
+    currentMode = 'classic';
+    document.getElementById('btnModeClassic').classList.add('active');
+    document.getElementById('btnModeTraining').classList.remove('active');
+    // Show classic UI, hide training
+    classicContainer.style.display = '';
+    trainingContainer.style.display = 'none';
+  });
+
+  document.getElementById('btnModeTraining').addEventListener('click', () => {
+    currentMode = 'training';
+    document.getElementById('btnModeTraining').classList.add('active');
+    document.getElementById('btnModeClassic').classList.remove('active');
+    // Show training UI, hide classic
+    classicContainer.style.display = 'none';
+    trainingContainer.style.display = 'block';
+  });
+
+}());
