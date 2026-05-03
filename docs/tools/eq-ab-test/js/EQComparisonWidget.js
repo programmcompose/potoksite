@@ -245,7 +245,52 @@ export class EQComparisonWidget {
     }
     el.classList.add("eq-ab-game-result--bad");
     el.classList.remove("eq-ab-game-result--ok");
-    el.innerHTML = `<strong>Пока мимо.</strong> Сходство ≈ ${r.scorePct} %, средняя ошибка по кривой ${r.rmseDb.toFixed(2)} dB (пик ${r.maxDb.toFixed(1)} dB).${mixNote} Переключайте A⇄B и докручивайте полосы.`;
+    // Показываем поbandовые расхождения
+    const targetBands = et.exportAllBands();
+    const userBands = ue.exportAllBands();
+    let diffHtml = "<div class='eq-ab-target-reveal'><strong>Где расхождение:</strong><div class='eq-ab-target-bands'>";
+    for (let i = 0; i < targetBands.length; i++) {
+      const tb = targetBands[i];
+      const ub = userBands[i];
+      const col = BAND_PALETTE[i % BAND_PALETTE.length];
+      const freqDiff = tb.frequency - ub.frequency;
+      const gainDiff = tb.gain - ub.gain;
+      const qDiff = tb.q - ub.q;
+      const freqLabelT = tb.frequency >= 1000 ? `${(tb.frequency / 1000).toFixed(1)} k` : `${Math.round(tb.frequency)}`;
+      const freqLabelU = ub.frequency >= 1000 ? `${(ub.frequency / 1000).toFixed(1)} k` : `${Math.round(ub.frequency)}`;
+      const gainLabelT = `${tb.gain >= 0 ? "+" : ""}${tb.gain.toFixed(1)} dB`;
+      const gainLabelU = `${ub.gain >= 0 ? "+" : ""}${ub.gain.toFixed(1)} dB`;
+      const freqSign = freqDiff > 0 ? "↑" : freqDiff < 0 ? "↓" : "—";
+      const gainSign = gainDiff > 0 ? "↑" : gainDiff < 0 ? "↓" : "—";
+      const qSign = qDiff > 0 ? "↑" : qDiff < 0 ? "↓" : "—";
+      diffHtml += `<div class='eq-ab-target-band eq-ab-diff-band' style='--band-color: ${col}'>
+        <span class='eq-ab-target-band-num'>Полоса ${i + 1}</span>
+        <span class='eq-ab-diff-cell'>
+          <span class='eq-ab-diff-label'>F:</span>
+          <span class='eq-ab-diff-target'>${freqLabelT}</span>
+          <span class='eq-ab-diff-arrow'>→</span>
+          <span class='eq-ab-diff-user'>${freqLabelU}</span>
+          <span class='eq-ab-diff-sign ${Math.abs(freqDiff) > 50 ? "eq-ab-diff-warn" : ""}'>${freqSign} ${Math.abs(freqDiff).toFixed(0)} Hz</span>
+        </span>
+        <span class='eq-ab-diff-cell'>
+          <span class='eq-ab-diff-label'>G:</span>
+          <span class='eq-ab-diff-target'>${gainLabelT}</span>
+          <span class='eq-ab-diff-arrow'>→</span>
+          <span class='eq-ab-diff-user'>${gainLabelU}</span>
+          <span class='eq-ab-diff-sign ${Math.abs(gainDiff) > 2 ? "eq-ab-diff-warn" : ""}'>${gainSign} ${Math.abs(gainDiff).toFixed(1)} dB</span>
+        </span>
+        <span class='eq-ab-diff-cell'>
+          <span class='eq-ab-diff-label'>Q:</span>
+          <span class='eq-ab-diff-target'>${tb.q.toFixed(2)}</span>
+          <span class='eq-ab-diff-arrow'>→</span>
+          <span class='eq-ab-diff-user'>${ub.q.toFixed(2)}</span>
+          <span class='eq-ab-diff-sign ${Math.abs(qDiff) > 0.5 ? "eq-ab-diff-warn" : ""}'>${qSign} ${Math.abs(qDiff).toFixed(2)}</span>
+        </span>
+        ${tb.type !== ub.type ? `<span class='eq-ab-diff-type'>тип: ${tb.type} → ${ub.type}</span>` : ""}
+      </div>`;
+    }
+    diffHtml += "</div></div>";
+    el.innerHTML = `<strong>Пока мимо.</strong> Сходство ≈ ${r.scorePct} %, средняя ошибка ${r.rmseDb.toFixed(2)} dB (пик ${r.maxDb.toFixed(1)} dB).${diffHtml}`;
   }
 
   /** @private */ _scheduleEqHook() {
