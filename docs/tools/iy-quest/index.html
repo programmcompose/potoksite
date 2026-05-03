@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-<title>MusicQuest — Курс Создания Музыки</title>
+<title>IY Quest — Курс Создания Музыки</title>
 <style>
 @import url('https://cdn.fontsource.org/sf-pro-text/sf-pro-text-400-normal.css');
 @import url('https://cdn.fontsource.org/sf-pro-text/sf-pro-text-500-normal.css');
@@ -178,6 +178,16 @@ body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,sans-serif;backg
 .zone-e7{background:rgba(0,188,212,0.15);color:#00bcd4;border:1px solid rgba(0,188,212,0.3)}
 .zone-e8{background:rgba(156,39,176,0.15);color:#9c27b0;border:1px solid rgba(156,39,176,0.3)}
 .zone-e9{background:rgba(255,215,0,0.15);color:#ffd700;border:1px solid rgba(255,215,0,0.3)}
+.review-card{background:linear-gradient(145deg,#32324a,#2a2a3e);border-radius:16px;padding:20px;margin:16px 0;border:1px solid #3a3a55;position:relative;overflow:hidden}
+.review-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,#4caf50,#66bb6a,#667eea)}
+.review-card .review-badge{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;background:rgba(76,175,80,0.15);border:1px solid rgba(76,175,80,0.3);color:#66bb6a;font-size:13px;font-weight:600;margin-bottom:12px}
+.review-card .review-label{font-size:11px;font-weight:700;color:#4caf50;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:8px}
+.review-card .review-title{font-size:20px;font-weight:700;color:#e0e0f0;margin-bottom:10px;line-height:1.3}
+.review-card .review-desc{font-size:14px;color:#9090b0;line-height:1.5}
+.review-card .review-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.review-card .review-xp{display:inline-flex;align-items:center;gap:4px;padding:6px 14px;border-radius:20px;background:rgba(255,107,53,0.15);border:1px solid rgba(255,107,53,0.3);color:#ff8855;font-size:13px;font-weight:600;margin-top:12px}
+.top-padding{height:16px}
+.bottom-more{display:flex;align-items:center;justify-content:center;padding:20px 0;opacity:0.3;color:#8888aa;font-size:14px}
 .back-link{position:absolute;top:12px;left:12px;z-index:50;color:rgba(255,255,255,0.5);text-decoration:none;font-size:13px;font-weight:500;transition:color 0.2s}
 .back-link:hover{color:rgba(255,255,255,0.9)}
 </style>
@@ -193,7 +203,7 @@ body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,sans-serif;backg
   <div class="transport-bar">
     <div class="transport-left">
       <div class="transport-logo">♫</div>
-      <span class="transport-title">MusicQuest</span>
+      <span class="transport-title">IY Quest</span>
     </div>
     <div class="transport-right">
       <div class="eq-bars"><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div><div class="eq-bar"></div></div>
@@ -250,6 +260,27 @@ body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,sans-serif;backg
     </div>
   </div>
 
+  <div class="modal-overlay" id="reviewModal">
+    <div class="modal-content">
+      <div class="modal-handle"></div>
+      <div class="modal-header">
+        <div class="modal-avatar" id="reviewAvatar">✅</div>
+        <div class="modal-bubble"><h3 id="reviewModalTitle">Задание выполнено</h3><p id="reviewModalDesc">Просмотр пройденного задания</p></div>
+      </div>
+      <div class="review-card">
+        <div class="review-badge">✅ Выполнено</div>
+        <div class="review-label" id="reviewLabel">ПОДГОТОВКА</div>
+        <div class="review-title" id="reviewTitle">Загрузка...</div>
+        <div class="review-desc" id="reviewDesc">Описание...</div>
+        <div class="review-tags" id="reviewTags"></div>
+        <div class="review-xp" id="reviewXp">+15 XP</div>
+      </div>
+      <div style="text-align:center;margin-top:16px">
+        <button class="btn-continue" onclick="closeReview()" style="padding:14px 40px;font-size:16px">Закрыть</button>
+      </div>
+    </div>
+  </div>
+
   <div class="complete-overlay" id="completeModal">
     <div class="complete-content"><div class="big-icon" id="completeIcon">✅</div><h2 id="completeTitle">Задание выполнено!</h2><div class="xp-gained" id="xpGained">+15 XP</div><div class="xp-label" id="completeLabel">Задание #1 завершено</div><button class="btn-continue" onclick="closeComplete()">Дальше →</button></div>
   </div>
@@ -272,37 +303,34 @@ body{font-family:'SF Pro Text',-apple-system,BlinkMacSystemFont,sans-serif;backg
 
 <script>
 const STAGES=[
-  {id:0,name:"Этап 0",title:"Подготовка работы и DAW",cls:"zone-e0",icon:"🖥️",start:1,end:10},
-  {id:1,name:"Этап 1",title:"Первые Биты",cls:"zone-e1",icon:"",start:11,end:20},
-  {id:2,name:"Этап 2",title:"Обработка звука и VST",cls:"zone-e2",icon:"🎛️",start:21,end:30},
-  {id:3,name:"Этап 3",title:"Усложненные биты",cls:"zone-e3",icon:"🎹",start:31,end:40},
-  {id:4,name:"Этап 4",title:"Теория музыки и Аккорды",cls:"zone-e4",icon:"🎼",start:41,end:50},
-  {id:5,name:"Этап 5",title:"EDM и Саунд-дизайн",cls:"zone-e5",icon:"⚡",start:51,end:60},
-  {id:6,name:"Этап 6",title:"Живая Музыка",cls:"zone-e6",icon:"🎸",start:61,end:70},
-  {id:7,name:"Этап 7",title:"Сведение Вокала",cls:"zone-e7",icon:"🎤",start:71,end:80},
-  {id:8,name:"Этап 8",title:"Саундтреки и Эмбиент",cls:"zone-e8",icon:"🎬",start:81,end:90},
-  {id:9,name:"Этап 9",title:"Продвижение и Коммерция",cls:"zone-e9",icon:"💰",start:91,end:100}
+  {id:0,name:"Этап 0",title:"Подготовка работы и DAW",cls:"zone-e0",icon:"🖥️",start:1,end:5},
+  {id:1,name:"Этап 1",title:"Первые Биты",cls:"zone-e1",icon:"🥁",start:6,end:15},
+  {id:2,name:"Этап 2",title:"Обработка звука и VST",cls:"zone-e2",icon:"🎛️",start:16,end:25},
+  {id:3,name:"Этап 3",title:"Усложненные биты",cls:"zone-e3",icon:"🎹",start:26,end:35},
+  {id:4,name:"Этап 4",title:"Теория музыки и Аккорды",cls:"zone-e4",icon:"🎼",start:36,end:45},
+  {id:5,name:"Этап 5",title:"EDM и Саунд-дизайн",cls:"zone-e5",icon:"⚡",start:46,end:55},
+  {id:6,name:"Этап 6",title:"Живая Музыка",cls:"zone-e6",icon:"🎸",start:56,end:65},
+  {id:7,name:"Этап 7",title:"Сведение Вокала",cls:"zone-e7",icon:"🎤",start:66,end:75},
+  {id:8,name:"Этап 8",title:"Саундтреки и Эмбиент",cls:"zone-e8",icon:"🎬",start:76,end:85},
+  {id:9,name:"Этап 9",title:"Продвижение и Коммерция",cls:"zone-e9",icon:"💰",start:86,end:100}
 ];
 
-const MILESTONE_TASKS=[10,20,30,40,50,60,70,80,90,100];
+const MILESTONE_TASKS=[5,15,25,35,45,55,65,75,85,100];
 const TOTAL_TASKS=100;
 const OFFSET_PATTERNS=['center','offset-right','offset-left','center','offset-right2','offset-left2','offset-right','center','offset-left','offset-right2'];
 
 const STAGE_TASKS=[
+  // Этап 0 - Подготовка (5 tasks - most important)
   [
-    {label:"DAW ВЫБОР",title:"Выбор основной DAW: FL Studio vs Ableton",desc:"Сравни FL Studio 25 и Ableton Live 12: интерфейс, логика работы, визуальная составляющая. Определи какую DAW выбрать.",tags:[{text:"FL Studio",cls:"tag-plugin"},{text:"Ableton",cls:"tag-plugin"},{text:"DAW",cls:"tag-style"}]},
-    {label:"ОБОРУДОВАНИЕ",title:"Наушники и мониторы для продакшена",desc:"Выбери наушники для продакшена. Настрой колонки-мониторы. Определи позицию для мониторов в комнате.",tags:[{text:"Мониторы",cls:"tag-synth"},{text:"Наушники",cls:"tag-synth"}]},
-    {label:"ОБОРУДОВАНИЕ",title:"Микрофон, MIDI-клавиатура, аудиокарта",desc:"Подключи микрофон для записи. Настрой MIDI-клавиатуру в DAW. Подключи аудиокарту.",tags:[{text:"Микрофон",cls:"tag-synth"},{text:"MIDI",cls:"tag-synth"},{text:"Аудиокарта",cls:"tag-plugin"}]},
-    {label:"НАСТРОЙКА",title:"ASIO драйвер и настройка буфера",desc:"Установи ASIO драйвер. Настрой буфер для минимальной задержки. Проверь работу звуковой карты.",tags:[{text:"ASIO",cls:"tag-plugin"},{text:"Буфер",cls:"tag-plugin"}]},
-    {label:"УСТАНОВКА",title:"Установка VST плагинов и сэмпл-паков",desc:"Установи VST плагины последовательно. Организуй библиотеку сэмпл-паков. Не ставь всё сразу.",tags:[{text:"VST",cls:"tag-plugin"},{text:"Сэмпл-паки",cls:"tag-style"}]},
-    {label:"ОПТИМИЗАЦИЯ",title:"Оптимизация компьютера: ЦП и ресурсы",desc:"Настрой DAW для оптимальной работы ЦП. Увеличь буфер при прослушивании.",tags:[{text:"Оптимизация",cls:"tag-plugin"},{text:"CPU",cls:"tag-style"}]},
-    {label:"РАБОЧЕЕ МЕСТО",title:"Организация рабочего места",desc:"Организуй рабочий стол. Подбери место для мониторов. Расставь оборудование.",tags:[{text:"Организация",cls:"tag-style"}]},
-    {label:"ЗАМЕТКИ",title:"Xmind и Obsidian для заметок",desc:"Создай карту курса в Xmind. Веди заметки в Obsidian или тетрадке.",tags:[{text:"Xmind",cls:"tag-plugin"},{text:"Obsidian",cls:"tag-plugin"}]},
-    {label:"ОРГАНИЗАЦИЯ",title:"Чаты курса и стримы с вопросами",desc:"Присоединись к чатам курса. Запишись на стрим. Разберись с домашками.",tags:[{text:"Чаты",cls:"tag-style"}]},
-    {label:"ИТОГО",title:"Итоговая проверка: всё готово к работе",desc:"Проверь: DAW установлена, плагины работают, ASIO настроен. Готов к битам!",tags:[{text:"Чек-лист",cls:"tag-style"},{text:"Готово!",cls:"tag-plugin"}]}
+    {label:"DAW УСТАНОВКА",title:"Установка DAW: FL Studio / Ableton",desc:"Скачай и установи FL Studio 25 или Ableton Live 12. Открой программу, посмотри на интерфейс. Просто запусти и почувствуй мощь!",tags:[{text:"FL Studio",cls:"tag-plugin"},{text:"Ableton",cls:"tag-plugin"},{text:"Установка",cls:"tag-style"}]},
+    {label:"VST ПЛАГИНЫ",title:"Установка базовых VST плагинов",desc:"Установи необходимые VST плагины. Не ставь всё сразу — начни с минимума. Serum, FabFilter, Valhalla — достаточно для старта.",tags:[{text:"VST",cls:"tag-plugin"},{text:"Serum",cls:"tag-synth"},{text:"Плагины",cls:"tag-plugin"}]},
+    {label:"ЧАТЫ",title:"Вступление в чаты курса: Telegram и Discord",desc:"Зайди в чат Telegram и Discord курса. Познакомься с сообществом. Здесь можно задать вопросы и получить помощь.",tags:[{text:"Telegram",cls:"tag-style"},{text:"Discord",cls:"tag-style"},{text:"Комьюнити",cls:"tag-style"}]},
+    {label:"МАТЕРИАЛЫ",title:"Ознакомление с материалами в чатах",desc:"Изучи закреплённые сообщения, гайды и полезные ссылки в чатах. Скачай сэмпл-паки и организуй их.",tags:[{text:"Гайды",cls:"tag-style"},{text:"Материалы",cls:"tag-style"}]},
+    {label:"ВДОХНОВЕНИЕ",title:"Зарядись мощью: слушай референсы и вдохновляйся",desc:"Открой DAW, послушай референс-треки. Зарядись вдохновением и настроением. Ты готов начать свой путь!",tags:[{text:"Референсы",cls:"tag-style"},{text:"Вдохновение",cls:"tag-style"},{text:"Готово!",cls:"tag-plugin"}]}
   ],
+  // Этап 1 - Первые Биты (10 tasks)
   [
-    {label:"СЭМПЛЫ",title:"Что такое сэмпл: ударка, мелодия, паки",desc:"Разбери виды сэмплов: ударные (дрямка), мелодические, сэмпл-паки.",tags:[{text:"Сэмплы",cls:"tag-style"},{text:"Драмка",cls:"tag-synth"}]},
+    {label:"СЭМПЛЫ",title:"Что такое сэмпл: ударка, мелодия, паки",desc:"Разбери виды сэмплов: ударные, мелодические, сэмпл-паки.",tags:[{text:"Сэмплы",cls:"tag-style"},{text:"Драмка",cls:"tag-synth"}]},
     {label:"ДРАМКА",title:"Построение драм-паттерна: Kick, Snare, Hat",desc:"Создай драм-паттерн: кик на 1 и 3, снейр на 2 и 4, хай-хэты на каждую 1/8.",tags:[{text:"Kick",cls:"tag-synth"},{text:"Snare",cls:"tag-synth"},{text:"Hi-Hat",cls:"tag-synth"}]},
     {label:"ЧАСТОТЫ",title:"Частотный диапазон драмки",desc:"Разбери частоты: кик 50-100Hz, снейр 200-400Hz, хэты 5kHz+.",tags:[{text:"Частоты",cls:"tag-plugin"}]},
     {label:"ПАТТЕРН",title:"Расстановка ударки: темп и сетка",desc:"Установи темп 140 BPM. Расставь драмку по стандартной сетке.",tags:[{text:"BPM",cls:"tag-bpm"},{text:"Сетка",cls:"tag-style"}]},
@@ -313,6 +341,7 @@ const STAGE_TASKS=[
     {label:"СТРУКТУРА",title:"Структура бита: пирамида и лестница",desc:"Построй структуру: интро, основная часть, аутро. Принцип пирамиды.",tags:[{text:"Структура",cls:"tag-style"}]},
     {label:"РЕНДЕР",title:"Рендер трека: выгрузка в mp3",desc:"Проверь громкость. Выбери зону рендера. Экспортируй в mp3 320kbps.",tags:[{text:"Рендер",cls:"tag-plugin"},{text:"MP3",cls:"tag-style"}]}
   ],
+  // Этап 2 - Обработка звука (10 tasks)
   [
     {label:"EQ",title:"Эквализация: срез частот",desc:"Срежь суб-частоты ниже 30Hz. Добавь high-pass фильтр на мелодию.",tags:[{text:"EQ",cls:"tag-plugin"},{text:"Фильтр",cls:"tag-plugin"}]},
     {label:"EQ",title:"Добавление частот: основа и яркость",desc:"Добавь плотность около 500Hz. Подними яркость выше 5kHz.",tags:[{text:"EQ",cls:"tag-plugin"},{text:"Яркость",cls:"tag-style"}]},
@@ -325,6 +354,7 @@ const STAGE_TASKS=[
     {label:"СТИЛИЗАЦИЯ",title:"Стилизация: ретро и RC-20",desc:"Добавь RC-20 на мелодию для ретро-звучания. Tape эмуляция.",tags:[{text:"RC-20",cls:"tag-plugin"},{text:"Tape",cls:"tag-plugin"}]},
     {label:"МАСТЕР",title:"Мастер канал: чек перед рендером",desc:"Проверь тональный баланс. Уплотни пачку лимитером. Референс.",tags:[{text:"Мастер",cls:"tag-plugin"},{text:"Референс",cls:"tag-style"}]}
   ],
+  // Этап 3 - Усложненные биты (10 tasks)
   [
     {label:"СИНТЫ",title:"Первая мелодия через VST синт",desc:"Выбери синт (Serum, Repro-5). Настрой ADSR. Напиши мелодию.",tags:[{text:"Serum",cls:"tag-synth"},{text:"ADSR",cls:"tag-plugin"}]},
     {label:"СИНТЫ",title:"Melody из One Shot сэмплов",desc:"Возьми One Shot. Определи ноту. Настрой ADSR. Pitch и Warp.",tags:[{text:"One Shot",cls:"tag-synth"},{text:"Pitch",cls:"tag-plugin"}]},
@@ -337,6 +367,7 @@ const STAGE_TASKS=[
     {label:"FX",title:"FX манипуляции: ShaperBox, Portal",desc:"Обработай мелодию через ShaperBox 3. Portal для гранулярного FX.",tags:[{text:"ShaperBox",cls:"tag-plugin"},{text:"Portal",cls:"tag-plugin"}]},
     {label:"СТРУКТУРА",title:"Построение бита: куплет, припев, интро",desc:"Интро → куплет → припев → аутро. Проанализируй референс.",tags:[{text:"Структура",cls:"tag-style"},{text:"Аранжировка",cls:"tag-style"}]}
   ],
+  // Этап 4 - Теория музыки (10 tasks)
   [
     {label:"НОТЫ",title:"7 нот: тона, полутона, диезы",desc:"Изучи 7 нот на Piano Roll. Диезы (#) и бемоли (b). Тон и полутон.",tags:[{text:"Ноты",cls:"tag-style"},{text:"Piano Roll",cls:"tag-synth"}]},
     {label:"ИНТЕРВАЛЫ",title:"Интервалы: терции и квинта",desc:"Минорная терция (3 полутона). Мажорная терция (4). Октава = 12.",tags:[{text:"Интервалы",cls:"tag-style"},{text:"Терция",cls:"tag-style"}]},
@@ -349,6 +380,7 @@ const STAGE_TASKS=[
     {label:"ПРИМЕНЕНИЕ",title:"Применение в битах: поп, минимал",desc:"Поп-аккорды. Минималистичная прогрессия. Криповое сочетание.",tags:[{text:"Поп",cls:"tag-style"},{text:"Минимал",cls:"tag-style"}]},
     {label:"ИМПРОВИЗАЦИЯ",title:"Импровизации: запись и MIDI паттерны",desc:"Запиши импровизацию на MIDI-клавиатуре. MIDI паттерны.",tags:[{text:"Импровизация",cls:"tag-style"},{text:"MIDI",cls:"tag-synth"}]}
   ],
+  // Этап 5 - EDM (10 tasks)
   [
     {label:"СИНТЕЗ",title:"Синтез: Wavetable в Serum",desc:"Синус, квадрат, треугольник. Настрой ADSR в Serum. Свой пресет.",tags:[{text:"Serum",cls:"tag-synth"},{text:"Wavetable",cls:"tag-synth"}]},
     {label:"СИНТЕЗ",title:"LFO и фильтры в синтезаторе",desc:"LFO на фильтр в Serum. Движение в звуке. Phase Plant / Vital.",tags:[{text:"LFO",cls:"tag-plugin"},{text:"Фильтр",cls:"tag-plugin"}]},
@@ -361,6 +393,7 @@ const STAGE_TASKS=[
     {label:"СЭМПЛИРОВАНИЕ",title:"Сэмплирование: Serato Sample",desc:"Нарежь мелодию в Serato Sample. Fruity Slicer. Sampler Ableton.",tags:[{text:"Serato",cls:"tag-plugin"},{text:"Chop",cls:"tag-style"}]},
     {label:"МАСТЕР",title:"Мастеринг EDM: OTT и лимитер",desc:"OTT на мастере. Сайдчейн. Лимитер. Референс.",tags:[{text:"OTT",cls:"tag-plugin"},{text:"Лимитер",cls:"tag-plugin"}]}
   ],
+  // Этап 6 - Живая Музыка (10 tasks)
   [
     {label:"РОК",title:"Рок: гитара, бас, драмка через Kontakt",desc:"Библиотека Kontakt для гитары. Рок-трек с нуля. Альтернатива.",tags:[{text:"Kontakt",cls:"tag-synth"},{text:"Гитара",cls:"tag-synth"}]},
     {label:"ГИТАРА",title:"Оживление VST гитары",desc:"Вариации велосити. Мимо сетки. Удачная библиотека.",tags:[{text:"Велосити",cls:"tag-style"},{text:"Грув",cls:"tag-style"}]},
@@ -373,6 +406,7 @@ const STAGE_TASKS=[
     {label:"ДЖАЗ ПРОГРЕССИИ",title:"Джазовые прогрессии: 7-9-11-13",desc:"7, 9, 11, 13 ступени в аккорды. Noir Jazz.",tags:[{text:"Ступени",cls:"tag-style"},{text:"Noir Jazz",cls:"tag-style"}]},
     {label:"ЗАПИСЬ",title:"Запись реальных инструментов",desc:"Подключи микрофон. Запиши гитару. Убери шум.",tags:[{text:"Запись",cls:"tag-style"},{text:"Микрофон",cls:"tag-synth"}]}
   ],
+  // Этап 7 - Сведение Вокала (10 tasks)
   [
     {label:"ЗАПИСЬ",title:"Запись вокала: микрофон",desc:"Настрой микрофон для записи вокала. Правильная позиция.",tags:[{text:"Микрофон",cls:"tag-synth"},{text:"Запись",cls:"tag-style"}]},
     {label:"РЕДАКЦИЯ",title:"Редакция вокала: нарезка и ритмика",desc:"Нарежь вокал по ритму. Поправь сибилянты. Автоматизация.",tags:[{text:"Нарезка",cls:"tag-style"},{text:"Ритмика",cls:"tag-style"}]},
@@ -385,6 +419,7 @@ const STAGE_TASKS=[
     {label:"БЭКИ",title:"Работа с бэками: панорама",desc:"Бэк-вокал. Панорама. Дилей и реверб. Ритмика.",tags:[{text:"Бэки",cls:"tag-style"},{text:"Панорама",cls:"tag-plugin"}]},
     {label:"МАСТЕР ВОКАЛ",title:"Мастеринг вокала: Soothe2",desc:"Soothe2, клиперы. LUFS. Референс. Чек на устройствах.",tags:[{text:"Soothe2",cls:"tag-plugin"},{text:"LUFS",cls:"tag-style"}]}
   ],
+  // Этап 8 - Саундтреки (10 tasks)
   [
     {label:"KONTAKT",title:"Библиотеки Kontakt для оркестра",desc:"Настрой Kontakt. Струнные, духовые, пиано, арфа, перкуссия.",tags:[{text:"Kontakt",cls:"tag-synth"},{text:"Оркестр",cls:"tag-style"}]},
     {label:"ОРКЕСТР",title:"Оркестровка: струнные, духовые, пиано",desc:"Strings, Winds, пиано. Узнай диапазон инструментов.",tags:[{text:"Strings",cls:"tag-synth"},{text:"Winds",cls:"tag-synth"}]},
@@ -397,6 +432,7 @@ const STAGE_TASKS=[
     {label:"ФИЛЬМ",title:"Музыка для фильма: функциональная",desc:"Функциональная музыка. Основная тема. Нарастание. Эмбиент.",tags:[{text:"Фильм",cls:"tag-style"},{text:"Эмбиент",cls:"tag-style"}]},
     {label:"МАСТЕР",title:"Сведение оркестра: компрессия",desc:"Склей оркестр через компрессию. Пространство. Мастеринг.",tags:[{text:"Оркестр",cls:"tag-style"},{text:"Мастер",cls:"tag-plugin"}]}
   ],
+  // Этап 9 - Продвижение (15 tasks)
   [
     {label:"VK",title:"Продвижение в VK: паблики",desc:"Создай паблик с битами. Тематические группы. Сарафан.",tags:[{text:"VK",cls:"tag-style"},{text:"Паблики",cls:"tag-style"}]},
     {label:"TIKTOK",title:"Продвижение в TikTok",desc:"Контент для TikTok. Российский и зарубежный. Рилсы с битами.",tags:[{text:"TikTok",cls:"tag-style"},{text:"Рилсы",cls:"tag-style"}]},
@@ -407,19 +443,24 @@ const STAGE_TASKS=[
     {label:"АРТИСТЫ",title:"Работа с артистами: договоры",desc:"Общение с клиентами. Запросы. Договор: авторское право.",tags:[{text:"Клиенты",cls:"tag-style"},{text:"Договор",cls:"tag-style"}]},
     {label:"КОЛЛАБЫ",title:"Коллабы с битмейкерами",desc:"Предложи коллаб. Обменивайся демками. Анализируй.",tags:[{text:"Коллаб",cls:"tag-style"},{text:"Демо",cls:"tag-style"}]},
     {label:"СТУДИЯ",title:"Работа на студии: услуги",desc:"Предложи услуги сведения. Набери опыта. Мелкие заказы.",tags:[{text:"Студия",cls:"tag-style"},{text:"Сведение",cls:"tag-plugin"}]},
-    {label:"КАРЬЕРА",title:"Монетизация творчества",desc:"Когда начать монетизировать. Набери скилл. Двигайся к цели.",tags:[{text:"Монетизация",cls:"tag-style"},{text:"Карьера",cls:"tag-style"}]}
+    {label:"КАРЬЕРА",title:"Монетизация творчества",desc:"Когда начать монетизировать. Набери скилл. Двигайся к цели.",tags:[{text:"Монетизация",cls:"tag-style"},{text:"Карьера",cls:"tag-style"}]},
+    {label:"МЕДИА",title:"Медийный образ и личный бренд",desc:"Создай медийный образ. Веди соцсети. Будь узнаваемым.",tags:[{text:"Бренд",cls:"tag-style"},{text:"Медиа",cls:"tag-style"}]},
+    {label:"СЕТЬ",title:"Нетворкинг и связи",desc:"Нарабатывай связи в индустрии. Ходи на ивенты. Знакомься.",tags:[{text:"Нетворкинг",cls:"tag-style"},{text:"Связи",cls:"tag-style"}]},
+    {label:"КОНТЕНТ",title:"Работа над контентом и видео",desc:"Создавай видео-контент. Показывай процесс. Обучай других.",tags:[{text:"Контент",cls:"tag-style"},{text:"Видео",cls:"tag-style"}]},
+    {label:"РАЗВИТИЕ",title:"Непрерывное развитие и обучение",desc:"Не останавливайся. Слушай новую музыку. Изучай тренды.",tags:[{text:"Развитие",cls:"tag-style"},{text:"Обучение",cls:"tag-style"}]},
+    {label:"ФИНАЛ",title:"Финальный проект: свой трек",desc:"Создай свой финальный трек, применяя всё что изучил. Покажи миру!",tags:[{text:"Финал",cls:"tag-style"},{text:"Трек",cls:"tag-style"},{text:"Мастер",cls:"tag-plugin"}]}
   ]
 ];
 
 const ACHIEVEMENTS=[
   {id:"first_step",name:"Первый шаг",desc:"Выполни первое задание",icon:"🎯",xp:25,check:s=>s.completedTasks>=1},
-  {id:"daw_ready",name:"DAW готов!",desc:"Пройди Этап 0 — Подготовка",icon:"🖥️",xp:50,check:s=>s.completedTasks>=10},
+  {id:"daw_ready",name:"DAW готов!",desc:"Пройди Этап 0 — Подготовка",icon:"🖥️",xp:50,check:s=>s.completedTasks>=5},
   {id:"ten_beats",name:"Десяточка битов",desc:"Выполни 10 заданий",icon:"🔟",xp:50,check:s=>s.completedTasks>=10},
-  {id:"plugin_master",name:"Плагин-мастер",desc:"Пройди Этап 2 — VST",icon:"🎛️",xp:100,check:s=>s.completedTasks>=30},
-  {id:"theory_done",name:"Теоретик",desc:"Пройди Этап 4 — Теория музыки",icon:"🎼",xp:150,check:s=>s.completedTasks>=50},
-  {id:"sound_designer",name:"Саунд-дизайнер",desc:"Пройди Этап 5 — EDM",icon:"⚡",xp:150,check:s=>s.completedTasks>=60},
-  {id:"vocal_pro",name:"Вокальный про",desc:"Пройди Этап 7 — Сведение вокала",icon:"🎤",xp:200,check:s=>s.completedTasks>=80},
-  {id:"composer",name:"Композитор",desc:"Пройди Этап 8 — Саундтреки",icon:"🎬",xp:250,check:s=>s.completedTasks>=90},
+  {id:"plugin_master",name:"Плагин-мастер",desc:"Пройди Этап 2 — VST",icon:"🎛️",xp:100,check:s=>s.completedTasks>=25},
+  {id:"theory_done",name:"Теоретик",desc:"Пройди Этап 4 — Теория музыки",icon:"🎼",xp:150,check:s=>s.completedTasks>=45},
+  {id:"sound_designer",name:"Саунд-дизайнер",desc:"Пройди Этап 5 — EDM",icon:"⚡",xp:150,check:s=>s.completedTasks>=55},
+  {id:"vocal_pro",name:"Вокальный про",desc:"Пройди Этап 7 — Сведение вокала",icon:"🎤",xp:200,check:s=>s.completedTasks>=75},
+  {id:"composer",name:"Композитор",desc:"Пройди Этап 8 — Саундтреки",icon:"🎬",xp:250,check:s=>s.completedTasks>=85},
   {id:"all_done",name:"Курс пройден!",desc:"Выполни все 100 заданий!",icon:"👑",xp:500,check:s=>s.completedTasks>=100},
   {id:"centurion",name:"Центурион",desc:"Выполни 50 заданий",icon:"🏅",xp:200,check:s=>s.completedTasks>=50}
 ];
@@ -492,11 +533,11 @@ function playTaskSound(){
 }
 
 function getTaskForNum(num){
-  const stageIdx=Math.min(Math.floor((num-1)/10),9);
-  const taskIdx=(num-1)%10;
-  const tasks=STAGE_TASKS[stageIdx];
+  const stage=getStageForTask(num);
+  const taskIdx=num-stage.start;
+  const tasks=STAGE_TASKS[stage.id];
   if(!tasks||!tasks[taskIdx])return null;
-  return{...tasks[taskIdx],stage:STAGES[stageIdx],num:num,xp:Math.floor(15+num*2)};
+  return{...tasks[taskIdx],stage:stage,num:num,xp:Math.floor(15+num*2)};
 }
 
 function getStageForTask(num){
@@ -526,7 +567,22 @@ function showTask(){
   document.getElementById('taskModal').classList.add('active');
 }
 
+function showReview(taskNum){
+  const task=getTaskForNum(taskNum);
+  if(!task)return;
+  document.getElementById('reviewLabel').textContent=task.label;
+  document.getElementById('reviewTitle').textContent=task.title;
+  document.getElementById('reviewDesc').textContent=task.desc;
+  document.getElementById('reviewModalTitle').textContent=`Задание #${taskNum} — Выполнено`;
+  document.getElementById('reviewModalDesc').textContent=`${task.stage.icon} ${task.stage.name}: ${task.stage.title}`;
+  document.getElementById('reviewXp').textContent=`+${task.xp} XP получено`;
+  const tc=document.getElementById('reviewTags');tc.innerHTML='';
+  task.tags.forEach(t=>{const e=document.createElement('span');e.className='task-tag '+t.cls;e.textContent=t.text;tc.appendChild(e);});
+  document.getElementById('reviewModal').classList.add('active');
+}
+
 function skipTask(){document.getElementById('taskModal').classList.remove('active');}
+function closeReview(){document.getElementById('reviewModal').classList.remove('active');}
 
 function completeTask(){
   document.getElementById('taskModal').classList.remove('active');
@@ -629,13 +685,17 @@ function showAchievements(){
 
 function closeAchievements(){document.getElementById('achModal').classList.remove('active');}
 
+// KEY FIX: Show ALL tasks, not just a window around current position
 function buildTreePath(){
   const container=document.getElementById('treePath');container.innerHTML='';
-  const ws=25;let sl=Math.max(1,gameState.completedTasks-8),el=Math.min(TOTAL_TASKS,sl+ws);
-  if(el-sl<ws&&sl>1)sl=Math.max(1,el-ws);
-  container.appendChild(Object.assign(document.createElement('div'),{style:{height:'16px'}}));
+  
+  // Top padding
+  const topPad=document.createElement('div');topPad.className='top-padding';
+  container.appendChild(topPad);
+  
   let lz=null;
-  for(let num=sl;num<=el;num++){
+  // Render ALL 100 tasks
+  for(let num=1;num<=TOTAL_TASKS;num++){
     const stage=getStageForTask(num);
     if(stage!==lz){
       lz=stage;
@@ -644,7 +704,7 @@ function buildTreePath(){
       zl.innerHTML=`<span class="stage-icon">${stage.icon}</span> ${stage.name}: ${stage.title}`;
       zd.appendChild(zl);container.appendChild(zd);
     }
-    if(num>sl){
+    if(num>1){
       const c=document.createElement('div');c.className='path-connector';
       if(gameState.completedSet.has(num-1))c.classList.add('completed');
       if(num===gameState.completedTasks+1)c.classList.add('active');
@@ -655,8 +715,15 @@ function buildTreePath(){
     const nd=document.createElement('div');nd.className='step-node';
     const ms=MILESTONE_TASKS.includes(num);
     if(gameState.completedSet.has(num)){
-      if(ms){nd.className='step-node step-milestone';nd.innerHTML=`<span style="font-size:24px">${stage.icon}</span><div class="checkmark">✓</div>`;}
-      else{nd.className='step-node step-completed';nd.innerHTML=`<span style="font-size:20px">${num}</span><div class="checkmark">✓</div>`;}
+      // Completed: click to review
+      if(ms){
+        nd.className='step-node step-milestone';
+        nd.innerHTML=`<span style="font-size:24px">${stage.icon}</span><div class="checkmark">✓</div>`;
+      }else{
+        nd.className='step-node step-completed';
+        nd.innerHTML=`<span style="font-size:20px">${num}</span><div class="checkmark">✓</div>`;
+      }
+      nd.onclick=(()=>{const n=num;return()=>showReview(n);})();
     }else if(num===gameState.completedTasks+1){
       nd.className='step-node step-current';
       nd.innerHTML=`<span class="crown">👑</span><span style="font-size:18px">${num}</span>`;
@@ -665,16 +732,27 @@ function buildTreePath(){
       nd.className='step-node step-locked';
       nd.innerHTML=ms?`<span style="font-size:14px">🔒</span>`:`<span style="font-size:15px">${num}</span>`;
     }
+    if(num===2||num===4)nd.innerHTML+=`<div class="avatar-small"></div>`;
     rd.appendChild(nd);container.appendChild(rd);
   }
-  if(el<TOTAL_TASKS){
-    container.appendChild(Object.assign(document.createElement('div'),{className:'path-connector'}));
-    const mr=document.createElement('div');mr.className='path-row center';mr.style.opacity='0.25';
-    const mn=document.createElement('div');mn.className='step-node step-locked';
-    mn.innerHTML=`<span style="font-size:14px">⬇ ${el+1}-${TOTAL_TASKS}</span>`;
-    mr.appendChild(mn);container.appendChild(mr);
-  }
-  setTimeout(()=>{const w=document.getElementById('gameWorld');const ce=w.querySelector('.step-current');if(ce)ce.scrollIntoView({behavior:'smooth',block:'center'});},100);
+  
+  // Bottom "end" indicator
+  const endDiv=document.createElement('div');endDiv.className='bottom-more';
+  endDiv.textContent='🏁 Конец курса';
+  container.appendChild(endDiv);
+  
+  // Scroll to current task after a brief delay
+  setTimeout(()=>{
+    const w=document.getElementById('gameWorld');
+    const ce=w.querySelector('.step-current');
+    if(ce){
+      // Scroll so current task is slightly below center, leaving room above to see past tasks
+      const rect=ce.getBoundingClientRect();
+      const worldRect=w.getBoundingClientRect();
+      const targetTop=rect.top-world.top+w.scrollTop-(worldRect.height*0.3);
+      w.scrollTo({top:Math.max(0,targetTop),behavior:'smooth'});
+    }
+  },100);
 }
 
 function generateTrackLines(){
@@ -684,7 +762,7 @@ function generateTrackLines(){
 
 generateTrackLines();buildTreePath();updateUI();
 
-['taskModal','completeModal','milestoneModal','achModal'].forEach(id=>{
+['taskModal','reviewModal','completeModal','milestoneModal','achModal'].forEach(id=>{
   document.getElementById(id).addEventListener('click',function(e){if(e.target===this)this.classList.remove('active');});
 });
 </script>

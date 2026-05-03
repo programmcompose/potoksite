@@ -115,7 +115,5 @@
 
 ### 🌐 Ресурсы
 
-- **[Rutracker](https://rutracker.org/)** — торрент-трекер
 - **[Music Radar](https://www.musicradar.com/)** — музыкальные новости и гайды
 - **[SPLICE](https://splice.com/)** — сэмплы и лупы
-- **[Presetshare](http://presetshare.com/)** — бесплатные пресеты
