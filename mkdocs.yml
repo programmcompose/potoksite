@@ -155,4 +155,5 @@ nav:
       - "📊 Карта частот": "tools/frequency-map/index.html"
       - "🎚️ EQ-тренажёр": "tools/eq-trainer/index.html"
       - "🩷 EQ-PINK": "tools/eq-pink/index.html"
+      - "🔀 EQ‑AB‑test": "tools/eq-ab-test/index.html"
   - "❓ ЧАСТЫЕ ВОПРОСЫ": "faq.md"

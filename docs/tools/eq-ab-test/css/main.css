@@ -1,0 +1,232 @@
+:root {
+  --eq-bg: #1a1b26;
+  --eq-panel: #24283b;
+  --eq-border: rgba(255, 255, 255, 0.08);
+  --eq-text: #e9ecef;
+  --eq-muted: #8b949e;
+  --eq-accent: #00bcd4;
+  --eq-accent-dim: #0891b2;
+  --eq-purple: #ab47bc;
+  --radius: 10px;
+  --shadow: 0 4px 24px rgba(0, 0, 0, 0.35);
+}
+
+.eq-ab-widget-root {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--eq-text);
+  max-width: 920px;
+  margin: 0 auto;
+}
+
+.eq-ab-widget-root *,
+.eq-ab-widget-root *::before,
+.eq-ab-widget-root *::after {
+  box-sizing: border-box;
+}
+
+.eq-ab-panel {
+  background: var(--eq-panel);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 14px;
+  border: 1px solid var(--eq-border);
+  box-shadow: var(--shadow);
+}
+
+.eq-ab-intro .eq-ab-hint {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--eq-muted);
+}
+
+.eq-ab-player-row,
+.eq-ab-seek-row,
+.eq-ab-presets-panel,
+.eq-ab-crossfade-wrap,
+.eq-ab-quick-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.eq-ab-seek-row {
+  margin-top: 12px;
+}
+
+.eq-ab-seek-row input[type="range"] {
+  flex: 1;
+  min-width: 140px;
+}
+
+.eq-ab-time {
+  font-variant-numeric: tabular-nums;
+  font-size: 0.85rem;
+  color: var(--eq-muted);
+  min-width: 8.5rem;
+}
+
+.eq-ab-crossfade-wrap {
+  margin-bottom: 10px;
+  width: 100%;
+}
+
+.eq-ab-crossfade-wrap input[type="range"] {
+  flex: 1;
+  min-width: 140px;
+}
+
+.eq-ab-ab-label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--eq-muted);
+  min-width: 4.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.eq-ab-ab-label span {
+  color: var(--eq-accent);
+  margin-right: 4px;
+}
+
+.eq-ab-loop {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: var(--eq-muted);
+  cursor: pointer;
+}
+
+.eq-ab-btn {
+  font-family: inherit;
+  cursor: pointer;
+  border-radius: var(--radius);
+  border: 1px solid var(--eq-border);
+  background: var(--eq-accent-dim);
+  color: #fff;
+  font-weight: 600;
+  padding: 8px 14px;
+  font-size: 0.875rem;
+  transition: transform 0.06s ease, filter 0.15s ease;
+}
+
+.eq-ab-btn:hover {
+  filter: brightness(1.08);
+}
+
+.eq-ab-btn:active {
+  transform: scale(0.98);
+}
+
+.eq-ab-secondary {
+  background: #394266;
+}
+
+.eq-ab-file {
+  font-size: 0.78rem;
+  color: var(--eq-muted);
+  max-width: 100%;
+}
+
+.eq-ab-presets-panel {
+  gap: 12px;
+  align-items: center;
+}
+
+.eq-ab-presets-panel label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  margin-right: auto;
+}
+
+.eq-ab-presets-panel select {
+  padding: 6px 10px;
+  border-radius: var(--radius);
+  border: 1px solid var(--eq-border);
+  background: var(--eq-bg);
+  color: var(--eq-text);
+  font-family: inherit;
+}
+
+.eq-ab-viz-panel {
+  padding: 12px;
+}
+
+.eq-ab-canvas {
+  display: block;
+  width: 100%;
+  height: 220px;
+  border-radius: 8px;
+  background: #12121a;
+}
+
+.eq-ab-band-card {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--eq-border);
+  border-radius: var(--radius);
+  padding: 12px;
+  margin-bottom: 10px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 8px 12px;
+  align-items: end;
+}
+
+.eq-ab-band-card header {
+  grid-column: 1 / -1;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--eq-purple);
+}
+
+.eq-ab-band-card label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.74rem;
+  color: var(--eq-muted);
+  font-weight: 600;
+}
+
+.eq-ab-chip {
+  grid-column: span 1;
+  align-self: end;
+  font-size: 0.76rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--eq-accent);
+  padding: 4px 0;
+}
+
+.eq-ab-band-card input[type="range"],
+.eq-ab-select {
+  width: 100%;
+  accent-color: var(--eq-accent);
+}
+
+.eq-ab-bands-root {
+  display: block;
+}
+
+input[type="range"] {
+  min-height: 28px;
+  touch-action: manipulation;
+}
+
+@media (max-width: 520px) {
+  .eq-ab-ab-label {
+    min-width: auto;
+    width: 100%;
+    text-align: center;
+  }
+  .eq-ab-crossfade-wrap {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
