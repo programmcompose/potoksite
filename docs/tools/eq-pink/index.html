@@ -939,7 +939,7 @@ kbd {
     eqFilter.gain.value = state.boost;
 
     noiseGain = audioCtx.createGain();
-    noiseGain.gain.value = 0.3;
+    noiseGain.gain.value = 0;
 
     musicGain = audioCtx.createGain();
     musicGain.gain.value = 0;
@@ -1322,33 +1322,31 @@ kbd {
 
   // ===== Event Handlers =====
 
-  // Play/Stop
-  $('btnPlay').addEventListener('click', () => {
+  function doPlay() {
     initAudio();
-    if (!state.playing) {
-      state.playing = true;
-      $('btnPlay').textContent = '⏸ Pause';
-      if (state.source === 'music' && state.customBuffer) {
-        playMusic();
-      }
-      status('playing', 'Воспроизведение...');
-      drawSpectrum();
-    } else {
-      state.playing = false;
-      $('btnPlay').textContent = '▶ Play';
-      if (state.source === 'music') stopMusic();
-      status('idle', 'Пауза');
-      drawSpectrum();
-    }
-  });
+    state.playing = true;
+    $('btnPlay').textContent = '⏸ Pause';
+    noiseGain.gain.value = state.source === 'pink' ? 0.3 : 0;
+    if (state.source === 'music' && state.customBuffer) playMusic();
+    status('playing', 'Воспроизведение...');
+    drawSpectrum();
+  }
 
-  $('btnStop').addEventListener('click', () => {
+  function doStop() {
     state.playing = false;
     $('btnPlay').textContent = '▶ Play';
-    if (state.source === 'music') stopMusic();
+    noiseGain.gain.value = 0;
+    stopMusic();
     status('idle', 'Остановлено');
     drawSpectrum();
+  }
+
+  // Play/Stop
+  $('btnPlay').addEventListener('click', () => {
+    if (!state.playing) doPlay(); else doStop();
   });
+
+  $('btnStop').addEventListener('click', doStop);
 
   // Bypass (hold)
   let bypassInterval = null;
@@ -1421,6 +1419,9 @@ kbd {
       if (state.source === 'pink' && state.playing) {
         stopMusic();
         noiseGain.gain.value = 0.3;
+      }
+      if (state.source === 'music' && state.playing) {
+        noiseGain.gain.value = 0;
       }
     });
   });

@@ -4,7 +4,9 @@ import { freqToT, tToFreq } from "./utils/math.js";
 import { AudioEngine } from "./audio/AudioEngine.js";
 import { buildDemoBuffer } from "./audio/demoBuffer.js";
 import { EQVisualizer } from "./ui/EQVisualizer.js";
+import { RotaryKnob } from "./ui/RotaryKnob.js";
 import { applyPreset, PRESET_LIST } from "./ui/PresetManager.js";
+import { BAND_PALETTE } from "./utils/palette.js";
 
 /** @typedef {'peaking' | 'lowshelf' | 'highshelf' | 'lowpass' | 'highpass'} EqFilterType */
 
@@ -60,6 +62,9 @@ export class EQComparisonWidget {
     /** @private */ this._initialized = false;
     /** @private */ this._building = false;
 
+    /** @private @type {{ freq: RotaryKnob, gain: RotaryKnob, q: RotaryKnob }[]} */
+    this._bandKnobs = [];
+
     this.containerEl.innerHTML = "";
     this.containerEl.classList.add("eq-ab-widget-root");
     this._buildSkeleton();
@@ -105,6 +110,19 @@ export class EQComparisonWidget {
       canvas,
       () => this.engine.eq,
       () => this.engine.spectrum,
+      {
+        palette: BAND_PALETTE,
+        freqRange: FREQ_RANGE,
+        onBandAdjust: (bandIndex, hz, secondary, secondaryIsQ) => {
+          if (!this.engine.eq) return;
+          if (secondaryIsQ) {
+            this.engine.eq.setBandParams(bandIndex, { frequency: hz, q: secondary });
+          } else {
+            this.engine.eq.setBandParams(bandIndex, { frequency: hz, gain: secondary });
+          }
+          this._syncKnobsForBand(bandIndex);
+        },
+      },
     );
     this._viz.start();
 
@@ -125,7 +143,7 @@ export class EQComparisonWidget {
     const root = this.containerEl;
     root.innerHTML = `
 <section class="eq-ab-panel eq-ab-intro" aria-label="EQ сравнение">
-  <p class="eq-ab-hint">Нажмите «Старт» или Play, чтобы активировать аудиодвижок (политика автовоспроизведения).</p>
+  <p class="eq-ab-hint">Play — старт движка. График: цвет = полоса, узел — перетаскивание по частоте и gain/Q.</p>
 </section>
 
 <section class="eq-ab-panel" aria-label="Плеер">
@@ -201,28 +219,93 @@ export class EQComparisonWidget {
     /** @type {HTMLElement} */
     const bandsRoot /** @type {any} */ = this._elements.bandsRoot;
     bandsRoot.innerHTML = "";
+    this._bandKnobs = [];
 
     for (let b = 0; b < this._eqBands; b++) {
+      const col = BAND_PALETTE[b % BAND_PALETTE.length];
       const card = document.createElement("div");
-      card.className = "eq-ab-band-card";
+      card.className = "eq-ab-band-strip";
       card.dataset.bandIndex = String(b);
+      card.style.setProperty("--band-accent", col);
       card.innerHTML = `
-<header>Полоса ${b + 1}</header>
-<label>Тип<select data-band="${b}" data-param="type" class="eq-ab-select">
-<option value="peaking">Peaking</option>
-<option value="lowshelf">Low shelf</option>
-<option value="highshelf">High shelf</option>
-<option value="lowpass">Low pass</option>
-<option value="highpass">High pass</option>
-</select></label>
-<label>F, Гц<input type="range" data-band="${b}" data-param="freqLog" min="0" max="1000" value="500" step="any" /></label>
-<span data-band="${b}" data-display="freq" class="eq-ab-chip">1000 Hz</span>
-<label>Gain<input type="range" data-band="${b}" data-param="gain" min="-240" max="240" step="1" /></label>
-<span data-band="${b}" data-display="gain" class="eq-ab-chip">0 dB</span>
-<label>Q<input type="range" data-band="${b}" data-param="q" min="10" max="100" step="1" /></label>
-<span data-band="${b}" data-display="q" class="eq-ab-chip">1.00</span>`;
+<div class="eq-ab-band-head">
+  <span class="eq-ab-band-dot" aria-hidden="true"></span>
+  <span class="eq-ab-band-title">Полоса ${b + 1}</span>
+  <select data-band="${b}" data-param="type" class="eq-ab-type-mini" title="Тип фильтра">
+    <option value="peaking">Peak</option>
+    <option value="lowshelf">LoSh</option>
+    <option value="highshelf">HiSh</option>
+    <option value="lowpass">LP</option>
+    <option value="highpass">HP</option>
+  </select>
+</div>
+<div class="eq-ab-knob-row" data-knob-row="${b}"></div>`;
       bandsRoot.appendChild(card);
-      card.querySelectorAll("input[data-param], select[data-param]").forEach((el) => this._attachBandCtrl(/** @type {HTMLElement} */ (el), b));
+      const row = /** @type {HTMLElement} */ (card.querySelector(`[data-knob-row="${b}"]`));
+      const sel = /** @type {HTMLSelectElement} */ (card.querySelector(`select[data-param="type"]`));
+      sel.addEventListener("change", () => {
+        if (!this.engine.eq) return;
+        this.engine.eq.setBandParams(b, { type: /** @type {EqFilterType} */ (sel.value) });
+        this._syncKnobsForBand(b);
+        this._scheduleEqHook();
+      });
+
+      const wrapF = document.createElement("div");
+      wrapF.className = "eq-ab-knob-slot";
+      const wrapG = document.createElement("div");
+      wrapG.className = "eq-ab-knob-slot";
+      const wrapQ = document.createElement("div");
+      wrapQ.className = "eq-ab-knob-slot";
+      row.appendChild(wrapF);
+      row.appendChild(wrapG);
+      row.appendChild(wrapQ);
+
+      const bi = b;
+      const freqKnob = new RotaryKnob({
+        label: "Freq",
+        min: 0,
+        max: 1,
+        value: 0.5,
+        sensitivity: 0.0022,
+        format: (t) => `${Math.round(tToFreq(t, FREQ_RANGE))} Hz`,
+        onChange: (t) => {
+          if (!this.engine.eq) return;
+          this.engine.eq.setBandParams(bi, { frequency: tToFreq(t, FREQ_RANGE) });
+          this._scheduleEqHook();
+        },
+      });
+      const gainKnob = new RotaryKnob({
+        label: "Gain",
+        min: -24,
+        max: 24,
+        value: 0,
+        step: 0.1,
+        sensitivity: 0.0035,
+        format: (g) => `${g >= 0 ? "+" : ""}${g.toFixed(1)} dB`,
+        onChange: (g) => {
+          if (!this.engine.eq) return;
+          this.engine.eq.setBandParams(bi, { gain: g });
+          this._scheduleEqHook();
+        },
+      });
+      const qKnob = new RotaryKnob({
+        label: "Q",
+        min: 0.1,
+        max: 10,
+        value: 1,
+        step: 0.05,
+        sensitivity: 0.0032,
+        format: (q) => q.toFixed(2),
+        onChange: (q) => {
+          if (!this.engine.eq) return;
+          this.engine.eq.setBandParams(bi, { q });
+          this._scheduleEqHook();
+        },
+      });
+      freqKnob.attach(wrapF);
+      gainKnob.attach(wrapG);
+      qKnob.attach(wrapQ);
+      this._bandKnobs[b] = { freq: freqKnob, gain: gainKnob, q: qKnob };
     }
 
     /** @type {HTMLInputElement} */ const dw /** @type {any} */ = this._elements.dryWet;
@@ -275,65 +358,25 @@ export class EQComparisonWidget {
     this._startTimeUi();
   }
 
-  /**
-   * @private
-   * @param {HTMLElement} el
-   * @param {number} _b
-   */
-  _attachBandCtrl(el, _b) {
-    const param = el.dataset.param;
-    const band = Number(el.dataset.band);
-    const onInput = () => {
-      if (!this.engine.eq) return;
-      if (param === "freqLog") {
-        const t = /** @type {HTMLInputElement} */ (el).valueAsNumber / 1000;
-        const hz = tToFreq(t, FREQ_RANGE);
-        this.engine.eq.setBandParams(band, { frequency: hz });
-      } else if (param === "gain") {
-        const g = /** @type {HTMLInputElement} */ (el).valueAsNumber / 10;
-        this.engine.eq.setBandParams(band, { gain: g });
-      } else if (param === "q") {
-        const qv = /** @type {HTMLInputElement} */ (el).valueAsNumber / 10;
-        this.engine.eq.setBandParams(band, { q: qv });
-      } else if (param === "type") {
-        const t = /** @type {HTMLSelectElement} */ (el).value;
-        this.engine.eq.setBandParams(band, { type: /** @type {EqFilterType} */ (t) });
-      }
-      this._updateBandDisplays(band);
-    };
-    el.addEventListener("input", onInput);
-    el.addEventListener("change", onInput);
-  }
-
   /** @private @param {number} band */
-  _updateBandDisplays(band) {
+  _syncKnobsForBand(band) {
     if (!this.engine.eq) return;
+    const kb = this._bandKnobs[band];
+    if (!kb) return;
     const p = this.engine.eq.getBandParams(band);
-    const root = this.containerEl;
-    const fDisp = root.querySelector(`[data-display="freq"][data-band="${band}"]`);
-    const gDisp = root.querySelector(`[data-display="gain"][data-band="${band}"]`);
-    const qDisp = root.querySelector(`[data-display="q"][data-band="${band}"]`);
-    if (fDisp) fDisp.textContent = `${Math.round(p.frequency)} Hz`;
-    if (gDisp) gDisp.textContent = `${p.gain >= 0 ? "+" : ""}${p.gain.toFixed(1)} dB`;
-    if (qDisp) qDisp.textContent = p.q.toFixed(2);
+    kb.freq.setValue(freqToT(p.frequency, FREQ_RANGE), true);
+    kb.gain.setValue(p.gain, true);
+    kb.q.setValue(p.q, true);
+    /** @type {HTMLSelectElement|null} */
+    const ty = this.containerEl.querySelector(`select[data-band="${band}"][data-param="type"]`);
+    if (ty) ty.value = p.type;
   }
 
   /** @private */
   _syncUIFromEngine() {
     if (!this.engine.eq) return;
-    const root = this.containerEl;
     for (let b = 0; b < this._eqBands; b++) {
-      const p = this.engine.eq.getBandParams(b);
-      const t = freqToT(p.frequency, FREQ_RANGE);
-      /** @type {HTMLInputElement|null} */ const fl = root.querySelector(`[data-band="${b}"][data-param="freqLog"]`);
-      /** @type {HTMLInputElement|null} */ const g = root.querySelector(`[data-band="${b}"][data-param="gain"]`);
-      /** @type {HTMLInputElement|null} */ const q = root.querySelector(`[data-band="${b}"][data-param="q"]`);
-      /** @type {HTMLSelectElement|null} */ const ty = root.querySelector(`[data-band="${b}"][data-param="type"]`);
-      if (fl) fl.value = String(t * 1000);
-      if (g) g.value = String(Math.round(p.gain * 10));
-      if (q) q.value = String(Math.round(p.q * 10));
-      if (ty) ty.value = p.type;
-      this._updateBandDisplays(b);
+      this._syncKnobsForBand(b);
     }
   }
 
@@ -421,7 +464,12 @@ export class EQComparisonWidget {
 
   /** @private @param {KeyboardEvent} e */
   _onKeyDown(e) {
-    if (e.target && /** @type {HTMLElement} */ (e.target).closest("input,textarea,select")) {
+    if (
+      e.target &&
+      /** @type {HTMLElement} */ (e.target).closest(
+        'input,textarea,select,.eq-ab-knob-ring,.eq-ab-canvas[role="img"]',
+      )
+    ) {
       if (e.code === "Space") return;
     }
     if (e.code === "Space") {
@@ -605,7 +653,19 @@ export class EQComparisonWidget {
     document.removeEventListener("keydown", this._keydown);
     if (this._tickId) cancelAnimationFrame(this._tickId);
     this._tickId = 0;
-    this._viz?.stop();
+    for (const kb of this._bandKnobs) {
+      if (kb) {
+        kb.freq.dispose();
+        kb.gain.dispose();
+        kb.q.dispose();
+      }
+    }
+    this._bandKnobs = [];
+    try {
+      this._viz?.dispose();
+    } catch {
+      /* noop */
+    }
     this._viz = null;
     this._emitter.dispose();
     try {
