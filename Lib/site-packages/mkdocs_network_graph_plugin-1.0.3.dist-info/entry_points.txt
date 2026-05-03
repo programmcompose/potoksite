@@ -1,0 +1,2 @@
+[mkdocs.plugins]
+graph = mkdocs_graph_plugin.plugin:GraphPlugin
