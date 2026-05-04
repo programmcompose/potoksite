@@ -130,6 +130,19 @@ nav:
   - "📚 Этапы":
       - "🎯 Этап №0: Подготовка к продакшну":
           - "etap0/index.md"
+      - "🔥 Этап №1: Первые Биты":
+          - "etap1/index.md"
+          - "🎵 Что такое сэмпл": "etap1/che-takoe-sampl.md"
+          - "🥁 Драмка и построение бита": "etap1/drumka.md"
+          - "🎛️ Подбор сэмплов и структура": "etap1/podbor-samplow.md"
+          - "🔊 Работа с микшером": "etap1/miksher.md"
+          - "🎶 Мелодия в бите": "etap1/melodiya-v-bite.md"
+          - "🎸 Бас в бите": "etap1/bas-v-bite.md"
+          - "🎚️ Мастер канал": "etap1/master-kanal.md"
+          - "💿 Рендер трека": "etap1/render-traka.md"
+          - "🟧 Бит в FL Studio": "etap1/bit-v-fl-studio.md"
+          - "🟣 Бит в Ableton": "etap1/bit-v-ableton.md"
+          - "✅ Финал этапа": "etap1/final-etap1.md"
       - "🎚️ Этап №2: Сведение и VST Плагины":
           - "tom3/index.md"
           - "🔀 Сведение (mixing)": "tom3/mixing.md"
