@@ -43,7 +43,7 @@
 - **Бит в FL Studio** — Channel Rack, паттерны, луп
 - **Бит в Ableton** — Clip, Session/Arrangement View
 
-### [Этап №2 — Сведение и VST Плагины](tom3/index.md)
+### [Этап №2 — Сведение и VST Плагины](etap2/index.md)
 Прикладные навыки для создания треков: обработка звука, плагины, мастеринг.
 
 - **Основные понятия** — широкий, яркий, плотный, атмосферный звук
@@ -129,7 +129,7 @@
 
     Сведение и VST Плагины: EQ, компрессия, реверб, мастеринг
 
-    [:octicons-arrow-right-24: Начать](tom3/index.md)
+    [:octicons-arrow-right-24: Начать](etap2/index.md)
 
 -   :material-music-note:{ .lg .middle } __Этап №5__
 
