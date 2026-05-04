@@ -56,7 +56,7 @@ plugins:
         theme: dark
   - graph:
       name: "title"
-      debug: false
+      debug: true
 
 extra:
   generator: false
