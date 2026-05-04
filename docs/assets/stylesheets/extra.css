@@ -162,14 +162,27 @@
   border-radius: 20px;
   font-size: 0.85em;
   font-weight: 600;
+  text-decoration: none;
+  color: inherit;
   background: rgba(255, 255, 255, 0.07);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  color: inherit;
+  transition: background 0.2s, border-color 0.2s, transform 0.15s;
+}
+
+.hero-tag:hover {
+  background: rgba(239, 83, 80, 0.15);
+  border-color: rgba(239, 83, 80, 0.4);
+  transform: translateY(-1px);
 }
 
 [data-md-color-scheme="default"] .hero-tag {
   background: rgba(0, 0, 0, 0.04);
   border: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+[data-md-color-scheme="default"] .hero-tag:hover {
+  background: rgba(239, 83, 80, 0.1);
+  border-color: rgba(239, 83, 80, 0.35);
 }
 
 /* Animated wave decoration */

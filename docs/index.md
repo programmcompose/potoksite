@@ -5,12 +5,12 @@
 Текстовые материалы, интерактивные инструменты, словарь терминов и помощь по изучению.
 </p>
 <div class="hero-tags">
-<span class="hero-tag">🎚️ Сведение</span>
-<span class="hero-tag">💿 Мастеринг</span>
-<span class="hero-tag">🎼 Теория музыки</span>
-<span class="hero-tag">🔌 VST-плагины</span>
-<span class="hero-tag">🎤 Звукозапись</span>
-<span class="hero-tag">🎛️ Интерактив</span>
+<a href="etap0/index.md" class="hero-tag">🎯 Этап №0: Подготовка</a>
+<a href="roadmap.md" class="hero-tag">🗺️ Маршрут обучения</a>
+<a href="plugins/index.md" class="hero-tag">🔌 Плагины — подборка</a>
+<a href="glossary.md" class="hero-tag">📖 Словарь Терминов</a>
+<a href="tools/index.html" class="hero-tag">🎛️ Интерактивные инструменты</a>
+<a href="faq.md" class="hero-tag">❓ ЧАСТЫЕ ВОПРОСЫ</a>
 </div>
 </div>
 
