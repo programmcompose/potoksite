@@ -194,6 +194,44 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Back to top button */
+.md-back_to_top {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background-color: var(--md-primary-fg-color);
+  color: var(--md-accent-fg-color);
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transform: translateY(12px);
+  transition: opacity 0.3s, transform 0.3s, background-color 0.2s;
+  pointer-events: none;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+}
+
+.md-back_to_top svg {
+  width: 24px;
+  height: 24px;
+  fill: currentColor;
+}
+
+.md-back_to_top--active {
+  opacity: 0.85;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.md-back_to_top:hover {
+  opacity: 1;
+  background-color: var(--md-accent-fg-color);
+  color: var(--md-default-bg-color);
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;

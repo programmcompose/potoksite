@@ -72,7 +72,9 @@ extra:
 extra_css:
   - assets/stylesheets/extra.css
 
-extra_javascript: []
+extra_javascript:
+  - assets/javascripts/graph-button.js
+  - assets/javascripts/back-to-top.js
 
 markdown_extensions:
   - admonition:
@@ -126,17 +128,18 @@ markdown_extensions:
 
 nav:
   - "🏠 Главная": index.md
-  - "🎯 Этап №0: Подготовка к продакшну":
-      - "etap0/index.md"
-  - "🎚️ Этап №2: Сведение и VST Плагины":
-      - "tom3/index.md"
-      - "🔀 Сведение (mixing)": "tom3/mixing.md"
-      - "💿 Мастеринг": "tom3/mastering.md"
-  - "🎼 Этап №5: Теория музыки для продюсеров":
-      - "etap5/index.md"
-      - "📝 Нотная грамота": "etap5/notnaya-gramota.md"
-      - "🎵 Аккорды и гармония": "etap5/akkordy.md"
-      - "🥁 Ритм и перкуссия": "etap5/ritm.md"
+  - "📚 Этапы":
+      - "🎯 Этап №0: Подготовка к продакшну":
+          - "etap0/index.md"
+      - "🎚️ Этап №2: Сведение и VST Плагины":
+          - "tom3/index.md"
+          - "🔀 Сведение (mixing)": "tom3/mixing.md"
+          - "💿 Мастеринг": "tom3/mastering.md"
+      - "🎼 Этап №5: Теория музыки для продюсеров":
+          - "etap5/index.md"
+          - "📝 Нотная грамота": "etap5/notnaya-gramota.md"
+          - "🎵 Аккорды и гармония": "etap5/akkordy.md"
+          - "🥁 Ритм и перкуссия": "etap5/ritm.md"
   - "🗺️ Маршрут обучения": "roadmap.md"
   - "🔌 Плагины — подборка":
       - "plugins/index.md"
