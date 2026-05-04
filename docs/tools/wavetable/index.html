@@ -325,7 +325,7 @@
       <button class="btn-play" id="playBtn">▶ Play</button>
     </div>
     <div class="keyboard-hint">
-      Играйте клавишами: <kbd>A</kbd>–<kbd>;</kbd> (белые) · <kbd>W</kbd><kbd>E</kbd><kbd>T</kbd><kbd>Y</kbd><kbd>U</kbd> (чёрные)
+      Играйте клавишами: <kbd>A</kbd>–<kbd>;</kbd> (белые) · <kbd>W</kbd><kbd>E</kbd><kbd>T</kbd><kbd>Y</kbd><kbd>U</kbd> (чёрные) · <kbd>Z</kbd> октава вниз · <kbd>X</kbd> октава вверх
     </div>
   </div>
 
@@ -381,7 +381,7 @@
       const masterGain = new Tone.Gain(0.5).toDestination();
 
       const engines = state.waves.map((w, i) => {
-        const synth = new Tone.Synth({
+        const synth = new Tone.PolySynth(Tone.Synth, {
           oscillator: { type: w.type },
           envelope: {
             attack: state.adsr.attack,
@@ -403,17 +403,21 @@
         masterGain,
         engines,
         setType: (index, type) => {
-          engines[index].synth.oscillator.type = type;
+          engines[index].synth.set({ oscillator: { type } });
         },
         setVolume: (index, vol) => {
           engines[index].volGain.gain.value = vol / 100;
         },
         setADSR: () => {
           engines.forEach(e => {
-            e.synth.envelope.attack = state.adsr.attack;
-            e.synth.envelope.decay = state.adsr.decay;
-            e.synth.envelope.sustain = state.adsr.sustain;
-            e.synth.envelope.release = state.adsr.release;
+            e.synth.set({
+              envelope: {
+                attack: state.adsr.attack,
+                decay: state.adsr.decay,
+                sustain: state.adsr.sustain,
+                release: state.adsr.release
+              }
+            });
           });
         },
         triggerAttack: (note) => {
@@ -423,9 +427,9 @@
             }
           });
         },
-        triggerRelease: () => {
+        triggerRelease: (note) => {
           engines.forEach(e => {
-            e.synth.triggerRelease();
+            e.synth.triggerRelease(note);
           });
         }
       };
@@ -567,29 +571,41 @@
     ctx.lineTo(w, h / 2);
     ctx.stroke();
 
-    const activeWaves = state.waves.filter(w => w.volume > 0);
+    const activeWaves = state.waves.filter(wave => wave.volume > 0);
     if (activeWaves.length === 0) return;
 
     const freq = noteToHz(getNoteName(state.noteIndex));
     const sampleRate = 44100;
     const period = sampleRate / freq;
 
-    ctx.beginPath();
-    ctx.strokeStyle = '#00bcd4';
-    ctx.lineWidth = 2;
-
+    const samples = [];
     for (let x = 0; x < w; x++) {
       const t = (x / w) * 3 / period;
       let value = 0;
       activeWaves.forEach(wave => {
         value += sampleWaveform(wave.type, (t * freq) % 1) * (wave.volume / 100);
       });
-      const maxVol = activeWaves.reduce((s, w) => s + w.volume, 0);
-      const normValue = maxVol > 0 ? value / maxVol * activeWaves.length : 0;
+      samples.push(value);
+    }
+
+    let minVal = Infinity, maxVal = -Infinity;
+    samples.forEach(v => {
+      if (v < minVal) minVal = v;
+      if (v > maxVal) maxVal = v;
+    });
+    const range = maxVal - minVal || 1;
+    const mid = (maxVal + minVal) / 2;
+
+    ctx.beginPath();
+    ctx.strokeStyle = '#00bcd4';
+    ctx.lineWidth = 2;
+
+    samples.forEach((v, x) => {
+      const normValue = (v - mid) / range;
       const y = h / 2 - normValue * (h / 2 - 10);
       if (x === 0) ctx.moveTo(x, y);
       else ctx.lineTo(x, y);
-    }
+    });
     ctx.stroke();
   }
 
@@ -770,9 +786,8 @@
     if (!synthEngines) return;
     if (noteIndex !== undefined) {
       activeNotes.delete(noteIndex);
-      if (activeNotes.size === 0) {
-        synthEngines.triggerRelease();
-      }
+      const note = getNoteName(noteIndex);
+      synthEngines.triggerRelease(note);
     } else {
       activeNotes.clear();
       synthEngines.triggerRelease();
@@ -832,6 +847,26 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', async (e) => {
       if (e.target.tagName === 'TEXTAREA') return;
       const key = e.key.toLowerCase();
+      if (key === 'z' && !e.repeat) {
+        e.preventDefault();
+        if (state.octave > 1) {
+          state.octave--;
+          updateOctaveDisplay();
+          updateNoteDisplay();
+          drawWave();
+        }
+        return;
+      }
+      if (key === 'x' && !e.repeat) {
+        e.preventDefault();
+        if (state.octave < 7) {
+          state.octave++;
+          updateOctaveDisplay();
+          updateNoteDisplay();
+          drawWave();
+        }
+        return;
+      }
       if (key in KEY_MAP && !e.repeat) {
         e.preventDefault();
         await initAudio();
