@@ -325,7 +325,8 @@
       <button class="btn-play" id="playBtn">▶ Play</button>
     </div>
     <div class="keyboard-hint">
-      Играйте клавишами: <kbd>A</kbd>–<kbd>;</kbd> (белые) · <kbd>W</kbd><kbd>E</kbd><kbd>T</kbd><kbd>Y</kbd><kbd>U</kbd> (чёрные) · <kbd>Z</kbd> октава вниз · <kbd>X</kbd> октава вверх
+      Играйте клавишами: <kbd>A</kbd>–<kbd>;</kbd> (белые) · <kbd>W</kbd><kbd>E</kbd><kbd>T</kbd><kbd>Y</kbd><kbd>U</kbd> (чёрные) · <kbd>Z</kbd> октава вниз · <kbd>X</kbd> октава вверх<br>
+      <span style="opacity:0.7;">⚠ Нужна английская раскладка клавиатуры, иначе не работает</span>
     </div>
   </div>
 
@@ -430,6 +431,11 @@
         triggerRelease: (note) => {
           engines.forEach(e => {
             e.synth.triggerRelease(note);
+          });
+        },
+        releaseAll: () => {
+          engines.forEach(e => {
+            e.synth.releaseAll();
           });
         }
       };
@@ -790,7 +796,7 @@
       synthEngines.triggerRelease(note);
     } else {
       activeNotes.clear();
-      synthEngines.triggerRelease();
+      synthEngines.releaseAll();
     }
   }
 
