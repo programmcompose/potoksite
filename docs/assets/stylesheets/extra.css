@@ -251,13 +251,13 @@ html {
 /* Граф: свечение узлов */
 #graph .nodes .node circle,
 .modal_graph .nodes .node circle {
-  filter: drop-shadow(0 0 6px currentColor) drop-shadow(0 0 14px currentColor);
+  filter: drop-shadow(0 0 4px currentColor) drop-shadow(0 0 10px currentColor);
   transition: filter 0.2s, r 0.2s;
 }
 
 #graph .nodes .node.hover circle,
 .modal_graph .nodes .node.hover circle {
-  filter: drop-shadow(0 0 12px currentColor) drop-shadow(0 0 28px currentColor) drop-shadow(0 0 44px currentColor);
+  filter: drop-shadow(0 0 8px currentColor) drop-shadow(0 0 18px currentColor) drop-shadow(0 0 30px currentColor);
 }
 
 /* Граф: текущий узел — пульсирующее свечение */
@@ -267,8 +267,8 @@ html {
 }
 
 @keyframes graph-pulse {
-  0%, 100% { filter: drop-shadow(0 0 8px currentColor) drop-shadow(0 0 18px currentColor); }
-  50% { filter: drop-shadow(0 0 16px currentColor) drop-shadow(0 0 32px currentColor) drop-shadow(0 0 50px currentColor); }
+  0%, 100% { filter: drop-shadow(0 0 6px currentColor) drop-shadow(0 0 12px currentColor); }
+  50% { filter: drop-shadow(0 0 12px currentColor) drop-shadow(0 0 22px currentColor) drop-shadow(0 0 36px currentColor); }
 }
 
 /* Граф: линии — полупрозрачные с мягким свечением */
