@@ -232,7 +232,7 @@
           'Этот раздел откроется в ближайшее время. Следите за обновлениями!' +
         '</div>' +
         '<div class="stage-page-overlay__date">📅 ' + formatDateRu(config.unlockDate) + '</div>' +
-        '<a href="/" class="stage-page-overlay__btn">← На главную</a>' +
+        '<a href="https://programmcompose.github.io/potoksite" class="stage-page-overlay__btn">← На главную</a>' +
         '<span class="stage-page-overlay__hint">Контент разблокируется автоматически по расписанию</span>' +
       '</div>';
 
