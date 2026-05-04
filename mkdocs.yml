@@ -71,8 +71,7 @@ extra:
 extra_css:
   - assets/stylesheets/extra.css
 
-extra_javascript:
-  - assets/javascripts/graph-button.js
+extra_javascript: []
 
 markdown_extensions:
   - admonition:
