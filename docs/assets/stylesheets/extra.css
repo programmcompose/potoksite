@@ -162,27 +162,14 @@
   border-radius: 20px;
   font-size: 0.85em;
   font-weight: 600;
-  text-decoration: none;
-  color: inherit;
   background: rgba(255, 255, 255, 0.07);
   border: 1px solid rgba(255, 255, 255, 0.12);
-  transition: background 0.2s, border-color 0.2s, transform 0.15s;
-}
-
-.hero-tag:hover {
-  background: rgba(239, 83, 80, 0.15);
-  border-color: rgba(239, 83, 80, 0.4);
-  transform: translateY(-1px);
+  color: inherit;
 }
 
 [data-md-color-scheme="default"] .hero-tag {
   background: rgba(0, 0, 0, 0.04);
   border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-[data-md-color-scheme="default"] .hero-tag:hover {
-  background: rgba(239, 83, 80, 0.1);
-  border-color: rgba(239, 83, 80, 0.35);
 }
 
 /* Animated wave decoration */
@@ -314,42 +301,24 @@ html {
   marker-start: none !important;
 }
 
-/* Граф: свечение узлов */
+/* Граф: узлы без свечения */
 #graph .nodes .node circle,
 .modal_graph .nodes .node circle {
-  filter: drop-shadow(0 0 4px currentColor) drop-shadow(0 0 10px currentColor);
-  transition: filter 0.2s, r 0.2s;
+  filter: none !important;
+  transition: r 0.2s;
 }
 
-#graph .nodes .node.hover circle,
-.modal_graph .nodes .node.hover circle {
-  filter: drop-shadow(0 0 8px currentColor) drop-shadow(0 0 18px currentColor) drop-shadow(0 0 30px currentColor);
-}
-
-/* Граф: текущий узел — пульсирующее свечение */
-#graph .nodes .node.current circle,
-.modal_graph .nodes .node.current circle {
-  animation: graph-pulse 2s ease-in-out infinite;
-}
-
-@keyframes graph-pulse {
-  0%, 100% { filter: drop-shadow(0 0 6px currentColor) drop-shadow(0 0 12px currentColor); }
-  50% { filter: drop-shadow(0 0 12px currentColor) drop-shadow(0 0 22px currentColor) drop-shadow(0 0 36px currentColor); }
-}
-
-/* Граф: линии — полупрозрачные с мягким свечением */
+/* Граф: линии */
 #graph .links .link,
 .modal_graph .links .link {
   stroke: var(--md-default-fg-color--lighter);
   stroke-opacity: 0.35;
-  transition: stroke-opacity 0.2s;
 }
 
 /* Граф: текст меток */
 #graph .nodes .node text,
 .modal_graph .nodes .node text {
   fill: var(--md-default-fg-color--light);
-  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
   pointer-events: none;
 }
 
