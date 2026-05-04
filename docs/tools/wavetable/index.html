@@ -301,6 +301,10 @@
   <div class="panel">
     <div class="panel-title">ADSR-огибающая</div>
     <div class="adsr-grid" id="adsrGrid"></div>
+    <div class="canvas-wrap" style="margin-top:12px;">
+      <span class="canvas-label">Огибающая амплитуды</span>
+      <canvas id="adsrCanvas"></canvas>
+    </div>
   </div>
 
   <div class="panel">
@@ -516,6 +520,7 @@
         const unit = params.find(p => p.key === key).unit;
         document.getElementById('adsr-' + key).textContent = val + unit;
         if (synthEngines) synthEngines.setADSR();
+        drawADSR();
       });
     });
   }
@@ -531,11 +536,21 @@
   const canvas = document.getElementById('waveCanvas');
   const ctx = canvas.getContext('2d');
 
+  const adsrCanvas = document.getElementById('adsrCanvas');
+  const adsrCtx = adsrCanvas.getContext('2d');
+
   function resizeCanvas() {
     const rect = canvas.parentElement.getBoundingClientRect();
     canvas.width = rect.width * window.devicePixelRatio;
     canvas.height = 180 * window.devicePixelRatio;
     ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+  }
+
+  function resizeAdsCanvas() {
+    const rect = adsrCanvas.parentElement.getBoundingClientRect();
+    adsrCanvas.width = rect.width * window.devicePixelRatio;
+    adsrCanvas.height = 180 * window.devicePixelRatio;
+    adsrCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
   }
 
   function drawWave() {
@@ -555,56 +570,25 @@
     const activeWaves = state.waves.filter(w => w.volume > 0);
     if (activeWaves.length === 0) return;
 
-    const samples = w * 2;
     const freq = noteToHz(getNoteName(state.noteIndex));
     const sampleRate = 44100;
     const period = sampleRate / freq;
-    const samplesPerPeriod = Math.min(period, samples);
-
-    for (let cycle = 0; cycle < 3; cycle++) {
-      const cycleStart = (samples / 3) * cycle;
-
-      ctx.beginPath();
-      ctx.strokeStyle = 'rgba(0, 188, 212, 0.3)';
-      ctx.lineWidth = 1;
-
-      for (let x = 0; x < w / 3; x++) {
-        let value = 0;
-        activeWaves.forEach(wave => {
-          const t = ((cycleStart + x) / samplesPerPeriod) % 1;
-          value += sampleWaveform(wave.type, t) * (wave.volume / 100);
-        });
-
-        const normValue = value / activeWaves.length;
-        const y = h / 2 - normValue * (h / 2 - 10);
-
-        if (x === 0) ctx.moveTo(cycleStart + x, y);
-        else ctx.lineTo(cycleStart + x, y);
-      }
-      ctx.stroke();
-    }
 
     ctx.beginPath();
     ctx.strokeStyle = '#00bcd4';
     ctx.lineWidth = 2;
 
-    for (let cycle = 0; cycle < 3; cycle++) {
-      const cycleStart = (samples / 3) * cycle;
-
-      for (let x = 0; x < w / 3; x++) {
-        let value = 0;
-        activeWaves.forEach(wave => {
-          const t = ((cycleStart + x) / samplesPerPeriod) % 1;
-          value += sampleWaveform(wave.type, t) * (wave.volume / 100);
-        });
-
-        const normValue = value / activeWaves.reduce((s, w) => s + w.volume, 0) * activeWaves.length;
-        const y = h / 2 - normValue * (h / 2 - 10);
-
-        if (x === 0 && cycle === 0) ctx.moveTo(cycleStart + x, y);
-        else if (x === 0) ctx.moveTo(cycleStart + x, y);
-        else ctx.lineTo(cycleStart + x, y);
-      }
+    for (let x = 0; x < w; x++) {
+      const t = (x / w) * 3 / period;
+      let value = 0;
+      activeWaves.forEach(wave => {
+        value += sampleWaveform(wave.type, (t * freq) % 1) * (wave.volume / 100);
+      });
+      const maxVol = activeWaves.reduce((s, w) => s + w.volume, 0);
+      const normValue = maxVol > 0 ? value / maxVol * activeWaves.length : 0;
+      const y = h / 2 - normValue * (h / 2 - 10);
+      if (x === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
     }
     ctx.stroke();
   }
@@ -617,6 +601,159 @@
       case 'triangle': return 2 * Math.abs(2 * (t - Math.floor(t + 0.5))) - 1;
       default: return 0;
     }
+  }
+
+  function drawADSR() {
+    const w = adsrCanvas.width / window.devicePixelRatio;
+    const h = adsrCanvas.height / window.devicePixelRatio;
+    const pad = { top: 28, right: 16, bottom: 32, left: 36 };
+    const gw = w - pad.left - pad.right;
+    const gh = h - pad.top - pad.bottom;
+
+    adsrCtx.fillStyle = '#1a1a1a';
+    adsrCtx.fillRect(0, 0, w, h);
+
+    const { attack: a, decay: d, sustain: s, release: r } = state.adsr;
+    const totalTime = a + d + Math.max(s * 2, 0.5) + r;
+
+    const phaseColors = {
+      attack: 'rgba(102, 187, 106, 0.12)',
+      decay: 'rgba(255, 167, 38, 0.12)',
+      sustain: 'rgba(0, 188, 212, 0.12)',
+      release: 'rgba(239, 83, 80, 0.12)'
+    };
+    const phaseBorderColors = {
+      attack: 'rgba(102, 187, 106, 0.5)',
+      decay: 'rgba(255, 167, 38, 0.5)',
+      sustain: 'rgba(0, 188, 212, 0.5)',
+      release: 'rgba(239, 83, 80, 0.5)'
+    };
+    const phaseLabels = { attack: 'A', decay: 'D', sustain: 'S', release: 'R' };
+
+    let timeCursor = 0;
+
+    const phases = [
+      { key: 'attack', duration: a },
+      { key: 'decay', duration: d },
+      { key: 'sustain', duration: Math.max(s * 2, 0.5) },
+      { key: 'release', duration: r }
+    ];
+
+    phases.forEach(phase => {
+      const x1 = pad.left + (timeCursor / totalTime) * gw;
+      const segW = (phase.duration / totalTime) * gw;
+      const x2 = x1 + segW;
+
+      adsrCtx.fillStyle = phaseColors[phase.key];
+      adsrCtx.fillRect(x1, pad.top, segW, gh);
+
+      adsrCtx.strokeStyle = phaseBorderColors[phase.key];
+      adsrCtx.lineWidth = 1;
+      adsrCtx.strokeRect(x1, pad.top, segW, gh);
+
+      const centerX = x1 + segW / 2;
+      if (segW > 24) {
+        adsrCtx.fillStyle = phaseBorderColors[phase.key];
+        adsrCtx.font = 'bold 11px Inter, sans-serif';
+        adsrCtx.textAlign = 'center';
+        adsrCtx.textBaseline = 'top';
+        adsrCtx.fillText(phaseLabels[phase.key], centerX, pad.top + 4);
+      }
+
+      timeCursor += phase.duration;
+    });
+
+    // Grid lines
+    adsrCtx.strokeStyle = 'rgba(255,255,255,0.06)';
+    adsrCtx.lineWidth = 1;
+    for (let i = 0; i <= 4; i++) {
+      const y = pad.top + (gh / 4) * i;
+      adsrCtx.beginPath();
+      adsrCtx.moveTo(pad.left, y);
+      adsrCtx.lineTo(pad.left + gw, y);
+      adsrCtx.stroke();
+    }
+
+    // Y axis labels
+    adsrCtx.fillStyle = 'rgba(255,255,255,0.35)';
+    adsrCtx.font = '10px Inter, sans-serif';
+    adsrCtx.textAlign = 'right';
+    adsrCtx.textBaseline = 'middle';
+    adsrCtx.fillText('1.0', pad.left - 6, pad.top);
+    adsrCtx.fillText('0.0', pad.left - 6, pad.top + gh);
+
+    // Envelope curve
+    const envPoints = [];
+    const sustainDur = Math.max(s * 2, 0.5);
+
+    envPoints.push({ t: 0, v: 0 });
+    envPoints.push({ t: a, v: 1 });
+    envPoints.push({ t: a + d, v: s });
+    envPoints.push({ t: a + d + sustainDur, v: s });
+    envPoints.push({ t: a + d + sustainDur + r, v: 0 });
+
+    adsrCtx.beginPath();
+    adsrCtx.strokeStyle = '#00bcd4';
+    adsrCtx.lineWidth = 2.5;
+    adsrCtx.lineJoin = 'round';
+    adsrCtx.lineCap = 'round';
+
+    envPoints.forEach((pt, i) => {
+      const x = pad.left + (pt.t / totalTime) * gw;
+      const y = pad.top + gh - pt.v * gh;
+      if (i === 0) adsrCtx.moveTo(x, y);
+      else adsrCtx.lineTo(x, y);
+    });
+    adsrCtx.stroke();
+
+    // Glow effect
+    adsrCtx.beginPath();
+    adsrCtx.strokeStyle = 'rgba(0, 188, 212, 0.25)';
+    adsrCtx.lineWidth = 8;
+    envPoints.forEach((pt, i) => {
+      const x = pad.left + (pt.t / totalTime) * gw;
+      const y = pad.top + gh - pt.v * gh;
+      if (i === 0) adsrCtx.moveTo(x, y);
+      else adsrCtx.lineTo(x, y);
+    });
+    adsrCtx.stroke();
+
+    // Dots at key points
+    adsrCtx.strokeStyle = '#00bcd4';
+    adsrCtx.lineWidth = 2;
+    envPoints.forEach(pt => {
+      const x = pad.left + (pt.t / totalTime) * gw;
+      const y = pad.top + gh - pt.v * gh;
+      adsrCtx.beginPath();
+      adsrCtx.arc(x, y, 4, 0, Math.PI * 2);
+      adsrCtx.stroke();
+    });
+
+    // Sustain level line
+    if (s > 0) {
+      const sustainY = pad.top + gh - s * gh;
+      adsrCtx.setLineDash([4, 4]);
+      adsrCtx.strokeStyle = 'rgba(0, 188, 212, 0.3)';
+      adsrCtx.lineWidth = 1;
+      adsrCtx.beginPath();
+      adsrCtx.moveTo(pad.left, sustainY);
+      adsrCtx.lineTo(pad.left + gw, sustainY);
+      adsrCtx.stroke();
+      adsrCtx.setLineDash([]);
+
+      adsrCtx.fillStyle = 'rgba(0, 188, 212, 0.6)';
+      adsrCtx.font = '10px Inter, sans-serif';
+      adsrCtx.textAlign = 'left';
+      adsrCtx.textBaseline = 'middle';
+      adsrCtx.fillText(s.toFixed(2), pad.left + gw + 4, sustainY);
+    }
+
+    // X axis label
+    adsrCtx.fillStyle = 'rgba(255,255,255,0.25)';
+    adsrCtx.font = '10px Inter, sans-serif';
+    adsrCtx.textAlign = 'center';
+    adsrCtx.textBaseline = 'top';
+    adsrCtx.fillText('время →', pad.left + gw / 2, h - 12);
   }
 
   function playNote(noteIndex) {
@@ -648,11 +785,15 @@ document.addEventListener('DOMContentLoaded', () => {
     updateNoteDisplay();
     updateOctaveDisplay();
     resizeCanvas();
+    resizeAdsCanvas();
     drawWave();
+    drawADSR();
 
     window.addEventListener('resize', () => {
       resizeCanvas();
+      resizeAdsCanvas();
       drawWave();
+      drawADSR();
     });
 
     document.getElementById('playBtn').addEventListener('click', async () => {
