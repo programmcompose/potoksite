@@ -55,6 +55,9 @@ plugins:
   - mermaid2:
       arguments:
         theme: dark
+  - graph:
+      name: "title"
+      debug: true
 
 extra:
   generator: false

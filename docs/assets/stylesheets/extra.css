@@ -343,3 +343,39 @@ body,
   height: 34px;
   margin: 2px 0;
 }
+
+/* ===== Граф связей (плагин mkdocs-network-graph-plugin) ===== */
+
+/* Граф: убрать стрелки с линий связей */
+#graph .link,
+.modal_graph .link {
+  marker-end: none !important;
+  marker-start: none !important;
+}
+
+/* Граф: узлы без свечения */
+#graph .nodes .node circle,
+.modal_graph .nodes .node circle {
+  filter: none !important;
+  transition: r 0.2s;
+}
+
+/* Граф: линии */
+#graph .links .link,
+.modal_graph .links .link {
+  stroke: var(--md-default-fg-color--lighter);
+  stroke-opacity: 0.35;
+}
+
+/* Граф: текст меток */
+#graph .nodes .node text,
+.modal_graph .nodes .node text {
+  fill: var(--md-default-fg-color--light);
+  pointer-events: none;
+}
+
+#graph .nodes .node.current text,
+.modal_graph .nodes .node.current text {
+  fill: var(--md-typeset-a-color);
+  font-weight: 700;
+}
