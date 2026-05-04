@@ -20,10 +20,8 @@
   // ============================================================
   var NS = 'cl-enhanced';
   var STORAGE_PREFIX = 'potok_cl_';
-  var SECRET_PREFIX = 'potok_secret_';
   var SOUND_KEY = NS + '_sound_on';
   var GUIDE_KEY = NS + '_guide_seen';
-  var SESSION_START_KEY = NS + '_session_start';
 
   // ============================================================
   //  КАРТА КЛЮЧЕВЫХ СЛОВ → ЭМОДЗИ
@@ -40,25 +38,7 @@
   ];
   var DEFAULT_ICON = '✨';
 
-  // ============================================================
-  //  СЕКРЕТНЫЕ ДОСТИЖЕНИЯ
-  // ============================================================
-  var SECRET_ACHIEVEMENTS = [
-    { id: 'ghost', name: '👻 Призрак студии', desc: 'Провести на сайте >30 минут за сессию', trigger: 'session30min' },
-    { id: 'sprinter', name: '⚡ Спринтер', desc: 'Выполнить 3 пункта за 60 секунд', trigger: 'sprint3in60' },
-    { id: 'experimenter', name: '🎲 Экспериментатор', desc: 'Кликнуть по логотипу 5 раз подряд', trigger: 'logo5clicks' }
-  ];
 
-  // ============================================================
-  //  СОСТОЯНИЕ СЕКРЕТНЫХ ДОСТИЖЕНИЙ
-  // ============================================================
-  var secretState = {
-    unlocked: {},
-    logoClicks: 0,
-    logoClickTimer: null,
-    checkTimes: [],
-    sessionStart: Date.now()
-  };
 
   // ============================================================
   //  УТИЛИТЫ LOCALSTORAGE
@@ -71,17 +51,7 @@
     try { localStorage.setItem(key, JSON.stringify(val)); } catch {}
   }
 
-  // ============================================================
-  //  ЗАГРУЗКА СОСТОЯНИЯ СЕКРЕТНЫХ АЧИВОК
-  // ============================================================
-  function loadSecretState() {
-    var saved = lsGet(SECRET_PREFIX + 'unlocked', {});
-    secretState.unlocked = saved;
-  }
 
-  function saveSecretState() {
-    lsSet(SECRET_PREFIX + 'unlocked', secretState.unlocked);
-  }
 
   // ============================================================
   //  ИНЪЕКЦИЯ CSS
@@ -129,7 +99,7 @@
       '  border-radius: 5px;' +
       '}' +
       '.' + NS + '-level-upgrade .level-fill {' +
-      '  background: linear-gradient(90deg, #4facfe, #00f2fe);' +
+      '  background: linear-gradient(90deg, #5D4037, #3E2723);' +
       '  border-radius: 5px;' +
       '  transition: width 0.5s ease;' +
       '}' +
@@ -138,10 +108,10 @@
       '  font-weight: 700;' +
       '}' +
       '.' + NS + '-level-upgrade #level-current {' +
-      '  color: #4facfe;' +
+      '  color: #5D4037;' +
       '}' +
       '.' + NS + '-level-upgrade #level-next-label {' +
-      '  color: #00f2fe;' +
+      '  color: #4e342e;' +
       '}' +
 
       /* ---- XP текст поверх бара ---- */
@@ -153,8 +123,8 @@
       '  justify-content: center;' +
       '  font-size: 0.65em;' +
       '  font-weight: 900;' +
-      '  color: #fff;' +
-      '  text-shadow: 0 1px 4px rgba(0,0,0,0.6);' +
+      '  color: #5D4037;' +
+      '  text-shadow: 0 1px 4px rgba(255,255,255,0.5);' +
       '  pointer-events: none;' +
       '  opacity: 0;' +
       '  transition: opacity 0.3s;' +
@@ -165,9 +135,9 @@
 
       /* ---- Всплеск при повышении уровня ---- */
       '@keyframes ' + NS + '-levelup {' +
-      '  0%   { box-shadow: 0 0 0 0 rgba(79,172,254,0); }' +
-      '  40%  { box-shadow: 0 0 40px 10px rgba(79,172,254,0.5); }' +
-      '  100% { box-shadow: 0 0 0 0 rgba(79,172,254,0); }' +
+      '  0%   { box-shadow: 0 0 0 0 rgba(255,193,7,0); }' +
+      '  40%  { box-shadow: 0 0 40px 10px rgba(255,193,7,0.5); }' +
+      '  100% { box-shadow: 0 0 0 0 rgba(255,193,7,0); }' +
       '}' +
       '.' + NS + '-levelup-burst {' +
       '  animation: ' + NS + '-levelup 0.8s ease;' +
@@ -209,63 +179,6 @@
       '  opacity: 0.45;' +
       '  pointer-events: none;' +
       '  position: relative;' +
-      '}' +
-
-      /* ---- Секретные ачивки ---- */
-      '.' + NS + '-secrets-container {' +
-      '  margin-top: 24px;' +
-      '}' +
-      '.' + NS + '-secrets-title {' +
-      '  font-size: 0.85em;' +
-      '  text-transform: uppercase;' +
-      '  letter-spacing: 0.08em;' +
-      '  opacity: 0.4;' +
-      '  margin-bottom: 12px;' +
-      '  text-align: center;' +
-      '}' +
-      '.' + NS + '-secrets-grid {' +
-      '  display: grid;' +
-      '  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));' +
-      '  gap: 12px;' +
-      '}' +
-      '.' + NS + '-secret-card {' +
-      '  background: #363636;' +
-      '  border-radius: 12px;' +
-      '  padding: 16px;' +
-      '  text-align: center;' +
-      '  border: 1px solid #404040;' +
-      '  transition: all 0.3s;' +
-      '}' +
-      '.' + NS + '-secret-card.locked {' +
-      '  backdrop-filter: blur(4px);' +
-      '  background: rgba(54,54,54,0.7);' +
-      '}' +
-      '.' + NS + '-secret-card.unlocked {' +
-      '  border-color: #ffd740;' +
-      '  box-shadow: 0 0 16px rgba(255,215,64,0.2);' +
-      '}' +
-      '.' + NS + '-secret-icon {' +
-      '  font-size: 2em;' +
-      '  margin-bottom: 8px;' +
-      '}' +
-      '.' + NS + '-secret-name {' +
-      '  font-size: 0.85em;' +
-      '  font-weight: 700;' +
-      '}' +
-      '.' + NS + '-secret-desc {' +
-      '  font-size: 0.72em;' +
-      '  opacity: 0.5;' +
-      '  margin-top: 4px;' +
-      '}' +
-
-      /* ---- Анимация разблокировки секрета ---- */
-      '@keyframes ' + NS + '-unlockGlow {' +
-      '  0%   { box-shadow: 0 0 0 0 rgba(255,215,64,0); }' +
-      '  50%  { box-shadow: 0 0 30px 8px rgba(255,215,64,0.5); }' +
-      '  100% { box-shadow: 0 0 0 0 rgba(255,215,64,0); }' +
-      '}' +
-      '.' + NS + '-unlock-anim {' +
-      '  animation: ' + NS + '-unlockGlow 1s ease;' +
       '}' +
 
       /* ---- Переключатель звуков ---- */
@@ -358,7 +271,6 @@
 
       /* ---- Адаптив ---- */
       '@media (max-width: 600px) {' +
-      '  .' + NS + '-secrets-grid { grid-template-columns: 1fr; }' +
       '  .' + NS + '-sound-toggle { top: auto; bottom: 12px; right: 12px; font-size: 1.2em; padding: 8px 14px; }' +
       '  .' + NS + '-guide-box { padding: 20px; }' +
       '}';
@@ -431,9 +343,6 @@
           setTimeout(function () {
             item.classList.remove(NS + '-animate-check');
           }, 700);
-
-          // Трекинг для спринтер-ачивки
-          trackCheckTime();
         } else if (!isChecked) {
           item.classList.remove(NS + '-strikethrough');
         }
@@ -653,142 +562,6 @@
   // Периодически обновляем тултипы
   setInterval(refreshTooltips, 1000);
 
-  // ============================================================
-  //  5. СЕКРЕТНЫЕ ДОСТИЖЕНИЯ
-  // ============================================================
-  function renderSecretAchievements() {
-    var container = document.querySelector('.' + NS + '-secrets-container');
-    if (container) container.remove();
-
-    container = document.createElement('div');
-    container.className = NS + '-secrets-container';
-
-    var title = document.createElement('div');
-    title.className = NS + '-secrets-title';
-    title.textContent = '🏆 Достижения';
-    container.appendChild(title);
-
-    var grid = document.createElement('div');
-    grid.className = NS + '-secrets-grid';
-
-    SECRET_ACHIEVEMENTS.forEach(function (ach) {
-      var isUnlocked = !!secretState.unlocked[ach.id];
-      var card = document.createElement('div');
-      card.className = NS + '-secret-card ' + (isUnlocked ? 'unlocked' : 'locked');
-      card.id = NS + '-secret-' + ach.id;
-
-      var icon = document.createElement('div');
-      icon.className = NS + '-secret-icon';
-      icon.textContent = isUnlocked ? ach.name.split(' ')[0] : '🔐';
-
-      var name = document.createElement('div');
-      name.className = NS + '-secret-name';
-      name.textContent = isUnlocked ? ach.name.substring(ach.name.indexOf(' ') + 1) : 'Секретное достижение';
-
-      var desc = document.createElement('div');
-      desc.className = NS + '-secret-desc';
-      desc.textContent = isUnlocked ? ach.desc : '???';
-
-      card.appendChild(icon);
-      card.appendChild(name);
-      card.appendChild(desc);
-      grid.appendChild(card);
-    });
-
-    container.appendChild(grid);
-
-    // Вставляем после reset-btn или в конец container
-    var resetBtn = document.getElementById('reset-btn');
-    if (resetBtn) {
-      resetBtn.parentNode.insertBefore(container, resetBtn);
-    } else {
-      document.querySelector('.container').appendChild(container);
-    }
-  }
-
-  function unlockSecret(id) {
-    if (secretState.unlocked[id]) return;
-
-    secretState.unlocked[id] = true;
-    saveSecretState();
-
-    var ach = SECRET_ACHIEVEMENTS.find(function (a) { return a.id === id; });
-    if (!ach) return;
-
-    // Обновляем карточку
-    var card = document.getElementById(NS + '-secret-' + id);
-    if (card) {
-      card.classList.remove('locked');
-      card.classList.add('unlocked', NS + '-unlock-anim');
-
-      var icon = card.querySelector('.' + NS + '-secret-icon');
-      var name = card.querySelector('.' + NS + '-secret-name');
-      var desc = card.querySelector('.' + NS + '-secret-desc');
-
-      if (icon) icon.textContent = ach.name.split(' ')[0];
-      if (name) name.textContent = ach.name.substring(ach.name.indexOf(' ') + 1);
-      if (desc) desc.textContent = ach.desc;
-
-      setTimeout(function () {
-        card.classList.remove(NS + '-unlock-anim');
-      }, 1200);
-    }
-
-    // Конфетти
-    spawnConfetti();
-
-    // Звук
-    playSound('achievement');
-  }
-
-  // ---- Триггеры секретных ачивок ----
-
-  // 1. Призрак студии — >30 минут на странице
-  function checkGhostAchievement() {
-    if (secretState.unlocked['ghost']) return;
-    var elapsed = Date.now() - secretState.sessionStart;
-    if (elapsed > 30 * 60 * 1000) {
-      unlockSecret('ghost');
-    }
-  }
-  setInterval(checkGhostAchievement, 60000); // Проверяем каждую минуту
-
-  // 2. Спринтер — 3 чекбокса за 60 секунд
-  function trackCheckTime() {
-    if (secretState.unlocked['sprinter']) return;
-    var now = Date.now();
-    secretState.checkTimes.push(now);
-    // Оставляем только последние за 60 сек
-    secretState.checkTimes = secretState.checkTimes.filter(function (t) {
-      return now - t < 60000;
-    });
-    if (secretState.checkTimes.length >= 3) {
-      unlockSecret('sprinter');
-    }
-  }
-
-  // 3. Экспериментатор — 5 кликов по логотипу
-  function setupLogoClicks() {
-    var header = document.querySelector('header h1');
-    if (!header) return;
-
-    header.style.cursor = 'default';
-    header.addEventListener('click', function () {
-      secretState.logoClicks++;
-
-      // Сброс через 2 секунды без клика
-      if (secretState.logoClickTimer) clearTimeout(secretState.logoClickTimer);
-      secretState.logoClickTimer = setTimeout(function () {
-        secretState.logoClicks = 0;
-      }, 2000);
-
-      if (secretState.logoClicks >= 5) {
-        unlockSecret('experimenter');
-        secretState.logoClicks = 0;
-      }
-    });
-  }
-
   // ---- Конфетти (CSS-частицы, без canvas) ----
   function spawnConfetti() {
     var colors = ['#ffd740', '#ff7043', '#66bb6a', '#4facfe', '#ab47bc', '#00f2fe'];
@@ -845,21 +618,6 @@
       osc.connect(gain).connect(audioCtx.destination);
       osc.start(now);
       osc.stop(now + 0.15);
-    }
-    else if (type === 'achievement') {
-      // Мягкий "ding" — два тона
-      [523.25, 659.25].forEach(function (freq, idx) {
-        var osc = audioCtx.createOscillator();
-        var gain = audioCtx.createGain();
-        osc.type = 'sine';
-        osc.frequency.value = freq;
-        gain.gain.setValueAtTime(0, now + idx * 0.15);
-        gain.gain.linearRampToValueAtTime(0.12, now + idx * 0.15 + 0.05);
-        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.15 + 0.5);
-        osc.connect(gain).connect(audioCtx.destination);
-        osc.start(now + idx * 0.15);
-        osc.stop(now + idx * 0.15 + 0.5);
-      });
     }
     else if (type === 'levelup') {
       // Фанфары — восходящая мелодия
@@ -920,7 +678,6 @@
       box.innerHTML =
         '<h3>🎮 Как работает геймификация</h3>' +
         '<p>Отмечай пункты чеклистов и получай <b>XP</b>. Набрал достаточно — повысил <b>уровень</b>!</p>' +
-        '<p>🏆 Выполняй задания быстро и открывай <b>секретные достижения</b>.</p>' +
         '<p>🔊 Включи звуки в правом верхнем углу для полного погружения.</p>' +
         '<button class="' + NS + '-guide-close">Понятно!</button>';
 
@@ -1036,18 +793,13 @@
     // 5. Тултипы для заблокированных пунктов
     setupTooltips();
 
-    // 6. Секретные достижения
-    loadSecretState();
-    renderSecretAchievements();
-    setupLogoClicks();
-
-    // 7. Звуки
+    // 6. Звуки
     setupSoundToggle();
 
-    // 8. Гайд первого посещения
+    // 7. Гайд первого посещения
     showFirstVisitGuide();
 
-    // 9. Трекинг последнего разблокированного
+    // 8. Трекинг последнего разблокированного
     trackLastUnlocked();
 
     // 10. Инициализируем AudioContext при первом взаимодействии

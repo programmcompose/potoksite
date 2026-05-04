@@ -132,16 +132,21 @@
 
   .back-link:hover { text-decoration: underline; }
 
-  /* ---- Score Card ---- */
+  /* ---- Score Card (Hero Banner gradient) ---- */
   .score-card {
-    background: linear-gradient(135deg, rgba(0,188,212,0.12), rgba(171,71,188,0.12));
-    border: 1px solid rgba(0,188,212,0.3);
+    background:
+      radial-gradient(ellipse at center, rgba(255, 215, 0, 0.2) 0%, transparent 70%),
+      linear-gradient(135deg, #FFD54F 0%, #FFC107 50%, #FFB300 100%);
+    border: 1px solid rgba(255, 184, 0, 0.3);
     border-radius: var(--radius);
     padding: 24px;
     margin-bottom: 24px;
     text-align: center;
     position: relative;
     overflow: hidden;
+    box-shadow:
+      0 4px 24px rgba(255, 160, 0, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9);
   }
 
   .score-card::before {
@@ -149,21 +154,22 @@
     position: absolute;
     top: 0; left: 0; right: 0;
     height: 2px;
-    background: linear-gradient(90deg, var(--accent), var(--purple), var(--gold));
+    background: linear-gradient(90deg, #5D4037, #3E2723, #5D4037);
   }
 
   .score-label {
     font-size: 0.8em;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    opacity: 0.5;
+    color: #5D4037;
+    opacity: 0.7;
     margin-bottom: 8px;
   }
 
   .score-value {
     font-size: 3em;
     font-weight: 900;
-    background: linear-gradient(135deg, var(--gold), var(--orange));
+    background: linear-gradient(135deg, #5D4037 0%, #3E2723 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -179,19 +185,21 @@
     margin-top: 8px;
     font-size: 0.9em;
     font-weight: 600;
-    color: var(--gold);
+    color: #4e342e;
   }
 
   .score-next {
     margin-top: 4px;
     font-size: 0.75em;
-    opacity: 0.4;
+    color: #5D4037;
+    opacity: 0.6;
   }
 
   .score-total-items {
     margin-top: 12px;
     font-size: 0.8em;
-    opacity: 0.35;
+    color: #5D4037;
+    opacity: 0.5;
   }
 
   /* ---- Floating points animation ---- */
@@ -221,20 +229,21 @@
     display: flex;
     justify-content: space-between;
     font-size: 0.75em;
-    opacity: 0.5;
+    color: #5D4037;
+    opacity: 0.7;
     margin-bottom: 6px;
   }
 
   .level-track {
     height: 6px;
-    background: rgba(255,255,255,0.08);
+    background: rgba(93, 64, 55, 0.2);
     border-radius: 3px;
     overflow: hidden;
   }
 
   .level-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--gold), var(--orange));
+    background: linear-gradient(90deg, #5D4037, #3E2723);
     border-radius: 3px;
     transition: width 0.5s ease;
     width: 0%;

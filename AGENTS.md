@@ -19,3 +19,7 @@
 
 - Сборка: `mkdocs build`
 - Dev-сервер: `mkdocs serve`
+
+## Git Workflow
+
+- После каждого завершенного изменения — сразу `git add`, `git commit` с описательным сообщением и `git push`
