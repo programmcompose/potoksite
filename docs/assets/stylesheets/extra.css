@@ -247,6 +247,51 @@ html {
   marker-end: none !important;
   marker-start: none !important;
 }
+
+/* Граф: свечение узлов */
+#graph .nodes .node circle,
+.modal_graph .nodes .node circle {
+  filter: drop-shadow(0 0 4px currentColor);
+  transition: filter 0.2s, r 0.2s;
+}
+
+#graph .nodes .node.hover circle,
+.modal_graph .nodes .node.hover circle {
+  filter: drop-shadow(0 0 10px currentColor) drop-shadow(0 0 20px currentColor);
+}
+
+/* Граф: текущий узел — пульсирующее свечение */
+#graph .nodes .node.current circle,
+.modal_graph .nodes .node.current circle {
+  animation: graph-pulse 2s ease-in-out infinite;
+}
+
+@keyframes graph-pulse {
+  0%, 100% { filter: drop-shadow(0 0 6px currentColor); }
+  50% { filter: drop-shadow(0 0 14px currentColor) drop-shadow(0 0 24px currentColor); }
+}
+
+/* Граф: линии — полупрозрачные с мягким свечением */
+#graph .links .link,
+.modal_graph .links .link {
+  stroke: var(--md-default-fg-color--lighter);
+  stroke-opacity: 0.35;
+  transition: stroke-opacity 0.2s;
+}
+
+/* Граф: текст меток */
+#graph .nodes .node text,
+.modal_graph .nodes .node text {
+  fill: var(--md-default-fg-color--light);
+  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  pointer-events: none;
+}
+
+#graph .nodes .node.current text,
+.modal_graph .nodes .node.current text {
+  fill: var(--md-typeset-a-color);
+  font-weight: 700;
+}
 .network-graph .node circle { fill: var(--md-primary-fg-color); cursor: pointer; transition: r 0.2s; }
 .network-graph .node:hover circle { fill: var(--md-accent-fg-color); r: 8px; }
 .network-graph .node text { fill: var(--md-default-fg-color); font-size: 11px; pointer-events: none; }
