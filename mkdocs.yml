@@ -140,6 +140,7 @@ nav:
   - "🗺️ Маршрут обучения": "roadmap.md"
   - "🔌 Плагины — подборка":
       - "plugins/index.md"
+      - "📘 Базовые VST-плагины": "plugins/bazovye-vst-plaginy.md"
       - "📦 Подборка от Meraki": "plugins/meraki-collection.md"
       - "🏛️ Waves Abbey Road": "plugins/waves-abbey-road.md"
       - "🎙️ Waves CLA": "plugins/waves-cla.md"
