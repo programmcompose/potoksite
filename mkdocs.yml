@@ -55,9 +55,6 @@ plugins:
   - mermaid2:
       arguments:
         theme: dark
-  - graph:
-      name: "title"
-      debug: true
 
 extra:
   generator: false
@@ -73,7 +70,6 @@ extra_css:
   - assets/stylesheets/extra.css
 
 extra_javascript:
-  - assets/javascripts/graph-button.js
   - assets/javascripts/back-to-top.js
 
 markdown_extensions:
