@@ -135,6 +135,11 @@
     margin-bottom: 8px;
   }
 
+  /* Restore emoji rendering broken by -webkit-text-fill-color: transparent */
+  header h1 .emoji {
+    -webkit-text-fill-color: initial;
+  }
+
   header p {
     font-size: 1em;
     color: var(--text-muted);
@@ -245,7 +250,7 @@
 <div class="container">
   <a href="https://programmcompose.github.io/potoksite/" class="back-link">← На главную курса</a>
   <header>
-    <h1>🎛️ Интерактивные инструменты</h1>
+    <h1><span class="emoji">🎛️</span> Интерактивные инструменты</h1>
     <p>Практикуйте теорию музыки с помощью интерактивных инструментов прямо в браузере</p>
   </header>
 
