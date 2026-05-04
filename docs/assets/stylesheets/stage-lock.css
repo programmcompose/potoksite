@@ -1,0 +1,181 @@
+/* ========================================
+   Stage Lock — Поэтапная разблокировка контента
+   ======================================== */
+
+/* --- Заблокированный элемент навигации --- */
+.md-nav__item.stage-locked {
+  position: relative;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Затемнение и обесцвечивание */
+.md-nav__item.stage-locked > .md-nav__link {
+  filter: grayscale(0.6) brightness(0.7);
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Оверлей-замок на элементе навигации */
+.md-nav__item.stage-locked > .md-nav__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Иконка замка и дата открытия */
+.stage-lock-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  margin-top: 0.35em;
+  padding: 0.3em 0.6em;
+  border-radius: 6px;
+  font-size: 0.75em;
+  font-weight: 600;
+  background: rgba(255, 82, 82, 0.12);
+  color: #ff5252;
+  border: 1px solid rgba(255, 82, 82, 0.2);
+  white-space: nowrap;
+  animation: stage-lock-pulse 3s ease-in-out infinite;
+}
+
+.stage-lock-badge .lock-icon {
+  font-size: 1.1em;
+}
+
+.stage-lock-badge .unlock-date {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Тёмная тема */
+[data-md-color-scheme="slate"] .stage-lock-badge {
+  background: rgba(255, 82, 82, 0.08);
+  color: #ff8a80;
+  border-color: rgba(255, 82, 82, 0.15);
+}
+
+/* Анимация пульсации */
+@keyframes stage-lock-pulse {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+/* --- Оверлей на заблокированной странице --- */
+.stage-page-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: overlay-fade-in 0.4s ease;
+}
+
+.stage-page-overlay__content {
+  text-align: center;
+  padding: 2.5em 3em;
+  border-radius: 16px;
+  background: var(--md-default-bg-color);
+  border: 1px solid rgba(255, 82, 82, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+  max-width: 420px;
+  animation: overlay-slide-up 0.4s ease;
+}
+
+.stage-page-overlay__icon {
+  font-size: 3em;
+  margin-bottom: 0.5em;
+}
+
+.stage-page-overlay__title {
+  font-size: 1.3em;
+  font-weight: 700;
+  margin-bottom: 0.4em;
+  color: var(--md-typeset-color);
+}
+
+.stage-page-overlay__text {
+  font-size: 0.95em;
+  line-height: 1.6;
+  color: var(--md-typeset-color);
+  opacity: 0.8;
+  margin-bottom: 1em;
+}
+
+.stage-page-overlay__date {
+  display: inline-block;
+  padding: 0.4em 1em;
+  border-radius: 8px;
+  font-size: 0.9em;
+  font-weight: 600;
+  background: rgba(255, 82, 82, 0.12);
+  color: #ff5252;
+  border: 1px solid rgba(255, 82, 82, 0.2);
+}
+
+.stage-page-overlay__hint {
+  display: block;
+  margin-top: 1em;
+  font-size: 0.8em;
+  opacity: 0.5;
+  color: var(--md-typeset-color);
+}
+
+/* Кнопка возврата на главную */
+.stage-page-overlay__btn {
+  display: inline-block;
+  margin-top: 1.2em;
+  padding: 0.5em 1.5em;
+  border-radius: 8px;
+  font-size: 0.9em;
+  font-weight: 600;
+  color: var(--md-default-bg-color);
+  background: var(--md-accent-fg-color);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.stage-page-overlay__btn:hover {
+  opacity: 0.85;
+}
+
+[data-md-color-scheme="slate"] .stage-page-overlay__date {
+  color: #ff8a80;
+}
+
+@keyframes overlay-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes overlay-slide-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* --- Debug-индикатор --- */
+.stage-debug-badge {
+  position: fixed;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  z-index: 10000;
+  padding: 0.3em 0.7em;
+  border-radius: 6px;
+  font-size: 0.7em;
+  font-weight: 700;
+  font-family: monospace;
+  background: rgba(0, 188, 212, 0.15);
+  color: #00bcd4;
+  border: 1px solid rgba(0, 188, 212, 0.3);
+  pointer-events: none;
+}

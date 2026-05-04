@@ -71,9 +71,11 @@ extra:
 
 extra_css:
   - assets/stylesheets/extra.css
+  - assets/stylesheets/stage-lock.css
 
 extra_javascript:
   - assets/javascripts/back-to-top.js
+  - assets/javascripts/stage-unlock.js
 
 markdown_extensions:
   - admonition:
