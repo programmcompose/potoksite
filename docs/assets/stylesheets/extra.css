@@ -239,6 +239,14 @@ html {
 .network-graph { width: 100%; height: 100%; }
 .network-graph svg { width: 100%; height: 100%; }
 .network-graph .link { stroke: var(--md-default-fg-color--light); stroke-opacity: 0.4; }
+
+/* Граф: убрать стрелки с линий связей */
+#graph .link,
+.modal_graph .link,
+.network-graph .link {
+  marker-end: none !important;
+  marker-start: none !important;
+}
 .network-graph .node circle { fill: var(--md-primary-fg-color); cursor: pointer; transition: r 0.2s; }
 .network-graph .node:hover circle { fill: var(--md-accent-fg-color); r: 8px; }
 .network-graph .node text { fill: var(--md-default-fg-color); font-size: 11px; pointer-events: none; }
