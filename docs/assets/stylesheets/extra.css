@@ -4,10 +4,10 @@
 
 /* Dark theme refinements */
 [data-md-color-scheme="slate"] {
-  --md-default-bg-color: #30302E;
-  --md-default-bg-color--light: #383835;
-  --md-default-bg-color--lighter: #40403D;
-  --md-primary-fg-color: #30302E;
+  --md-default-bg-color: #262624;
+  --md-default-bg-color--light: #262624;
+  --md-default-bg-color--lighter: #262624;
+  --md-primary-fg-color: #262624;
   --md-accent-fg-color: #00bcd4;
   --md-typeset-color: #FDFBDF;
 }
@@ -132,7 +132,7 @@ html {
 
 /* Footer */
 [data-md-color-scheme="slate"] .md-footer {
-  background-color: #282825;
+  background-color: #262624;
 }
 
 [data-md-color-scheme="default"] .md-footer {
