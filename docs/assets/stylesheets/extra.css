@@ -195,41 +195,45 @@ html {
 }
 
 /* Back to top button */
-.md-back_to_top {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  background-color: var(--md-primary-fg-color);
-  color: var(--md-accent-fg-color);
-  display: grid;
-  place-items: center;
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity 0.3s, transform 0.3s, background-color 0.2s;
-  pointer-events: none;
-  z-index: 10;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+#iy-back-to-top {
+  position: fixed !important;
+  bottom: 1.5rem !important;
+  right: 1.5rem !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  border: none !important;
+  background-color: var(--md-accent-fg-color) !important;
+  color: var(--md-default-bg-color) !important;
+  cursor: pointer !important;
+  opacity: 0 !important;
+  transform: translateY(8px) !important;
+  transition: opacity 0.25s ease, transform 0.25s ease !important;
+  pointer-events: none !important;
+  z-index: 20 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
-.md-back_to_top svg {
-  width: 24px;
-  height: 24px;
-  fill: currentColor;
+#iy-back-to-top svg {
+  width: 20px !important;
+  height: 20px !important;
+  fill: currentColor !important;
 }
 
-.md-back_to_top--active {
-  opacity: 0.85;
-  transform: translateY(0);
-  pointer-events: auto;
+#iy-back-to-top.show {
+  opacity: 0.9 !important;
+  transform: translateY(0) !important;
+  pointer-events: auto !important;
 }
 
-.md-back_to_top:hover {
-  opacity: 1;
-  background-color: var(--md-accent-fg-color);
-  color: var(--md-default-bg-color);
+#iy-back-to-top:hover {
+  opacity: 1 !important;
+  background-color: #0097a7 !important;
 }
 
 /* Custom scrollbar */
