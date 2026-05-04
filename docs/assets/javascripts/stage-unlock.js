@@ -13,9 +13,15 @@
   // alwaysUnlocked: true — этап всегда доступен (для Этапа №0)
   const STAGE_SCHEDULE = {
     0: { unlockDate: '2024-01-01', alwaysUnlocked: true, label: 'Этап №0' },
-    1: { unlockDate: '2026-06-01', alwaysUnlocked: false, label: 'Этап №1' },
-    2: { unlockDate: '2026-06-15', alwaysUnlocked: false, label: 'Этап №2' },
-    5: { unlockDate: '2026-07-01', alwaysUnlocked: false, label: 'Этап №5' },
+    1: { unlockDate: '2026-06-19', alwaysUnlocked: false, label: 'Этап №1' },
+    2: { unlockDate: '2026-06-26', alwaysUnlocked: false, label: 'Этап №2' },
+    3: { unlockDate: '2026-07-03', alwaysUnlocked: false, label: 'Этап №3' },
+    4: { unlockDate: '2026-07-10', alwaysUnlocked: false, label: 'Этап №4' },
+    5: { unlockDate: '2026-07-17', alwaysUnlocked: false, label: 'Этап №5' },
+    6: { unlockDate: '2026-07-31', alwaysUnlocked: false, label: 'Этап №6' },
+    7: { unlockDate: '2026-08-07', alwaysUnlocked: false, label: 'Этап №7' },
+    8: { unlockDate: '2026-08-14', alwaysUnlocked: false, label: 'Этап №8' },
+    9: { unlockDate: '2026-08-21', alwaysUnlocked: false, label: 'Этап №9' },
   };
 
   // Смещение дат для тестирования (в днях).
