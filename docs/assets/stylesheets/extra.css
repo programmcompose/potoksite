@@ -4,14 +4,14 @@
 
 /* Logo shadow effect */
 .md-logo {
-  filter: drop-shadow(0 0 6px rgba(0, 188, 212, 0.5))
-          drop-shadow(0 0 14px rgba(0, 188, 212, 0.25));
+  filter: drop-shadow(0 0 6px rgba(239, 83, 80, 0.5))
+          drop-shadow(0 0 14px rgba(239, 83, 80, 0.25));
   transition: filter 0.3s ease;
 }
 
 .md-logo:hover {
-  filter: drop-shadow(0 0 10px rgba(0, 188, 212, 0.8))
-          drop-shadow(0 0 24px rgba(0, 188, 212, 0.4));
+  filter: drop-shadow(0 0 10px rgba(239, 83, 80, 0.8))
+          drop-shadow(0 0 24px rgba(239, 83, 80, 0.4));
 }
 
 /* Dark theme refinements */
