@@ -77,4 +77,4 @@ flowchart TD
 
 ---
 
-**← [Назад: Этап №2](index.md)** | **[Далее: Мастеринг →](mastering.md)**
+**← [Назад: Психоакустика](psychoacoustics.md)** | **[Далее: Мастеринг →](mastering.md)**

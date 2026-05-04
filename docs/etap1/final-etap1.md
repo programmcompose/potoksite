@@ -41,4 +41,4 @@
 
 ---
 
-**← [Назад: Бит в Ableton](bit-v-ableton.md)** | **[На главную этапа →](index.md)**
+**← [Назад: Бит в Ableton](bit-v-ableton.md)** | **[Далее: Этап №2 →](../etap2/index.md)**

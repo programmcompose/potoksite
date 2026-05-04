@@ -26,4 +26,4 @@ flowchart TD
 
 ---
 
-[Далее: Сведение (Mixing) →](mixing.md)
+**← [Назад: Этап №1 →](../etap1/final-etap1.md)** | **[Далее: Основные понятия →](osnovnye-ponyatiya.md)**

@@ -41,3 +41,5 @@
 | **Release** | Auto или 30–100 ms | Не применимо |
 
 ---
+
+**← [Назад: Compression / Компрессия](compression-kompressiya.md)** | **[Далее: Стилизация сэмплов →](sample-styling.md)**

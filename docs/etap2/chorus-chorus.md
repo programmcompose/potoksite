@@ -31,3 +31,5 @@
 | **Spread** | Стерео-ширина расхождения голосов |
 
 ---
+
+**← [Назад: Delay / Делэй](delay-delay.md)** | **[Далее: Compression / Компрессия →](compression-kompressiya.md)**
