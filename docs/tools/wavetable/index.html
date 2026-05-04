@@ -374,6 +374,16 @@
   let audioStarted = false;
   let animFrame = null;
 
+  const ADSR_PARAMS = [
+    { key: 'attack', min: 0.001, max: 2, step: 0.001 },
+    { key: 'decay', min: 0.01, max: 2, step: 0.01 },
+    { key: 'sustain', min: 0, max: 1, step: 0.01 },
+    { key: 'release', min: 0.01, max: 3, step: 0.01 }
+  ];
+
+  let adsrDrag = { active: false, pointIndex: -1, startX: 0, startY: 0, startADSR: null };
+  let adsrEnvPixelPoints = [];
+
   function initAudio() {
     if (audioStarted) return Promise.resolve();
     audioStarted = true;
@@ -535,6 +545,21 @@
     });
   }
 
+  function syncADSRSliders() {
+    const params = [
+      { key: 'attack', unit: 'с' },
+      { key: 'decay', unit: 'с' },
+      { key: 'sustain', unit: '' },
+      { key: 'release', unit: 'с' }
+    ];
+    params.forEach(p => {
+      const inp = document.querySelector(`input[data-adsr="${p.key}"]`);
+      const lbl = document.getElementById('adsr-' + p.key);
+      if (inp) inp.value = state.adsr[p.key];
+      if (lbl) lbl.textContent = state.adsr[p.key] + p.unit;
+    });
+  }
+
   function updateNoteDisplay() {
     document.getElementById('noteDisplay').textContent = getNoteName(state.noteIndex);
   }
@@ -605,6 +630,8 @@
     ctx.beginPath();
     ctx.strokeStyle = '#00bcd4';
     ctx.lineWidth = 2;
+    ctx.shadowColor = '#00bcd4';
+    ctx.shadowBlur = 8;
 
     samples.forEach((v, x) => {
       const normValue = (v - mid) / range;
@@ -613,6 +640,7 @@
       else ctx.lineTo(x, y);
     });
     ctx.stroke();
+    ctx.shadowBlur = 0;
   }
 
   function sampleWaveform(type, t) {
@@ -740,14 +768,18 @@
     });
     adsrCtx.stroke();
 
-    // Dots at key points
-    adsrCtx.strokeStyle = '#00bcd4';
-    adsrCtx.lineWidth = 2;
-    envPoints.forEach(pt => {
+    // Dots at key points + store pixel positions for drag
+    adsrEnvPixelPoints = [];
+    envPoints.forEach((pt, i) => {
       const x = pad.left + (pt.t / totalTime) * gw;
       const y = pad.top + gh - pt.v * gh;
+      adsrEnvPixelPoints.push({ x, y });
       adsrCtx.beginPath();
-      adsrCtx.arc(x, y, 4, 0, Math.PI * 2);
+      adsrCtx.arc(x, y, 6, 0, Math.PI * 2);
+      adsrCtx.fillStyle = '#1a1a1a';
+      adsrCtx.fill();
+      adsrCtx.strokeStyle = '#00bcd4';
+      adsrCtx.lineWidth = 2.5;
       adsrCtx.stroke();
     });
 
@@ -800,7 +832,69 @@
     }
   }
 
-document.addEventListener('DOMContentLoaded', () => {
+  function adsrPixelToEnv(mx, my) {
+    const w = adsrCanvas.width / window.devicePixelRatio;
+    const h = adsrCanvas.height / window.devicePixelRatio;
+    const pad = { top: 28, right: 16, bottom: 32, left: 36 };
+    const gw = w - pad.left - pad.right;
+    const gh = h - pad.top - pad.bottom;
+    const { attack: a, decay: d, sustain: s, release: r } = state.adsr;
+    const totalTime = a + d + Math.max(s * 2, 0.5) + r;
+    return {
+      attack: Math.max(0.001, ((mx - pad.left) / gw) * totalTime),
+      decay: Math.max(0.01, ((mx - pad.left) / gw) * totalTime - a),
+      sustain: Math.max(0, Math.min(1, 1 - (my - pad.top) / gh)),
+      release: Math.max(0.01, ((mx - pad.left) / gw) * totalTime - a - d - Math.max(s * 2, 0.5))
+    };
+  }
+
+  function adsrHandleStart(mx, my) {
+    const hitR = 18;
+    for (let i = 1; i <= 4; i++) {
+      const p = adsrEnvPixelPoints[i];
+      if (p && Math.hypot(mx - p.x, my - p.y) < hitR) {
+        adsrDrag = { active: true, pointIndex: i, startX: mx, startY: my, startADSR: { ...state.adsr } };
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function adsrHandleMove(mx, my) {
+    if (!adsrDrag.active) return;
+    const dx = mx - adsrDrag.startX;
+    const dy = my - adsrDrag.startY;
+    const w = adsrCanvas.width / window.devicePixelRatio;
+    const h = adsrCanvas.height / window.devicePixelRatio;
+    const pad = { top: 28, right: 16, bottom: 32, left: 36 };
+    const gw = w - pad.left - pad.right;
+    const gh = h - pad.top - pad.bottom;
+    const oldTotal = adsrDrag.startADSR.attack + adsrDrag.startADSR.decay + Math.max(adsrDrag.startADSR.sustain * 2, 0.5) + adsrDrag.startADSR.release;
+    const dt = (dx / gw) * oldTotal;
+    const dv = -(dy / gh);
+    const a0 = adsrDrag.startADSR;
+    let n = { ...a0 };
+    const pi = adsrDrag.pointIndex;
+    if (pi === 1) { n.attack = Math.max(0.001, Math.min(2, a0.attack + dt)); }
+    else if (pi === 2) { n.decay = Math.max(0.01, Math.min(2, a0.decay + dt)); n.sustain = Math.max(0, Math.min(1, a0.sustain + dv)); }
+    else if (pi === 3) { n.sustain = Math.max(0, Math.min(1, a0.sustain + dv)); if (dx > 0) n.sustain = Math.min(1, a0.sustain + dt * 0.01); else if (dx < 0) n.sustain = Math.max(0, a0.sustain + dt * 0.01); }
+    else if (pi === 4) { n.release = Math.max(0.01, Math.min(3, a0.release + dt)); }
+    state.adsr = n;
+    syncADSRSliders();
+    if (synthEngines) synthEngines.setADSR();
+    drawADSR();
+  }
+
+  function adsrHandleEnd() {
+    if (adsrDrag.active) { adsrDrag = { active: false, pointIndex: -1, startX: 0, startY: 0, startADSR: null }; }
+  }
+
+  function adsrGetMousePos(e) {
+    const rect = adsrCanvas.getBoundingClientRect();
+    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
+  }
+
+ document.addEventListener('DOMContentLoaded', () => {
     buildWaveGrid();
     buildADSRGrid();
     updateNoteDisplay();
@@ -816,6 +910,50 @@ document.addEventListener('DOMContentLoaded', () => {
       drawWave();
       drawADSR();
     });
+
+    adsrCanvas.addEventListener('mousedown', (e) => {
+      const pos = adsrGetMousePos(e);
+      if (adsrHandleStart(pos.x, pos.y)) {
+        e.preventDefault();
+        adsrCanvas.style.cursor = 'grabbing';
+      }
+    });
+
+    adsrCanvas.addEventListener('mousemove', (e) => {
+      const pos = adsrGetMousePos(e);
+      if (adsrDrag.active) {
+        adsrHandleMove(pos.x, pos.y);
+      } else {
+        let over = false;
+        for (let i = 1; i <= 4; i++) {
+          const p = adsrEnvPixelPoints[i];
+          if (p && Math.hypot(pos.x - p.x, pos.y - p.y) < 18) { over = true; break; }
+        }
+        adsrCanvas.style.cursor = over ? 'grab' : 'default';
+      }
+    });
+
+    window.addEventListener('mouseup', () => {
+      adsrHandleEnd();
+      adsrCanvas.style.cursor = 'default';
+    });
+
+    adsrCanvas.addEventListener('touchstart', (e) => {
+      const t = e.touches[0];
+      const pos = adsrGetMousePos(t);
+      if (adsrHandleStart(pos.x, pos.y)) e.preventDefault();
+    }, { passive: false });
+
+    adsrCanvas.addEventListener('touchmove', (e) => {
+      if (adsrDrag.active) {
+        const t = e.touches[0];
+        const pos = adsrGetMousePos(t);
+        adsrHandleMove(pos.x, pos.y);
+        e.preventDefault();
+      }
+    }, { passive: false });
+
+    adsrCanvas.addEventListener('touchend', () => { adsrHandleEnd(); });
 
     document.getElementById('playBtn').addEventListener('click', async () => {
       await initAudio();
