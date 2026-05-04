@@ -15,7 +15,7 @@
 Типичная цепочка плагинов на мастер-канале:
 
 ```
-Mixer Output → EQ → Compressor → Saturation → Limiter → Dither → Export
+Mixer Output → EQ → Compressor → Saturation → Limiter → Reference (сравнение) → Export
 ```
 
 ## Инструменты мастеринга
@@ -43,26 +43,34 @@ Mixer Output → EQ → Compressor → Saturation → Limiter → Dither → Exp
 
 ### 3. Лимитер
 
-Лимитер — последний плагин в цепочке. Он предотвращает клиппинг
-и повышает общую громкость.
+Лимитер предотвращает клиппинг и повышает общую громкость.
 
 | Параметр | Значение |
 |----------|---------|
-| Ceiling | -1.0 dB (для streaming) |
-| True Peak | -1.0 dBTP |
-| Gain Reduction | 1–4 dB |
+| Ceiling | 0 dB |
+| True Peak | 0 dBTP |
+
+### 4. Референс-сравнение
+
+Плагин для сравнения вашего мастеринга с референсными треками.
+Позволяет оценить громкость и баланс в реальном времени.
+
+| Плагин | Назначение |
+|--------|-----------|
+| ADPTR Metric AB | LUFS-метрики, сравнение с референсом |
+| Reference (Plugin Alliance) | A/B/C/D сравнение треков |
 
 ## Целевые уровни громкости
 
-| Платформа / Жанр | LUFS | True Peak |
-|------------------|------|-----------|
-| **Spotify** | -14 LUFS (нормализация) | -1 dBTP |
-| **Apple Music** | -16 LUFS (normal) | -1 dBTP |
-| **YouTube** | -14 LUFS | -1 dBTP |
-| **Hip-Hop** | -8 to -6 LUFS | -1 dBTP |
-| **Electronic** | -9 to -7 LUFS | -1 dBTP |
-| **Rock** | -12 to -10 LUFS | -1 dBTP |
-| **Jazz** | -18 to -14 LUFS | -1 dBTP |
+| Платформа / Жанр | LUFS |
+|------------------|------|
+| **Spotify** | -14 LUFS (нормализация) |
+| **Apple Music** | -16 LUFS (normal) |
+| **YouTube** | -14 LUFS |
+| **Hip-Hop** | -8 to -6 LUFS |
+| **Electronic** | -9 to -7 LUFS |
+| **Rock** | -12 to -10 LUFS |
+| **Jazz** | -18 to -14 LUFS |
 
 !!! note
     **LUFS** (Loudness Units Full Scale) — стандарт измерений громкости.
@@ -76,15 +84,15 @@ Mixer Output → EQ → Compressor → Saturation → Limiter → Dither → Exp
 | Format | WAV |
 | Bit Depth | 24-bit (архив), 16-bit (релиз) |
 | Sample Rate | 44.1 кГц (CD), 48 кГц (streaming) |
-| Dither | Да, при снижении битности |
 
 ## Чек-лист мастеринга
 
 - [ ] Микс завершён и одобрён
-- [ ] Референсный трек загружен для сравнения
+- [ ] Референсный трек загружен в плагин для сравнения
 - [ ] EQ — тонкие корректировки (±1–2 dB)
 - [ ] Компрессия — glue, 1–3 dB gain reduction
-- [ ] Лимитер — ceiling -1.0 dB, true peak -1.0 dBTP
+- [ ] Лимитер — ceiling 0 dB, true peak 0 dBTP
+- [ ] Сравнение с референсом через ADPTR Metric AB / Reference
 - [ ] Проверка на разных системах
 - [ ] Экспорт WAV 24-bit/44.1 кГц
 - [ ] LUFS в целевом диапазоне
