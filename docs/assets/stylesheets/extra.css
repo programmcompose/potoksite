@@ -2,12 +2,12 @@
    Custom Styles — Music Production Course
    ======================================== */
 
-/* Dark theme refinements — UI Kit dark palette (#0D0D0D) */
+/* Dark theme refinements */
 [data-md-color-scheme="slate"] {
-  --md-default-bg-color: #0D0D0D;
-  --md-default-bg-color--light: #141414;
-  --md-default-bg-color--lighter: #1A1A1A;
-  --md-primary-fg-color: #1A1A1A;
+  --md-default-bg-color: #30302E;
+  --md-default-bg-color--light: #383835;
+  --md-default-bg-color--lighter: #40403D;
+  --md-primary-fg-color: #30302E;
   --md-accent-fg-color: #00bcd4;
   --md-typeset-color: #FDFBDF;
 }
@@ -132,7 +132,7 @@ html {
 
 /* Footer */
 [data-md-color-scheme="slate"] .md-footer {
-  background-color: #141414;
+  background-color: #282825;
 }
 
 [data-md-color-scheme="default"] .md-footer {
