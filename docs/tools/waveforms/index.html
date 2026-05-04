@@ -284,11 +284,17 @@
 
   .harmonic-bars {
     display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 8px 0;
+  }
+
+  .harmonic-bars-inner {
+    display: flex;
     align-items: flex-end;
     justify-content: center;
     gap: 2px;
     height: 60px;
-    margin: 8px 0;
   }
 
   .harmonic-bar {
@@ -297,6 +303,21 @@
     border-radius: 2px 2px 0 0;
     transition: height 0.1s;
     opacity: 0.7;
+  }
+
+  .harmonic-labels {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 140px;
+    margin-top: 4px;
+  }
+
+  .harmonic-labels span {
+    font-size: 0.65em;
+    opacity: 0.4;
+    text-align: center;
+    flex: 1;
   }
 
   .course-link {
@@ -377,10 +398,13 @@
 
   <div class="panel">
     <div class="panel-title">Спектр гармоник</div>
-    <div class="harmonic-bars" id="harmonicBars"></div>
+    <div class="harmonic-bars">
+      <div class="harmonic-bars-inner" id="harmonicBars"></div>
+      <div class="harmonic-labels"><span>20</span><span>250</span><span>1k</span><span>4k</span><span>20k</span></div>
+    </div>
     <div class="canvas-wrap">
       <span class="canvas-label">Частотный спектр</span>
-      <canvas id="spectrumCanvas" height="120"></canvas>
+      <canvas id="spectrumCanvas" height="180"></canvas>
     </div>
   </div>
 
@@ -573,7 +597,7 @@
     if (audioCtx) return;
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     analyser = audioCtx.createAnalyser();
-    analyser.fftSize = 2048;
+    analyser.fftSize = 8192;
     masterGain = audioCtx.createGain();
     masterGain.connect(analyser);
     analyser.connect(audioCtx.destination);
@@ -747,27 +771,83 @@
     ctx.stroke();
   }
 
+  function logFreqScale(t, fMin, fMax) {
+    return Math.log(fMin * Math.pow(fMax / fMin, t)) / Math.log(fMax);
+  }
+
+  function drawFreqAxis(ctx, w, h, labelH) {
+    const fMin = 20, fMax = 20000;
+    const labels = [20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000];
+    const plotH = h - labelH;
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.06)';
+    ctx.lineWidth = 1;
+    ctx.fillStyle = 'rgba(255,255,255,0.3)';
+    ctx.font = '9px Inter, sans-serif';
+    ctx.textAlign = 'center';
+
+    labels.forEach(lbl => {
+      const t = Math.log(lbl / fMin) / Math.log(fMax / fMin);
+      const x = t * w;
+
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, plotH);
+      ctx.stroke();
+
+      let text = lbl >= 1000 ? (lbl / 1000) + 'k' : lbl + '';
+      ctx.fillText(text, x, h - 4);
+    });
+
+    ctx.strokeStyle = 'rgba(255,255,255,0.15)';
+    ctx.beginPath();
+    ctx.moveTo(0, plotH);
+    ctx.lineTo(w, plotH);
+    ctx.stroke();
+  }
+
   function drawSpectrum() {
     const w = spectrumCanvas.width / (window.devicePixelRatio || 1);
     const h = spectrumCanvas.height / (window.devicePixelRatio || 1);
     const ctx = spectrumCtx;
+    const labelH = 20;
+    const plotH = h - labelH;
 
     ctx.fillStyle = '#1a1a1a';
     ctx.fillRect(0, 0, w, h);
 
+    const numBars = 128;
+    const fMin = 20, fMax = 20000;
     const harmonics = getHarmonicContent(state.waveType);
     const maxH = Math.max(...harmonics);
-    const barWidth = (w - 20) / harmonics.length;
+    const waveColor = WAVE_TYPES.find(wt => wt.id === state.waveType)?.color || '#00bcd4';
 
-    harmonics.forEach((harm, i) => {
-      const barH = maxH > 0 ? (harm / maxH) * (h - 20) : 0;
-      const x = 10 + i * barWidth;
-      const gradient = ctx.createLinearGradient(x, h - 10 - barH, x, h - 10);
-      gradient.addColorStop(0, WAVE_TYPES.find(w => w.id === state.waveType)?.color || '#00bcd4');
+    for (let i = 0; i < numBars; i++) {
+      const t1 = i / numBars;
+      const t2 = (i + 1) / numBars;
+      const freq1 = fMin * Math.pow(fMax / fMin, t1);
+      const freq2 = fMin * Math.pow(fMax / fMin, t2);
+
+      let magnitude = 0;
+      for (let h = 0; h < harmonics.length; h++) {
+        const harmFreq = state.frequency * (h + 1);
+        if (harmFreq >= freq1 && harmFreq <= freq2) {
+          magnitude = Math.max(magnitude, harmonics[h]);
+        }
+      }
+
+      const x = t1 * w;
+      const barW = (t2 - t1) * w;
+      const barH = maxH > 0 ? magnitude / maxH * plotH : 0;
+
+      const gradient = ctx.createLinearGradient(x, plotH - barH, x, plotH);
+      gradient.addColorStop(0, waveColor);
       gradient.addColorStop(1, 'rgba(0,188,212,0.1)');
       ctx.fillStyle = gradient;
-      ctx.fillRect(x + 1, h - 10 - barH, barWidth - 2, barH);
-    });
+      ctx.fillRect(x, plotH - barH, Math.max(barW, 1), barH);
+    }
+
+    drawFreqAxis(ctx, w, h, labelH);
   }
 
   function animate() {
@@ -789,18 +869,41 @@
       const w = spectrumCanvas.width / (window.devicePixelRatio || 1);
       const h = spectrumCanvas.height / (window.devicePixelRatio || 1);
       const ctx = spectrumCtx;
+      const labelH = 20;
+      const plotH = h - labelH;
 
       ctx.fillStyle = '#1a1a1a';
       ctx.fillRect(0, 0, w, h);
 
-      const barWidth = (w - 20) / 32;
-      for (let i = 0; i < 32; i++) {
-        const val = dataArray[i * 4] / 255;
-        const barH = val * (h - 20);
-        const x = 10 + i * barWidth;
+      const numBars = 128;
+      const fMin = 20, fMax = 20000;
+      const nyquist = audioCtx.sampleRate / 2;
+
+      for (let i = 0; i < numBars; i++) {
+        const t1 = i / numBars;
+        const t2 = (i + 1) / numBars;
+        const freq1 = fMin * Math.pow(fMax / fMin, t1);
+        const freq2 = fMin * Math.pow(fMax / fMin, t2);
+
+        const bin1 = Math.floor(freq1 / nyquist * bufferLength);
+        const bin2 = Math.min(Math.ceil(freq2 / nyquist * bufferLength), bufferLength);
+
+        let sum = 0, count = 0;
+        for (let b = Math.max(0, bin1); b < bin2; b++) {
+          sum += dataArray[b];
+          count++;
+        }
+        const val = count > 0 ? (sum / count) / 255 : 0;
+
+        const x = t1 * w;
+        const barW = (t2 - t1) * w;
+        const barH = val * plotH;
+
         ctx.fillStyle = `rgba(0, 188, 212, ${0.3 + val * 0.7})`;
-        ctx.fillRect(x + 1, h - 10 - barH, barWidth - 2, barH);
+        ctx.fillRect(x, plotH - barH, Math.max(barW, 1), barH);
       }
+
+      drawFreqAxis(ctx, w, h, labelH);
     }
 
     animFrame = requestAnimationFrame(animate);
