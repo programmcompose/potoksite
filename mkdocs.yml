@@ -7,7 +7,7 @@ copyright: "© 2026 - 18 ПОТОК - IY BEATS"
 theme:
   name: material
   language: ru
-  logo: assets/images/logo.svg
+  logo: assets/images/logo.png
   palette:
     - media: "(prefers-color-scheme: dark)"
       scheme: slate
