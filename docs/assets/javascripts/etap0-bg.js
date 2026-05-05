@@ -7,7 +7,6 @@
     var isDark = document.documentElement.getAttribute('data-md-color-scheme') === 'slate';
     return {
       grid: isDark ? '255, 255, 255' : '50, 50, 50',
-      waveLine: isDark ? '255, 160, 50' : '200, 120, 30',
       eq: isDark ? '200, 110, 30' : '180, 100, 20'
     };
   }
@@ -85,31 +84,6 @@
     var freqSpacing = w / (freqs.length - 1);
     for (var fi = 0; fi < freqs.length; fi++) {
       ctx.fillText(freqs[fi], fi * freqSpacing, gridTop + 16);
-    }
-
-    // Плавные синусоидальные линии (очень медленно)
-    var waveConfigs = [
-      { amp: 18, freq: 0.002, speed: 0.00015, color: colors.waveLine, alpha: 0.12 },
-      { amp: 12, freq: 0.0035, speed: -0.0001, color: colors.waveLine, alpha: 0.08 },
-      { amp: 8, freq: 0.005, speed: 0.00008, color: colors.waveLine, alpha: 0.05 }
-    ];
-
-    for (var wi = 0; wi < waveConfigs.length; wi++) {
-      var wc = waveConfigs[wi];
-      var midY = h * 0.28;
-
-      ctx.beginPath();
-      ctx.strokeStyle = 'rgba(' + wc.color + ', ' + wc.alpha + ')';
-      ctx.lineWidth = 1.5;
-
-      for (var wx = 0; wx <= w; wx += 2) {
-        var wy = midY
-          + Math.sin(wx * wc.freq + t * wc.speed) * wc.amp
-          + Math.sin(wx * wc.freq * 1.7 + t * wc.speed * 0.6) * wc.amp * 0.4;
-        if (wx === 0) ctx.moveTo(wx, wy);
-        else ctx.lineTo(wx, wy);
-      }
-      ctx.stroke();
     }
 
     // --- Низ: эквалайзер (тёмно-оранжевый) ---
