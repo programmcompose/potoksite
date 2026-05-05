@@ -193,7 +193,7 @@ nav:
           - "✅ Финал этапа": "etap3/final-etap3.md"
       - "🎹 Этап №4: Теория музыки и Аккорды":
           - "etap4/index.md"
-          - "🎵 Музыка — это Язык": "etap4/muzyka-eto-yazyk.md"
+          - "🎵 Музыка — это Язык": "etap4/muzyka-yazyk.md"
           - "🎼 Ноты": "etap4/noty.md"
           - "📏 Интервалы": "etap4/intervaly.md"
           - "🎵 Тональность": "etap4/tonalnost.md"
@@ -205,7 +205,8 @@ nav:
           - "🎧 Применение в битах": "etap4/primenenie-v-bitakh.md"
           - "🎲 Импровизации": "etap4/improvizatsii.md"
           - "📋 Работа с референсами": "etap4/rabota-s-referensami.md"
-          - "🤖 Нейросети для музыки": "etap4/neyroseti-muzyka.md"
+          - "🤖 Нейросети для музыки": "etap4/neyrosieti.md"
+          - "✅ Финал этапа": "etap4/final-etap4.md"
       - "🎼 Этап №5: Теория музыки для продюсеров":
           - "etap5/index.md"
           - "📝 Нотная грамота": "etap5/notnaya-gramota.md"
