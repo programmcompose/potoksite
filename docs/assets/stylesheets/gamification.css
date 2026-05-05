@@ -1,15 +1,15 @@
 /* ========================================
    Gamification — Стили геймификации
-   Material for MkDocs, LocalStorage, vanilla JS
+   Design tokens, blue accents, card system
    ======================================== */
 
-/* ---------- ПАНЕЛЬ УРОВНЯ ---------- */
+/* ---------- Level panel ---------- */
 .potok-level-panel {
   margin: 0 0 1rem;
   padding: 1rem;
-  border-radius: 10px;
-  background-color: var(--md-default-bg-color--light);
-  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
   animation: potok-gam-fade-in 0.5s ease both;
 }
 
@@ -33,13 +33,13 @@
 .potok-level-panel__level-num {
   font-size: 1.6rem;
   font-weight: 800;
-  color: var(--md-accent-fg-color);
+  color: var(--accent-blue);
   line-height: 1;
 }
 
 .potok-level-panel__level-label {
   font-size: 0.78rem;
-  color: var(--md-default-fg-color--light);
+  color: var(--text-secondary);
   font-weight: 500;
 }
 
@@ -52,25 +52,25 @@
 .potok-level-panel__xp-val {
   font-size: 1.3rem;
   font-weight: 700;
-  color: var(--md-primary-fg-color);
+  color: var(--text-heading);
   font-variant-numeric: tabular-nums;
 }
 
 .potok-level-panel__xp-label {
   font-size: 0.75rem;
-  color: var(--md-default-fg-color--light);
+  color: var(--text-secondary);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
 
-/* Трек прогресса уровня */
+/* Level progress track — blue gradient */
 .potok-level-panel__track {
   position: relative;
   width: 100%;
   height: 10px;
   border-radius: 5px;
-  background-color: var(--md-default-fg-color--lightest);
+  background-color: var(--bg-hover);
   overflow: hidden;
   margin-bottom: 0.4rem;
 }
@@ -82,41 +82,38 @@
   height: 100%;
   width: 0%;
   border-radius: 5px;
-  background: linear-gradient(90deg, var(--md-primary-fg-color), var(--md-accent-fg-color));
+  background: linear-gradient(90deg, #3B82F6, #60A5FA);
   transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 0 8px color-mix(in srgb, var(--md-accent-fg-color) 40%, transparent);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
 }
 
 .potok-level-panel__progress-text {
   font-size: 0.75rem;
-  color: var(--md-default-fg-color--light);
+  color: var(--text-secondary);
   text-align: center;
   font-variant-numeric: tabular-nums;
 }
 
 .potok-level-panel__badges-count {
   font-size: 0.75rem;
-  color: var(--md-default-fg-color--light);
+  color: var(--text-secondary);
   text-align: center;
   margin-top: 0.3rem;
 }
 
-/* ---------- УВЕДОМЛЕНИЕ О БЕЙДЖЕ ---------- */
+/* ---------- Badge toast notification ---------- */
 .potok-badge-toast {
   position: fixed;
   top: 1.5rem;
   right: 1.5rem;
   max-width: 320px;
   padding: 1.2rem;
-  border-radius: 12px;
-  background: linear-gradient(135deg,
-    color-mix(in srgb, var(--md-primary-fg-color) 15%, var(--md-default-bg-color)),
-    color-mix(in srgb, var(--md-accent-fg-color) 10%, var(--md-default-bg-color))
-  );
-  border: 2px solid var(--md-accent-fg-color);
+  border-radius: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--accent-blue);
   box-shadow:
-    0 8px 32px rgba(0, 0, 0, 0.3),
-    0 0 20px color-mix(in srgb, var(--md-accent-fg-color) 25%, transparent);
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(59, 130, 246, 0.15);
   z-index: 1000;
   opacity: 0;
   transform: translateX(40px) scale(0.95);
@@ -142,7 +139,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--md-accent-fg-color);
+  color: var(--accent-blue);
   text-align: center;
   margin-bottom: 0.25rem;
 }
@@ -150,14 +147,14 @@
 .potok-badge-toast__name {
   font-size: 1.1rem;
   font-weight: 800;
-  color: var(--md-typeset-color);
+  color: var(--text-heading);
   text-align: center;
   margin-bottom: 0.2rem;
 }
 
 .potok-badge-toast__desc {
   font-size: 0.82rem;
-  color: var(--md-default-fg-color--light);
+  color: var(--text-secondary);
   text-align: center;
   margin-bottom: 0.4rem;
 }
@@ -165,12 +162,12 @@
 .potok-badge-toast__xp {
   font-size: 0.78rem;
   font-weight: 700;
-  color: var(--md-accent-fg-color);
+  color: var(--accent-blue);
   text-align: center;
-  background: color-mix(in srgb, var(--md-accent-fg-color) 12%, transparent);
+  background: rgba(59, 130, 246, 0.12);
   display: inline-block;
   padding: 0.2rem 0.6rem;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 .potok-badge-toast__rarity {
@@ -182,42 +179,42 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   padding: 0.15rem 0.5rem;
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
-/* ---------- РЕДКОСТЬ БЕЙДЖЕЙ ---------- */
+/* ---------- Badge rarity colors ---------- */
 .potok-badge-card__rarity--common,
 .potok-badge-toast__rarity--common {
   color: #9e9e9e;
-  background-color: color-mix(in srgb, #9e9e9e 15%, transparent);
+  background-color: rgba(158, 158, 158, 0.12);
 }
 
 .potok-badge-card__rarity--uncommon,
 .potok-badge-toast__rarity--uncommon {
   color: #4caf50;
-  background-color: color-mix(in srgb, #4caf50 15%, transparent);
+  background-color: rgba(76, 175, 80, 0.12);
 }
 
 .potok-badge-card__rarity--rare,
 .potok-badge-toast__rarity--rare {
-  color: #2196f3;
-  background-color: color-mix(in srgb, #2196f3 15%, transparent);
+  color: #3B82F6;
+  background-color: rgba(59, 130, 246, 0.12);
 }
 
 .potok-badge-card__rarity--epic,
 .potok-badge-toast__rarity--epic {
-  color: #9c27b0;
-  background-color: color-mix(in srgb, #9c27b0 15%, transparent);
+  color: #a855f7;
+  background-color: rgba(168, 85, 247, 0.12);
 }
 
 .potok-badge-card__rarity--legendary,
 .potok-badge-toast__rarity--legendary {
-  color: #ff9800;
-  background-color: color-mix(in srgb, #ff9800 15%, transparent);
+  color: var(--accent-orange);
+  background-color: rgba(242, 153, 74, 0.12);
   animation: potok-legendary-glow 2s ease-in-out infinite;
 }
 
-/* ---------- КАРТОЧКИ БЕЙДЖЕЙ ---------- */
+/* ---------- Badge tabs ---------- */
 .potok-badges-tabs {
   display: flex;
   gap: 0.5rem;
@@ -227,10 +224,10 @@
 
 .potok-badges-tab {
   padding: 0.4rem 0.8rem;
-  border: 1px solid var(--md-default-fg-color--lighter);
-  border-radius: 6px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
   background: transparent;
-  color: var(--md-default-fg-color);
+  color: var(--text-secondary);
   font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
@@ -239,14 +236,15 @@
 }
 
 .potok-badges-tab:hover {
-  background-color: var(--md-default-fg-color--lightest);
-  border-color: var(--md-accent-fg-color);
+  background-color: var(--bg-hover);
+  border-color: var(--accent-blue);
+  color: var(--text-main);
 }
 
 .potok-badges-tab.active {
-  background-color: var(--md-accent-fg-color);
-  color: var(--md-code-fg-color);
-  border-color: var(--md-accent-fg-color);
+  background-color: var(--accent-blue);
+  color: #fff;
+  border-color: var(--accent-blue);
 }
 
 .potok-badges-grid {
@@ -255,45 +253,46 @@
   gap: 1rem;
 }
 
+/* ---------- Badge cards ---------- */
 .potok-badge-card {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 1.2rem 0.8rem;
-  border-radius: 10px;
-  background-color: var(--md-default-bg-color--light);
-  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
   transition: all 0.3s ease;
   animation: potok-gam-fade-in 0.4s ease both;
 }
 
 .potok-badge-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  border-color: var(--md-accent-fg-color);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  border-color: var(--accent-blue);
 }
 
-/* Граница по редкости */
+/* Rarity borders */
 .potok-badge-card--common {
-  border-color: color-mix(in srgb, #9e9e9e 40%, var(--md-default-fg-color--lightest));
+  border-color: rgba(158, 158, 158, 0.25);
 }
 
 .potok-badge-card--uncommon {
-  border-color: color-mix(in srgb, #4caf50 40%, var(--md-default-fg-color--lightest));
+  border-color: rgba(76, 175, 80, 0.3);
 }
 
 .potok-badge-card--rare {
-  border-color: color-mix(in srgb, #2196f3 40%, var(--md-default-fg-color--lightest));
+  border-color: rgba(59, 130, 246, 0.35);
 }
 
 .potok-badge-card--epic {
-  border-color: color-mix(in srgb, #9c27b0 40%, var(--md-default-fg-color--lightest));
+  border-color: rgba(168, 85, 247, 0.3);
 }
 
 .potok-badge-card--legendary {
-  border-color: color-mix(in srgb, #ff9800 50%, var(--md-default-fg-color--lightest));
-  box-shadow: 0 0 12px color-mix(in srgb, #ff9800 20%, transparent);
+  border-color: rgba(242, 153, 74, 0.4);
+  box-shadow: 0 0 12px rgba(242, 153, 74, 0.15);
 }
 
 .potok-badge-card__icon {
@@ -313,14 +312,14 @@
 .potok-badge-card__name {
   font-size: 0.92rem;
   font-weight: 700;
-  color: var(--md-typeset-color);
+  color: var(--text-heading);
   text-align: center;
   margin-bottom: 0.25rem;
 }
 
 .potok-badge-card__desc {
   font-size: 0.78rem;
-  color: var(--md-default-fg-color--light);
+  color: var(--text-secondary);
   text-align: center;
   margin-bottom: 0.5rem;
   line-height: 1.4;
@@ -332,7 +331,7 @@
   text-transform: uppercase;
   letter-spacing: 0.08em;
   padding: 0.15rem 0.5rem;
-  border-radius: 3px;
+  border-radius: 4px;
 }
 
 .potok-badge-card__lock {
@@ -343,7 +342,7 @@
   opacity: 0.5;
 }
 
-/* ---------- КАРТОЧКИ СТАТИСТИКИ ---------- */
+/* ---------- Stats cards ---------- */
 .potok-stats-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -356,16 +355,16 @@
   flex-direction: column;
   align-items: center;
   padding: 1.2rem;
-  border-radius: 10px;
-  background-color: var(--md-default-bg-color--light);
-  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
   transition: all 0.3s ease;
   animation: potok-gam-fade-in 0.4s ease both;
 }
 
 .potok-stats-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
 }
 
 .potok-stats-card__icon {
@@ -376,14 +375,14 @@
 .potok-stats-card__value {
   font-size: 1.6rem;
   font-weight: 800;
-  color: var(--md-accent-fg-color);
+  color: var(--accent-blue);
   font-variant-numeric: tabular-nums;
   margin-bottom: 0.2rem;
 }
 
 .potok-stats-card__label {
   font-size: 0.82rem;
-  color: var(--md-default-fg-color--light);
+  color: var(--text-secondary);
   font-weight: 600;
   margin-bottom: 0.5rem;
 }
@@ -392,7 +391,7 @@
   width: 80%;
   height: 6px;
   border-radius: 3px;
-  background-color: var(--md-default-fg-color--lightest);
+  background-color: var(--bg-hover);
   overflow: hidden;
   margin-bottom: 0.3rem;
 }
@@ -400,28 +399,28 @@
 .potok-stats-card__fill {
   height: 100%;
   border-radius: 3px;
-  background: linear-gradient(90deg, var(--md-primary-fg-color), var(--md-accent-fg-color));
+  background: linear-gradient(90deg, #3B82F6, #60A5FA);
   transition: width 0.6s ease;
 }
 
 .potok-stats-card__sub {
   font-size: 0.72rem;
-  color: var(--md-default-fg-color--lighter);
+  color: var(--text-secondary);
 }
 
-/* ---------- ИСТОРИЯ ДЕЙСТВИЙ ---------- */
+/* ---------- Action history ---------- */
 .potok-stats-history {
   margin-bottom: 1.5rem;
   padding: 1rem;
-  border-radius: 10px;
-  background-color: var(--md-default-bg-color--light);
-  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
 }
 
 .potok-stats-history h3 {
   font-size: 1rem;
   margin-bottom: 0.8rem;
-  color: var(--md-typeset-color);
+  color: var(--text-heading);
 }
 
 .potok-stats-history__list {
@@ -434,7 +433,7 @@
   justify-content: space-between;
   align-items: center;
   padding: 0.5rem 0;
-  border-bottom: 1px solid var(--md-default-fg-color--lightest);
+  border-bottom: 1px solid var(--border-subtle);
   font-size: 0.82rem;
   gap: 0.5rem;
 }
@@ -445,46 +444,46 @@
 
 .potok-stats-history__xp {
   font-weight: 700;
-  color: var(--md-accent-fg-color);
+  color: var(--accent-blue);
   white-space: nowrap;
 }
 
 .potok-stats-history__reason {
-  color: var(--md-typeset-color);
+  color: var(--text-main);
   flex: 1;
   text-align: center;
 }
 
 .potok-stats-history__time {
-  color: var(--md-default-fg-color--lighter);
+  color: var(--text-secondary);
   font-size: 0.72rem;
   white-space: nowrap;
 }
 
 .potok-stats-empty {
-  color: var(--md-default-fg-color--lighter);
+  color: var(--text-secondary);
   font-style: italic;
   text-align: center;
   padding: 1rem;
 }
 
-/* ---------- ИНФОРМАЦИЯ ---------- */
+/* ---------- Info panel ---------- */
 .potok-stats-info {
   margin-bottom: 1.5rem;
   padding: 1rem;
-  border-radius: 10px;
-  background-color: var(--md-default-bg-color--light);
-  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
   font-size: 0.85rem;
-  color: var(--md-default-fg-color--light);
+  color: var(--text-secondary);
   line-height: 1.8;
 }
 
 .potok-stats-info strong {
-  color: var(--md-typeset-color);
+  color: var(--text-heading);
 }
 
-/* ---------- КНОПКИ УПРАВЛЕНИЯ ---------- */
+/* ---------- Action buttons ---------- */
 .potok-stats-actions {
   display: flex;
   gap: 0.6rem;
@@ -493,10 +492,10 @@
 
 .potok-stats-btn {
   padding: 0.5rem 1rem;
-  border: 1px solid var(--md-default-fg-color--lighter);
-  border-radius: 6px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
   background: transparent;
-  color: var(--md-typeset-color);
+  color: var(--text-main);
   font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
@@ -505,30 +504,31 @@
 }
 
 .potok-stats-btn:hover {
-  background-color: var(--md-default-fg-color--lightest);
-  border-color: var(--md-accent-fg-color);
-  color: var(--md-accent-fg-color);
+  background-color: var(--bg-hover);
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
 }
 
 .potok-stats-btn--reset {
   color: #ef5350;
-  border-color: color-mix(in srgb, #ef5350 30%, var(--md-default-fg-color--lighter));
+  border-color: rgba(239, 83, 80, 0.25);
 }
 
 .potok-stats-btn--reset:hover {
-  background-color: color-mix(in srgb, #ef5350 12%, transparent);
+  background-color: rgba(239, 83, 80, 0.1);
   border-color: #ef5350;
 }
 
-/* ---------- УВЕДОМЛЕНИЕ О ПОВЫШЕНИИ УРОВНЯ ---------- */
+/* ---------- Level-up toast ---------- */
 .potok-levelup-toast {
-  background: linear-gradient(135deg, var(--md-primary-fg-color), var(--md-accent-fg-color));
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-hover));
   font-size: 1rem;
   padding: 0.8rem 1.5rem;
+  color: #fff;
   animation: potok-levelup-pulse 0.5s ease;
 }
 
-/* ---------- АНИМАЦИИ ---------- */
+/* ---------- Animations ---------- */
 @keyframes potok-gam-fade-in {
   from {
     opacity: 0;
@@ -549,10 +549,10 @@
 
 @keyframes potok-legendary-glow {
   0%, 100% {
-    box-shadow: 0 0 4px color-mix(in srgb, #ff9800 30%, transparent);
+    box-shadow: 0 0 4px rgba(242, 153, 74, 0.2);
   }
   50% {
-    box-shadow: 0 0 12px color-mix(in srgb, #ff9800 50%, transparent);
+    box-shadow: 0 0 14px rgba(242, 153, 74, 0.35);
   }
 }
 
@@ -562,7 +562,7 @@
   100% { transform: translateX(-50%) scale(1); }
 }
 
-/* ---------- АДАПТИВНОСТЬ ---------- */
+/* ---------- Responsive ---------- */
 @media screen and (max-width: 59.9375em) {
   .potok-level-panel {
     margin: 0 0 0.8rem;
