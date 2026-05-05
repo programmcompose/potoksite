@@ -90,4 +90,4 @@ Master → EQ → Dynamic EQ → Compressor → Exciter → Imager → Maximizer
 
 ---
 
-**← [Назад: Фишки для спидрана](speedran-fishki.md)** | **[Далее: Проекты IY →](proekty-iy.md)**
+**← [Назад: Фишки для спидрана](speedran-fishki.md)** | **[Далее: Финал этапа →](final-etap3.md)**
