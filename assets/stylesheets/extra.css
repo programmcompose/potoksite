@@ -1,0 +1,405 @@
+/* ========================================
+   Custom Styles — Music Production Course
+   ======================================== */
+
+/* Load Unbounded font for hero */
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&display=swap');
+
+/* Logo shadow effect */
+.md-logo {
+  filter: drop-shadow(0 0 6px rgba(239, 83, 80, 0.5))
+          drop-shadow(0 0 14px rgba(239, 83, 80, 0.25));
+  transition: filter 0.3s ease;
+}
+
+.md-logo:hover {
+  filter: drop-shadow(0 0 10px rgba(239, 83, 80, 0.8))
+          drop-shadow(0 0 24px rgba(239, 83, 80, 0.4));
+}
+
+/* Dark theme refinements */
+[data-md-color-scheme="slate"] {
+  --md-default-bg-color: #282828;
+  --md-default-bg-color--light: #2e2e2e;
+  --md-default-bg-color--lighter: #363636;
+  --md-primary-fg-color: #303030;
+  --md-accent-fg-color: #00bcd4;
+  --md-typeset-color: #FDFBDF;
+}
+
+/* Light theme */
+[data-md-color-scheme="default"] {
+  --md-default-bg-color: #FDFBDF;
+  --md-default-bg-color--light: #f5f2d0;
+  --md-default-bg-color--lighter: #efeacd;
+  --md-primary-fg-color: #e8e5c8;
+  --md-accent-fg-color: #00bcd4;
+  --md-typeset-color: #282828;
+}
+
+/* Force text color globally */
+.md-typeset,
+.md-content,
+.md-nav__link,
+.md-header__title {
+  color: var(--md-typeset-color);
+}
+
+/* Link colors */
+.md-typeset a {
+  color: #64b5f6;
+}
+
+.md-typeset a:hover {
+  color: #90caf9;
+}
+
+.md-nav__link {
+  color: var(--md-typeset-color);
+}
+
+.md-nav__link:hover {
+  color: #64b5f6;
+}
+
+/* Active nav link — left sidebar */
+.md-nav__link--active,
+.md-nav__item--active > .md-nav__link,
+.md-nav__item--active > .md-nav__link:hover {
+  color: #64b5f6 !important;
+  font-weight: 700;
+}
+
+/* Active nav link — right sidebar (TOC) */
+.md-nav__title--active,
+.md-nav__title--active:hover {
+  color: #64b5f6 !important;
+  font-weight: 700;
+}
+
+/* Code blocks styling */
+.md-typeset code {
+  border-radius: 4px;
+  padding: 0.2em 0.4em;
+}
+
+.md-typeset pre > code {
+  border-radius: 8px;
+}
+
+/* Table styling */
+.md-typeset table:not([class]) {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.md-typeset table:not([class]) th {
+  background-color: rgba(0, 188, 212, 0.1);
+}
+
+/* Admonition refinements */
+.md-typeset .admonition {
+  border-radius: 8px;
+}
+
+/* Hero section on index — same golden look in both themes */
+.hero-section {
+  text-align: center;
+  padding: 3.5em 2em;
+  margin: 1.5em 0 2em;
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at center, rgba(255, 215, 0, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #FFD54F 0%, #FFC107 50%, #FFB300 100%) !important;
+  border: 1px solid rgba(255, 184, 0, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(255, 160, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+.hero-section h1 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 2.5em;
+  font-weight: 900;
+  margin: 0 0 0.6em;
+  background: linear-gradient(135deg, #5D4037 0%, #3E2723 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  font-size: 1.15em;
+  line-height: 1.6;
+  max-width: 640px;
+  margin: 0 auto 1.5em;
+  color: #4e342e;
+}
+
+.hero-tags {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin-top: 1em;
+}
+
+.hero-tag {
+  display: inline-block;
+  padding: 0.35em 0.9em;
+  border-radius: 20px;
+  font-size: 0.85em;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #4e342e;
+}
+
+/* Animated wave decoration */
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(255, 215, 0, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(255, 165, 0, 0.1) 0%, transparent 50%);
+  animation: hero-float 20s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes hero-float {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(10px, -10px) rotate(1deg); }
+  66% { transform: translate(-10px, 10px) rotate(-1deg); }
+}
+
+/* Grid cards enhancement */
+.grid.cards {
+  gap: 1.5rem;
+}
+
+/* Scroll-reveal animation for cards */
+.grid.cards > .md-typeset__scrollwrap,
+.grid.cards > li {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.grid.cards > .md-typeset__scrollwrap.scroll-card-visible,
+.grid.cards > li.scroll-card-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .grid.cards > .md-typeset__scrollwrap,
+  .grid.cards > li {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Navigation refinements */
+.md-nav__item--section > .md-nav__link {
+  font-weight: 600;
+}
+
+/* Smooth scrolling + smooth theme transition */
+html {
+  scroll-behavior: smooth;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Smooth theme transition for all themed elements */
+body,
+.md-header,
+.md-footer,
+.md-sidebar,
+.md-main,
+.md-content,
+.md-typeset,
+.md-nav,
+.md-nav__link,
+.md-search__input,
+.md-search__form,
+.md-dialog,
+.admonition,
+.md-typeset table:not([class]),
+.md-typeset table:not([class]) th,
+.md-typeset table:not([class]) td,
+.md-typeset code,
+.md-typeset pre > code,
+.md-grid {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Back to top button */
+#iy-back-to-top {
+  position: fixed !important;
+  bottom: 1.5rem !important;
+  right: 1.5rem !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  border: none !important;
+  background-color: var(--md-accent-fg-color) !important;
+  color: var(--md-default-bg-color) !important;
+  cursor: pointer !important;
+  opacity: 0 !important;
+  transform: translateY(8px) !important;
+  transition: opacity 0.25s ease, transform 0.25s ease !important;
+  pointer-events: none !important;
+  z-index: 20 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#iy-back-to-top svg {
+  width: 20px !important;
+  height: 20px !important;
+  fill: currentColor !important;
+}
+
+#iy-back-to-top.show {
+  opacity: 0.9 !important;
+  transform: translateY(0) !important;
+  pointer-events: auto !important;
+}
+
+#iy-back-to-top:hover {
+  opacity: 1 !important;
+  background-color: #0097a7 !important;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--md-default-bg-color);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--md-primary-fg-color);
+  border-radius: 4px;
+}
+
+/* Footer */
+[data-md-color-scheme="slate"] .md-footer {
+  background-color: #202020;
+}
+
+[data-md-color-scheme="default"] .md-footer {
+  background-color: #e0ddc0;
+}
+
+/* Image containers */
+.md-typeset img {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* Mermaid diagrams */
+[data-md-color-scheme="slate"] .mermaid {
+  background: rgba(30, 30, 30, 0.9) !important;
+  border-radius: 8px;
+  padding: 1em;
+}
+
+[data-md-color-scheme="default"] .mermaid {
+  background: rgba(200, 195, 160, 0.5) !important;
+  border-radius: 8px;
+  padding: 1em;
+}
+
+/* Thicker headings */
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3 {
+  font-weight: 800;
+}
+
+.md-typeset h1 {
+  font-weight: 900;
+}
+
+/* Heading content (lists, paragraphs under headings) — lighter weight */
+.md-typeset h1 + ul,
+.md-typeset h1 + ul li,
+.md-typeset h2 + ul,
+.md-typeset h2 + ul li,
+.md-typeset h3 + ul,
+.md-typeset h3 + ul li {
+  font-weight: 400;
+}
+
+/* ========================================
+   Audio players
+   ======================================== */
+
+/* Full-width audio player (standalone) */
+.md-typeset audio.audio-player {
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  margin: 0.6em 0;
+  border-radius: 8px;
+  height: 44px;
+}
+
+/* Compact audio in tables */
+.md-typeset table audio.audio-player {
+  width: 150px;
+  height: 34px;
+  margin: 2px 0;
+}
+
+/* ===== Граф связей (плагин mkdocs-network-graph-plugin) ===== */
+
+/* Граф: убрать стрелки с линий связей */
+#graph .link,
+.modal_graph .link {
+  marker-end: none !important;
+  marker-start: none !important;
+}
+
+/* Граф: узлы без свечения */
+#graph .nodes .node circle,
+.modal_graph .nodes .node circle {
+  filter: none !important;
+  transition: r 0.2s;
+}
+
+/* Граф: линии */
+#graph .links .link,
+.modal_graph .links .link {
+  stroke: var(--md-default-fg-color--lighter);
+  stroke-opacity: 0.35;
+}
+
+/* Граф: текст меток */
+#graph .nodes .node text,
+.modal_graph .nodes .node text {
+  fill: var(--md-default-fg-color--light);
+  pointer-events: none;
+}
+
+#graph .nodes .node.current text,
+.modal_graph .nodes .node.current text {
+  fill: var(--md-typeset-a-color);
+  font-weight: 700;
+}

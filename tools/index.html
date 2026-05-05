@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Интерактивные инструменты — Курс по музыкальному продакшену</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700;900&display=swap');
+  /* === Dark theme (slate) — default === */
+  :root,
+  [data-theme="dark"] {
+    --bg: #282828;
+    --bg-light: #2e2e2e;
+    --bg-lighter: #363636;
+    --bg-card: #363636;
+    --bg-card-border: #404040;
+    --text: #FDFBDF;
+    --text-muted: rgba(253, 251, 223, 0.6);
+    --accent: #00bcd4;
+    --purple: #ab47bc;
+    --orange: #ff7043;
+    --orange-glow: rgba(255, 140, 0, 0.15);
+    --orange-border: rgba(255, 140, 0, 0.12);
+    --orange-hover-shadow: rgba(255, 143, 0, 0.15);
+    --gradient-top: #1a1208;
+    --gradient-mid: #282828;
+    --gradient-bottom: #201a10;
+    --header-bg: radial-gradient(ellipse at center, rgba(255, 140, 0, 0.08) 0%, transparent 70%);
+    --shadow: 0 4px 16px rgba(0,0,0,0.4);
+    --toggle-bg: #303030;
+    --toggle-hover: #3e3e3e;
+    --coming-soon-border: #404040;
+    --tag-bg-opacity: 0.2;
+  }
+
+  /* === Light theme === */
+  [data-theme="light"] {
+    --bg: #FDFBDF;
+    --bg-light: #f5f2d0;
+    --bg-lighter: #efeacd;
+    --bg-card: #f5f2d0;
+    --bg-card-border: #efeacd;
+    --text: #282828;
+    --text-muted: rgba(40, 40, 40, 0.6);
+    --accent: #00bcd4;
+    --purple: #ab47bc;
+    --orange: #e65100;
+    --orange-glow: rgba(230, 81, 0, 0.1);
+    --orange-border: rgba(230, 81, 0, 0.15);
+    --orange-hover-shadow: rgba(230, 81, 0, 0.12);
+    --gradient-top: #f5e6b0;
+    --gradient-mid: #FDFBDF;
+    --gradient-bottom: #f0e8a8;
+    --header-bg: radial-gradient(ellipse at center, rgba(230, 81, 0, 0.06) 0%, transparent 70%);
+    --shadow: 0 4px 16px rgba(0,0,0,0.1);
+    --toggle-bg: #e8e5c8;
+    --toggle-hover: #ddd9b8;
+    --coming-soon-border: #efeacd;
+    --tag-bg-opacity: 0.15;
+  }
+
+  :root {
+    --radius: 12px;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Unbounded', sans-serif;
+    background:
+      radial-gradient(ellipse at 50% 0%, var(--orange-glow) 0%, transparent 60%),
+      linear-gradient(170deg, var(--gradient-top) 0%, var(--gradient-mid) 40%, var(--gradient-bottom) 100%);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 24px 16px;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+
+  .container { max-width: 800px; margin: 0 auto; }
+
+  /* Theme toggle */
+  .theme-toggle {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    z-index: 100;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 1px solid var(--bg-card-border);
+    background: var(--toggle-bg);
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+    box-shadow: var(--shadow);
+  }
+
+  .theme-toggle:hover {
+    background: var(--toggle-hover);
+    transform: scale(1.05);
+  }
+
+  .theme-toggle svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+  }
+
+  .icon-sun,
+  [data-theme="light"] .icon-moon { display: none; }
+  [data-theme="light"] .icon-sun { display: block; }
+  [data-theme="light"] .icon-moon { display: none; }
+  [data-theme="dark"] .icon-moon { display: block; }
+
+  header {
+    text-align: center;
+    margin-bottom: 32px;
+    padding: 24px 16px;
+    border-radius: var(--radius);
+    background: var(--header-bg);
+    border: 1px solid var(--orange-border);
+    transition: all 0.3s ease;
+  }
+
+  header h1 {
+    font-size: 2em;
+    font-weight: 900;
+    background: linear-gradient(135deg, #FFB300, #FF7043);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+
+  /* Restore emoji rendering broken by -webkit-text-fill-color: transparent */
+  header h1 .emoji {
+    -webkit-text-fill-color: initial;
+  }
+
+  header p {
+    font-size: 1em;
+    color: var(--text-muted);
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 16px;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.9em;
+  }
+
+  .back-link:hover { text-decoration: underline; }
+
+  .tool-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 16px;
+  }
+
+  .tool-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--bg-card-border);
+    transition: all 0.2s;
+    text-decoration: none;
+    color: var(--text);
+    display: block;
+  }
+
+  .tool-card:hover {
+    border-color: #FF8F00;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px var(--orange-hover-shadow), var(--shadow);
+  }
+
+  .tool-icon {
+    font-size: 2.5em;
+    margin-bottom: 12px;
+  }
+
+  .tool-card h2 {
+    font-size: 1.2em;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+
+  .tool-card p {
+    font-size: 0.9em;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-bottom: 12px;
+  }
+
+  .tool-tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.7em;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-right: 4px;
+    margin-bottom: 4px;
+  }
+
+  .tag-synthesis { background: rgba(0,188,212,var(--tag-bg-opacity)); color: var(--accent); }
+  .tag-theory { background: rgba(171,71,188,var(--tag-bg-opacity)); color: var(--purple); }
+  .tag-game { background: rgba(255,112,67,var(--tag-bg-opacity)); color: var(--orange); }
+  .tag-audio { background: rgba(102,187,106,var(--tag-bg-opacity)); color: #66bb6a; }
+  .tag-freq { background: rgba(255,215,0,var(--tag-bg-opacity)); color: #ffd700; }
+  .tag-checklist { background: rgba(102,187,106,var(--tag-bg-opacity)); color: #66bb6a; }
+
+  .coming-soon {
+    opacity: 0.4;
+    border-style: dashed;
+  }
+
+  .coming-soon:hover {
+    transform: none;
+    border-color: var(--coming-soon-border);
+  }
+
+  .footer-note {
+    text-align: center;
+    margin-top: 32px;
+    font-size: 0.8em;
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.5em; }
+    .tool-cards { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
+  <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2"/><line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"/><line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2"/><line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2"/></svg>
+</button>
+<div class="container">
+  <a href="https://programmcompose.github.io/potoksite/" class="back-link">← На главную курса</a>
+  <header>
+    <h1><span class="emoji">🎛️</span> Интерактивные инструменты</h1>
+    <p>Практикуйте теорию музыки с помощью интерактивных инструментов прямо в браузере</p>
+  </header>
+
+  <div class="tool-cards">
+    <a href="checklist/index.html" class="tool-card">
+      <div class="tool-icon">✅</div>
+      <h2>Чеклист старта</h2>
+      <p>Отмечай выполненные шаги и следи за прогрессом. Данные сохраняются в браузере.</p>
+      <span class="tool-tag tag-checklist">Чеклист</span>
+    </a>
+
+    <a href="wavetable/index.html" class="tool-card">
+      <div class="tool-icon">🌊</div>
+      <h2>Wavetable-синтезатор</h2>
+      <p>Смешивайте 4 формы волны, управляйте ADSR-огибающей, визуализируйте результирующий сигнал и играйте с клавиатуры. Экспортируйте и сохраняйте пресеты.</p>
+      <span class="tool-tag tag-synthesis">Синтез</span>
+      <span class="tool-tag tag-audio">Аудио</span>
+    </a>
+
+    <a href="harmony-map/index.html" class="tool-card">
+      <div class="tool-icon">🎹</div>
+      <h2>Карта гармоний</h2>
+      <p>Исследуйте круг интервалов, играйте в игру на знание аккордов и стройте собственные аккордовые прогрессии. 3 режима: исследование, игра, конструктор.</p>
+      <span class="tool-tag tag-theory">Теория</span>
+      <span class="tool-tag tag-game">Игра</span>
+    </a>
+
+    <a href="waveforms/index.html" class="tool-card">
+      <div class="tool-icon">🌊</div>
+      <h2>Визуализация волн</h2>
+      <p>Исследуйте формы волн, их смешивание и гармоники. Анимированные графики, частотный спектр, звуковой вывод и обучающие материалы.</p>
+      <span class="tool-tag tag-synthesis">Синтез</span>
+      <span class="tool-tag tag-audio">Аудио</span>
+    </a>
+
+    <a href="frequency-map/index.html" class="tool-card">
+      <div class="tool-icon">📊</div>
+      <h2>Карта частот</h2>
+      <p>Интерактивная карта частотных диапазонов инструментов: барабаны, бас, гитары, синтезаторы, вокал, живые инструменты. Фильтрация по группам и подсказки при наведении.</p>
+      <span class="tool-tag tag-theory">Теория</span>
+      <span class="tool-tag tag-freq">Частоты</span>
+    </a>
+
+    <div class="tool-card coming-soon">
+      <div class="tool-icon">🥁</div>
+      <h2>Друм-машина</h2>
+      <p>Создавайте биты, экспериментируйте с паттернами и темпом. Встроенные киты: 808, 909, акаустик.</p>
+      <span class="tool-tag tag-synthesis">Синтез</span>
+      <span class="tool-tag tag-game">Скоро</span>
+    </div>
+
+    <a href="eq-trainer/index.html" class="tool-card">
+      <div class="tool-icon">🎚️</div>
+      <h2>EQ-тренажёр</h2>
+      <p>Научитесь слышать частоты. Упражнения на распознавание и настройку эквалайзера.</p>
+      <span class="tool-tag tag-theory">Теория</span>
+      <span class="tool-tag tag-audio">Аудио</span>
+    </a>
+
+    <a href="eq-pink/index.html" class="tool-card">
+      <div class="tool-icon">🩷</div>
+      <h2>EQ-PINK</h2>
+      <p>Тренажёр слуха с розовым шумом. Угадайте усиленную частоту в реальном времени. 4 уровня сложности, дневной вызов, FFT-визуализация.</p>
+      <span class="tool-tag tag-audio">Аудио</span>
+      <span class="tool-tag tag-freq">Частоты</span>
+      <span class="tool-tag tag-game">Тренировка</span>
+    </a>
+
+    <a href="eq-ab-test/index.html" class="tool-card">
+      <div class="tool-icon">🔀</div>
+      <h2>EQ‑AB‑test</h2>
+      <p>Сравнение аудио до и после EQ: dry/wet кроссфейд, 5 полос Biquad, кривая на canvas и пресеты. Загрузка своего файла (MP3, WAV, OGG).</p>
+      <span class="tool-tag tag-audio">Аудио</span>
+      <span class="tool-tag tag-freq">Эквалайзер</span>
+    </a>
+
+    <a href="iy-quest/index.html" class="tool-card">
+      <div class="tool-icon">🎮</div>
+      <h2>Прохождение Потока — IY Quest</h2>
+      <p>Геймифицированный трекер прогресса по курсу. 100 заданий, 10 этапов, XP, ранги и достижения. Данные сохраняются в браузере.</p>
+      <span class="tool-tag tag-game">Геймификация</span>
+      <span class="tool-tag tag-checklist">Прогресс</span>
+    </a>
+  </div>
+
+  <div class="footer-note">
+    Все инструменты работают локально в вашем браузере · Звук запускается по жести пользователя
+  </div>
+</div>
+<script>
+(function() {
+  var toggle = document.getElementById('themeToggle');
+  var stored = localStorage.getItem('tools-theme');
+  if (stored) {
+    document.documentElement.setAttribute('data-theme', stored);
+  } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+    document.documentElement.setAttribute('data-theme', 'light');
+  }
+  toggle.addEventListener('click', function() {
+    var current = document.documentElement.getAttribute('data-theme');
+    var next = current === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('tools-theme', next);
+  });
+})();
+</script>
+</body>
+</html>

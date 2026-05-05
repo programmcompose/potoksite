@@ -1,0 +1,1750 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EQ-тренажёр — Курс по музыкальному продакшену</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700;900&display=swap');
+  :root {
+    --bg: #282828;
+    --bg-light: #363636;
+    --bg-lighter: #404040;
+    --bg-darker: #1e1e1e;
+    --text: #FDFBDF;
+    --accent: #00bcd4;
+    --accent-dim: #00838f;
+    --purple: #ab47bc;
+    --orange: #ff7043;
+    --success: #66bb6a;
+    --danger: #ef5350;
+    --warning: #ffd740;
+    --radius: 8px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Unbounded', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    padding: 16px;
+  }
+
+  .container { max-width: 900px; margin: 0 auto; }
+
+  header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  header h1 {
+    font-size: 1.6em;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 4px;
+  }
+
+  header h1 .emoji {
+    -webkit-text-fill-color: initial;
+  }
+
+  header p {
+    font-size: 0.9em;
+    opacity: 0.7;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+
+  .back-link {
+    display: inline-block;
+    margin-bottom: 12px;
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 0.85em;
+  }
+  .back-link:hover { text-decoration: underline; }
+
+  .panel {
+    background: var(--bg-light);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 12px;
+    box-shadow: var(--shadow);
+  }
+
+  .panel-title {
+    font-size: 0.8em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    opacity: 0.6;
+    margin-bottom: 12px;
+  }
+
+  .canvas-wrap {
+    background: var(--bg-darker);
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+  }
+
+  canvas {
+    display: block;
+    width: 100%;
+  }
+
+  .controls {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-bottom: 12px;
+  }
+
+  button {
+    background: var(--bg-lighter);
+    color: var(--text);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius);
+    padding: 8px 16px;
+    font-size: 0.85em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+
+  button:hover {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+  }
+
+  button:active {
+    transform: scale(0.97);
+  }
+
+  button.primary {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+  }
+
+  button.primary:hover {
+    background: #00e5ff;
+  }
+
+  button.success {
+    background: var(--success);
+    color: var(--bg);
+    border-color: var(--success);
+  }
+
+  button.danger {
+    background: var(--danger);
+    color: var(--text);
+    border-color: var(--danger);
+  }
+
+  button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+  }
+
+  .sample-selector {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 12px;
+  }
+
+  .sample-btn {
+    flex: 1;
+    text-align: center;
+    padding: 10px 8px;
+    font-size: 0.8em;
+  }
+
+  .sample-btn.active {
+    background: var(--accent);
+    color: var(--bg);
+    border-color: var(--accent);
+  }
+
+  .upload-zone {
+    margin-top: 12px;
+    border: 2px dashed var(--bg-lighter);
+    border-radius: var(--radius);
+    padding: 14px;
+    text-align: center;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .upload-zone:hover, .upload-zone.dragover {
+    border-color: var(--accent);
+    background: rgba(0,188,212,0.05);
+  }
+
+  .upload-zone input[type="file"] {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  .upload-zone-label {
+    font-size: 0.82em;
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  .upload-zone-label .icon {
+    font-size: 1.4em;
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  .custom-file-info {
+    display: none;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: var(--bg-darker);
+    border-radius: var(--radius);
+    font-size: 0.8em;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .custom-file-info.visible {
+    display: flex;
+  }
+
+  .custom-file-info .file-name {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    opacity: 0.9;
+  }
+
+  .custom-file-info .file-remove {
+    background: var(--danger);
+    color: var(--text);
+    border: none;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 0.85em;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .status-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    background: var(--bg-darker);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    font-size: 0.85em;
+  }
+
+  .status-indicator {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--bg-lighter);
+    flex-shrink: 0;
+  }
+
+  .status-indicator.playing { background: var(--success); animation: pulse 0.8s infinite; }
+  .status-indicator.waiting { background: var(--warning); }
+  .status-indicator.done { background: var(--accent); }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .mode-label {
+    font-weight: 700;
+    font-size: 1em;
+    padding: 4px 10px;
+    border-radius: 4px;
+    background: var(--bg-lighter);
+  }
+
+  .mode-label.before { color: var(--warning); }
+  .mode-label.after { color: var(--success); }
+
+  .guess-section {
+    display: none;
+  }
+
+  .guess-section.visible {
+    display: block;
+  }
+
+  .guess-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+
+  .guess-group label {
+    display: block;
+    font-size: 0.8em;
+    font-weight: 600;
+    opacity: 0.7;
+    margin-bottom: 6px;
+  }
+
+  .guess-group select {
+    width: 100%;
+    background: var(--bg-darker);
+    color: var(--text);
+    border: 1px solid var(--bg-lighter);
+    border-radius: var(--radius);
+    padding: 8px 10px;
+    font-size: 0.85em;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  .result-box {
+    display: none;
+    padding: 14px;
+    border-radius: var(--radius);
+    margin-top: 12px;
+    font-size: 0.9em;
+    line-height: 1.6;
+  }
+
+  .result-box.visible { display: block; }
+  .result-box.correct { background: rgba(102,187,106,0.15); border: 1px solid var(--success); }
+  .result-box.wrong { background: rgba(239,83,80,0.15); border: 1px solid var(--danger); }
+
+  .score-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 14px;
+    background: var(--bg-darker);
+    border-radius: var(--radius);
+    margin-bottom: 12px;
+    font-size: 0.85em;
+  }
+
+  .score-item {
+    text-align: center;
+  }
+
+  .score-value {
+    font-size: 1.4em;
+    font-weight: 800;
+  }
+
+  .score-label {
+    font-size: 0.7em;
+    opacity: 0.5;
+    text-transform: uppercase;
+  }
+
+  .difficulty-selector {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .diff-btn {
+    flex: 1;
+    padding: 6px 8px;
+    font-size: 0.75em;
+  }
+
+  .diff-btn.active {
+    background: var(--purple);
+    color: var(--text);
+    border-color: var(--purple);
+  }
+
+  .ab-controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    justify-content: center;
+    margin: 12px 0;
+  }
+
+  .ab-btn {
+    min-width: 100px;
+    padding: 12px 16px;
+    font-size: 0.9em;
+    font-weight: 700;
+  }
+
+  .ab-btn.btn-before {
+    border-color: var(--warning);
+    color: var(--warning);
+  }
+
+  .ab-btn.btn-before:hover, .ab-btn.btn-before.active {
+    background: var(--warning);
+    color: var(--bg);
+  }
+
+  .ab-btn.btn-after {
+    border-color: var(--success);
+    color: var(--success);
+  }
+
+  .ab-btn.btn-after:hover, .ab-btn.btn-after.active {
+    background: var(--success);
+    color: var(--bg);
+  }
+
+  .key-hint {
+    font-size: 0.7em;
+    opacity: 0.5;
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  .loop-btn {
+    padding: 8px 14px;
+    font-size: 0.8em;
+    border-radius: 20px;
+  }
+
+  .loop-btn.active {
+    background: var(--orange);
+    color: var(--bg);
+    border-color: var(--orange);
+    animation: pulse 1s infinite;
+  }
+
+  .eq-info {
+    font-size: 0.8em;
+    opacity: 0.6;
+    text-align: center;
+    margin-top: 8px;
+    line-height: 1.5;
+  }
+
+  .volume-control {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin: 10px 0;
+    font-size: 0.85em;
+  }
+
+  .volume-control input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 180px;
+    height: 6px;
+    border-radius: 3px;
+    background: var(--bg-darker);
+    outline: none;
+    cursor: pointer;
+  }
+
+  .volume-control input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+  }
+
+  .volume-control input[type="range"]::-moz-range-thumb {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    background: var(--accent);
+    cursor: pointer;
+    border: none;
+  }
+
+  .volume-control #volumeValue {
+    min-width: 36px;
+    text-align: right;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    opacity: 0.8;
+  }
+
+  .wave-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75em;
+    opacity: 0.5;
+    margin-top: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .waveform-wrap {
+    cursor: pointer;
+  }
+
+  @media (max-width: 600px) {
+    header h1 { font-size: 1.3em; }
+    .guess-grid { grid-template-columns: 1fr; }
+    .ab-btn { min-width: 80px; padding: 10px 12px; font-size: 0.8em; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="../index.html" class="back-link">← К инструментам</a>
+  <header>
+     <h1><span class="emoji">🎚️</span> EQ-тренажёр</h1>
+    <p>Слушайте звук до и после эквализации, угадайте, какой диапазон частот был усилен и на сколько</p>
+  </header>
+
+  <div class="score-bar">
+    <div class="score-item">
+      <div class="score-value" id="scoreTotal">0</div>
+      <div class="score-label">Всего</div>
+    </div>
+    <div class="score-item">
+      <div class="score-value" style="color:var(--success)" id="scoreCorrect">0</div>
+      <div class="score-label">Верно</div>
+    </div>
+    <div class="score-item">
+      <div class="score-value" style="color:var(--accent)" id="scoreStreak">0</div>
+      <div class="score-label">Серия</div>
+    </div>
+    <div class="score-item">
+      <div class="score-value" style="color:var(--warning)" id="scorePercent">0%</div>
+      <div class="score-label">Точность</div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Сэмпл</div>
+    <div class="sample-selector">
+      <button class="sample-btn active" data-sample="drums">🥁 Барабаны</button>
+      <button class="sample-btn" data-sample="guitar">🎸 Гитара</button>
+      <button class="sample-btn" data-sample="piano">🎹 Пианино</button>
+      <button class="sample-btn" data-sample="bass">🎵 Бас</button>
+      <button class="sample-btn" data-sample="vocal">🎤 Вокал</button>
+    </div>
+
+    <div class="upload-zone" id="uploadZone">
+      <input type="file" id="fileInput" accept="audio/*,.mp3,.ogg,.wav,.flac,.m4a,.webm">
+      <div class="upload-zone-label">
+        <span class="icon">📂</span>
+        Загрузите свой трек (MP3, OGG, WAV, FLAC…)
+      </div>
+    </div>
+    <div class="custom-file-info" id="customFileInfo">
+      <span>🎵</span>
+      <span class="file-name" id="customFileName"></span>
+      <button class="file-remove" id="btnRemoveFile">✕</button>
+    </div>
+
+    <div class="panel-title" style="margin-top:8px;">Сложность</div>
+    <div class="difficulty-selector">
+      <button class="diff-btn active" data-diff="easy">Лёгкая</button>
+      <button class="diff-btn" data-diff="hard">Средняя</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Кривая эквалайзера</div>
+    <div class="canvas-wrap">
+      <canvas id="eqCanvas" height="200"></canvas>
+    </div>
+    <div class="eq-info" id="eqInfo">Нажмите «Новый раунд» для начала</div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-title">Волна — выберите точку воспроизведения</div>
+    <div class="canvas-wrap waveform-wrap">
+      <canvas id="waveCanvas" height="100"></canvas>
+    </div>
+    <div class="wave-info">
+      <span id="waveTimeLabel">0:00</span>
+      <span id="waveDurationLabel">—</span>
+    </div>
+  </div>
+
+  <div class="status-bar">
+    <div class="status-indicator" id="statusDot"></div>
+    <span id="statusText">Готов к работе</span>
+    <div style="flex:1"></div>
+    <span class="mode-label" id="modeLabel" style="display:none;"></span>
+  </div>
+
+  <div class="controls">
+    <button class="primary" id="btnNewRound">🎲 Новый раунд</button>
+    <button id="btnPreview">🔊 Предпрослушка</button>
+  </div>
+
+  <div class="volume-control">
+    <label for="volumeSlider">🔉 Громкость</label>
+    <input type="range" id="volumeSlider" min="0" max="100" value="70">
+    <span id="volumeValue">70%</span>
+  </div>
+
+  <div class="ab-controls">
+    <button class="ab-btn btn-before" id="btnBefore" disabled>ДО</button>
+    <span style="opacity:0.3; font-weight:700;">⇄</span>
+    <button class="ab-btn btn-after" id="btnAfter" disabled>ПОСЛЕ</button>
+  </div>
+  <div style="text-align:center; margin-top:8px;">
+    <button class="loop-btn" id="btnLoop" disabled>🔁 Авто-переключение</button>
+  </div>
+  <div class="key-hint">Или используйте клавиши [Z] — ДО / [X] — ПОСЛЕ</div>
+
+  <div class="guess-section" id="guessSection">
+    <div class="panel">
+      <div class="panel-title">Ваш ответ</div>
+      <div class="guess-grid">
+        <div class="guess-group">
+          <label>Какой диапазон был усилён?</label>
+          <select id="guessBand">
+            <option value="">— Выберите —</option>
+            <option value="subbass">Саб-бас (20–60 Гц)</option>
+            <option value="bass">Бас (60–250 Гц)</option>
+            <option value="lowmid">Низкие средние (250–500 Гц)</option>
+            <option value="mid">Средние (500–2000 Гц)</option>
+            <option value="highmid">Высокие средние (2–6 кГц)</option>
+            <option value="presence">Присутствие (6–12 кГц)</option>
+            <option value="air">Воздух (12–18 кГц)</option>
+          </select>
+        </div>
+        <div class="guess-group">
+          <label>На сколько дБ?</label>
+          <select id="guessDb">
+            <option value="">— Выберите —</option>
+          </select>
+        </div>
+      </div>
+      <div style="margin-top:12px; text-align:center;">
+        <button class="success" id="btnSubmit">✓ Проверить</button>
+      </div>
+      <div class="result-box" id="resultBox"></div>
+    </div>
+  </div>
+
+  <div class="panel" style="margin-top:12px;">
+    <div class="panel-title">Как это работает</div>
+    <div style="font-size:0.82em; opacity:0.6; line-height:1.7;">
+      <p>1. Выберите сэмпл и сложность, нажмите <b>«Новый раунд»</b></p>
+      <p>2. Послушайте звук в режимах <b>ДО</b> (без обработки) и <b>ПОСЛЕ</b> (с эквализацией)</p>
+      <p>3. Угадайте, какой частотный диапазон был усилен и на сколько дБ</p>
+      <p>4. На лёгкой сложности — 3 варианта дБ, на средней — 5</p>
+    </div>
+  </div>
+</div>
+
+<script>
+(function() {
+  // ===== Audio Context =====
+  let audioCtx = null;
+  function ensureAudioCtx() {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    return audioCtx;
+  }
+
+  // ===== EQ Bands =====
+  const EQ_BANDS = [
+    { id: 'subbass',  label: 'Саб-бас',       freq: 40,   min: 20,  max: 60,  range: [20, 60] },
+    { id: 'bass',     label: 'Бас',           freq: 120,  min: 60,  max: 250, range: [60, 250] },
+    { id: 'lowmid',   label: 'Низкие средние',freq: 350,  min: 250, max: 500, range: [250, 500] },
+    { id: 'mid',      label: 'Средние',       freq: 1000, min: 500, max: 2000, range: [500, 2000] },
+    { id: 'highmid',  label: 'Высокие средние',freq: 4000, min: 2000, max: 6000, range: [2000, 6000] },
+    { id: 'presence', label: 'Присутствие',   freq: 8000, min: 6000, max: 12000, range: [6000, 12000] },
+    { id: 'air',      label: 'Воздух',        freq: 15000, min: 12000, max: 18000, range: [12000, 18000] },
+  ];
+
+  const DB_OPTIONS = {
+    easy:   [-6, 6],
+    hard:   [2, 4, 6, 8, 10],
+  };
+
+  // ===== State =====
+  let state = {
+    sample: 'drums',
+    difficulty: 'easy',
+    roundActive: false,
+    currentBand: null,
+    currentDb: 0,
+    bufferOriginal: null,
+    bufferEQ: null,
+    scoreTotal: 0,
+    scoreCorrect: 0,
+    scoreStreak: 0,
+    bestStreak: 0,
+    customBuffer: null,
+    customFileName: '',
+    playPosition: 0,
+    volume: 0.7,
+  };
+
+  // ===== DOM =====
+  const $ = id => document.getElementById(id);
+  const btnNewRound = $('btnNewRound');
+  const btnPreview = $('btnPreview');
+  const btnBefore = $('btnBefore');
+  const btnAfter = $('btnAfter');
+  const btnSubmit = $('btnSubmit');
+  const guessSection = $('guessSection');
+  const guessBand = $('guessBand');
+  const guessDb = $('guessDb');
+  const resultBox = $('resultBox');
+  const statusDot = $('statusDot');
+  const statusText = $('statusText');
+  const modeLabel = $('modeLabel');
+  const eqCanvas = $('eqCanvas');
+  const eqCtx = eqCanvas.getContext('2d');
+  const eqInfo = $('eqInfo');
+  const waveCanvas = $('waveCanvas');
+  const waveCtx = waveCanvas.getContext('2d');
+  const waveTimeLabel = $('waveTimeLabel');
+  const waveDurationLabel = $('waveDurationLabel');
+  const uploadZone = $('uploadZone');
+  const fileInput = $('fileInput');
+  const customFileInfo = $('customFileInfo');
+  const customFileName = $('customFileName');
+  const btnRemoveFile = $('btnRemoveFile');
+
+  // ===== Score =====
+  function updateScore() {
+    $('scoreTotal').textContent = state.scoreTotal;
+    $('scoreCorrect').textContent = state.scoreCorrect;
+    $('scoreStreak').textContent = state.scoreStreak;
+    const pct = state.scoreTotal > 0 ? Math.round(state.scoreCorrect / state.scoreTotal * 100) : 0;
+    $('scorePercent').textContent = pct + '%';
+  }
+
+  // ===== Populate DB options =====
+  function populateDbOptions() {
+    guessDb.innerHTML = '<option value="">— Выберите —</option>';
+    const opts = DB_OPTIONS[state.difficulty];
+    opts.forEach(db => {
+      const o = document.createElement('option');
+      o.value = db;
+      o.textContent = (db >= 0 ? '+' : '') + db + ' дБ';
+      guessDb.appendChild(o);
+    });
+  }
+
+  // ===== Sample Loading & Synthesis =====
+  const sampleCache = {};
+  const sampleFiles = { guitar: 'guitar.ogg', bass: 'bass.ogg', piano: 'piano.ogg' };
+  const sampleFallbacks = { guitar: synthesizeGuitar, bass: synthesizeBass, piano: synthesizePiano };
+
+  function loadFromFile(ctx, type) {
+    if (sampleCache[type]) return Promise.resolve(sampleCache[type]);
+    return fetch(sampleFiles[type])
+      .then(r => r.arrayBuffer())
+      .then(ab => ctx.decodeAudioData(ab))
+      .then(buf => { sampleCache[type] = buf; return buf; })
+      .catch(() => sampleFallbacks[type](ctx));
+  }
+
+  function createNoiseBuffer(ctx, duration) {
+    const sampleRate = ctx.sampleRate;
+    const length = sampleRate * duration;
+    const buffer = ctx.createBuffer(1, length, sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < length; i++) {
+      data[i] = Math.random() * 2 - 1;
+    }
+    return buffer;
+  }
+
+  function synthesizeDrums(ctx) {
+    const duration = 3;
+    const sampleRate = ctx.sampleRate;
+    const length = sampleRate * duration;
+    const buffer = ctx.createBuffer(2, length, sampleRate);
+    const L = buffer.getChannelData(0);
+    const R = buffer.getChannelData(1);
+
+    const bpm = 120;
+    const beatDur = 60 / bpm;
+    const eighthDur = beatDur / 2;
+
+    for (let t = 0; t < duration; t += eighthDur) {
+      const beatInBar = Math.floor(t / beatDur) % 8;
+
+      // Kick on 0, 4
+      if (beatInBar === 0 || beatInBar === 4) {
+        const kickLen = sampleRate * 0.15;
+        const start = Math.floor(t * sampleRate);
+        for (let i = 0; i < kickLen && start + i < length; i++) {
+          const env = Math.exp(-i / (sampleRate * 0.06));
+          const freq = 150 * Math.exp(-i / (sampleRate * 0.03)) + 40;
+          const phase = 2 * Math.PI * freq * i / sampleRate;
+          const val = env * Math.sin(phase) * 0.7;
+          L[start + i] += val;
+          R[start + i] += val;
+        }
+      }
+
+      // Snare on 2, 6
+      if (beatInBar === 2 || beatInBar === 6) {
+        const snareLen = sampleRate * 0.12;
+        const start = Math.floor(t * sampleRate);
+        for (let i = 0; i < snareLen && start + i < length; i++) {
+          const env = Math.exp(-i / (sampleRate * 0.04));
+          const noise = (Math.random() * 2 - 1) * env * 0.4;
+          const tone = Math.sin(2 * Math.PI * 200 * i / sampleRate) * env * 0.3;
+          L[start + i] += noise + tone;
+          R[start + i] += noise + tone;
+        }
+      }
+
+      // Hi-hat on every eighth
+      const hhLen = sampleRate * 0.04;
+      const start = Math.floor(t * sampleRate);
+      const vol = (beatInBar % 2 === 0) ? 0.15 : 0.08;
+      for (let i = 0; i < hhLen && start + i < length; i++) {
+        const env = Math.exp(-i / (sampleRate * 0.012));
+        const noise = (Math.random() * 2 - 1) * env * vol;
+        L[start + i] += noise;
+        R[start + i] += noise;
+      }
+    }
+
+    // Normalize
+    let max = 0;
+    for (let i = 0; i < length; i++) {
+      max = Math.max(max, Math.abs(L[i]), Math.abs(R[i]));
+    }
+    if (max > 0) {
+      const scale = 0.85 / max;
+      for (let i = 0; i < length; i++) {
+        L[i] *= scale;
+        R[i] *= scale;
+      }
+    }
+
+    return buffer;
+  }
+
+  function synthesizeGuitar(ctx) {
+    const duration = 3;
+    const sampleRate = ctx.sampleRate;
+    const length = sampleRate * duration;
+    const buffer = ctx.createBuffer(2, length, sampleRate);
+    const L = buffer.getChannelData(0);
+    const R = buffer.getChannelData(1);
+
+    // Chord: E major (E2, B2, E3, G#3, B3, E4)
+    const chordFreqs = [82.41, 123.47, 164.81, 207.65, 246.94, 329.63];
+    const strumOffset = 0.02;
+
+    const notes = [
+      { start: 0, dur: 1.2 },
+      { start: 1.3, dur: 1.2 },
+    ];
+
+    notes.forEach(note => {
+      chordFreqs.forEach((freq, fi) => {
+        const t0 = note.start + fi * strumOffset;
+        const t1 = note.start + note.dur + fi * strumOffset;
+        for (let t = t0; t < t1 && t < duration; t += 1/sampleRate) {
+          const i = Math.floor(t * sampleRate);
+          const age = t - t0;
+          const env = Math.exp(-age * 3) * (1 - Math.exp(-age * 100));
+          // Fundamental + harmonics
+          let val = 0;
+          val += Math.sin(2 * Math.PI * freq * t) * 0.5;
+          val += Math.sin(2 * Math.PI * freq * 2 * t) * 0.2;
+          val += Math.sin(2 * Math.PI * freq * 3 * t) * 0.1;
+          val += Math.sin(2 * Math.PI * freq * 4 * t) * 0.05;
+          L[i] += val * env * 0.3;
+          R[i] += val * env * 0.3;
+        }
+      });
+    });
+
+    let max = 0;
+    for (let i = 0; i < length; i++) max = Math.max(max, Math.abs(L[i]));
+    if (max > 0) {
+      const scale = 0.85 / max;
+      for (let i = 0; i < length; i++) { L[i] *= scale; R[i] *= scale; }
+    }
+    return buffer;
+  }
+
+  function synthesizePiano(ctx) {
+    const duration = 3;
+    const sampleRate = ctx.sampleRate;
+    const length = sampleRate * duration;
+    const buffer = ctx.createBuffer(2, length, sampleRate);
+    const L = buffer.getChannelData(0);
+    const R = buffer.getChannelData(1);
+
+    // C major arpeggio pattern
+    const notes = [
+      { freq: 261.63, start: 0, dur: 0.8 },
+      { freq: 329.63, start: 0.2, dur: 0.8 },
+      { freq: 392.00, start: 0.4, dur: 0.8 },
+      { freq: 523.25, start: 0.6, dur: 1.0 },
+      { freq: 392.00, start: 1.0, dur: 0.6 },
+      { freq: 329.63, start: 1.2, dur: 0.6 },
+      { freq: 261.63, start: 1.5, dur: 1.2 },
+      // Second phrase
+      { freq: 293.66, start: 1.8, dur: 0.8 },
+      { freq: 349.23, start: 2.0, dur: 0.8 },
+      { freq: 440.00, start: 2.2, dur: 0.8 },
+      { freq: 587.33, start: 2.4, dur: 0.8 },
+    ];
+
+    notes.forEach(note => {
+      for (let t = note.start; t < note.start + note.dur && t < duration; t += 1/sampleRate) {
+        const i = Math.floor(t * sampleRate);
+        const age = t - note.start;
+        const attack = Math.min(1, age * 80);
+        const decay = Math.exp(-age * 1.5);
+        const env = attack * decay;
+        let val = 0;
+        val += Math.sin(2 * Math.PI * note.freq * t) * 0.6;
+        val += Math.sin(2 * Math.PI * note.freq * 2 * t) * 0.25;
+        val += Math.sin(2 * Math.PI * note.freq * 3 * t) * 0.12;
+        val += Math.sin(2 * Math.PI * note.freq * 4 * t) * 0.06;
+        val += Math.sin(2 * Math.PI * note.freq * 5 * t) * 0.03;
+        L[i] += val * env * 0.35;
+        R[i] += val * env * 0.35;
+      }
+    });
+
+    let max = 0;
+    for (let i = 0; i < length; i++) max = Math.max(max, Math.abs(L[i]));
+    if (max > 0) {
+      const scale = 0.85 / max;
+      for (let i = 0; i < length; i++) { L[i] *= scale; R[i] *= scale; }
+    }
+    return buffer;
+  }
+
+  function synthesizeBass(ctx) {
+    const duration = 3;
+    const sampleRate = ctx.sampleRate;
+    const length = sampleRate * duration;
+    const buffer = ctx.createBuffer(2, length, sampleRate);
+    const L = buffer.getChannelData(0);
+    const R = buffer.getChannelData(1);
+
+    const bassLine = [
+      { freq: 55.00, dur: 0.5 },  // A1
+      { freq: 55.00, dur: 0.5 },
+      { freq: 73.42, dur: 0.5 },  // D2
+      { freq: 82.41, dur: 0.5 },  // E2
+      { freq: 73.42, dur: 0.5 },  // D2
+      { freq: 65.41, dur: 0.5 },  // C2
+      { freq: 55.00, dur: 0.5 },  // A1
+      { freq: 55.00, dur: 0.5 },
+    ];
+
+    let t = 0;
+    bassLine.forEach(note => {
+      for (let dt = 0; dt < note.dur && t < duration; dt += 1/sampleRate) {
+        const i = Math.floor((t + dt) * sampleRate);
+        const age = dt;
+        const attack = Math.min(1, age * 200);
+        const release = Math.min(1, (note.dur - age) * 10);
+        const env = attack * release;
+        let val = 0;
+        val += Math.sin(2 * Math.PI * note.freq * (t + dt)) * 0.7;
+        val += Math.sin(2 * Math.PI * note.freq * 2 * (t + dt)) * 0.2;
+        val += Math.sin(2 * Math.PI * note.freq * 3 * (t + dt)) * 0.08;
+        L[i] += val * env * 0.6;
+        R[i] += val * env * 0.6;
+      }
+      t += note.dur;
+    });
+
+    let max = 0;
+    for (let i = 0; i < length; i++) max = Math.max(max, Math.abs(L[i]));
+    if (max > 0) {
+      const scale = 0.85 / max;
+      for (let i = 0; i < length; i++) { L[i] *= scale; R[i] *= scale; }
+    }
+    return buffer;
+  }
+
+  function synthesizeVocal(ctx) {
+    const duration = 3;
+    const sampleRate = ctx.sampleRate;
+    const length = sampleRate * duration;
+    const buffer = ctx.createBuffer(2, length, sampleRate);
+    const L = buffer.getChannelData(0);
+    const R = buffer.getChannelData(1);
+
+    // Simulated vocal: formant-like tones with vibrato
+    const melody = [
+      { freq: 220, start: 0, dur: 0.6 },
+      { freq: 261.63, start: 0.6, dur: 0.6 },
+      { freq: 293.66, start: 1.2, dur: 0.8 },
+      { freq: 329.63, start: 2.0, dur: 0.8 },
+    ];
+
+    melody.forEach(note => {
+      for (let t = note.start; t < note.start + note.dur && t < duration; t += 1/sampleRate) {
+        const i = Math.floor(t * sampleRate);
+        const age = t - note.start;
+        const attack = Math.min(1, age * 30);
+        const release = Math.min(1, (note.start + note.dur - t) * 15);
+        const env = attack * release;
+        // Vibrato
+        const vibrato = 1 + 0.008 * Math.sin(2 * Math.PI * 5.5 * t);
+        const f = note.freq * vibrato;
+        let val = 0;
+        // Formant synthesis approximation
+        val += Math.sin(2 * Math.PI * f * t) * 0.4;
+        val += Math.sin(2 * Math.PI * f * 2 * t) * 0.2;
+        val += Math.sin(2 * Math.PI * f * 3 * t) * 0.1;
+        // Formant peaks
+        val += Math.sin(2 * Math.PI * 800 * t) * 0.08 * env;
+        val += Math.sin(2 * Math.PI * 2400 * t) * 0.06 * env;
+        // Subtle noise for air
+        val += (Math.random() * 2 - 1) * 0.015 * env;
+        L[i] += val * env * 0.4;
+        R[i] += val * env * 0.4;
+      }
+    });
+
+    let max = 0;
+    for (let i = 0; i < length; i++) max = Math.max(max, Math.abs(L[i]));
+    if (max > 0) {
+      const scale = 0.85 / max;
+      for (let i = 0; i < length; i++) { L[i] *= scale; R[i] *= scale; }
+    }
+    return buffer;
+  }
+
+  function getSample(ctx, type) {
+    if (state.customBuffer) return Promise.resolve(state.customBuffer);
+    if (sampleFiles[type]) return loadFromFile(ctx, type);
+    return Promise.resolve(synthesizeSample(ctx, type));
+  }
+
+  function synthesizeSample(ctx, type) {
+    switch (type) {
+      case 'drums': return synthesizeDrums(ctx);
+      case 'guitar': return synthesizeGuitar(ctx);
+      case 'piano': return synthesizePiano(ctx);
+      case 'bass': return synthesizeBass(ctx);
+      case 'vocal': return synthesizeVocal(ctx);
+      default: return synthesizeDrums(ctx);
+    }
+  }
+
+  // ===== Apply EQ to buffer =====
+  function applyEQToBuffer(ctx, sourceBuffer, band, dbGain) {
+    const offlineCtx = new OfflineAudioContext(
+      sourceBuffer.numberOfChannels,
+      sourceBuffer.length,
+      ctx.sampleRate
+    );
+
+    const source = offlineCtx.createBufferSource();
+    source.buffer = sourceBuffer;
+
+    const eq = offlineCtx.createBiquadFilter();
+    eq.type = 'peaking';
+    eq.frequency.value = band.freq;
+    eq.Q.value = 1.4;
+    eq.gain.value = dbGain;
+
+    source.connect(eq);
+    eq.connect(offlineCtx.destination);
+    source.start(0);
+
+    return offlineCtx.startRendering();
+  }
+
+  // ===== Play audio =====
+  let activeNodes = [];
+  let masterGain = null;
+  function getMasterGain() {
+    if (!masterGain) {
+      masterGain = ensureAudioCtx().createGain();
+      masterGain.gain.value = state.volume;
+      masterGain.connect(ensureAudioCtx().destination);
+    }
+    return masterGain;
+  }
+  function stopCurrentAudio() {
+    activeNodes.forEach(node => {
+      try { if (node.stop) node.stop(); } catch(e) {}
+      try { node.disconnect(); } catch(e) {}
+    });
+    activeNodes = [];
+  }
+  function playBuffer(buffer, startTime) {
+    stopCurrentAudio();
+    startTime = startTime || 0;
+    const ctx = ensureAudioCtx();
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    source.connect(getMasterGain());
+    source.start(0, startTime);
+    activeNodes.push(source);
+    source.onended = () => {
+      const idx = activeNodes.indexOf(source);
+      if (idx > -1) activeNodes.splice(idx, 1);
+    };
+  }
+  function setVolume(val) {
+    state.volume = val;
+    if (masterGain) masterGain.gain.value = val;
+  }
+
+  // ===== Waveform =====
+  function drawWaveform() {
+    const canvas = waveCanvas;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = 100 * dpr;
+    waveCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    const w = rect.width;
+    const h = 100;
+
+    waveCtx.clearRect(0, 0, w, h);
+    waveCtx.fillStyle = '#1a1a1a';
+    waveCtx.fillRect(0, 0, w, h);
+
+    if (!state.bufferOriginal) {
+      waveCtx.fillStyle = 'rgba(255,255,255,0.2)';
+      waveCtx.font = '13px Inter, sans-serif';
+      waveCtx.textAlign = 'center';
+      waveCtx.fillText('Загрузите раунд для отображения волны', w / 2, h / 2 + 4);
+      return;
+    }
+
+    const buffer = state.bufferOriginal;
+    const data = buffer.getChannelData(0);
+    const len = data.length;
+    const step = Math.max(1, Math.floor(len / w));
+
+    waveCtx.strokeStyle = 'rgba(0,188,212,0.6)';
+    waveCtx.lineWidth = 1;
+    waveCtx.beginPath();
+    for (let x = 0; x < w; x++) {
+      let min = 1, max = -1;
+      const start = Math.floor(x * len / w);
+      for (let j = 0; j < step; j++) {
+        const idx = start + j;
+        if (idx >= len) break;
+        if (data[idx] < min) min = data[idx];
+        if (data[idx] > max) max = data[idx];
+      }
+      waveCtx.moveTo(x, h / 2 + min * h / 2);
+      waveCtx.lineTo(x, h / 2 + max * h / 2);
+    }
+    waveCtx.stroke();
+
+    // Center line
+    waveCtx.strokeStyle = 'rgba(255,255,255,0.08)';
+    waveCtx.beginPath();
+    waveCtx.moveTo(0, h / 2);
+    waveCtx.lineTo(w, h / 2);
+    waveCtx.stroke();
+
+    // Playhead
+    const pos = state.playPosition;
+    const px = (pos / buffer.duration) * w;
+    waveCtx.strokeStyle = '#ff7043';
+    waveCtx.lineWidth = 2;
+    waveCtx.beginPath();
+    waveCtx.moveTo(px, 0);
+    waveCtx.lineTo(px, h);
+    waveCtx.stroke();
+
+    // Playhead dot
+    waveCtx.fillStyle = '#ff7043';
+    waveCtx.beginPath();
+    waveCtx.arc(px, h / 2, 5, 0, Math.PI * 2);
+    waveCtx.fill();
+
+    // Dim region after playhead
+    waveCtx.fillStyle = 'rgba(0,0,0,0.35)';
+    waveCtx.fillRect(px, 0, w - px, h);
+
+    // Update time labels
+    waveTimeLabel.textContent = formatTime(pos);
+    waveDurationLabel.textContent = formatTime(buffer.duration);
+  }
+
+  function formatTime(s) {
+    const m = Math.floor(s / 60);
+    const sec = Math.floor(s % 60);
+    return m + ':' + (sec < 10 ? '0' : '') + sec;
+  }
+
+  function setPlayPosition(clientX) {
+    const rect = waveCanvas.getBoundingClientRect();
+    const x = clientX - rect.left;
+    const ratio = Math.max(0, Math.min(1, x / rect.width));
+    if (state.bufferOriginal) {
+      state.playPosition = ratio * state.bufferOriginal.duration;
+      drawWaveform();
+    }
+  }
+
+  let isDraggingWave = false;
+  waveCanvas.addEventListener('mousedown', (e) => {
+    isDraggingWave = true;
+    setPlayPosition(e.clientX);
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (isDraggingWave) setPlayPosition(e.clientX);
+  });
+  window.addEventListener('mouseup', () => {
+    isDraggingWave = false;
+  });
+  waveCanvas.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    setPlayPosition(e.touches[0].clientX);
+  }, { passive: false });
+  waveCanvas.addEventListener('touchmove', (e) => {
+    e.preventDefault();
+    setPlayPosition(e.touches[0].clientX);
+  }, { passive: false });
+
+  // ===== EQ Curve Drawing =====
+  function drawEQCurve() {
+    const canvas = eqCanvas;
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.getBoundingClientRect();
+    canvas.width = rect.width * dpr;
+    canvas.height = 200 * dpr;
+    eqCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+    const w = rect.width;
+    const h = 200;
+
+    eqCtx.clearRect(0, 0, w, h);
+
+    // Background
+    eqCtx.fillStyle = '#1a1a1a';
+    eqCtx.fillRect(0, 0, w, h);
+
+    // Frequency axis (log scale)
+    const freqMin = 20;
+    const freqMax = 20000;
+
+    function freqToX(freq) {
+      const logMin = Math.log10(freqMin);
+      const logMax = Math.log10(freqMax);
+      const logFreq = Math.log10(freq);
+      return ((logFreq - logMin) / (logMax - logMin)) * (w - 40) + 40;
+    }
+
+    // Grid lines
+    const gridFreqs = [30, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 15000];
+    eqCtx.strokeStyle = 'rgba(255,255,255,0.06)';
+    eqCtx.lineWidth = 1;
+    gridFreqs.forEach(f => {
+      const x = freqToX(f);
+      eqCtx.beginPath();
+      eqCtx.moveTo(x, 0);
+      eqCtx.lineTo(x, h);
+      eqCtx.stroke();
+    });
+
+    // Horizontal dB lines
+    const dbLines = [-12, -6, 0, 6, 12];
+    dbLines.forEach(db => {
+      const y = h / 2 - (db / 15) * (h / 2);
+      eqCtx.beginPath();
+      eqCtx.moveTo(0, y);
+      eqCtx.lineTo(w, y);
+      eqCtx.stroke();
+    });
+
+    // 0 dB line
+    eqCtx.strokeStyle = 'rgba(255,255,255,0.15)';
+    eqCtx.lineWidth = 1;
+    eqCtx.beginPath();
+    eqCtx.moveTo(0, h / 2);
+    eqCtx.lineTo(w, h / 2);
+    eqCtx.stroke();
+
+    // Band regions
+    const bandColors = [
+      'rgba(255,100,100,0.08)',
+      'rgba(255,165,0,0.08)',
+      'rgba(255,255,0,0.08)',
+      'rgba(100,255,100,0.08)',
+      'rgba(0,150,255,0.08)',
+      'rgba(100,100,255,0.08)',
+      'rgba(200,100,255,0.08)',
+    ];
+
+    EQ_BANDS.forEach((band, i) => {
+      const x1 = freqToX(band.range[0]);
+      const x2 = freqToX(band.range[1]);
+      eqCtx.fillStyle = bandColors[i];
+      eqCtx.fillRect(x1, 0, x2 - x1, h);
+    });
+
+    // EQ curve
+    if (state.currentBand && state._showCurve) {
+      const band = state.currentBand;
+      const dbGain = state.currentDb;
+      const Q = 1.4;
+
+      eqCtx.strokeStyle = '#00bcd4';
+      eqCtx.lineWidth = 2.5;
+      eqCtx.beginPath();
+
+      for (let px = 0; px < w; px++) {
+        const logMin = Math.log10(freqMin);
+        const logMax = Math.log10(freqMax);
+        const logFreq = logMin + (px - 40) / (w - 40) * (logMax - logMin);
+        const freq = Math.pow(10, logFreq);
+
+        const ratio = freq / band.freq;
+        const db2A = Math.pow(10, dbGain / 20);
+
+        // Peaking EQ: H(s) = (s² + (A/Q)s + 1) / (s² + (1/(A*Q))s + 1)
+        const sq = 1 - ratio * ratio;
+        const num = sq * sq + (db2A * ratio / Q) * (db2A * ratio / Q);
+        const den = sq * sq + (ratio / (db2A * Q)) * (ratio / (db2A * Q));
+        const magDb = 10 * Math.log10(num / den);
+
+        const y = h / 2 - (magDb / 15) * (h / 2);
+        if (px === 0) eqCtx.moveTo(px, y);
+        else eqCtx.lineTo(px, y);
+      }
+      eqCtx.stroke();
+
+      // Fill under curve
+      eqCtx.lineTo(w, h / 2);
+      eqCtx.lineTo(0, h / 2);
+      eqCtx.closePath();
+      eqCtx.fillStyle = 'rgba(0,188,212,0.1)';
+      eqCtx.fill();
+    }
+
+    // Frequency labels
+    eqCtx.fillStyle = 'rgba(255,255,255,0.35)';
+    eqCtx.font = '10px Inter, sans-serif';
+    eqCtx.textAlign = 'center';
+    const labels = [
+      [30, '30'], [60, '60'], [100, '100'], [200, '200'], [500, '500'],
+      [1000, '1k'], [2000, '2k'], [5000, '5k'], [10000, '10k'], [16000, '16k']
+    ];
+    labels.forEach(([f, label]) => {
+      const x = freqToX(f);
+      eqCtx.fillText(label, x, h - 6);
+    });
+
+    // dB labels
+    eqCtx.textAlign = 'left';
+    [-12, -6, 0, 6, 12].forEach(db => {
+      const y = h / 2 - (db / 15) * (h / 2);
+      eqCtx.fillText(db + 'dB', 4, y - 3);
+    });
+  }
+
+  function ctxSampleRate() {
+    return ensureAudioCtx().sampleRate;
+  }
+
+  // ===== Round Logic =====
+  function startNewRound() {
+    stopPlayback();
+    state.roundActive = true;
+    state.currentBand = null;
+    state.currentDb = 0;
+
+    // Pick random band
+    state.currentBand = EQ_BANDS[Math.floor(Math.random() * EQ_BANDS.length)];
+
+    // Pick random dB from difficulty
+    const dbOptions = DB_OPTIONS[state.difficulty];
+    state.currentDb = dbOptions[Math.floor(Math.random() * dbOptions.length)];
+
+    // Load/synthesize sample
+    const ctx = ensureAudioCtx();
+    getSample(ctx, state.sample).then(originalBuffer => {
+      state.bufferOriginal = originalBuffer;
+      state.playPosition = 0;
+      drawWaveform();
+      // Apply EQ
+      return applyEQToBuffer(ctx, state.bufferOriginal, state.currentBand, state.currentDb);
+    }).then(eqBuffer => {
+      state.bufferEQ = eqBuffer;
+      onRoundReady();
+    });
+
+    // Update UI
+    statusDot.className = 'status-indicator waiting';
+    statusText.textContent = 'Генерация...';
+    btnBefore.disabled = true;
+    btnAfter.disabled = true;
+    btnSubmit.disabled = true;
+    $('btnLoop').disabled = true;
+    guessSection.classList.remove('visible');
+    resultBox.classList.remove('visible');
+    resultBox.className = 'result-box';
+    guessBand.value = '';
+    guessDb.value = '';
+    modeLabel.style.display = 'none';
+
+    // Draw blank EQ curve (hidden)
+    state._showCurve = false;
+    drawEQCurve();
+    eqInfo.textContent = 'Слушайте и угадывайте!';
+  }
+
+  function onRoundReady() {
+    statusDot.className = 'status-indicator done';
+    statusText.textContent = 'Готово — слушайте ДО / ПОСЛЕ';
+    btnBefore.disabled = false;
+    btnAfter.disabled = false;
+    btnSubmit.disabled = false;
+    $('btnLoop').disabled = false;
+    guessSection.classList.add('visible');
+    btnNewRound.disabled = true;
+  }
+
+  function playBefore() {
+    if (!state.bufferOriginal) return;
+    stopPlayback();
+    playBuffer(state.bufferOriginal, state.playPosition);
+    statusDot.className = 'status-indicator playing';
+    statusText.textContent = 'Воспроизведение: ДО (без EQ)';
+    modeLabel.textContent = 'ДО';
+    modeLabel.className = 'mode-label before';
+    modeLabel.style.display = 'inline';
+    btnBefore.classList.add('active');
+    btnAfter.classList.remove('active');
+  }
+
+  function playAfter() {
+    if (!state.bufferEQ) return;
+    stopPlayback();
+    playBuffer(state.bufferEQ, state.playPosition);
+    statusDot.className = 'status-indicator playing';
+    statusText.textContent = 'Воспроизведение: ПОСЛЕ (с EQ)';
+    modeLabel.textContent = 'ПОСЛЕ';
+    modeLabel.className = 'mode-label after';
+    modeLabel.style.display = 'inline';
+    btnAfter.classList.add('active');
+    btnBefore.classList.remove('active');
+  }
+
+  function stopPlayback() {
+    stopCurrentAudio();
+    btnBefore.classList.remove('active');
+    btnAfter.classList.remove('active');
+    stopLoop();
+  }
+
+  // ===== Loop (auto-switch) =====
+  let loopInterval = null;
+  let loopPlayingBefore = true;
+
+  function toggleLoop() {
+    if (loopInterval) {
+      stopLoop();
+    } else {
+      startLoop();
+    }
+  }
+
+  function startLoop() {
+    if (!state.bufferOriginal || !state.bufferEQ) return;
+    loopPlayingBefore = true;
+    btnLoop.classList.add('active');
+    btnLoop.textContent = '⏹ Стоп';
+
+    function switchAndPlay() {
+      if (!state.roundActive) { stopLoop(); return; }
+      stopCurrentAudio();
+      if (loopPlayingBefore) {
+        playBuffer(state.bufferOriginal, state.playPosition);
+        statusText.textContent = 'Воспроизведение: ДО (без EQ)';
+        modeLabel.textContent = 'ДО';
+        modeLabel.className = 'mode-label before';
+        btnBefore.classList.add('active');
+        btnAfter.classList.remove('active');
+      } else {
+        playBuffer(state.bufferEQ, state.playPosition);
+        statusText.textContent = 'Воспроизведение: ПОСЛЕ (с EQ)';
+        modeLabel.textContent = 'ПОСЛЕ';
+        modeLabel.className = 'mode-label after';
+        btnAfter.classList.add('active');
+        btnBefore.classList.remove('active');
+      }
+      loopPlayingBefore = !loopPlayingBefore;
+    }
+
+    switchAndPlay();
+    loopInterval = setInterval(switchAndPlay, 3200);
+  }
+
+  function stopLoop() {
+    if (loopInterval) {
+      clearInterval(loopInterval);
+      loopInterval = null;
+    }
+    btnLoop.classList.remove('active');
+    btnLoop.textContent = '🔁 Авто-переключение';
+    btnBefore.classList.remove('active');
+    btnAfter.classList.remove('active');
+  }
+
+  function previewSample() {
+    stopPlayback();
+    const ctx = ensureAudioCtx();
+    getSample(ctx, state.sample).then(buffer => {
+      playBuffer(buffer, state.playPosition);
+      statusDot.className = 'status-indicator playing';
+      statusText.textContent = 'Предпрослушка ' + getSampleName(state.sample);
+    });
+  }
+
+  function getSampleName(type) {
+    if (state.customFileName) return '🎵 ' + state.customFileName;
+    const names = { drums: '🥁 Барабаны', guitar: '🎸 Гитара', piano: '🎹 Пианино', bass: '🎵 Бас', vocal: '🎤 Вокал' };
+    return names[type] || type;
+  }
+
+  function playSuccessSound() {
+    const ctx = ensureAudioCtx();
+    const now = ctx.currentTime;
+    const master = ctx.createGain();
+    master.gain.setValueAtTime(0.5, now);
+    master.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+    master.connect(ctx.destination);
+
+    const notes = [523.25, 659.25, 783.99, 1046.50];
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      const t0 = now + i * 0.08;
+      gain.gain.setValueAtTime(0, t0);
+      gain.gain.linearRampToValueAtTime(0.6, t0 + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.4);
+      osc.connect(gain);
+      gain.connect(master);
+      osc.start(t0);
+      osc.stop(t0 + 0.45);
+    });
+
+    // Shimmer pad
+    [1046.50, 1318.51, 1567.98].forEach(freq => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'triangle';
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, now);
+      gain.gain.linearRampToValueAtTime(0.12, now + 0.3);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+      osc.connect(gain);
+      gain.connect(master);
+      osc.start(now);
+      osc.stop(now + 1.25);
+    });
+  }
+
+  function submitGuess() {
+    const guessedBand = guessBand.value;
+    const guessedDb = parseInt(guessDb.value);
+
+    if (!guessedBand || isNaN(guessedDb)) {
+      resultBox.textContent = '⚠️ Выберите диапазон и значение дБ';
+      resultBox.className = 'result-box visible wrong';
+      return;
+    }
+
+    state.scoreTotal++;
+    const bandCorrect = guessedBand === state.currentBand.id;
+    const dbCorrect = guessedDb === state.currentDb;
+    const allCorrect = bandCorrect && dbCorrect;
+
+    if (allCorrect) {
+      state.scoreCorrect++;
+      state.scoreStreak++;
+      if (state.scoreStreak > state.bestStreak) state.bestStreak = state.scoreStreak;
+      playSuccessSound();
+    } else {
+      state.scoreStreak = 0;
+    }
+
+    updateScore();
+
+    // Show result
+    const bandName = state.currentBand.label + ' (' + state.currentBand.range[0] + '–' + formatFreq(state.currentBand.range[1]) + ')';
+    let msg = '';
+    if (allCorrect) {
+      msg = '✅ Отлично! Верно!';
+    } else {
+      msg = '❌ Не совсем...';
+    }
+
+    if (bandCorrect) msg += '<br>🎯 Диапазон: верно';
+    else msg += '<br>🎯 Диапазон: ' + bandName;
+
+    if (dbCorrect) msg += '<br>📊 Уровень: верно';
+    else msg += '<br>📊 Уровень: ' + (state.currentDb >= 0 ? '+' : '') + state.currentDb + ' дБ';
+
+    resultBox.innerHTML = msg;
+    resultBox.className = 'result-box visible ' + (allCorrect ? 'correct' : 'wrong');
+
+    // Show EQ curve
+    state._showCurve = true;
+    drawEQCurve();
+    eqInfo.innerHTML = '<b>' + state.currentBand.label + '</b> на <b>' + (state.currentDb >= 0 ? '+' : '') + state.currentDb + ' дБ</b> (' + state.currentBand.range[0] + '–' + formatFreq(state.currentBand.range[1]) + ' Гц)';
+
+    // Disable guess buttons
+    btnSubmit.disabled = true;
+    btnBefore.disabled = true;
+    btnAfter.disabled = true;
+    $('btnLoop').disabled = true;
+    btnNewRound.disabled = false;
+
+    statusText.textContent = allCorrect ? 'Верно! +' + state.scoreStreak + ' серия' : 'Неверно — попробуйте ещё раз';
+  }
+
+  function formatFreq(f) {
+    return f >= 1000 ? (f / 1000) + 'k' : f.toString();
+  }
+
+  // ===== Custom File Upload =====
+  function handleFileUpload(file) {
+    if (!file) return;
+    const ctx = ensureAudioCtx();
+    file.arrayBuffer().then(ab => ctx.decodeAudioData(ab)).then(buf => {
+      state.customBuffer = buf;
+      state.customFileName = file.name;
+      state.bufferOriginal = buf;
+      state.playPosition = 0;
+      customFileName.textContent = file.name;
+      customFileInfo.classList.add('visible');
+      uploadZone.style.display = 'none';
+      statusDot.className = 'status-indicator done';
+      statusText.textContent = 'Файл загружен: ' + file.name;
+      drawWaveform();
+    }).catch(err => {
+      statusText.textContent = 'Ошибка: не удалось декодировать файл';
+      console.error(err);
+    });
+  }
+
+  function removeCustomFile() {
+    state.customBuffer = null;
+    state.customFileName = '';
+    state.bufferOriginal = null;
+    state.bufferEQ = null;
+    state.playPosition = 0;
+    customFileInfo.classList.remove('visible');
+    uploadZone.style.display = '';
+    fileInput.value = '';
+    statusText.textContent = 'Файл удалён';
+    drawWaveform();
+  }
+
+  fileInput.addEventListener('change', (e) => {
+    if (e.target.files.length > 0) {
+      handleFileUpload(e.target.files[0]);
+    }
+  });
+
+  btnRemoveFile.addEventListener('click', removeCustomFile);
+
+  // Drag and drop
+  uploadZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadZone.classList.add('dragover');
+  });
+
+  uploadZone.addEventListener('dragleave', () => {
+    uploadZone.classList.remove('dragover');
+  });
+
+  uploadZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadZone.classList.remove('dragover');
+    if (e.dataTransfer.files.length > 0) {
+      handleFileUpload(e.dataTransfer.files[0]);
+    }
+  });
+
+  // ===== Event Handlers =====
+  btnNewRound.addEventListener('click', startNewRound);
+  btnPreview.addEventListener('click', previewSample);
+  btnBefore.addEventListener('click', playBefore);
+  btnAfter.addEventListener('click', playAfter);
+  btnSubmit.addEventListener('click', submitGuess);
+  $('btnLoop').addEventListener('click', toggleLoop);
+
+  // Volume slider
+  const volumeSlider = $('volumeSlider');
+  const volumeValue = $('volumeValue');
+  volumeSlider.addEventListener('input', () => {
+    const val = parseInt(volumeSlider.value);
+    volumeValue.textContent = val + '%';
+    setVolume(val / 100);
+  });
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'z' || e.key === 'Z' || e.key === 'й' || e.key === 'Й') {
+      if (!btnBefore.disabled) playBefore();
+    }
+    if (e.key === 'x' || e.key === 'X' || e.key === 'ч' || e.key === 'Ч') {
+      if (!btnAfter.disabled) playAfter();
+    }
+  });
+
+  // Sample selector
+  document.querySelectorAll('.sample-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.sample-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.sample = btn.dataset.sample;
+    });
+  });
+
+  // Difficulty selector
+  document.querySelectorAll('.diff-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.difficulty = btn.dataset.diff;
+      populateDbOptions();
+    });
+  });
+
+  // Init
+  populateDbOptions();
+  drawEQCurve();
+  drawWaveform();
+
+  // Redraw on resize
+  window.addEventListener('resize', () => {
+    drawEQCurve();
+    drawWaveform();
+  });
+})();
+</script>
+</body>
+</html>
