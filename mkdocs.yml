@@ -76,6 +76,7 @@ extra_css:
 extra_javascript:
   - assets/javascripts/back-to-top.js
   - assets/javascripts/stage-unlock.js
+  - assets/javascripts/scroll-cards.js
 
 markdown_extensions:
   - admonition:

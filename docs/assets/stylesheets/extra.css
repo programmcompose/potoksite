@@ -184,6 +184,30 @@
   gap: 1.5rem;
 }
 
+/* Scroll-reveal animation for cards */
+.grid.cards > .md-typeset__scrollwrap,
+.grid.cards > li {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.grid.cards > .md-typeset__scrollwrap.scroll-card-visible,
+.grid.cards > li.scroll-card-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Respect reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .grid.cards > .md-typeset__scrollwrap,
+  .grid.cards > li {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 /* Navigation refinements */
 .md-nav__item--section > .md-nav__link {
   font-weight: 600;
