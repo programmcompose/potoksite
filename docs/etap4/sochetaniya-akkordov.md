@@ -2,6 +2,36 @@
 
 Один аккорд — это слово. Сочетание аккордов — это предложение. **Аккордовая прогрессия** — последовательность аккордов, создающая движение и эмоцию.
 
+## Мажорные и минорные аккорды
+
+### Мажорный аккорд (Major)
+
+Формула: **корень + большая терция + чистая квинта**
+
+Пример C Major (Cmaj или просто C):
+```
+C + E + G
+```
+Звучание: яркое, радостное, стабильное
+
+<audio class="audio-player" controls preload="none" src="../../assets/audio/chord-c-major.ogg"></audio>
+
+### Минорный аккорд (Minor)
+
+Формула: **корень + малая терция + чистая квинта**
+
+Пример C Minor (Cm):
+```
+C + D# + G
+```
+Звучание: мрачное, грустное, напряжённое
+
+<audio class="audio-player" controls preload="none" src="../../assets/audio/chord-c-minor.ogg"></audio>
+
+!!! tip
+    Разница между мажором и минором — всего в **одном полутоне** (терция).
+    Это самый мощный инструмент в гармонии.
+
 ## Как ставить аккорды друг за другом
 
 ###基本原则 плавного перехода
@@ -18,7 +48,39 @@
 - Меняйте **одну ноту** и слушайте разницу
 - Меняйте **тембр** — одни и те же аккорды звучат по-разному на разных инструментах
 
-### Примеры из треков
+### I – V – vi – IV
+
+Самая популярная прогрессия в поп-музыке:
+
+```
+C → G → Am → F
+```
+
+<audio class="audio-player" controls preload="none" src="../../assets/audio/progression-iv-vi-iv.ogg"></audio>
+
+Используется в: **Let It Be** (The Beatles), **With Or Without You** (U2), **Don't Worry Be Happy** (Lionel Richie)
+
+### vi – IV – I – V
+
+```
+Am → F → C → G
+```
+
+<audio class="audio-player" controls preload="none" src="../../assets/audio/progression-vi-iv-i-v.ogg"></audio>
+
+Используется в: **Someone Like You** (Adele), **Stay With Me** (Sam Smith)
+
+### I – vi – IV – V
+
+"50s progression" — классика рока и джаза:
+
+```
+C → Am → F → G
+```
+
+<audio class="audio-player" controls preload="none" src="../../assets/audio/progression-50s.ogg"></audio>
+
+### Примеры из треков по жанрам
 
 | Трек / Жанр | Прогрессия | Почему работает |
 |-------------|-----------|----------------|
@@ -67,6 +129,17 @@ Am  →  Cm  →  Dm  →  Em
 
 !!! tip
     Эти прогрессии работают в **любой тональности**. Просто сдвиньте все аккорды на нужное количество полутонов.
+
+## Септаккорды
+
+Септаккорды добавляют **четвёртую ноту** (септиму), создавая более сложное и «красивое» звучание.
+
+| Тип | Формула от C | Ноты | Звучание | Пример |
+|-----|-------------|------|----------|--------|
+| Cmaj7 | C-E-G-B | C-E-G-B | Тёплое, джазовое | <audio class="audio-player" controls preload="none" src="../../assets/audio/chord-cmaj7.ogg"></audio> |
+| Cm7 | C-D#-G-Bb | C-D#-G-Bb | Меланхоличное | <audio class="audio-player" controls preload="none" src="../../assets/audio/chord-cm7.ogg"></audio> |
+| C7 | C-E-G-Bb | C-E-G-Bb | Натяжение, блюз | <audio class="audio-player" controls preload="none" src="../../assets/audio/chord-c7.ogg"></audio> |
+| Cminmaj7 | C-D#-G-B | C-D#-G-B | Мистическое | <audio class="audio-player" controls preload="none" src="../../assets/audio/chord-cminmaj7.ogg"></audio> |
 
 ## Добавочные ступени
 
