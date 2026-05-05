@@ -55,8 +55,6 @@
 C → D → E → F → G → A → B → C
 ```
 
-<audio class="audio-player" controls preload="none" src="../../assets/audio/c-major-scale.ogg"></audio>
-
 ## Интервалы
 
 **Интервал** — расстояние между двумя нотами.

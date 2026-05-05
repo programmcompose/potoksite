@@ -52,6 +52,10 @@ A — B : 1 тон
 B — C : 0.5 тона (полутон!)
 ```
 
+Пример: как звучит гамма До мажор (C-D-E-F-G-A-B-C)
+
+<audio class="audio-player" controls preload="none" src="../../assets/audio/c-major-scale.ogg"></audio>
+
 !!! important
     Полутона между **E—F** и **B—C** — это ключевой момент. Именно поэтому на пианино между некоторыми белыми клавишами нет чёрных.
 
