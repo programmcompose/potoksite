@@ -75,6 +75,7 @@ extra_css:
   - assets/stylesheets/stage-lock.css
   - assets/stylesheets/progress.css
   - assets/stylesheets/etap0-bg.css
+  - assets/stylesheets/gamification.css
 
 extra_javascript:
   - assets/javascripts/back-to-top.js
@@ -82,6 +83,7 @@ extra_javascript:
   - assets/javascripts/scroll-cards.js
   - assets/javascripts/progress.js
   - assets/javascripts/etap0-bg.js
+  - assets/javascripts/gamification.js
 
 markdown_extensions:
   - admonition:
@@ -202,4 +204,6 @@ nav:
       - "🩷 EQ-PINK": "tools/eq-pink/index.html"
       - "🔀 EQ‑AB‑test": "tools/eq-ab-test/index.html"
       - "🧩 IY QUEST": "tools/iy-quest/index.html"
+  - "🏅 Бейджи": "badges.md"
+  - "📊 Статистика": "stats.md"
   - "❓ ЧАСТЫЕ ВОПРОСЫ": "faq.md"
