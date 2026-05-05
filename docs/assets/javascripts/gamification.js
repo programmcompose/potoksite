@@ -974,16 +974,9 @@
     startSession();
     hookProgressCheckboxes();
 
-    // Создаём панель уровня (не на страницах бейджей/статистики)
-    if (!document.getElementById('potok-badges-container') &&
-        !document.getElementById('potok-stats-container')) {
-      createLevelPanel();
-    }
-
     // Рендерим страницы бейджей и статистики
     renderBadgesPage();
     renderStatsPage();
-    updateLevelPanel();
   }
 
   // MkDocs Material SPA-навигация
