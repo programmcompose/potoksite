@@ -438,33 +438,47 @@
 }
 
 /* ========================================
-   Smooth scrolling + theme transitions
+   Smooth scrolling (no theme transitions)
    ======================================== */
 html {
   scroll-behavior: smooth;
-  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
-body,
-.md-header,
-.md-footer,
-.md-sidebar,
-.md-main,
-.md-content,
-.md-typeset,
-.md-nav,
-.md-nav__link,
-.md-search__input,
-.md-search__form,
-.md-dialog,
-.admonition,
-.md-typeset table:not([class]),
-.md-typeset table:not([class]) th,
-.md-typeset table:not([class]) td,
-.md-typeset code,
-.md-typeset pre > code,
-.md-grid {
-  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+/* ========================================
+   Light theme — dark gray text and icons
+   ======================================== */
+[data-md-color-scheme="default"] .md-header__title .md-ellipsis {
+  color: #3a3a3a;
+}
+
+[data-md-color-scheme="default"] .md-logo {
+  color: #3a3a3a;
+}
+
+[data-md-color-scheme="default"] .md-logo svg {
+  fill: #3a3a3a;
+}
+
+[data-md-color-scheme="default"] .md-header__button {
+  color: #3a3a3a;
+}
+
+[data-md-color-scheme="default"] .md-icon,
+[data-md-color-scheme="default"] .md-icon--light {
+  color: #3a3a3a;
+  fill: #3a3a3a;
+}
+
+[data-md-color-scheme="default"] .md-nav__link {
+  color: #4a4a4a;
+}
+
+[data-md-color-scheme="default"] .md-search__input::placeholder {
+  color: #7a7a7a;
+}
+
+[data-md-color-scheme="default"] .md-search__input {
+  color: #3a3a3a;
 }
 
 /* ========================================
