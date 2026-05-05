@@ -16,7 +16,6 @@
 
 .md-main__inner {
   position: relative;
-  z-index: 2;
 }
 
 #etap0-viz-canvas.scrolled {
