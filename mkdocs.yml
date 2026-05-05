@@ -72,11 +72,13 @@ extra:
 extra_css:
   - assets/stylesheets/extra.css
   - assets/stylesheets/stage-lock.css
+  - assets/stylesheets/progress.css
 
 extra_javascript:
   - assets/javascripts/back-to-top.js
   - assets/javascripts/stage-unlock.js
   - assets/javascripts/scroll-cards.js
+  - assets/javascripts/progress.js
 
 markdown_extensions:
   - admonition:
