@@ -106,6 +106,11 @@ Hi-Hat: x  x  x  x  x  x  x  x  x  x  x  x
     2. Trap-паттерн (roll на kick, 808 snare)
     3. Экспериментальный — используйте синкопу и оффбит
 
+<div class="potok-lesson-wrapper">
+  <input type="checkbox" class="potok-lesson" data-lesson="etap5-done">
+  <label class="potok-lesson-label">✅ Этап №5 пройден</label>
+</div>
+
 ---
 
 **← [Назад: Аккорды и гармония](akkordy.md)** | **[Далее: Этап №2 →](../etap2/index.md)**

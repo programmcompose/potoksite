@@ -39,6 +39,11 @@
 2. Попробуйте сделать второй бит с другим стилем
 3. Переходите к следующему этапу для углубления знаний
 
+<div class="potok-lesson-wrapper">
+  <input type="checkbox" class="potok-lesson" data-lesson="etap1-done">
+  <label class="potok-lesson-label">✅ Этап №1 пройден</label>
+</div>
+
 ---
 
 **← [Назад: Бит в Ableton](bit-v-ableton.md)** | **[Далее: Этап №2 →](../etap2/index.md)**

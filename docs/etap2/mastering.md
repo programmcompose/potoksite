@@ -97,6 +97,11 @@ Mixer Output → EQ → Compressor → Saturation → Limiter → Reference (с�
 - [ ] Экспорт WAV 24-bit/44.1 кГц
 - [ ] LUFS в целевом диапазоне
 
+<div class="potok-lesson-wrapper">
+  <input type="checkbox" class="potok-lesson" data-lesson="etap2-done">
+  <label class="potok-lesson-label">✅ Этап №2 пройден</label>
+</div>
+
 ---
 
 **← [Назад: Сведение](mixing.md)** | **[К глоссарию →](../glossary.md)**
