@@ -47,11 +47,11 @@
 
 /* Link colors */
 .md-typeset a {
-  color: #64b5f6;
+  color: #F2994A;
 }
 
 .md-typeset a:hover {
-  color: #90caf9;
+  color: #ffb76d;
 }
 
 .md-nav__link {
@@ -59,21 +59,21 @@
 }
 
 .md-nav__link:hover {
-  color: #64b5f6;
+  color: #F2994A;
 }
 
 /* Active nav link — left sidebar */
 .md-nav__link--active,
 .md-nav__item--active > .md-nav__link,
 .md-nav__item--active > .md-nav__link:hover {
-  color: #64b5f6 !important;
+  color: #F2994A !important;
   font-weight: 700;
 }
 
 /* Active nav link — right sidebar (TOC) */
 .md-nav__title--active,
 .md-nav__title--active:hover {
-  color: #64b5f6 !important;
+  color: #F2994A !important;
   font-weight: 700;
 }
 
