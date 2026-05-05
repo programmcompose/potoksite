@@ -117,6 +117,11 @@ Telegram и Discord чаты — основное место для вопрос
 ### Эвенты и лекции
 Следите за анонсами эвентов и специальных лекций от приглашённых спикеров.
 
+<div class="potok-lesson-wrapper">
+  <input type="checkbox" class="potok-lesson" data-lesson="etap0-done">
+  <label class="potok-lesson-label">✅ Этап №0 пройден</label>
+</div>
+
 ---
 
 [**Частые вопросы по организационным вопросам курса**](../faq.md)
