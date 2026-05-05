@@ -6,28 +6,20 @@
   function getColors() {
     var isDark = document.documentElement.getAttribute('data-md-color-scheme') === 'slate';
     return {
-      wave1: isDark ? '30, 220, 240' : '0, 160, 200',
-      wave2: isDark ? '180, 80, 200' : '160, 60, 180',
-      wave3: isDark ? '255, 120, 70' : '240, 90, 50',
-      eq: isDark ? '0, 200, 230' : '0, 160, 190'
+      grid: isDark ? '255, 255, 255' : '50, 50, 50',
+      waveLine: isDark ? '255, 160, 50' : '200, 120, 30',
+      eq: isDark ? '200, 110, 30' : '180, 100, 20'
     };
   }
 
-  var waves = [
-    { amp: 50, freq: 0.003, speed: 0.0008, yOff: 0.25 },
-    { amp: 38, freq: 0.005, speed: -0.0012, yOff: 0.35 },
-    { amp: 25, freq: 0.007, speed: 0.0015, yOff: 0.45 }
-  ];
-
-  var eqBars = 56;
-  var eqHeight = 160;
+  var eqBars = 64;
+  var eqHeight = 140;
   var t = 0;
 
   function initCanvas() {
     if (canvas) return;
     canvas = document.createElement('canvas');
     canvas.id = 'etap0-viz-canvas';
-    // Вставляем в .md-container чтобы быть поверх фона но под контентом
     var container = document.querySelector('.md-container');
     if (container) container.appendChild(canvas);
     else document.body.appendChild(canvas);
@@ -41,7 +33,7 @@
     });
 
     window.addEventListener('scroll', function () {
-      if (canvas) canvas.style.opacity = window.scrollY > 80 ? '0.07' : '0.25';
+      if (canvas) canvas.style.opacity = window.scrollY > 80 ? '0.05' : '0.2';
     }, { passive: true });
   }
 
@@ -50,47 +42,91 @@
     ctx.clearRect(0, 0, w, h);
     var colors = getColors();
 
-    // Волны
-    for (var i = 0; i < waves.length; i++) {
-      var wa = waves[i];
-      var colorKey = 'wave' + (i + 1);
-      var baseY = h * wa.yOff;
+    // --- Верх: математическая сетка + плавные линии ---
+    var gridTop = h * 0.55;
+    var gridLines = 8;
+    var gridSpacing = gridTop / gridLines;
 
+    // Горизонтальные линии сетки
+    ctx.strokeStyle = 'rgba(' + colors.grid + ', 0.06)';
+    ctx.lineWidth = 1;
+    for (var gy = 0; gy <= gridLines; gy++) {
+      var y = gy * gridSpacing;
       ctx.beginPath();
-      ctx.moveTo(0, h);
-
-      for (var x = 0; x <= w; x += 2) {
-        var y = baseY
-          + Math.sin(x * wa.freq + t * wa.speed * 1000) * wa.amp
-          + Math.sin(x * wa.freq * 2.3 + t * 0.001) * wa.amp * 0.3;
-        ctx.lineTo(x, y);
-      }
-
-      ctx.lineTo(w, h);
-      ctx.closePath();
-
-      var grad = ctx.createLinearGradient(0, baseY - wa.amp, 0, baseY + wa.amp * 2);
-      grad.addColorStop(0, 'rgba(' + colors[colorKey] + ', 0.6)');
-      grad.addColorStop(1, 'rgba(' + colors[colorKey] + ', 0.05)');
-      ctx.fillStyle = grad;
-      ctx.fill();
+      ctx.moveTo(0, y);
+      ctx.lineTo(w, y);
+      ctx.stroke();
     }
 
-    // Эквалайзер
+    // Вертикальные линии сетки
+    var vGridLines = 16;
+    var vGridSpacing = w / vGridLines;
+    for (var gx = 0; gx <= vGridLines; gx++) {
+      var x = gx * vGridSpacing;
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, gridTop);
+      ctx.stroke();
+    }
+
+    // Числа на вертикальной оси (dB-шкала)
+    ctx.fillStyle = 'rgba(' + colors.grid + ', 0.08)';
+    ctx.font = '10px monospace';
+    ctx.textAlign = 'right';
+    for (var db = 0; db <= gridLines; db++) {
+      var val = (gridLines - db) * 3;
+      var dy = db * gridSpacing;
+      ctx.fillText(val + 'dB', 30, dy + 12);
+    }
+
+    // Частоты на горизонтальной оси
+    var freqs = ['20', '40', '80', '150', '300', '600', '1k', '2k', '4k', '8k', '16k'];
+    ctx.textAlign = 'center';
+    var freqSpacing = w / (freqs.length - 1);
+    for (var fi = 0; fi < freqs.length; fi++) {
+      ctx.fillText(freqs[fi], fi * freqSpacing, gridTop + 16);
+    }
+
+    // Плавные синусоидальные линии (очень медленно)
+    var waveConfigs = [
+      { amp: 18, freq: 0.002, speed: 0.00015, color: colors.waveLine, alpha: 0.12 },
+      { amp: 12, freq: 0.0035, speed: -0.0001, color: colors.waveLine, alpha: 0.08 },
+      { amp: 8, freq: 0.005, speed: 0.00008, color: colors.waveLine, alpha: 0.05 }
+    ];
+
+    for (var wi = 0; wi < waveConfigs.length; wi++) {
+      var wc = waveConfigs[wi];
+      var midY = h * 0.28;
+
+      ctx.beginPath();
+      ctx.strokeStyle = 'rgba(' + wc.color + ', ' + wc.alpha + ')';
+      ctx.lineWidth = 1.5;
+
+      for (var wx = 0; wx <= w; wx += 2) {
+        var wy = midY
+          + Math.sin(wx * wc.freq + t * wc.speed) * wc.amp
+          + Math.sin(wx * wc.freq * 1.7 + t * wc.speed * 0.6) * wc.amp * 0.4;
+        if (wx === 0) ctx.moveTo(wx, wy);
+        else ctx.lineTo(wx, wy);
+      }
+      ctx.stroke();
+    }
+
+    // --- Низ: эквалайзер (тёмно-оранжевый) ---
     var barW = w / eqBars;
     for (var j = 0; j < eqBars; j++) {
-      var val = (Math.sin(t * 0.003 + j * 0.3) * 0.5 + 0.5)
-                * (Math.sin(t * 0.005 + j * 0.15) * 0.3 + 0.7);
+      var val = (Math.sin(t * 0.002 + j * 0.25) * 0.5 + 0.5)
+                * (Math.sin(t * 0.003 + j * 0.12) * 0.3 + 0.7);
       var barH = val * eqHeight;
       var bx = j * barW;
       var by = h - barH;
 
       var eqGrad = ctx.createLinearGradient(bx, by, bx, h);
-      eqGrad.addColorStop(0, 'rgba(' + colors.eq + ', 0.7)');
-      eqGrad.addColorStop(1, 'rgba(' + colors.eq + ', 0.1)');
+      eqGrad.addColorStop(0, 'rgba(' + colors.eq + ', 0.5)');
+      eqGrad.addColorStop(1, 'rgba(' + colors.eq + ', 0.08)');
       ctx.fillStyle = eqGrad;
 
-      var r = Math.min(barW / 2 - 1, 4);
+      var r = Math.min(barW / 2 - 1, 3);
       ctx.beginPath();
       ctx.moveTo(bx + 1, h);
       ctx.lineTo(bx + 1, by + r);
@@ -122,17 +158,14 @@
     }
   }
 
-  // Запуск при старте, если мы уже на etap0
   if (isEtap0) start();
 
-  // Слушаем SPA-навигацию MkDocs Material
   document.addEventListener('navigation', function () {
     isEtap0 = location.pathname.includes('etap0');
     if (isEtap0) start();
     else stop();
   });
 
-  // Fallback: hashchange / popstate
   window.addEventListener('hashchange', function () {
     var shouldRun = location.pathname.includes('etap0');
     if (shouldRun && !isEtap0) { isEtap0 = true; start(); }
