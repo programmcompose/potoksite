@@ -1,5 +1,5 @@
 ---
-title: "🎛️ Интерактивные инструменты"
+title: "Интерактивные инструменты"
 ---
 
 <meta http-equiv="refresh" content="0;url=../tools/index.html">

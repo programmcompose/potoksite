@@ -5,16 +5,16 @@
 Текстовые материалы, интерактивные инструменты, словарь терминов и помощь по изучению.
 </p>
 <div class="hero-tags">
-<span class="hero-tag">🎚️ Сведение</span>
-<span class="hero-tag">💿 Мастеринг</span>
-<span class="hero-tag">🎼 Теория музыки</span>
-<span class="hero-tag">🔌 VST-плагины</span>
-<span class="hero-tag">🎤 Звукозапись</span>
-<span class="hero-tag">🎛️ Интерактив</span>
+<span class="hero-tag"><i data-lucide="mixer-vertical" class="icon"></i> Сведение</span>
+<span class="hero-tag"><i data-lucide="disc-2" class="icon"></i> Мастеринг</span>
+<span class="hero-tag"><i data-lucide="music" class="icon"></i> Теория музыки</span>
+<span class="hero-tag"><i data-lucide="plug" class="icon"></i> VST-плагины</span>
+<span class="hero-tag"><i data-lucide="mic-vocal" class="icon"></i> Звукозапись</span>
+<span class="hero-tag"><i data-lucide="sliders-horizontal" class="icon"></i> Интерактив</span>
 </div>
 </div>
 
-## 📚 Структура курса
+## <i data-lucide="library" class="heading-icon"></i> Структура курса
 
 ### [Этап №0 — Подготовка к продакшну](etap0/index.md)
 Всё, что нужно знать перед началом: выбор DAW, оборудование, рабочее место, настройка драйверов, установка плагинов, оптимизация и организационные вопросы.
@@ -97,7 +97,7 @@
 
 ---
 
-## 🚀 Как пользоваться сайтом
+## <i data-lucide="rocket" class="heading-icon"></i> Как пользоваться сайтом
 
 1. **Навигация** — используйте левую боковую панель для перехода между разделами
 2. **Оглавление** — правая панель показывает структуру текущей страницы

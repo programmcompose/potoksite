@@ -6,7 +6,7 @@
 
 ---
 
-## 📋 ОБЩИЕ ВОПРОСЫ
+## <i data-lucide="clipboard-list" class="heading-icon"></i> ОБЩИЕ ВОПРОСЫ
 
 ### После курса я смогу всё посмотреть?
 
@@ -36,7 +36,7 @@
 
 ---
 
-## 📝 ПРО ДЗ
+## <i data-lucide="notebook-pen" class="heading-icon"></i> ПРО ДЗ
 
 ### Куда и как отправить домашку?
 
@@ -72,7 +72,7 @@
 
 ---
 
-## 💾 ПРО СОФТ
+## <i data-lucide="hard-drive" class="heading-icon"></i> ПРО СОФТ
 
 ### Как правильно устанавливать VST плагины и инструменты?
 
@@ -100,20 +100,20 @@
 
 ---
 
-## 🔗 ПОЛЕЗНЫЕ ССЫЛКИ
+## <i data-lucide="link" class="heading-icon"></i> ПОЛЕЗНЫЕ ССЫЛКИ
 
-### 📚 Статьи и материалы
+### <i data-lucide="library" class="heading-icon"></i> Статьи и материалы
 
 - **[СЭМПЛЫ и ПЛАГИНЫ и VST](https://telegra.ph/PLAGINY-i-VST-10-26)** — статья по сэмплам, плагинам и VST
 - **[Какие плагины нужны для старта](https://telegra.ph/Bazovye-VST-plaginy-11-16)** — базовые VST-плагины для начинающих
 - **[Оборудование IY](https://telegra.ph/OBORUDOVANIE-04-11)** — обзор оборудования
 
-### 💬 Telegram-каналы
+### <i data-lucide="message-circle" class="heading-icon"></i> Telegram-каналы
 
 - **[Материалы потока](https://t.me/+VwqTOwj1HdVkZWEy)** — все материалы курса
 - **[Cookie Архив](https://t.me/+FvGv96WSHgNkZmEy)** — архив Cookie
 
-### 🌐 Ресурсы
+### <i data-lucide="globe" class="heading-icon"></i> Ресурсы
 
 - **[Music Radar](https://www.musicradar.com/)** — музыкальные новости и гайды
 - **[SPLICE](https://splice.com/)** — сэмплы и лупы

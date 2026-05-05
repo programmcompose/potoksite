@@ -1,0 +1,63 @@
+/* ========================================
+   Lucide Icons — Music Production Course
+   ======================================== */
+
+/* Nav icons in sidebar */
+.md-nav__link .nav-icon {
+  width: 18px;
+  height: 18px;
+  margin-right: 0.35em;
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  opacity: 0.7;
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+.md-nav__link:hover .nav-icon {
+  color: var(--text-main);
+  opacity: 1;
+}
+
+.md-nav__link--active .nav-icon,
+.md-nav__item--active > .md-nav__link .nav-icon {
+  color: var(--accent-orange);
+  opacity: 1;
+}
+
+/* Heading icons in content area */
+.md-typeset h1 .heading-icon,
+.md-typeset h2 .heading-icon,
+.md-typeset h3 .heading-icon,
+.md-typeset h4 .heading-icon {
+  width: 22px;
+  height: 22px;
+  vertical-align: middle;
+  margin-right: 0.3em;
+  color: var(--accent-orange);
+  opacity: 0.85;
+}
+
+.md-typeset h3 .heading-icon,
+.md-typeset h4 .heading-icon {
+  width: 18px;
+  height: 18px;
+}
+
+/* Inline icons in body text */
+.md-typeset p .icon,
+.md-typeset li .icon,
+.md-typeset td .icon {
+  width: 16px;
+  height: 16px;
+  vertical-align: -2px;
+  margin-right: 0.2em;
+  color: var(--accent-blue);
+}
+
+/* Lucide SVG base */
+.lucide {
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
