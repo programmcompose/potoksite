@@ -8,19 +8,19 @@
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 0;
+  z-index: 5;
   pointer-events: none;
-  opacity: 0.18;
+  opacity: 0.3;
   transition: opacity 0.4s ease;
 }
 
 .md-main__inner {
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
 #etap0-viz-canvas.scrolled {
-  opacity: 0.06;
+  opacity: 0.08;
 }
 
 @media (prefers-reduced-motion: reduce) {
