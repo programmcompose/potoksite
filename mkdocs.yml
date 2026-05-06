@@ -161,7 +161,7 @@ nav:
           - "<span class='nav-icon' data-lucide='circle'></span> Бит в Ableton": "etap1/bit-v-ableton.md"
           - "<span class='nav-icon' data-lucide='circle-check'></span> Финал этапа": "etap1/final-etap1.md"
       - "<span class='nav-icon' data-lucide='mixer-vertical'></span> Этап №2: Сведение и VST Плагины":
-          - "ЧТО БУДЕТ В ЭТАПЕ": "etap2/что-будет-в-этапе.md"
+          - "etap2/index.md"
           - "<span class='nav-icon' data-lucide='book-open'></span> Основные понятия": "etap2/osnovnye-ponyatiya.md"
           - "<span class='nav-icon' data-lucide='sliders-horizontal'></span> EQ / Эквализация": "etap2/eq-ekvalizatsiya.md"
           - "<span class='nav-icon' data-lucide='flame'></span> Saturation / Сатурация": "etap2/saturation-saturatsiya.md"
@@ -180,7 +180,7 @@ nav:
           - "<span class='nav-icon' data-lucide='shuffle'></span> Сведение (mixing)": "etap2/mixing.md"
           - "<span class='nav-icon' data-lucide='disc-2'></span> Мастеринг": "etap2/mastering.md"
       - "<span class='nav-icon' data-lucide='flame'></span> Этап №3: Усложненные биты":
-          - "ЧТО БУДЕТ В ЭТАПЕ": "etap3/что-будет-в-этапе.md"
+          - "etap3/index.md"
           - "<span class='nav-icon' data-lucide='music-2'></span> Первая мелодия": "etap3/pervaya-melodiya.md"
           - "<span class='nav-icon' data-lucide='piano'></span> VST Синтезаторы": "etap3/vst-sintezatory.md"
           - "<span class='nav-icon' data-lucide='music-4'></span> Мелодии из One-Shot": "etap3/melodii-iz-one-shot.md"
@@ -198,7 +198,7 @@ nav:
           - "<span class='nav-icon' data-lucide='mixer-vertical'></span> Мастеринг": "etap3/mastering-etap3.md"
           - "<span class='nav-icon' data-lucide='circle-check'></span> Финал этапа": "etap3/final-etap3.md"
       - "<span class='nav-icon' data-lucide='piano'></span> Этап №4: Теория музыки и Аккорды":
-          - "ЧТО БУДЕТ В ЭТАПЕ": "etap4/что-будет-в-этапе.md"
+          - "etap4/index.md"
           - "<span class='nav-icon' data-lucide='music-2'></span> Ноты": "etap4/noty.md"
           - "<span class='nav-icon' data-lucide='ruler'></span> Интервалы": "etap4/intervaly.md"
           - "<span class='nav-icon' data-lucide='music'></span> Тональность": "etap4/tonalnost.md"
