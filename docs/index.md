@@ -14,6 +14,51 @@
 </div>
 </div>
 
+<div class="hero-section etap2">
+<h2>Этап №2 — Сведение и обработка</h2>
+<p class="hero-subtitle">
+Профессиональный саунд: EQ, компрессия, сатурация, реверб, delay, мастеринг, работа с референсами.
+</p>
+<div class="hero-tags">
+<span class="hero-tag"><i data-lucide="equalizer" class="icon"></i> EQ</span>
+<span class="hero-tag"><i data-lucide="gauge" class="icon"></i> Компрессия</span>
+<span class="hero-tag"><i data-lucide="sparkles" class="icon"></i> Сатурация</span>
+<span class="hero-tag"><i data-lucide="radio" class="icon"></i> Реверб</span>
+<span class="hero-tag"><i data-lucide="repeat" class="icon"></i> Delay</span>
+<span class="hero-tag"><i data-lucide="disc-3" class="icon"></i> Мастеринг</span>
+</div>
+</div>
+
+<div class="hero-section etap3">
+<h2>Этап №3 — Усложнённые биты</h2>
+<p class="hero-subtitle">
+Синтезаторы, chop-техники, сложные драм-партии, FX-манипуляции, структура трека, жанровые стили.
+</p>
+<div class="hero-tags">
+<span class="hero-tag"><i data-lucide="sliders-vertical" class="icon"></i> Синтезаторы</span>
+<span class="hero-tag"><i data-lucide="scissors" class="icon"></i> Chop-техники</span>
+<span class="hero-tag"><i data-lucide="activity" class="icon"></i> Драм-партии</span>
+<span class="hero-tag"><i data-lucide="zap" class="icon"></i> FX</span>
+<span class="hero-tag"><i data-lucide="layout-template" class="icon"></i> Структура</span>
+<span class="hero-tag"><i data-lucide="music-2" class="icon"></i> Жанры</span>
+</div>
+</div>
+
+<div class="hero-section etap4">
+<h2>Этап №4 — Теория музыки и аккорды</h2>
+<p class="hero-subtitle">
+Ноты, интервалы, тональности, аккорды, прогрессии, мелодия, ритмика, тембр, импровизация.
+</p>
+<div class="hero-tags">
+<span class="hero-tag"><i data-lucide="music" class="icon"></i> Ноты</span>
+<span class="hero-tag"><i data-lucide="git-branch" class="icon"></i> Интервалы</span>
+<span class="hero-tag"><i data-lucide="palette" class="icon"></i> Тональности</span>
+<span class="hero-tag"><i data-lucide="chord" class="icon"></i> Аккорды</span>
+<span class="hero-tag"><i data-lucide="trending-up" class="icon"></i> Прогрессии</span>
+<span class="hero-tag"><i data-lucide="pen-tool" class="icon"></i> Мелодия</span>
+</div>
+</div>
+
 <div class="desktop-warning">
   <span class="warning-icon">⚠</span>
   <span><strong>Рекомендуется использовать этот сайт на компьютере.</strong> Интерактивные инструменты, таблицы и навигация оптимизированы для десктопного просмотра.</span>
