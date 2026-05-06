@@ -2,6 +2,12 @@
 
 Delay создаёт повторения (эхо) исходного сигнала. В отличие от реверба, даёт чёткие, дискретные повторы.
 
+![Soundtoys EchoBoy 4](https://www.soundtoys.com/wp-content/uploads/2020/06/echoboy4_hero.png)
+
+![Waves H-Delay](https://www.waveshop.com/images/products/large/h-delay.jpg)
+
+![Ableton Delay 3](https://docs.ableton.com/v12.1/images/delay3_overview.png)
+
 ## Основы
 
 | Параметр | Что делает |
