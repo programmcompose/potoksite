@@ -1,3 +1,18 @@
+<div class="hero-section etap4">
+<h1>Этап №4 — Теория музыки и аккорды</h1>
+<p class="hero-subtitle">
+Ноты, интервалы, тональности, аккорды, прогрессии, мелодия, ритмика, тембр, импровизация.
+</p>
+<div class="hero-tags">
+<span class="hero-tag"><i data-lucide="music" class="icon"></i> Ноты</span>
+<span class="hero-tag"><i data-lucide="git-branch" class="icon"></i> Интервалы</span>
+<span class="hero-tag"><i data-lucide="palette" class="icon"></i> Тональности</span>
+<span class="hero-tag"><i data-lucide="chord" class="icon"></i> Аккорды</span>
+<span class="hero-tag"><i data-lucide="trending-up" class="icon"></i> Прогрессии</span>
+<span class="hero-tag"><i data-lucide="pen-tool" class="icon"></i> Мелодия</span>
+</div>
+</div>
+
 # Этап №4 — Теория музыки и Аккорды
 
 Музыка — это **язык**. Как любой язык, она имеет алфавит (ноты), грамматику (интервалы, тональности) и лексику (аккорды, мелодии). Понимание теории музыки превращает хаотичный процесс создания битов в осознанное ремесло.

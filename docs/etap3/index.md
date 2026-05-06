@@ -1,3 +1,18 @@
+<div class="hero-section etap3">
+<h1>Этап №3 — Усложнённые биты</h1>
+<p class="hero-subtitle">
+Синтезаторы, chop-техники, сложные драм-партии, FX-манипуляции, структура трека, жанровые стили.
+</p>
+<div class="hero-tags">
+<span class="hero-tag"><i data-lucide="sliders-vertical" class="icon"></i> Синтезаторы</span>
+<span class="hero-tag"><i data-lucide="scissors" class="icon"></i> Chop-техники</span>
+<span class="hero-tag"><i data-lucide="activity" class="icon"></i> Драм-партии</span>
+<span class="hero-tag"><i data-lucide="zap" class="icon"></i> FX</span>
+<span class="hero-tag"><i data-lucide="layout-template" class="icon"></i> Структура</span>
+<span class="hero-tag"><i data-lucide="music-2" class="icon"></i> Жанры</span>
+</div>
+</div>
+
 # Усложненные биты
 
 Вы научились создавать простые биты и работать с базовыми инструментами сведения. Теперь пришло время **усложнить** ваши продакшны.

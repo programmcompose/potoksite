@@ -1,3 +1,18 @@
+<div class="hero-section etap2">
+<h1>Этап №2 — Сведение и обработка</h1>
+<p class="hero-subtitle">
+Профессиональный саунд: EQ, компрессия, сатурация, реверб, delay, мастеринг, работа с референсами.
+</p>
+<div class="hero-tags">
+<span class="hero-tag"><i data-lucide="equalizer" class="icon"></i> EQ</span>
+<span class="hero-tag"><i data-lucide="gauge" class="icon"></i> Компрессия</span>
+<span class="hero-tag"><i data-lucide="sparkles" class="icon"></i> Сатурация</span>
+<span class="hero-tag"><i data-lucide="radio" class="icon"></i> Реверб</span>
+<span class="hero-tag"><i data-lucide="repeat" class="icon"></i> Delay</span>
+<span class="hero-tag"><i data-lucide="disc-3" class="icon"></i> Мастеринг</span>
+</div>
+</div>
+
 # Зачем сведение?
 
 Теперь, когда вы понимаете основы звука и теорию музыки, пришло время
