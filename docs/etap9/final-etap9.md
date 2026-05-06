@@ -74,9 +74,7 @@
 
 ## Ресурсы для дальнейшего роста
 
-### Книги (обязательные)
-- **[All You Need to Know About the Music Business](https://www.amazon.com/Need-Know-Music-Business/dp/0028053739)** (Donald Passman)
-- **[The War of Art](https://www.amazon.com/War-Art-Break-Creativity-Thrives/dp/1577314792)** (Steven Pressfield)
+### Книги
 - **[The Creative Act](https://www.amazon.com/Creative-Act-Use-Infinite-Power/dp/0593652886)** (Rick Rubin)
 
 ### YouTube-каналы
