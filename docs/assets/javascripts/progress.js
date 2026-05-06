@@ -12,6 +12,13 @@
   var STORAGE_KEY = 'potok_progress_v1';
   var COURSE_KEY = '18potok';
 
+  // Все этапы курса (источник истины для прогресс-бара)
+  var ALL_ETAP_IDS = [
+    'etap0-done', 'etap1-done', 'etap2-done', 'etap3-done',
+    'etap4-done', 'etap5-done', 'etap6-done', 'etap7-done',
+    'etap8-done', 'etap9-done'
+  ];
+
   // ========================
   // LocalStorage (с fallback)
   // ========================
@@ -134,13 +141,7 @@
   // ========================
 
   function getAllLessonIds() {
-    var checkboxes = document.querySelectorAll('input.potok-lesson');
-    var ids = [];
-    checkboxes.forEach(function (cb) {
-      var id = cb.getAttribute('data-lesson');
-      if (id && ids.indexOf(id) === -1) ids.push(id);
-    });
-    return ids;
+    return ALL_ETAP_IDS.slice();
   }
 
   function countDoneLessons(lessonIds) {

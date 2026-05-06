@@ -54,4 +54,9 @@ flowchart TD
 
 ---
 
+<div class="potok-lesson-wrapper">
+  <input type="checkbox" class="potok-lesson" data-lesson="etap5-done">
+  <label class="potok-lesson-label">✅ Этап №5 пройден</label>
+</div>
+
 **← [Назад: Этап №4 →](../etap4/index.md)** | **[Далее: Синтез Звука →](sintez-zvuka.md)**
