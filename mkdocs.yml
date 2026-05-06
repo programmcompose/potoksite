@@ -212,7 +212,7 @@ nav:
           - "<span class='nav-icon' data-lucide='bar-chart-3'></span> Работа с референсами": "etap4/rabota-s-referensami.md"
           - "<span class='nav-icon' data-lucide='target'></span> Применение в битах": "etap4/primenenie-v-bitakh.md"
           - "<span class='nav-icon' data-lucide='circle-check'></span> Финал этапа": "etap4/final-etap4.md"
-       - "<span class='nav-icon' data-lucide='guitar'></span> Этап №6: Живая Музыка":
+      - "<span class='nav-icon' data-lucide='guitar'></span> Этап №6: Живая Музыка":
           - "etap6/index.md"
           - "<span class='nav-icon' data-lucide='guitar'></span> Рок — Основные инструменты": "etap6/rock-osnovnye-instrumenty.md"
           - "<span class='nav-icon' data-lucide='pen-line'></span> Рок — Написание с нуля": "etap6/rock-napisanie-s-nulya.md"
