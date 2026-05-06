@@ -1,16 +1,17 @@
 <div class="hero-section">
 <h1>18 ПОТОК</h1>
 <p class="hero-subtitle">
-Полный курс по музыкальному продакшну — от основ звука до мастеринга.
-Текстовые материалы, интерактивные инструменты, словарь терминов и помощь по изучению.
+Полный курс по музыкальному продакшну — от основ звука до финального трека. Битмейкинг, живая музыка, домашки, комьюнити и чаты.
 </p>
 <div class="hero-tags">
 <span class="hero-tag"><i data-lucide="mixer-vertical" class="icon"></i> Сведение</span>
-<span class="hero-tag"><i data-lucide="disc-2" class="icon"></i> Мастеринг</span>
+<span class="hero-tag"><i data-lucide="book-check" class="icon"></i> Домашки</span>
 <span class="hero-tag"><i data-lucide="music" class="icon"></i> Теория музыки</span>
 <span class="hero-tag"><i data-lucide="plug" class="icon"></i> VST-плагины</span>
 <span class="hero-tag"><i data-lucide="mic-vocal" class="icon"></i> Звукозапись</span>
-<span class="hero-tag"><i data-lucide="sliders-horizontal" class="icon"></i> Интерактив</span>
+<span class="hero-tag"><i data-lucide="message-circle" class="icon"></i> Комьюнити и чаты</span>
+<span class="hero-tag"><i data-lucide="disc-2" class="icon"></i> Битмейкинг</span>
+<span class="hero-tag"><i data-lucide="piano-keyboards" class="icon"></i> Живая музыка</span>
 </div>
 </div>
 
