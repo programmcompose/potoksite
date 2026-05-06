@@ -69,8 +69,8 @@
   height: 20px;
   vertical-align: middle;
   margin-right: 0.3em;
-  color: var(--accent-blue);
-  opacity: 0.75;
+  color: var(--accent-orange);
+  opacity: 0.85;
 }
 
 /* Inline icons in body text */
