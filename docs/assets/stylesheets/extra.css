@@ -320,30 +320,43 @@
   display: none;
 }
 
-.md-typeset .task-list-item-checkbox {
-  margin-right: 0.5em;
-  accent-color: var(--accent-orange);
+/* Material task-list indicator — orange accent */
+.md-typeset .task-list-item .task-list-indicator {
   width: 16px;
   height: 16px;
-  cursor: pointer;
-  flex-shrink: 0;
-  margin-top: 0.2em;
+  border-radius: 3px;
+  border: 2px solid var(--accent-orange);
+  transition: background-color 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  margin-top: 2px;
 }
 
-.md-typeset .task-list-item-checkbox:hover {
-  transform: scale(1.1);
-  transition: transform 0.15s ease;
+.md-typeset .task-list-item input[type="checkbox"]:checked + .task-list-indicator {
+  background-color: var(--accent-orange) !important;
+  border-color: var(--accent-orange) !important;
 }
 
-.md-typeset .task-list-item-checkbox:checked + .task-list-label,
-.md-typeset .task-list-item input:checked ~ span {
-  color: var(--text-secondary);
+.md-typeset .task-list-item input[type="checkbox"]:checked + .task-list-indicator::after {
+  content: '';
+  width: 6px;
+  height: 10px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) translate(-1px, -1px);
+  margin-top: -2px;
 }
 
-.md-typeset .task-list-item input:checked ~ p,
-.md-typeset .task-list-item input:checked ~ span {
-  text-decoration: line-through;
-  opacity: 0.6;
+/* Text span — strikethrough when checked */
+.md-typeset .task-list-item:has(input[type="checkbox"]:checked) {
+  opacity: 0.5 !important;
+}
+
+.md-typeset .task-list-item:has(input[type="checkbox"]:checked) .task-text {
+  text-decoration: line-through !important;
+  color: var(--text-secondary) !important;
 }
 
 /* Ordered lists keep numbers */
