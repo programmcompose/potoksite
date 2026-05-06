@@ -61,3 +61,14 @@
   stroke-linejoin: round;
   fill: none;
 }
+
+/* Force fill: none on all SVG child elements to override inline fill attributes */
+.lucide path,
+.lucide rect,
+.lucide circle,
+.lucide ellipse,
+.lucide polygon,
+.lucide polyline,
+.lucide line {
+  fill: none !important;
+}
