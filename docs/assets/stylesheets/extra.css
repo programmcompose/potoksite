@@ -704,42 +704,41 @@ html {
 /* ========================================
    Desktop warning banner
    ======================================== */
-.desktop-warning {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 18px 24px;
-  margin: 28px 0;
-  border-radius: 14px;
-  border: 2px solid;
-  font-size: 1rem;
-  line-height: 1.5;
-  box-shadow: 0 0 20px rgba(242, 153, 74, 0.15);
+ .desktop-warning {
+   display: flex;
+   align-items: center;
+   gap: 14px;
+   padding: 18px 24px;
+   margin: 28px 0;
+   border-radius: 14px;
+   border: 2px solid;
+   font-size: 1rem;
+   line-height: 1.5;
 }
 
 .desktop-warning .warning-icon {
-  font-size: 1.8rem;
-  flex-shrink: 0;
+   font-size: 1.8rem;
+   flex-shrink: 0;
 }
 
 [data-md-color-scheme="slate"] .desktop-warning {
-  background: linear-gradient(135deg, rgba(242, 153, 74, 0.15), rgba(245, 158, 112, 0.08));
-  color: #FFD6A5;
-  border-color: rgba(242, 153, 74, 0.5);
+   background: rgba(255, 255, 255, 0.04);
+   color: var(--text-main);
+   border-color: rgba(255, 255, 255, 0.1);
 }
 
 [data-md-color-scheme="slate"] .desktop-warning strong {
-  color: #FFB26B;
+   color: #F9FAFB;
 }
 
 [data-md-color-scheme="default"] .desktop-warning {
-  background: linear-gradient(135deg, rgba(245, 158, 112, 0.25), rgba(251, 191, 146, 0.12));
-  color: #78350F;
-  border-color: rgba(234, 179, 8, 0.6);
+   background: rgba(0, 0, 0, 0.03);
+   color: var(--text-main);
+   border-color: rgba(0, 0, 0, 0.12);
 }
 
 [data-md-color-scheme="default"] .desktop-warning strong {
-  color: #92400E;
+   color: #1F2937;
 }
 
 /* ========================================

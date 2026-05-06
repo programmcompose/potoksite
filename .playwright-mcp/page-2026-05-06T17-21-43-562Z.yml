@@ -1,0 +1,189 @@
+- generic [ref=e3]:
+  - banner [ref=e4]:
+    - link "Перейти к содержимому":
+      - /url: "#"
+      - generic [ref=e8] [cursor=pointer]: Перейти к содержимому
+    - generic [ref=e10]:
+      - generic [ref=e11]:
+        - link "Главная страница Pinterest" [ref=e13] [cursor=pointer]:
+          - /url: /
+          - img [ref=e16]
+        - button "Просмотреть" [ref=e33] [cursor=pointer]:
+          - generic [ref=e34]:
+            - generic "Просмотреть" [ref=e36]
+            - img [ref=e38]
+      - generic [ref=e43]:
+        - generic:
+          - img "Значок поиска"
+        - generic [ref=e44]:
+          - combobox "Поиск" [ref=e45]
+          - generic:
+            - generic:
+              - generic:
+                - generic: Поиск по запросу
+                - generic:
+                  - generic:
+                    - generic: окружающая среда
+                    - generic: архітектурні ескізи
+                    - generic: странные места
+                    - generic: таинственные места
+                    - generic: мрачные места
+                    - generic: окружающая среда
+      - generic [ref=e55]:
+        - button "Войти" [ref=e57] [cursor=pointer]:
+          - generic [ref=e59]: Войти
+        - button "Регистрация" [ref=e61] [cursor=pointer]:
+          - generic [ref=e63]: Регистрация
+        - button "Настройки" [ref=e66] [cursor=pointer]:
+          - img [ref=e69]
+  - main [ref=e72]:
+    - list [ref=e1031]:
+      - listitem [ref=e1032]:
+        - generic [ref=e1039]:
+          - button "Нажмите, чтобы использовать эту идею максимально эффективно с бесплатным аккаунтом a woman in a red dress is walking through a field with an enormous structure in the background a woman in a red dress is walking through a field with an enormous structure in the background Просмотреть" [ref=e1041] [cursor=pointer]:
+            - generic [ref=e1047]:
+              - generic [ref=e1048]:
+                - button "Нажмите, чтобы использовать эту идею максимально эффективно с бесплатным аккаунтом":
+                  - heading "Нажмите, чтобы использовать эту идею максимально эффективно с бесплатным аккаунтом" [level=3] [ref=e1053]
+              - img "a woman in a red dress is walking through a field with an enormous structure in the background" [ref=e1056]
+              - img "a woman in a red dress is walking through a field with an enormous structure in the background" [ref=e1059]
+              - button "Просмотреть" [ref=e1063]:
+                - button "Просмотреть" [ref=e1065]:
+                  - img "Просмотреть" [ref=e1068]
+          - generic [ref=e1073]:
+            - generic [ref=e1079]:
+              - generic [ref=e1081]:
+                - generic [ref=e1082]:
+                  - generic "Отреагировать" [ref=e1084]:
+                    - button "React to pin" [ref=e1085] [cursor=pointer]:
+                      - img [ref=e1088]
+                  - generic [ref=e1091]: "48"
+                - generic "Общий доступ" [ref=e1096]:
+                  - button "Отправить" [ref=e1098] [cursor=pointer]:
+                    - img [ref=e1101]
+                - generic [ref=e1103]:
+                  - generic "Другие действия" [ref=e1105]:
+                    - button "Другие действия" [ref=e1106] [cursor=pointer]:
+                      - img [ref=e1109]
+                  - generic [ref=e1111]:
+                    - generic [ref=e1112]:
+                      - heading "Подробнее об этом пине" [level=2] [ref=e1113]
+                      - button "Закрыть модальное окно" [ref=e1115] [cursor=pointer]:
+                        - img [ref=e1118]
+                    - generic [ref=e1121]:
+                      - generic [ref=e1124]:
+                        - generic:
+                          - heading "Доска, содержащая этот пин" [level=3]
+                        - generic:
+                          - link "Изображение обложки выбранной доски Other Boards 1,6 тыс. пинов 1 год":
+                            - /url: /forexmarketcap/other-boards/
+                            - generic [ref=e1125] [cursor=pointer]:
+                              - img "Изображение обложки выбранной доски" [ref=e1129]
+                              - generic [ref=e1131]:
+                                - generic [ref=e1133]: Other Boards
+                                - generic [ref=e1135]:
+                                  - generic [ref=e1138]: 1,6 тыс. пинов
+                                  - generic [ref=e1140]: 1 год
+                      - generic [ref=e1143]:
+                        - generic:
+                          - heading "Связанные темы" [level=3]
+                        - generic [ref=e1144]:
+                          - link "Окружающая Среда" [ref=e1148] [cursor=pointer]:
+                            - /url: /ideas/окружающая-среда/895434910656/
+                          - link "Архітектурні Ескізи" [ref=e1152] [cursor=pointer]:
+                            - /url: /ideas/архітектурні-ескізи/942358319101/
+                          - link "Странные Места" [ref=e1156] [cursor=pointer]:
+                            - /url: /ideas/странные-места/954727455499/
+                          - link "Таинственные Места" [ref=e1160] [cursor=pointer]:
+                            - /url: /ideas/таинственные-места/935137313755/
+                          - link "Мрачные Места" [ref=e1164] [cursor=pointer]:
+                            - /url: /ideas/мрачные-места/913233999914/
+                          - link "Фантастический Мир" [ref=e1168] [cursor=pointer]:
+                            - /url: /ideas/фантастический-мир/954173883093/
+                          - link "Цифровое Искусство" [ref=e1172] [cursor=pointer]:
+                            - /url: /ideas/цифровое-искусство/916018478657/
+                          - link "Художественные Постеры" [ref=e1176] [cursor=pointer]:
+                            - /url: /ideas/художественные-постеры/940664395911/
+                          - link "Архитектурные Эскизы" [ref=e1180] [cursor=pointer]:
+                            - /url: /ideas/архитектурные-эскизы/919673688107/
+              - link "Пин" [ref=e1188] [cursor=pointer]:
+                - /url: /pin/579979258241014487/repin/
+                - button "Пин" [ref=e1189]:
+                  - button "Пин" [ref=e1190]:
+                    - generic [ref=e1192]: Сохранить
+            - generic [ref=e1193]:
+              - heading "Окружающая Среда" [level=1] [ref=e1198]
+              - 'button "Science-fiction et fantasy sont au programme des oeuvres de Arnaud Pheu, un conc... #Arnaud #Au #conc #de #des #fantasy #oeuvres #Pheu #programme #Sciencefiction #sont Others #Arnaud #Au #conc #de #des #fantasy #oeuvres #Pheu #programme #Sciencefiction #sont Check More... https://forexmarketcap.com/science-fiction-et-fantasy-sont-au-programme-des-oeuvres-de-arnaud-pheu-un-conc/ ... больше" [ref=e1203] [cursor=pointer]':
+                - generic [ref=e1207]:
+                  - text: Science-fiction et fantasy sont au programme des oeuvres de Arnaud Pheu, un conc...
+                  - link "#Arnaud" [ref=e1209]:
+                    - /url: /search/pins/?q=Arnaud
+                  - link "#Au" [ref=e1211]:
+                    - /url: /search/pins/?q=Au
+                  - link "#conc" [ref=e1213]:
+                    - /url: /search/pins/?q=conc
+                  - link "#de" [ref=e1215]:
+                    - /url: /search/pins/?q=de
+                  - link "#des" [ref=e1217]:
+                    - /url: /search/pins/?q=des
+                  - link "#fantasy" [ref=e1219]:
+                    - /url: /search/pins/?q=fantasy
+                  - link "#oeuvres" [ref=e1221]:
+                    - /url: /search/pins/?q=oeuvres
+                  - link "#Pheu" [ref=e1223]:
+                    - /url: /search/pins/?q=Pheu
+                  - link "#programme" [ref=e1225]:
+                    - /url: /search/pins/?q=programme
+                  - link "#Sciencefiction" [ref=e1227]:
+                    - /url: /search/pins/?q=Sciencefiction
+                  - link "#sont" [ref=e1229]:
+                    - /url: /search/pins/?q=sont
+                  - text: Others
+                  - link "#Arnaud" [ref=e1231]:
+                    - /url: /search/pins/?q=Arnaud
+                  - link "#Au" [ref=e1233]:
+                    - /url: /search/pins/?q=Au
+                  - link "#conc" [ref=e1235]:
+                    - /url: /search/pins/?q=conc
+                  - link "#de" [ref=e1237]:
+                    - /url: /search/pins/?q=de
+                  - link "#des" [ref=e1239]:
+                    - /url: /search/pins/?q=des
+                  - link "#fantasy" [ref=e1241]:
+                    - /url: /search/pins/?q=fantasy
+                  - link "#oeuvres" [ref=e1243]:
+                    - /url: /search/pins/?q=oeuvres
+                  - link "#Pheu" [ref=e1245]:
+                    - /url: /search/pins/?q=Pheu
+                  - link "#programme" [ref=e1247]:
+                    - /url: /search/pins/?q=programme
+                  - link "#Sciencefiction" [ref=e1249]:
+                    - /url: /search/pins/?q=Sciencefiction
+                  - link "#sont" [ref=e1251]:
+                    - /url: /search/pins/?q=sont
+                  - text: Check More... https://forexmarketcap.com/science-fiction-et-fantasy-sont-au-programme-des-oeuvres-de-arnaud-pheu-un-conc/
+                  - button "... больше" [ref=e1254]:
+                    - generic [ref=e1255]: ... больше
+              - generic [ref=e1258]:
+                - link "forexmarketcap" [ref=e1260] [cursor=pointer]:
+                  - /url: /forexmarketcap/
+                  - img "forexmarketcap" [ref=e1265]
+                - link "FMBoard" [ref=e1267] [cursor=pointer]:
+                  - /url: /forexmarketcap/
+                  - generic "FMBoard" [ref=e1270]
+            - heading "Комментарии" [level=2] [ref=e1272]
+            - generic [ref=e1280]:
+              - generic [ref=e1282]:
+                - button [ref=e1284]
+                - generic [ref=e1288]:
+                  - generic:
+                    - generic: Добавить комментарий
+                  - combobox "Добавить комментарий" [ref=e1290]
+              - generic [ref=e1296]:
+                - button "Выбрать эмодзи" [ref=e1298] [cursor=pointer]:
+                  - img [ref=e1301]
+                - button "Выбор наклейки" [ref=e1304] [cursor=pointer]:
+                  - img [ref=e1307]
+                - button "Выберите фото." [ref=e1311] [cursor=pointer]:
+                  - img [ref=e1314]
+      - listitem [ref=e1316]

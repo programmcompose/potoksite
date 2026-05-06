@@ -1,0 +1,1104 @@
+- generic [active] [ref=e1]:
+  - generic:
+    - generic:
+      - link "Перейти к основному контенту" [ref=e2] [cursor=pointer]
+      - link "Отключить бесконечную прокрутку" [ref=e3] [cursor=pointer]:
+        - /url: "#"
+      - link "Справка по использованию специальных возможностей" [ref=e4] [cursor=pointer]:
+        - /url: https://support.google.com/websearch/answer/181196?hl=ru
+      - link "Оставить отзыв о специальных возможностях" [ref=e5] [cursor=pointer]
+  - generic [ref=e10]:
+    - search [ref=e11]:
+      - generic [ref=e13]:
+        - link "Главная страница Google" [ref=e15] [cursor=pointer]:
+          - /url: https://www.google.com/webhp?hl=ru&sa=X&ved=0ahUKEwjw-Ijil6WUAxWyHhAIHfjmICUQPAgK
+          - img [ref=e16]
+        - generic [ref=e18]:
+          - generic [ref=e19]:
+            - combobox "Найти" [ref=e22]: intimate piano cinematic art intimate piano cinematic art
+            - generic [ref=e23]:
+              - button "Очистить" [ref=e25] [cursor=pointer]:
+                - img [ref=e27]
+              - generic [ref=e30]:
+                - button "Экранная клавиатура" [ref=e31] [cursor=pointer]:
+                  - img [ref=e33]
+                - button "Голосовой поиск" [ref=e35] [cursor=pointer]:
+                  - img [ref=e36]
+                - button "Поиск по картинке" [ref=e38] [cursor=pointer]:
+                  - img [ref=e39]
+          - button "Поиск" [ref=e41] [cursor=pointer]:
+            - img [ref=e44]
+    - generic [ref=e46]:
+      - button "Настройки" [ref=e48] [cursor=pointer]:
+        - img [ref=e51]
+      - generic [ref=e54]:
+        - button "Приложения Google" [ref=e56] [cursor=pointer]:
+          - img [ref=e57]
+        - link "Войти" [ref=e61] [cursor=pointer]:
+          - /url: https://accounts.google.com/ServiceLogin?hl=ru&passive=true&continue=https://www.google.com/search%3Fq%3Dintimate%2Bpiano%2Bcinematic%2Bart%26udm%3D2&ec=futura_srp_og_si_72236_p
+  - generic [ref=e63]:
+    - navigation [ref=e68]:
+      - generic [ref=e69]:
+        - list [ref=e70]:
+          - listitem [ref=e71]:
+            - link "Режим ИИ" [ref=e74] [cursor=pointer]:
+              - /url: /search?q=intimate+piano+cinematic+art&sca_esv=2139bdf85252c619&udm=50&fbs=ADc_l-bhOxyTGa5hupXMYxFiro_hOuVnUmh8yUNYzk1eu3ILMidwVYDqcv76u77QtMHRtne-Sco-4usXfNAFkm30sUjwz_atwi0VkL-FOQ22yXkLyFGp0tCi2hd2eI8Tp0D_0EfcxzJPDJzqDbJ8noDwftvkZIsFciGJyPhnZt5MrJb2U-doUcokcv7WM3Jabg3eUoa5wZK1DlyqxuFRTLBFhme99VR60fsKmWocA-YfJY13sOxwz95IOgFwvEdJ8qz1R3t8hUA2x5cwNvYEUIzzaVyOQB2vVw&aep=1&ntc=1&sa=X&ved=2ahUKEwjw-Ijil6WUAxWyHhAIHfjmICUQ2J8OegQICRAD
+              - generic [ref=e77]: Режим ИИ
+          - listitem [ref=e78]:
+            - link "Все" [ref=e79] [cursor=pointer]:
+              - /url: /search?sca_esv=2139bdf85252c619&q=intimate+piano+cinematic+art&source=lnms&fbs=ADc_l-bhOxyTGa5hupXMYxFiro_hOuVnUmh8yUNYzk1eu3ILMidwVYDqcv76u77QtMHRtne-Sco-4usXfNAFkm30sUjwz_atwi0VkL-FOQ22yXkLyFGp0tCi2hd2eI8Tp0D_0EfcxzJPDJzqDbJ8noDwftvkZIsFciGJyPhnZt5MrJb2U-doUcokcv7WM3Jabg3eUoa5wZK1DlyqxuFRTLBFhme99VR60fsKmWocA-YfJY13sOxwz95IOgFwvEdJ8qz1R3t8hUA2x5cwNvYEUIzzaVyOQB2vVw&sa=X&ved=2ahUKEwjw-Ijil6WUAxWyHhAIHfjmICUQ0pQJegQIChAB
+              - generic [ref=e81]: Все
+          - listitem [ref=e82]:
+            - link "Картинки" [disabled] [ref=e83]:
+              - generic [ref=e85]: Картинки
+          - listitem [ref=e86]:
+            - link "Покупки" [ref=e87] [cursor=pointer]:
+              - /url: /search?sca_esv=2139bdf85252c619&udm=28&fbs=ADc_l-bhOxyTGa5hupXMYxFiro_hOuVnUmh8yUNYzk1eu3ILMidwVYDqcv76u77QtMHRtne-Sco-4usXfNAFkm30sUjwz_atwi0VkL-FOQ22yXkLyFGp0tCi2hd2eI8Tp0D_0EfcxzJPDJzqDbJ8noDwftvkZIsFciGJyPhnZt5MrJb2U-doUcokcv7WM3Jabg3eUoa5wZK1DlyqxuFRTLBFhme99VR60fsKmWocA-YfJY13sOxwz95IOgFwvEdJ8qz1R3t8hUA2x5cwNvYEUIzzaVyOQB2vVw&q=intimate+piano+cinematic+art&ved=1t:220175&ictx=111
+              - generic [ref=e89]: Покупки
+          - listitem [ref=e90]:
+            - link "Видео" [ref=e91] [cursor=pointer]:
+              - /url: /search?sca_esv=2139bdf85252c619&udm=7&fbs=ADc_l-bhOxyTGa5hupXMYxFiro_hOuVnUmh8yUNYzk1eu3ILMidwVYDqcv76u77QtMHRtne-Sco-4usXfNAFkm30sUjwz_atwi0VkL-FOQ22yXkLyFGp0tCi2hd2eI8Tp0D_0EfcxzJPDJzqDbJ8noDwftvkZIsFciGJyPhnZt5MrJb2U-doUcokcv7WM3Jabg3eUoa5wZK1DlyqxuFRTLBFhme99VR60fsKmWocA-YfJY13sOxwz95IOgFwvEdJ8qz1R3t8hUA2x5cwNvYEUIzzaVyOQB2vVw&q=intimate+piano+cinematic+art&sa=X&ved=2ahUKEwjw-Ijil6WUAxWyHhAIHfjmICUQtKgLegQIDRAB
+              - generic [ref=e93]: Видео
+          - listitem [ref=e94]:
+            - link "Короткие видео" [ref=e95] [cursor=pointer]:
+              - /url: /search?sca_esv=2139bdf85252c619&udm=39&fbs=ADc_l-bhOxyTGa5hupXMYxFiro_hOuVnUmh8yUNYzk1eu3ILMidwVYDqcv76u77QtMHRtne-Sco-4usXfNAFkm30sUjwz_atwi0VkL-FOQ22yXkLyFGp0tCi2hd2eI8Tp0D_0EfcxzJPDJzqDbJ8noDwftvkZIsFciGJyPhnZt5MrJb2U-doUcokcv7WM3Jabg3eUoa5wZK1DlyqxuFRTLBFhme99VR60fsKmWocA-YfJY13sOxwz95IOgFwvEdJ8qz1R3t8hUA2x5cwNvYEUIzzaVyOQB2vVw&q=intimate+piano+cinematic+art&sa=X&ved=2ahUKEwjw-Ijil6WUAxWyHhAIHfjmICUQs6gLegQIDBAB
+              - generic [ref=e97]: Короткие видео
+          - listitem [ref=e98]:
+            - link "Веб-версия" [ref=e99] [cursor=pointer]:
+              - /url: /search?sca_esv=2139bdf85252c619&udm=web&fbs=ADc_l-bhOxyTGa5hupXMYxFiro_hOuVnUmh8yUNYzk1eu3ILMidwVYDqcv76u77QtMHRtne-Sco-4usXfNAFkm30sUjwz_atwi0VkL-FOQ22yXkLyFGp0tCi2hd2eI8Tp0D_0EfcxzJPDJzqDbJ8noDwftvkZIsFciGJyPhnZt5MrJb2U-doUcokcv7WM3Jabg3eUoa5wZK1DlyqxuFRTLBFhme99VR60fsKmWocA-YfJY13sOxwz95IOgFwvEdJ8qz1R3t8hUA2x5cwNvYEUIzzaVyOQB2vVw&q=intimate+piano+cinematic+art&sa=X&ved=2ahUKEwjw-Ijil6WUAxWyHhAIHfjmICUQs6gLegQICxAB
+              - generic [ref=e101]: Веб-версия
+          - listitem [ref=e102]:
+            - button "Ещё фильтры" [ref=e103] [cursor=pointer]:
+              - generic "Ещё фильтры" [ref=e104]:
+                - generic [ref=e105]:
+                  - generic [ref=e106]: Ещё
+                  - img [ref=e108]
+        - button "Инструменты" [ref=e111] [cursor=pointer]:
+          - generic [ref=e113]:
+            - generic [ref=e114]: Инструменты
+            - img [ref=e116]
+    - navigation [ref=e119]:
+      - navigation [ref=e122]:
+        - list [ref=e130]:
+          - listitem [ref=e131]:
+            - link "Добавить объект \"Grand piano\"" [ref=e132] [cursor=pointer]:
+              - /url: /search?sca_esv=2139bdf85252c619&q=grand+piano+intimate+piano+cinematic+art&uds=ALYpb_ncDc7jTlmw6Mmq7NjuX5c-D8SbTwdJJzmwuf9SBaX0IKbuTUvRUyspCaC81tdSkNtn0RKZvXsMZKPAlCZ3LvDwT4_dl2iSsDwQ6yBzpx6-uidtJ_n0njoyU8KovuwUf4_RggPFCgrRH8vS3rNmaZbPgTuT08oSZp8ra782d3qVoLfXahs&udm=2&sa=X&ved=2ahUKEwjw-Ijil6WUAxWyHhAIHfjmICUQxKsJKAB6BAgREAE&ictx=0
+              - generic [ref=e137]: Grand piano
+          - listitem [ref=e138]:
+            - link "Добавить объект \"Cinema paradiso\"" [ref=e139] [cursor=pointer]:
+              - /url: /search?sca_esv=2139bdf85252c619&q=cinema+paradiso+intimate+piano+cinematic+art&uds=ALYpb_ncDc7jTlmw6Mmq7NjuX5c--lrdr6dN4F3A7uaBN7Nazxv89d6K5rUnfF0fE9EY0CfSsQ319IS1xsd483J2Pg7mjskO6YmAwydZ93ki_V89HQreVw6Z6lGftD2a_dLpvvt3o2I7vbqSPpOQ5AJV93pvGWDcx9qEzDyH6PVWmZY-h-YXeoX5xZs9Y9zvOC7gAy00KCl1&udm=2&sa=X&ved=2ahUKEwjw-Ijil6WUAxWyHhAIHfjmICUQxKsJKAF6BAgSEAE&ictx=0
+              - generic [ref=e144]: Cinema paradiso
+          - listitem [ref=e145]:
+            - link "Добавить объект \"Music lesson\"" [ref=e146] [cursor=pointer]:
+              - /url: /search?sca_esv=2139bdf85252c619&q=music+lesson+intimate+piano+cinematic+art&uds=ALYpb_ncDc7jTlmw6Mmq7NjuX5c-GdQz-eI-hGlJTwEL89mLnECjKmf3jn7Vf1ccE1MQ4hoRUqSCXXD91jyEoRjCtMZk5-8c75Gz_I53wcv7pQyRV-YZDhYjexFsstDjyOAi9oECu-jgdDM-5bEfF16m1NW7S2ZRBMcVE2nEnw5Gs6gDOVbutto&udm=2&sa=X&ved=2ahUKEwjw-Ijil6WUAxWyHhAIHfjmICUQxKsJKAJ6BAgUEAE&ictx=0
+              - generic [ref=e151]: Music lesson
+          - listitem [ref=e152]:
+            - link "Добавить объект \"Piano melodies\"" [ref=e153] [cursor=pointer]:
+              - /url: /search?sca_esv=2139bdf85252c619&q=piano+melodies+intimate+piano+cinematic+art&uds=ALYpb_ncDc7jTlmw6Mmq7NjuX5c-NAqQ6LctQukbPo7vxSPTyWEBsQjOpKgm6oTHkzThutFxPUPtyyvYct4R1aEkHF-JJTWqNDDjD9VrZu-7UMLw0CPEEaokyJZeiUuFWyrpPhO2LtwGSVS3LAnDfJRDcsmcJCjQsl7VIrat_p5VIgL2ydH76IE&udm=2&sa=X&ved=2ahUKEwjw-Ijil6WUAxWyHhAIHfjmICUQxKsJKAN6BAgTEAE&ictx=0
+              - generic [ref=e158]: Piano melodies
+          - listitem [ref=e159]:
+            - link "Добавить объект \"Piano music\"" [ref=e160] [cursor=pointer]:
+              - /url: /search?sca_esv=2139bdf85252c619&q=piano+music+intimate+piano+cinematic+art&uds=ALYpb_ncDc7jTlmw6Mmq7NjuX5c-D8SbTwdJJzmwuf9SBaX0IKbuTUvRUyspCaC81tdSkNtn0RKZvXsMZKPAlCZ3LvDwH1u6Mp64Jm_38tvgS74qdVkFTxRiZjqqlXvtAKXmf9q7V1BSYFgX6LrqPtGe0swFNpkCSNnsS0m4Jwpm5A4mo8iXCiA&udm=2&sa=X&ved=2ahUKEwjw-Ijil6WUAxWyHhAIHfjmICUQxKsJKAR6BAgVEAE&ictx=0
+              - generic [ref=e165]: Piano music
+          - listitem [ref=e166]:
+            - link "Добавить объект \"Love theme\"" [ref=e167] [cursor=pointer]:
+              - /url: /search?sca_esv=2139bdf85252c619&q=love+theme+intimate+piano+cinematic+art&uds=ALYpb_ncDc7jTlmw6Mmq7NjuX5c-_aQSnqlaSI-sPR84pqEh1gYzN_wa2QLuj-5rUscqUkLhZAZnrLzURnL-NGtEee9hRMd9q6JGxSa6vwVMVIfQgZu3IKdUaKVc9UMiio9A_BhQv-T9AC7bmU0KzVt3rMYnFrHtYLuh2CZ2pqJ114Ba_lMqqPA&udm=2&sa=X&ved=2ahUKEwjw-Ijil6WUAxWyHhAIHfjmICUQxKsJKAV6BQiFARAB&ictx=0
+              - generic [ref=e172]: Love theme
+          - listitem [ref=e173]:
+            - link "Добавить объект \"Piano keys\"" [ref=e174] [cursor=pointer]:
+              - /url: /search?sca_esv=2139bdf85252c619&q=piano+keys+intimate+piano+cinematic+art&uds=ALYpb_ncDc7jTlmw6Mmq7NjuX5c-_aQSnqlaSI-sPR84pqEh1gYzN_wa2QLuj-5rUscqUkLhZAZnrLzURnL-NGtEee9h1xQL_t9R9rl_e9ut3n9xYrbltqIR4VqR7q91ls6FuHdwv2noDjltIRcgUXTh3Eb3E2ZTrHkxhUDiziSvyiqE0oiARvg&udm=2&sa=X&ved=2ahUKEwjw-Ijil6WUAxWyHhAIHfjmICUQxKsJKAZ6BQiCARAB&ictx=0
+              - generic [ref=e179]: Piano keys
+          - listitem [ref=e180]:
+            - link "Добавить объект \"Keyboard\"" [ref=e181] [cursor=pointer]:
+              - /url: /search?sca_esv=2139bdf85252c619&q=keyboard+intimate+piano+cinematic+art&uds=ALYpb_ncDc7jTlmw6Mmq7NjuX5c-YbAJTFiy94v5--J3o-7Hd3KHZTFyhh_JmLhgmS77tZFPV43EuMePU4N1n_lCcD6aLCnOR8j4rrQaVVssApbD46qy1Uj3h8I2wr_wEYmDnm6fijQNUtl79La9DLEiwU6CURigi0cds3cWgKgIVh0JsziMMv8&udm=2&sa=X&ved=2ahUKEwjw-Ijil6WUAxWyHhAIHfjmICUQxKsJKAd6BQiDARAB&ictx=0
+              - generic [ref=e186]: Keyboard
+          - listitem [ref=e187]:
+            - link "Добавить объект \"Macrorealism cinematic\"" [ref=e188] [cursor=pointer]:
+              - /url: /search?sca_esv=2139bdf85252c619&q=macrorealism+cinematic+intimate+piano+cinematic+art&uds=ALYpb_ncDc7jTlmw6Mmq7NjuX5c-enevNC-5-GH1oZ4JVYIFd4x8Msdt4KiEbNSfVBz8Bw7gyuUDL3BhhXaHOnkOLRijGoCBL_VLqQgCx-YlHq5SqQ9Iy3OY4bpmjhZwKGGUcJaqh3VFEjlVDtXbuY0uG-mC9VAcH61hBLUhm2BhKO-vXax8mhCdLxBVyzMdlnvQ4yXNUxgK&udm=2&sa=X&ved=2ahUKEwjw-Ijil6WUAxWyHhAIHfjmICUQxKsJKAh6BAh_EAE&ictx=0
+              - generic [ref=e193]: Macrorealism cinematic
+          - listitem [ref=e194]:
+            - link "Добавить объект \"Musical instrument\"" [ref=e195] [cursor=pointer]:
+              - /url: /search?sca_esv=2139bdf85252c619&q=musical+instrument+intimate+piano+cinematic+art&uds=ALYpb_ncDc7jTlmw6Mmq7NjuX5c-ReU0jDkAG_5lggOrManRlf-Zm3Eqo3GLZhQRyNZiUpCKR9T62ZJ36bT90a-L_fxkADB4u1_Z2iIjiXyHsqdt5SN7lxnmWj4VgOd-YrXnUEdw7r8pfQn08kxCGiUszS8FoO5332cFkU5v37EsFt3xSNiGY12zR8IZLvVhMG8wsO17gUYU&udm=2&sa=X&ved=2ahUKEwjw-Ijil6WUAxWyHhAIHfjmICUQxKsJKAl6BAh-EAE&ictx=0
+              - generic [ref=e200]: Musical instrument
+          - listitem [ref=e201]:
+            - link "Добавить объект \"Piano cover\"" [ref=e202] [cursor=pointer]:
+              - /url: /search?sca_esv=2139bdf85252c619&q=piano+cover+intimate+piano+cinematic+art&uds=ALYpb_ncDc7jTlmw6Mmq7NjuX5c-D8SbTwdJJzmwuf9SBaX0IKbuTUvRUyspCaC81tdSkNtn0RKZvXsMZKPAlCZ3LvDwHli-ptE7fCQ_tCXGv8g3hlG-yIsStbuKuE3DR2vBuBKz8fFC5hfloyiCi3Y6pAuVYwSxX5sCGf83JuqAE0q9IwJ2VXU&udm=2&sa=X&ved=2ahUKEwjw-Ijil6WUAxWyHhAIHfjmICUQxKsJKAp6BQiBARAB&ictx=0
+              - generic [ref=e207]: Piano cover
+          - listitem [ref=e208]:
+            - link "Добавить объект \"Piano keyboard\"" [ref=e209] [cursor=pointer]:
+              - /url: /search?sca_esv=2139bdf85252c619&q=piano+keyboard+intimate+piano+cinematic+art&uds=ALYpb_ncDc7jTlmw6Mmq7NjuX5c-NAqQ6LctQukbPo7vxSPTyWEBsQjOpKgm6oTHkzThutFxPUPtyyvYct4R1aEkHF-J2_Yi2dkQxDUTkXsUxJV7QOMtY0ElI48WB1ktfnIUGEtfP0-rV2anLjYex25AFQTW5GweTKTmdXMsX30ytle7fDToNKE&udm=2&sa=X&ved=2ahUKEwjw-Ijil6WUAxWyHhAIHfjmICUQxKsJKAt6BQiAARAB&ictx=0
+              - generic [ref=e214]: Piano keyboard
+          - listitem [ref=e215]:
+            - link "Добавить объект \"Playing piano\"" [ref=e216] [cursor=pointer]:
+              - /url: /search?sca_esv=2139bdf85252c619&q=playing+piano+intimate+piano+cinematic+art&uds=ALYpb_ncDc7jTlmw6Mmq7NjuX5c-mIW9zKYuBZgSF7Oer-VlPwA4GoRAWJMAOqitNXmPJG8pVpgGs6N9DqdDgDu7LXUp2Txhh2QHbcmXzHTvKeX0HxtPoq-iSY3eeR-bVjCgTZtBsLr1mvsYI60gdHIA_dV-llpTHZI9NBd0318seEImhVzWDRA&udm=2&sa=X&ved=2ahUKEwjw-Ijil6WUAxWyHhAIHfjmICUQxKsJKAx6BQiEARAB&ictx=0
+              - generic [ref=e221]: Playing piano
+    - heading "Результаты поиска" [level=1] [ref=e222]
+    - main [ref=e224]:
+      - generic [ref=e230]:
+        - generic [ref=e233]:
+          - generic [ref=e234] [cursor=pointer]:
+            - heading "Cinematic piano Images - Free Download on Freepik" [level=3] [ref=e236]:
+              - button "Cinematic piano Images - Free Download on Freepik" [ref=e238]:
+                - img "Cinematic piano Images - Free Download on Freepik" [ref=e241]
+            - link "Freepik Cinematic piano Images - Free Download on Freepik" [ref=e243]:
+              - /url: https://www.freepik.com/free-photos-vectors/cinematic-piano
+              - generic [ref=e248]: Freepik
+              - generic [ref=e250]: Cinematic piano Images - Free Download on Freepik
+          - generic [ref=e251] [cursor=pointer]:
+            - heading "Cinematic Shot of Thom Yorke Playing Piano Underwater | TheCandie.com" [level=3] [ref=e253]:
+              - button "Cinematic Shot of Thom Yorke Playing Piano Underwater | TheCandie.com" [ref=e255]:
+                - img "Cinematic Shot of Thom Yorke Playing Piano Underwater | TheCandie.com" [ref=e258]
+            - link "kr.pinterest.com Cinematic Shot of Thom Yorke Playing Piano Underwater | TheCandie.com" [ref=e260]:
+              - /url: https://kr.pinterest.com/pin/cinematic-shot-of-thom-yorke-playing-piano-underwater--1033294708252561665/
+              - generic [ref=e265]: kr.pinterest.com
+              - generic [ref=e267]: Cinematic Shot of Thom Yorke Playing Piano Underwater | TheCandie.com
+          - generic [ref=e268] [cursor=pointer]:
+            - generic [ref=e269]:
+              - heading "105 Cinematic Piano Stock Photos - Free & Royalty-Free Stock Photos from Dreamstime" [level=3] [ref=e270]:
+                - button "105 Cinematic Piano Stock Photos - Free & Royalty-Free Stock Photos from Dreamstime" [ref=e272]:
+                  - img "105 Cinematic Piano Stock Photos - Free & Royalty-Free Stock Photos from Dreamstime" [ref=e275]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "Dreamstime.com 105 Cinematic Piano Stock Photos - Free & Royalty-Free Stock Photos from Dreamstime" [ref=e277]:
+              - /url: https://www.dreamstime.com/photos-images/cinematic-piano.html
+              - generic [ref=e282]: Dreamstime.com
+              - generic [ref=e284]: 105 Cinematic Piano Stock Photos - Free & Royalty-Free Stock Photos from Dreamstime
+          - generic [ref=e285] [cursor=pointer]:
+            - heading "Cinematic piano Images - Free Download on Freepik" [level=3] [ref=e287]:
+              - button "Cinematic piano Images - Free Download on Freepik" [ref=e289]:
+                - img "Cinematic piano Images - Free Download on Freepik" [ref=e292]
+            - link "Freepik Cinematic piano Images - Free Download on Freepik" [ref=e294]:
+              - /url: https://www.freepik.com/free-photos-vectors/cinematic-piano
+              - generic [ref=e299]: Freepik
+              - generic [ref=e301]: Cinematic piano Images - Free Download on Freepik
+          - generic [ref=e302] [cursor=pointer]:
+            - generic [ref=e303]:
+              - heading "Piano Close-Up Images – Browse 131,523 Stock Photos, Vectors, and Video | Adobe Stock" [level=3] [ref=e304]:
+                - button "Piano Close-Up Images – Browse 131,523 Stock Photos, Vectors, and Video | Adobe Stock" [ref=e306]:
+                  - img "Piano Close-Up Images – Browse 131,523 Stock Photos, Vectors, and Video | Adobe Stock" [ref=e309]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "Adobe Stock Piano Close-Up Images – Browse 131,523 Stock Photos, Vectors, and Video | Adobe Stock" [ref=e311]:
+              - /url: https://stock.adobe.com/search?k=piano+close-up
+              - generic [ref=e316]: Adobe Stock
+              - generic [ref=e318]: Piano Close-Up Images – Browse 131,523 Stock Photos, Vectors, and Video | Adobe Stock
+          - generic [ref=e319] [cursor=pointer]:
+            - generic [ref=e320]:
+              - heading "Cinematic Piano Stock Illustrations – 9 Cinematic Piano Stock Illustrations, Vectors & Clipart - Dreamstime" [level=3] [ref=e321]:
+                - button "Cinematic Piano Stock Illustrations – 9 Cinematic Piano Stock Illustrations, Vectors & Clipart - Dreamstime" [ref=e323]:
+                  - img "Cinematic Piano Stock Illustrations – 9 Cinematic Piano Stock Illustrations, Vectors & Clipart - Dreamstime" [ref=e326]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "Dreamstime.com Cinematic Piano Stock Illustrations – 9 Cinematic Piano Stock Illustrations, Vectors & Clipart - Dreamstime" [ref=e328]:
+              - /url: https://www.dreamstime.com/illustration/cinematic-piano.html
+              - generic [ref=e333]: Dreamstime.com
+              - generic [ref=e335]: Cinematic Piano Stock Illustrations – 9 Cinematic Piano Stock Illustrations, Vectors & Clipart - Dreamstime
+          - generic [ref=e336] [cursor=pointer]:
+            - generic [ref=e337]:
+              - heading "Intimate cinematic hi-res stock photography and images - Alamy" [level=3] [ref=e338]:
+                - button "Intimate cinematic hi-res stock photography and images - Alamy" [ref=e340]:
+                  - img "Intimate cinematic hi-res stock photography and images - Alamy" [ref=e343]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "Alamy Intimate cinematic hi-res stock photography and images - Alamy" [ref=e345]:
+              - /url: https://www.alamy.com/stock-photo/intimate-cinematic.html?pseudoid=489757D9-774E-47F7-A7BF-1FD6CF9B0E50
+              - generic [ref=e350]: Alamy
+              - generic [ref=e352]: Intimate cinematic hi-res stock photography and images - Alamy
+          - generic [ref=e353] [cursor=pointer]:
+            - generic [ref=e354]:
+              - heading "Background Music] Shine - Intimate & Relaxing Soft Piano ✨ | Cinematic No Copyright Music - YouTube" [level=3] [ref=e355]:
+                - button "Background Music] Shine - Intimate & Relaxing Soft Piano ✨ | Cinematic No Copyright Music - YouTube" [ref=e357]:
+                  - img "Background Music] Shine - Intimate & Relaxing Soft Piano ✨ | Cinematic No Copyright Music - YouTube" [ref=e360]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "YouTube Background Music] Shine - Intimate & Relaxing Soft Piano ✨ | Cinematic No Copyright Music - YouTube" [ref=e362]:
+              - /url: https://www.youtube.com/watch?v=ecdxITJZ7OI
+              - generic [ref=e367]: YouTube
+              - generic [ref=e369]: Background Music] Shine - Intimate & Relaxing Soft Piano ✨ | Cinematic No Copyright Music - YouTube
+          - generic [ref=e370] [cursor=pointer]:
+            - heading "🎹 New album Motivational Felt Piano out now! Warm, intimate, and cinematic. A collection of emotionally rich and subtle piano pieces tailor-made for storytelling. Blending acoustic purity with gentle textures and felt" [level=3] [ref=e372]:
+              - button "🎹 New album Motivational Felt Piano out now! Warm, intimate, and cinematic. A collection of emotionally rich and subtle piano pieces tailor-made for storytelling. Blending acoustic purity with gentle textures and felt" [ref=e374]:
+                - img "🎹 New album Motivational Felt Piano out now! Warm, intimate, and cinematic. A collection of emotionally rich and subtle piano pieces tailor-made for storytelling. Blending acoustic purity with gentle textures and felt" [ref=e377]
+            - link "Facebook 🎹 New album Motivational Felt Piano out now! Warm, intimate, and cinematic. A collection of emotionally rich and subtle piano pieces tailor-made for storytelling. Blending acoustic purity with gentle textures and felt" [ref=e379]:
+              - /url: https://www.facebook.com/SaraoMusic/posts/-new-album-motivational-felt-piano-out-nowwarm-intimate-and-cinematic-a-collecti/1110541554397252/
+              - generic [ref=e384]: Facebook
+              - generic [ref=e386]: 🎹 New album Motivational Felt Piano out now! Warm, intimate, and cinematic. A collection of emotionally rich and subtle piano pieces tailor-made for storytelling. Blending acoustic purity with gentle textures and felt
+          - generic [ref=e387] [cursor=pointer]:
+            - heading "A fusion of cinematic piano, a powerful string quartet, and stunning visuals. Soundscapes is more than music; it's an immersive journey beyond sound in some of the world's most iconic stages. Experience" [level=3] [ref=e389]:
+              - button "A fusion of cinematic piano, a powerful string quartet, and stunning visuals. Soundscapes is more than music; it's an immersive journey beyond sound in some of the world's most iconic stages. Experience" [ref=e391]:
+                - img "A fusion of cinematic piano, a powerful string quartet, and stunning visuals. Soundscapes is more than music; it's an immersive journey beyond sound in some of the world's most iconic stages. Experience" [ref=e394]
+            - link "Instagram A fusion of cinematic piano, a powerful string quartet, and stunning visuals. Soundscapes is more than music; it's an immersive journey beyond sound in some of the world's most iconic stages. Experience" [ref=e396]:
+              - /url: https://www.instagram.com/p/DJn4qu4qMcD/
+              - generic [ref=e401]: Instagram
+              - generic [ref=e403]: A fusion of cinematic piano, a powerful string quartet, and stunning visuals. Soundscapes is more than music; it's an immersive journey beyond sound in some of the world's most iconic stages. Experience
+          - generic [ref=e404] [cursor=pointer]:
+            - heading "Page 2 | Cinematic piano music Images - Free Download on Freepik" [level=3] [ref=e406]:
+              - button "Page 2 | Cinematic piano music Images - Free Download on Freepik" [ref=e408]:
+                - img "Page 2 | Cinematic piano music Images - Free Download on Freepik" [ref=e411]
+            - link "Freepik Page 2 | Cinematic piano music Images - Free Download on Freepik" [ref=e413]:
+              - /url: https://www.freepik.com/free-photos-vectors/cinematic-piano-music/2
+              - generic [ref=e418]: Freepik
+              - generic [ref=e420]: Page 2 | Cinematic piano music Images - Free Download on Freepik
+          - generic [ref=e421] [cursor=pointer]:
+            - heading "Cinematic Retro Vintage Grand Piano Keyboard Close Up by zheleznova - Stock Video | Motion Array" [level=3] [ref=e423]:
+              - button "Cinematic Retro Vintage Grand Piano Keyboard Close Up by zheleznova - Stock Video | Motion Array" [ref=e425]:
+                - img "Cinematic Retro Vintage Grand Piano Keyboard Close Up by zheleznova - Stock Video | Motion Array" [ref=e428]
+            - link "Motion Array Cinematic Retro Vintage Grand Piano Keyboard Close Up by zheleznova - Stock Video | Motion Array" [ref=e430]:
+              - /url: https://motionarray.com/stock-video/cinematic-retro-vintage-grand-piano-keyboard-close-up-3169261/
+              - generic [ref=e435]: Motion Array
+              - generic [ref=e437]: Cinematic Retro Vintage Grand Piano Keyboard Close Up by zheleznova - Stock Video | Motion Array
+          - generic [ref=e438] [cursor=pointer]:
+            - heading "macrorealism cinematic masterpiece synesthesia close up surreal lady playing vintage glass piano in room Craola, detailed glowing triadic c..." [level=3] [ref=e440]:
+              - button "macrorealism cinematic masterpiece synesthesia close up surreal lady playing vintage glass piano in room Craola, detailed glowing triadic c..." [ref=e442]:
+                - img "macrorealism cinematic masterpiece synesthesia close up surreal lady playing vintage glass piano in room Craola, detailed glowing triadic c..." [ref=e445]
+            - link "NightCafe macrorealism cinematic masterpiece synesthesia close up surreal lady playing vintage glass piano in room Craola, detailed glowing triadic c..." [ref=e447]:
+              - /url: https://creator.nightcafe.studio/creation/t4YkeFlDniIBEC994vaz
+              - generic [ref=e452]: NightCafe
+              - generic [ref=e454]: macrorealism cinematic masterpiece synesthesia close up surreal lady playing vintage glass piano in room Craola, detailed glowing triadic c...
+          - generic [ref=e455] [cursor=pointer]:
+            - heading "Quiet Piano - Intimate Incantations of Ivory ft. Piano Dreamsound &amp; Cinematic Piano MP3 Download & Lyrics | Boomplay" [level=3] [ref=e457]:
+              - button "Quiet Piano - Intimate Incantations of Ivory ft. Piano Dreamsound &amp; Cinematic Piano MP3 Download & Lyrics | Boomplay" [ref=e459]:
+                - img "Quiet Piano - Intimate Incantations of Ivory ft. Piano Dreamsound &amp; Cinematic Piano MP3 Download & Lyrics | Boomplay" [ref=e462]
+            - link "Boomplay Music Quiet Piano - Intimate Incantations of Ivory ft. Piano Dreamsound &amp; Cinematic Piano MP3 Download & Lyrics | Boomplay" [ref=e464]:
+              - /url: https://www.boomplay.com/songs/141844384
+              - generic [ref=e469]: Boomplay Music
+              - generic [ref=e471]: Quiet Piano - Intimate Incantations of Ivory ft. Piano Dreamsound &amp; Cinematic Piano MP3 Download & Lyrics | Boomplay
+          - generic [ref=e472] [cursor=pointer]:
+            - generic [ref=e473]:
+              - 'heading "Close-Up of Piano Keys in Black and White with Cinematic Focus Stock Image - Image of harmony, sound: 416785123" [level=3] [ref=e474]':
+                - 'button "Close-Up of Piano Keys in Black and White with Cinematic Focus Stock Image - Image of harmony, sound: 416785123" [ref=e476]':
+                  - 'img "Close-Up of Piano Keys in Black and White with Cinematic Focus Stock Image - Image of harmony, sound: 416785123" [ref=e479]'
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - 'link "Dreamstime.com Close-Up of Piano Keys in Black and White with Cinematic Focus Stock Image - Image of harmony, sound: 416785123" [ref=e481]':
+              - /url: https://www.dreamstime.com/close-up-piano-keys-black-white-cinematic-focus-artistic-black-white-photo-piano-keys-showcasing-cinematic-image416785123
+              - generic [ref=e486]: Dreamstime.com
+              - generic [ref=e488]: "Close-Up of Piano Keys in Black and White with Cinematic Focus Stock Image - Image of harmony, sound: 416785123"
+          - generic [ref=e489] [cursor=pointer]:
+            - generic [ref=e490]:
+              - heading "Emotional Cinematic Piano Cover of A Comme Amour | Richard Clayderman | TikTok" [level=3] [ref=e491]:
+                - button "Emotional Cinematic Piano Cover of A Comme Amour | Richard Clayderman | TikTok" [ref=e493]:
+                  - img "Emotional Cinematic Piano Cover of A Comme Amour | Richard Clayderman | TikTok" [ref=e496]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "TikTok Emotional Cinematic Piano Cover of A Comme Amour | Richard Clayderman | TikTok" [ref=e498]:
+              - /url: https://www.tiktok.com/@mgstela/video/7373832166007917830
+              - generic [ref=e503]: TikTok
+              - generic [ref=e505]: Emotional Cinematic Piano Cover of A Comme Amour | Richard Clayderman | TikTok
+          - generic [ref=e506] [cursor=pointer]:
+            - generic [ref=e507]:
+              - heading "Closeup Of A Girl Hands With Playing The Piano Cinematic Stock Photo - Download Image Now - iStock" [level=3] [ref=e508]:
+                - button "Closeup Of A Girl Hands With Playing The Piano Cinematic Stock Photo - Download Image Now - iStock" [ref=e510]:
+                  - img "Closeup Of A Girl Hands With Playing The Piano Cinematic Stock Photo - Download Image Now - iStock" [ref=e513]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "iStock Closeup Of A Girl Hands With Playing The Piano Cinematic Stock Photo - Download Image Now - iStock" [ref=e515]:
+              - /url: https://www.istockphoto.com/photo/close-up-of-a-girl-hands-with-playing-the-piano-cinematic-gm1474881137-504556171
+              - generic [ref=e520]: iStock
+              - generic [ref=e522]: Closeup Of A Girl Hands With Playing The Piano Cinematic Stock Photo - Download Image Now - iStock
+          - generic [ref=e523] [cursor=pointer]:
+            - generic [ref=e524]:
+              - 'heading "Mention the one to dance with :)❤️ Dance me to the end of love | Leonard Cohen - Cinematic Piano Cover #leonardcohen #pianocover #cinematography #tangodance" [level=3] [ref=e525]':
+                - 'button "Mention the one to dance with :)❤️ Dance me to the end of love | Leonard Cohen - Cinematic Piano Cover #leonardcohen #pianocover #cinematography #tangodance" [ref=e527]':
+                  - 'img "Mention the one to dance with :)❤️ Dance me to the end of love | Leonard Cohen - Cinematic Piano Cover #leonardcohen #pianocover #cinematography #tangodance" [ref=e530]'
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - 'link "Instagram Mention the one to dance with :)❤️ Dance me to the end of love | Leonard Cohen - Cinematic Piano Cover #leonardcohen #pianocover #cinematography #tangodance" [ref=e532]':
+              - /url: https://www.instagram.com/reel/C6CL4Hpsua9/
+              - generic [ref=e537]: Instagram
+              - generic [ref=e539]: "Mention the one to dance with :)❤️ Dance me to the end of love | Leonard Cohen - Cinematic Piano Cover #leonardcohen #pianocover #cinematography #tangodance"
+          - generic [ref=e540] [cursor=pointer]:
+            - heading "Free Intimate Piano Session Image - Piano, Music, Candlelight | Download at StockCake" [level=3] [ref=e542]:
+              - button "Free Intimate Piano Session Image - Piano, Music, Candlelight | Download at StockCake" [ref=e544]:
+                - img "Free Intimate Piano Session Image - Piano, Music, Candlelight | Download at StockCake" [ref=e547]
+            - link "StockCake Free Intimate Piano Session Image - Piano, Music, Candlelight | Download at StockCake" [ref=e549]:
+              - /url: https://stockcake.com/i/intimate-piano-session_90326_1418
+              - generic [ref=e554]: StockCake
+              - generic [ref=e556]: Free Intimate Piano Session Image - Piano, Music, Candlelight | Download at StockCake
+          - generic [ref=e557] [cursor=pointer]:
+            - generic [ref=e558]:
+              - heading "Melodic reverie grand piano in cinematic documentary style with soft floating notes and gentle wave patterns on gray backdrop | Premium AI-generated image" [level=3] [ref=e559]:
+                - button "Melodic reverie grand piano in cinematic documentary style with soft floating notes and gentle wave patterns on gray backdrop | Premium AI-generated image" [ref=e561]:
+                  - img "Melodic reverie grand piano in cinematic documentary style with soft floating notes and gentle wave patterns on gray backdrop | Premium AI-generated image" [ref=e564]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "Freepik Melodic reverie grand piano in cinematic documentary style with soft floating notes and gentle wave patterns on gray backdrop | Premium AI-generated image" [ref=e566]:
+              - /url: https://www.freepik.com/premium-ai-image/melodic-reverie-grand-piano-cinematic-documentary-style-with-soft-floating-notes-gentle-wave-patterns-gray-backdrop_352332065.htm
+              - generic [ref=e571]: Freepik
+              - generic [ref=e573]: Melodic reverie grand piano in cinematic documentary style with soft floating notes and gentle wave patterns on gray backdrop | Premium AI-generated image
+          - generic [ref=e574] [cursor=pointer]:
+            - generic [ref=e575]:
+              - heading "105 Cinematic Piano Stock Photos - Free & Royalty-Free Stock Photos from Dreamstime" [level=3] [ref=e576]:
+                - button "105 Cinematic Piano Stock Photos - Free & Royalty-Free Stock Photos from Dreamstime" [ref=e578]:
+                  - img "105 Cinematic Piano Stock Photos - Free & Royalty-Free Stock Photos from Dreamstime" [ref=e581]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "Dreamstime.com 105 Cinematic Piano Stock Photos - Free & Royalty-Free Stock Photos from Dreamstime" [ref=e583]:
+              - /url: https://www.dreamstime.com/photos-images/cinematic-piano.html
+              - generic [ref=e588]: Dreamstime.com
+              - generic [ref=e590]: 105 Cinematic Piano Stock Photos - Free & Royalty-Free Stock Photos from Dreamstime
+          - generic [ref=e591] [cursor=pointer]:
+            - 'heading "The Piano Home Entertainment Review: Celebrating an unforgettable cinematic masterpiece | SWITCH." [level=3] [ref=e593]':
+              - 'button "The Piano Home Entertainment Review: Celebrating an unforgettable cinematic masterpiece | SWITCH." [ref=e595]':
+                - 'img "The Piano Home Entertainment Review: Celebrating an unforgettable cinematic masterpiece | SWITCH." [ref=e598]'
+            - 'link "SWITCH. The Piano Home Entertainment Review: Celebrating an unforgettable cinematic masterpiece | SWITCH." [ref=e600]':
+              - /url: https://www.maketheswitch.com.au/article/feature-the-piano-celebrating-an-unforgettable-cinematic-masterpiece
+              - generic [ref=e605]: SWITCH.
+              - generic [ref=e607]: "The Piano Home Entertainment Review: Celebrating an unforgettable cinematic masterpiece | SWITCH."
+          - generic [ref=e608] [cursor=pointer]:
+            - generic [ref=e609]:
+              - heading "A Tale of Lost Love :) - Intizar | Cinematic Piano Cover - YouTube" [level=3] [ref=e610]:
+                - button "A Tale of Lost Love :) - Intizar | Cinematic Piano Cover - YouTube" [ref=e612]:
+                  - img "A Tale of Lost Love :) - Intizar | Cinematic Piano Cover - YouTube" [ref=e615]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "YouTube A Tale of Lost Love :) - Intizar | Cinematic Piano Cover - YouTube" [ref=e617]:
+              - /url: https://www.youtube.com/watch?v=_uMArhdtMs8
+              - generic [ref=e622]: YouTube
+              - generic [ref=e624]: A Tale of Lost Love :) - Intizar | Cinematic Piano Cover - YouTube
+          - generic [ref=e625] [cursor=pointer]:
+            - generic [ref=e626]:
+              - heading "10,000+ Free Cinematic Piano Music & Piano Images - Pixabay" [level=3] [ref=e627]:
+                - button "10,000+ Free Cinematic Piano Music & Piano Images - Pixabay" [ref=e629]:
+                  - img "10,000+ Free Cinematic Piano Music & Piano Images - Pixabay" [ref=e632]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "Pixabay 10,000+ Free Cinematic Piano Music & Piano Images - Pixabay" [ref=e634]:
+              - /url: https://pixabay.com/images/search/cinematic%20piano%20music/
+              - generic [ref=e639]: Pixabay
+              - generic [ref=e641]: 10,000+ Free Cinematic Piano Music & Piano Images - Pixabay
+          - generic [ref=e642] [cursor=pointer]:
+            - heading "A fusion of cinematic piano, a powerful string quartet, and stunning visuals. Soundscapes is more than music; it's an immersive journey beyond sound in some of the world's most iconic stages. Experience" [level=3] [ref=e644]:
+              - button "A fusion of cinematic piano, a powerful string quartet, and stunning visuals. Soundscapes is more than music; it's an immersive journey beyond sound in some of the world's most iconic stages. Experience" [ref=e646]:
+                - img "A fusion of cinematic piano, a powerful string quartet, and stunning visuals. Soundscapes is more than music; it's an immersive journey beyond sound in some of the world's most iconic stages. Experience" [ref=e649]
+            - link "Instagram A fusion of cinematic piano, a powerful string quartet, and stunning visuals. Soundscapes is more than music; it's an immersive journey beyond sound in some of the world's most iconic stages. Experience" [ref=e651]:
+              - /url: https://www.instagram.com/p/DJn4qu4qMcD/
+              - generic [ref=e656]: Instagram
+              - generic [ref=e658]: A fusion of cinematic piano, a powerful string quartet, and stunning visuals. Soundscapes is more than music; it's an immersive journey beyond sound in some of the world's most iconic stages. Experience
+          - generic [ref=e659] [cursor=pointer]:
+            - 'heading "Piano Music Art Poster Music Room Art Romantic Couple Love Art Poster Canvas Art Poster And Wall Art Picture Print Modern Family Bedroom Decor 20x20inch(50x50cm) Unframe-style : Amazon.ca: Home" [level=3] [ref=e661]':
+              - 'button "Piano Music Art Poster Music Room Art Romantic Couple Love Art Poster Canvas Art Poster And Wall Art Picture Print Modern Family Bedroom Decor 20x20inch(50x50cm) Unframe-style : Amazon.ca: Home" [ref=e663]':
+                - 'img "Piano Music Art Poster Music Room Art Romantic Couple Love Art Poster Canvas Art Poster And Wall Art Picture Print Modern Family Bedroom Decor 20x20inch(50x50cm) Unframe-style : Amazon.ca: Home" [ref=e666]'
+            - 'link "Amazon.ca Piano Music Art Poster Music Room Art Romantic Couple Love Art Poster Canvas Art Poster And Wall Art Picture Print Modern Family Bedroom Decor 20x20inch(50x50cm) Unframe-style : Amazon.ca: Home" [ref=e668]':
+              - /url: https://www.amazon.ca/Romantic-Picture-Bedroom-20x20inch-Unframe-style/dp/B0CBWC335Z
+              - generic [ref=e673]: Amazon.ca
+              - generic [ref=e675]: "Piano Music Art Poster Music Room Art Romantic Couple Love Art Poster Canvas Art Poster And Wall Art Picture Print Modern Family Bedroom Decor 20x20inch(50x50cm) Unframe-style : Amazon.ca: Home"
+          - generic [ref=e676] [cursor=pointer]:
+            - generic [ref=e677]:
+              - heading "Intimate Sad Piano - Cinematic Background Music For Videos - YouTube" [level=3] [ref=e678]:
+                - button "Intimate Sad Piano - Cinematic Background Music For Videos - YouTube" [ref=e680]:
+                  - img "Intimate Sad Piano - Cinematic Background Music For Videos - YouTube" [ref=e683]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "YouTube Intimate Sad Piano - Cinematic Background Music For Videos - YouTube" [ref=e685]:
+              - /url: https://www.youtube.com/watch?v=lCEreVAFTK8
+              - generic [ref=e690]: YouTube
+              - generic [ref=e692]: Intimate Sad Piano - Cinematic Background Music For Videos - YouTube
+          - generic [ref=e693] [cursor=pointer]:
+            - heading "macrorealism cinematic masterpiece synesthesia close up surreal lady playing vintage glass piano in room Craola, detailed glowing triadic c..." [level=3] [ref=e695]:
+              - button "macrorealism cinematic masterpiece synesthesia close up surreal lady playing vintage glass piano in room Craola, detailed glowing triadic c..." [ref=e697]:
+                - img "macrorealism cinematic masterpiece synesthesia close up surreal lady playing vintage glass piano in room Craola, detailed glowing triadic c..." [ref=e700]
+            - link "NightCafe macrorealism cinematic masterpiece synesthesia close up surreal lady playing vintage glass piano in room Craola, detailed glowing triadic c..." [ref=e702]:
+              - /url: https://creator.nightcafe.studio/creation/TBiPAPXOmUkey9qyv48J
+              - generic [ref=e707]: NightCafe
+              - generic [ref=e709]: macrorealism cinematic masterpiece synesthesia close up surreal lady playing vintage glass piano in room Craola, detailed glowing triadic c...
+          - generic [ref=e710] [cursor=pointer]:
+            - generic [ref=e711]:
+              - 'heading "Стоковая фотография 2490869119: Close Vintage Piano Keys Cinematic Сat | Shutterstock" [level=3] [ref=e712]':
+                - 'button "Стоковая фотография 2490869119: Close Vintage Piano Keys Cinematic Сat | Shutterstock" [ref=e714]':
+                  - 'img "Стоковая фотография 2490869119: Close Vintage Piano Keys Cinematic Сat | Shutterstock" [ref=e717]'
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - 'link "Shutterstock Стоковая фотография 2490869119: Close Vintage Piano Keys Cinematic Сat | Shutterstock" [ref=e719]':
+              - /url: https://www.shutterstock.com/ru/image-photo/close-vintage-piano-keys-cinematic-plays-2490869119
+              - generic [ref=e724]: Shutterstock
+              - generic [ref=e726]: "Стоковая фотография 2490869119: Close Vintage Piano Keys Cinematic Сat | Shutterstock"
+          - generic [ref=e727] [cursor=pointer]:
+            - heading "Music Lesson Art Education Homework Cinematic Stock Footage Video (100% Royalty-free) 3523012227 | Shutterstock" [level=3] [ref=e729]:
+              - button "Music Lesson Art Education Homework Cinematic Stock Footage Video (100% Royalty-free) 3523012227 | Shutterstock" [ref=e731]:
+                - img "Music Lesson Art Education Homework Cinematic Stock Footage Video (100% Royalty-free) 3523012227 | Shutterstock" [ref=e734]
+            - link "Shutterstock Music Lesson Art Education Homework Cinematic Stock Footage Video (100% Royalty-free) 3523012227 | Shutterstock" [ref=e736]:
+              - /url: https://www.shutterstock.com/video/clip-3523012227-music-lesson-art-education-homework-cinematic-keys
+              - generic [ref=e741]: Shutterstock
+              - generic [ref=e743]: Music Lesson Art Education Homework Cinematic Stock Footage Video (100% Royalty-free) 3523012227 | Shutterstock
+          - generic [ref=e744] [cursor=pointer]:
+            - generic [ref=e745]:
+              - heading "105 Cinematic Piano Stock Photos - Free & Royalty-Free Stock Photos from Dreamstime" [level=3] [ref=e746]:
+                - button "105 Cinematic Piano Stock Photos - Free & Royalty-Free Stock Photos from Dreamstime" [ref=e748]:
+                  - img "105 Cinematic Piano Stock Photos - Free & Royalty-Free Stock Photos from Dreamstime" [ref=e751]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "Dreamstime.com 105 Cinematic Piano Stock Photos - Free & Royalty-Free Stock Photos from Dreamstime" [ref=e753]:
+              - /url: https://www.dreamstime.com/photos-images/cinematic-piano.html
+              - generic [ref=e758]: Dreamstime.com
+              - generic [ref=e760]: 105 Cinematic Piano Stock Photos - Free & Royalty-Free Stock Photos from Dreamstime
+          - generic [ref=e761] [cursor=pointer]:
+            - heading "Page 2 | Cinematic piano music Images - Free Download on Freepik" [level=3] [ref=e763]:
+              - button "Page 2 | Cinematic piano music Images - Free Download on Freepik" [ref=e765]:
+                - img "Page 2 | Cinematic piano music Images - Free Download on Freepik" [ref=e768]
+            - link "Freepik Page 2 | Cinematic piano music Images - Free Download on Freepik" [ref=e770]:
+              - /url: https://www.freepik.com/free-photos-vectors/cinematic-piano-music/2
+              - generic [ref=e775]: Freepik
+              - generic [ref=e777]: Page 2 | Cinematic piano music Images - Free Download on Freepik
+          - generic [ref=e778] [cursor=pointer]:
+            - heading "Beautiful girl in a red dress plays on a white piano, there are red rose…» — картинка создана в Шедевруме" [level=3] [ref=e780]:
+              - button "Beautiful girl in a red dress plays on a white piano, there are red rose…» — картинка создана в Шедевруме" [ref=e782]:
+                - img "Beautiful girl in a red dress plays on a white piano, there are red rose…» — картинка создана в Шедевруме" [ref=e785]
+            - link "Шедеврум Beautiful girl in a red dress plays on a white piano, there are red rose…» — картинка создана в Шедевруме" [ref=e787]:
+              - /url: https://shedevrum.ai/post/61e7b500990911ee855b5601f9285731/
+              - generic [ref=e792]: Шедеврум
+              - generic [ref=e794]: Beautiful girl in a red dress plays on a white piano, there are red rose…» — картинка создана в Шедевруме
+          - generic [ref=e795] [cursor=pointer]:
+            - generic [ref=e796]:
+              - 'heading "A quiet moment at the piano. Somewhere between stillness and memory. #pianomusic #neoclassical #cinematic #solopiano #emotionalmusic" [level=3] [ref=e797]':
+                - 'button "A quiet moment at the piano. Somewhere between stillness and memory. #pianomusic #neoclassical #cinematic #solopiano #emotionalmusic" [ref=e799]':
+                  - 'img "A quiet moment at the piano. Somewhere between stillness and memory. #pianomusic #neoclassical #cinematic #solopiano #emotionalmusic" [ref=e802]'
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - 'link "Instagram A quiet moment at the piano. Somewhere between stillness and memory. #pianomusic #neoclassical #cinematic #solopiano #emotionalmusic" [ref=e804]':
+              - /url: https://www.instagram.com/reel/DWE0e5nNlpZ/
+              - generic [ref=e809]: Instagram
+              - generic [ref=e811]: "A quiet moment at the piano. Somewhere between stillness and memory. #pianomusic #neoclassical #cinematic #solopiano #emotionalmusic"
+          - generic [ref=e812] [cursor=pointer]:
+            - heading "The Cinematic Piano Playlist - Piano Traders" [level=3] [ref=e814]:
+              - button "The Cinematic Piano Playlist - Piano Traders" [ref=e816]:
+                - img "The Cinematic Piano Playlist - Piano Traders" [ref=e819]
+            - link "Piano Traders The Cinematic Piano Playlist - Piano Traders" [ref=e821]:
+              - /url: https://pianotraders.co.nz/the-cinematic-piano-playlist/?srsltid=AfmBOorUcftcuEno2Uuow1aNU78SW7iCZ7B98AbyBkQJoqNRrlIj6-eR
+              - generic [ref=e826]: Piano Traders
+              - generic [ref=e828]: The Cinematic Piano Playlist - Piano Traders
+          - generic [ref=e829] [cursor=pointer]:
+            - generic [ref=e830]:
+              - heading "Piano Stock Videos – 46,804 HD & 4K Footage Clips | Adobe Stock" [level=3] [ref=e831]:
+                - button "Piano Stock Videos – 46,804 HD & 4K Footage Clips | Adobe Stock" [ref=e833]:
+                  - img "Piano Stock Videos – 46,804 HD & 4K Footage Clips | Adobe Stock" [ref=e836]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "Adobe Stock Piano Stock Videos – 46,804 HD & 4K Footage Clips | Adobe Stock" [ref=e838]:
+              - /url: https://stock.adobe.com/search/video?k=piano
+              - generic [ref=e843]: Adobe Stock
+              - generic [ref=e845]: Piano Stock Videos – 46,804 HD & 4K Footage Clips | Adobe Stock
+          - generic [ref=e846] [cursor=pointer]:
+            - heading "Transform a sensual art style into a mesmerizing image of women gracefully playing the piano in front of a Parisian backdrop" [level=3] [ref=e848]:
+              - button "Transform a sensual art style into a mesmerizing image of women gracefully playing the piano in front of a Parisian backdrop" [ref=e850]:
+                - img "Transform a sensual art style into a mesmerizing image of women gracefully playing the piano in front of a Parisian backdrop" [ref=e853]
+            - link "Facebook Transform a sensual art style into a mesmerizing image of women gracefully playing the piano in front of a Parisian backdrop" [ref=e855]:
+              - /url: https://www.facebook.com/groups/1712618889252391/posts/1855375794976699/
+              - generic [ref=e860]: Facebook
+              - generic [ref=e862]: Transform a sensual art style into a mesmerizing image of women gracefully playing the piano in front of a Parisian backdrop
+          - generic [ref=e863] [cursor=pointer]:
+            - heading "Cinematic piano Music Collections | Artlist" [level=3] [ref=e865]:
+              - button "Cinematic piano Music Collections | Artlist" [ref=e867]:
+                - img "Cinematic piano Music Collections | Artlist" [ref=e870]
+            - link "Artlist Cinematic piano Music Collections | Artlist" [ref=e872]:
+              - /url: https://artlist.io/collection/cinematic-piano/10355
+              - generic [ref=e877]: Artlist
+              - generic [ref=e879]: Cinematic piano Music Collections | Artlist
+          - generic [ref=e880] [cursor=pointer]:
+            - heading "Emotional Cinematic Piano Music | Intimate Piano (Echo of Solitude) - YouTube" [level=3] [ref=e882]:
+              - button "Emotional Cinematic Piano Music | Intimate Piano (Echo of Solitude) - YouTube" [ref=e884]:
+                - img "Emotional Cinematic Piano Music | Intimate Piano (Echo of Solitude) - YouTube" [ref=e887]
+            - link "YouTube Emotional Cinematic Piano Music | Intimate Piano (Echo of Solitude) - YouTube" [ref=e889]:
+              - /url: https://www.youtube.com/watch?v=hkZLS-U-d1M
+              - generic [ref=e894]: YouTube
+              - generic [ref=e896]: Emotional Cinematic Piano Music | Intimate Piano (Echo of Solitude) - YouTube
+          - generic [ref=e897] [cursor=pointer]:
+            - generic [ref=e898]:
+              - 'heading "Piano cover of the Godfather love theme timeless music, cinematic romance, unforgettable melody. #thegodfather #pianocover #romanticvibes #musicreels #viralreels" [level=3] [ref=e899]':
+                - 'button "Piano cover of the Godfather love theme timeless music, cinematic romance, unforgettable melody. #thegodfather #pianocover #romanticvibes #musicreels #viralreels" [ref=e901]':
+                  - 'img "Piano cover of the Godfather love theme timeless music, cinematic romance, unforgettable melody. #thegodfather #pianocover #romanticvibes #musicreels #viralreels" [ref=e904]'
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - 'link "Instagram Piano cover of the Godfather love theme timeless music, cinematic romance, unforgettable melody. #thegodfather #pianocover #romanticvibes #musicreels #viralreels" [ref=e906]':
+              - /url: https://www.instagram.com/reel/DVtqRNcDFSQ/
+              - generic [ref=e911]: Instagram
+              - generic [ref=e913]: "Piano cover of the Godfather love theme timeless music, cinematic romance, unforgettable melody. #thegodfather #pianocover #romanticvibes #musicreels #viralreels"
+          - generic [ref=e914] [cursor=pointer]:
+            - heading "Cinematic piano Images - Free Download on Freepik" [level=3] [ref=e916]:
+              - button "Cinematic piano Images - Free Download on Freepik" [ref=e918]:
+                - img "Cinematic piano Images - Free Download on Freepik" [ref=e921]
+            - link "Freepik Cinematic piano Images - Free Download on Freepik" [ref=e923]:
+              - /url: https://www.freepik.com/free-photos-vectors/cinematic-piano
+              - generic [ref=e928]: Freepik
+              - generic [ref=e930]: Cinematic piano Images - Free Download on Freepik
+          - generic [ref=e931] [cursor=pointer]:
+            - generic [ref=e932]:
+              - heading "Music Lesson Art Education Homework Cinematic Stock Footage Video (100% Royalty-free) 3523012227 | Shutterstock" [level=3] [ref=e933]:
+                - button "Music Lesson Art Education Homework Cinematic Stock Footage Video (100% Royalty-free) 3523012227 | Shutterstock" [ref=e935]:
+                  - img "Music Lesson Art Education Homework Cinematic Stock Footage Video (100% Royalty-free) 3523012227 | Shutterstock" [ref=e938]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "Shutterstock Music Lesson Art Education Homework Cinematic Stock Footage Video (100% Royalty-free) 3523012227 | Shutterstock" [ref=e940]:
+              - /url: https://www.shutterstock.com/video/clip-3523012227-music-lesson-art-education-homework-cinematic-keys
+              - generic [ref=e945]: Shutterstock
+              - generic [ref=e947]: Music Lesson Art Education Homework Cinematic Stock Footage Video (100% Royalty-free) 3523012227 | Shutterstock
+          - generic [ref=e948] [cursor=pointer]:
+            - generic [ref=e949]:
+              - 'heading "It''s Sad:) Gnossienne No.1 | Cinematic Piano Cover #pianocover #cinematography #sad #classicalmusic" [level=3] [ref=e950]':
+                - 'button "It''s Sad:) Gnossienne No.1 | Cinematic Piano Cover #pianocover #cinematography #sad #classicalmusic" [ref=e952]':
+                  - 'img "It''s Sad:) Gnossienne No.1 | Cinematic Piano Cover #pianocover #cinematography #sad #classicalmusic" [ref=e955]'
+              - generic:
+                - generic: 3 дня назад
+            - 'link "Instagram It''s Sad:) Gnossienne No.1 | Cinematic Piano Cover #pianocover #cinematography #sad #classicalmusic" [ref=e957]':
+              - /url: https://www.instagram.com/reel/DBZZYLfMzXB/
+              - generic [ref=e962]: Instagram
+              - generic [ref=e964]: "It's Sad:) Gnossienne No.1 | Cinematic Piano Cover #pianocover #cinematography #sad #classicalmusic"
+          - generic [ref=e965] [cursor=pointer]:
+            - heading "Listen to Beautiful Cinematic Piano and Strings - Romantic & Sentimental Background Music (FREE DOWNLOAD) by AShamaluevMusic in موسيقى باك جراوند playlist online for free on SoundCloud" [level=3] [ref=e967]:
+              - button "Listen to Beautiful Cinematic Piano and Strings - Romantic & Sentimental Background Music (FREE DOWNLOAD) by AShamaluevMusic in موسيقى باك جراوند playlist online for free on SoundCloud" [ref=e969]:
+                - img "Listen to Beautiful Cinematic Piano and Strings - Romantic & Sentimental Background Music (FREE DOWNLOAD) by AShamaluevMusic in موسيقى باك جراوند playlist online for free on SoundCloud" [ref=e972]
+            - link "SoundCloud Listen to Beautiful Cinematic Piano and Strings - Romantic & Sentimental Background Music (FREE DOWNLOAD) by AShamaluevMusic in موسيقى باك جراوند playlist online for free on SoundCloud" [ref=e974]:
+              - /url: https://soundcloud.com/ashamaluevmusic/beautiful-cinematic-piano-and-strings?in=mahdi-alassi/sets/i6mouonpcfw8
+              - generic [ref=e979]: SoundCloud
+              - generic [ref=e981]: Listen to Beautiful Cinematic Piano and Strings - Romantic & Sentimental Background Music (FREE DOWNLOAD) by AShamaluevMusic in موسيقى باك جراوند playlist online for free on SoundCloud
+          - generic [ref=e982] [cursor=pointer]:
+            - heading "Cinematic Piano | Piano Hive, Janette Mason, James Alexander Thompson | Piano Hive" [level=3] [ref=e984]:
+              - button "Cinematic Piano | Piano Hive, Janette Mason, James Alexander Thompson | Piano Hive" [ref=e986]:
+                - img "Cinematic Piano | Piano Hive, Janette Mason, James Alexander Thompson | Piano Hive" [ref=e989]
+            - link "Piano Hive - Bandcamp Cinematic Piano | Piano Hive, Janette Mason, James Alexander Thompson | Piano Hive" [ref=e991]:
+              - /url: https://pianohive.bandcamp.com/album/cinematic-piano
+              - generic [ref=e996]: Piano Hive - Bandcamp
+              - generic [ref=e998]: Cinematic Piano | Piano Hive, Janette Mason, James Alexander Thompson | Piano Hive
+          - generic [ref=e999] [cursor=pointer]:
+            - generic [ref=e1000]:
+              - heading "Romantic Piano Composition with Healing Vibes | TikTok" [level=3] [ref=e1001]:
+                - button "Romantic Piano Composition with Healing Vibes | TikTok" [ref=e1003]:
+                  - img "Romantic Piano Composition with Healing Vibes | TikTok" [ref=e1006]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "TikTok Romantic Piano Composition with Healing Vibes | TikTok" [ref=e1008]:
+              - /url: https://www.tiktok.com/@eisukem/video/7299067003346701586
+              - generic [ref=e1013]: TikTok
+              - generic [ref=e1015]: Romantic Piano Composition with Healing Vibes | TikTok
+          - generic [ref=e1016] [cursor=pointer]:
+            - heading "Cinematic MIDI Piano Melodies - Equinox Sounds - MIDI Files Files - ADSR" [level=3] [ref=e1018]:
+              - button "Cinematic MIDI Piano Melodies - Equinox Sounds - MIDI Files Files - ADSR" [ref=e1020]:
+                - img "Cinematic MIDI Piano Melodies - Equinox Sounds - MIDI Files Files - ADSR" [ref=e1023]
+            - link "ADSR Sounds Cinematic MIDI Piano Melodies - Equinox Sounds - MIDI Files Files - ADSR" [ref=e1025]:
+              - /url: https://www.adsrsounds.com/product/midi-2/cinematic-midi-piano-melodies/?srsltid=AfmBOoo5Pgre7h5O1YCSOKMoZA0QJFBu4lojkBDOO6b8F3DNPB2eqg__
+              - generic [ref=e1030]: ADSR Sounds
+              - generic [ref=e1032]: Cinematic MIDI Piano Melodies - Equinox Sounds - MIDI Files Files - ADSR
+          - generic [ref=e1033] [cursor=pointer]:
+            - heading "Cinematic Piano - Album by Rafael Krux | Spotify" [level=3] [ref=e1035]:
+              - button "Cinematic Piano - Album by Rafael Krux | Spotify" [ref=e1037]:
+                - img "Cinematic Piano - Album by Rafael Krux | Spotify" [ref=e1040]
+            - link "Spotify Cinematic Piano - Album by Rafael Krux | Spotify" [ref=e1042]:
+              - /url: https://open.spotify.com/album/43FoFL4cyLBvCsfFwb53qo
+              - generic [ref=e1047]: Spotify
+              - generic [ref=e1049]: Cinematic Piano - Album by Rafael Krux | Spotify
+          - generic [ref=e1050] [cursor=pointer]:
+            - generic [ref=e1051]:
+              - heading "The Cinematic Orchestra - Arrival of the Birds My personal piano arrangement of this beautiful piece of art. 🎹 You can listen to the whole song on your favorite streaming platform. Check" [level=3] [ref=e1052]:
+                - button "The Cinematic Orchestra - Arrival of the Birds My personal piano arrangement of this beautiful piece of art. 🎹 You can listen to the whole song on your favorite streaming platform. Check" [ref=e1054]:
+                  - img "The Cinematic Orchestra - Arrival of the Birds My personal piano arrangement of this beautiful piece of art. 🎹 You can listen to the whole song on your favorite streaming platform. Check" [ref=e1057]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "Instagram The Cinematic Orchestra - Arrival of the Birds My personal piano arrangement of this beautiful piece of art. 🎹 You can listen to the whole song on your favorite streaming platform. Check" [ref=e1059]:
+              - /url: https://www.instagram.com/reel/DIY8Aa_oo-a/
+              - generic [ref=e1064]: Instagram
+              - generic [ref=e1066]: The Cinematic Orchestra - Arrival of the Birds My personal piano arrangement of this beautiful piece of art. 🎹 You can listen to the whole song on your favorite streaming platform. Check
+          - generic [ref=e1067] [cursor=pointer]:
+            - heading "Originals – Affordable Cinematic Instruments | Spitfire Audio" [level=3] [ref=e1069]:
+              - button "Originals – Affordable Cinematic Instruments | Spitfire Audio" [ref=e1071]:
+                - img "Originals – Affordable Cinematic Instruments | Spitfire Audio" [ref=e1074]
+            - link "Spitfire Audio Originals – Affordable Cinematic Instruments | Spitfire Audio" [ref=e1076]:
+              - /url: https://www.spitfireaudio.com/en-eu/collections/originals?srsltid=AfmBOorK39j6gydSGOhjLzSQ4VwW3RjTQKRukUWHNdAH_0mxSyafX6GH
+              - generic [ref=e1081]: Spitfire Audio
+              - generic [ref=e1083]: Originals – Affordable Cinematic Instruments | Spitfire Audio
+          - generic [ref=e1084] [cursor=pointer]:
+            - heading "Page 8 | Cinematic piano Images - Free Download on Freepik" [level=3] [ref=e1086]:
+              - button "Page 8 | Cinematic piano Images - Free Download on Freepik" [ref=e1088]:
+                - img "Page 8 | Cinematic piano Images - Free Download on Freepik" [ref=e1091]
+            - link "Freepik Page 8 | Cinematic piano Images - Free Download on Freepik" [ref=e1093]:
+              - /url: https://www.freepik.com/free-photos-vectors/cinematic-piano/8
+              - generic [ref=e1098]: Freepik
+              - generic [ref=e1100]: Page 8 | Cinematic piano Images - Free Download on Freepik
+          - generic [ref=e1101] [cursor=pointer]:
+            - generic [ref=e1102]:
+              - heading "Intimate cinematic hi-res stock photography and images - Alamy" [level=3] [ref=e1103]:
+                - button "Intimate cinematic hi-res stock photography and images - Alamy" [ref=e1105]:
+                  - img "Intimate cinematic hi-res stock photography and images - Alamy" [ref=e1108]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "Alamy Intimate cinematic hi-res stock photography and images - Alamy" [ref=e1110]:
+              - /url: https://www.alamy.com/stock-photo/intimate-cinematic.html?pseudoid=489757D9-774E-47F7-A7BF-1FD6CF9B0E50
+              - generic [ref=e1115]: Alamy
+              - generic [ref=e1117]: Intimate cinematic hi-res stock photography and images - Alamy
+          - generic [ref=e1118] [cursor=pointer]:
+            - heading "Stream Romantic Piano And Strings - Beautiful & Sentimental Cinematic Background Music (FREE DOWNLOAD) by AShamaluevMusic | Listen online for free on SoundCloud" [level=3] [ref=e1120]:
+              - button "Stream Romantic Piano And Strings - Beautiful & Sentimental Cinematic Background Music (FREE DOWNLOAD) by AShamaluevMusic | Listen online for free on SoundCloud" [ref=e1122]:
+                - img "Stream Romantic Piano And Strings - Beautiful & Sentimental Cinematic Background Music (FREE DOWNLOAD) by AShamaluevMusic | Listen online for free on SoundCloud" [ref=e1125]
+            - link "SoundCloud Stream Romantic Piano And Strings - Beautiful & Sentimental Cinematic Background Music (FREE DOWNLOAD) by AShamaluevMusic | Listen online for free on SoundCloud" [ref=e1127]:
+              - /url: https://m.soundcloud.com/ashamaluevmusic/romantic-piano-and-strings
+              - generic [ref=e1132]: SoundCloud
+              - generic [ref=e1134]: Stream Romantic Piano And Strings - Beautiful & Sentimental Cinematic Background Music (FREE DOWNLOAD) by AShamaluevMusic | Listen online for free on SoundCloud
+          - generic [ref=e1135] [cursor=pointer]:
+            - generic [ref=e1136]:
+              - heading "Ennio Morricone - Cinema Paradiso (Love Theme) | Piano 3 hands【Sheet Music】 - YouTube" [level=3] [ref=e1137]:
+                - button "Ennio Morricone - Cinema Paradiso (Love Theme) | Piano 3 hands【Sheet Music】 - YouTube" [ref=e1139]:
+                  - img "Ennio Morricone - Cinema Paradiso (Love Theme) | Piano 3 hands【Sheet Music】 - YouTube" [ref=e1142]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "YouTube Ennio Morricone - Cinema Paradiso (Love Theme) | Piano 3 hands【Sheet Music】 - YouTube" [ref=e1144]:
+              - /url: https://www.youtube.com/watch?v=RxZl0pMNZcA
+              - generic [ref=e1149]: YouTube
+              - generic [ref=e1151]: Ennio Morricone - Cinema Paradiso (Love Theme) | Piano 3 hands【Sheet Music】 - YouTube
+          - generic [ref=e1152] [cursor=pointer]:
+            - generic [ref=e1153]:
+              - heading "105 Cinematic Piano Stock Photos - Free & Royalty-Free Stock Photos from Dreamstime" [level=3] [ref=e1154]:
+                - button "105 Cinematic Piano Stock Photos - Free & Royalty-Free Stock Photos from Dreamstime" [ref=e1156]:
+                  - img "105 Cinematic Piano Stock Photos - Free & Royalty-Free Stock Photos from Dreamstime" [ref=e1159]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "Dreamstime.com 105 Cinematic Piano Stock Photos - Free & Royalty-Free Stock Photos from Dreamstime" [ref=e1161]:
+              - /url: https://www.dreamstime.com/photos-images/cinematic-piano.html
+              - generic [ref=e1166]: Dreamstime.com
+              - generic [ref=e1168]: 105 Cinematic Piano Stock Photos - Free & Royalty-Free Stock Photos from Dreamstime
+          - generic [ref=e1169] [cursor=pointer]:
+            - generic [ref=e1170]:
+              - 'heading "Soft Piano Background - makesound music: Song Lyrics, Music Videos & Concerts" [level=3] [ref=e1171]':
+                - 'button "Soft Piano Background - makesound music: Song Lyrics, Music Videos & Concerts" [ref=e1173]':
+                  - 'img "Soft Piano Background - makesound music: Song Lyrics, Music Videos & Concerts" [ref=e1176]'
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - 'link "Shazam Soft Piano Background - makesound music: Song Lyrics, Music Videos & Concerts" [ref=e1178]':
+              - /url: https://www.shazam.com/song/1650865962/soft-piano-background
+              - generic [ref=e1183]: Shazam
+              - generic [ref=e1185]: "Soft Piano Background - makesound music: Song Lyrics, Music Videos & Concerts"
+          - generic [ref=e1186] [cursor=pointer]:
+            - heading "Playing piano Two Lovers Art Romantic Paintings Aesthetic abstract intimate Sensual Wall Art Idea" [level=3] [ref=e1188]:
+              - button "Playing piano Two Lovers Art Romantic Paintings Aesthetic abstract intimate Sensual Wall Art Idea" [ref=e1190]:
+                - img "Playing piano Two Lovers Art Romantic Paintings Aesthetic abstract intimate Sensual Wall Art Idea" [ref=e1193]
+            - link "Pinterest Playing piano Two Lovers Art Romantic Paintings Aesthetic abstract intimate Sensual Wall Art Idea" [ref=e1195]:
+              - /url: https://www.pinterest.com/pin/playing-piano-two-lovers-art-romantic-paintings-aesthetic-abstract-intimate-sensual-wall-art-idea-in-2023--44824958785423008/
+              - generic [ref=e1200]: Pinterest
+              - generic [ref=e1202]: Playing piano Two Lovers Art Romantic Paintings Aesthetic abstract intimate Sensual Wall Art Idea
+          - generic [ref=e1203] [cursor=pointer]:
+            - generic [ref=e1204]:
+              - 'heading "Idea 19 is out, use headphones to hear it better :) #viral #piano #cinematic #aesthetic #parati" [level=3] [ref=e1205]':
+                - 'button "Idea 19 is out, use headphones to hear it better :) #viral #piano #cinematic #aesthetic #parati" [ref=e1207]':
+                  - 'img "Idea 19 is out, use headphones to hear it better :) #viral #piano #cinematic #aesthetic #parati" [ref=e1210]'
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+                - text: ·
+                - generic: вчера
+            - 'link "Instagram Idea 19 is out, use headphones to hear it better :) #viral #piano #cinematic #aesthetic #parati" [ref=e1212]':
+              - /url: https://www.instagram.com/reel/DX7RJtbvGbF/
+              - generic [ref=e1217]: Instagram
+              - generic [ref=e1219]: "Idea 19 is out, use headphones to hear it better :) #viral #piano #cinematic #aesthetic #parati"
+          - generic [ref=e1220] [cursor=pointer]:
+            - heading "Cinematic piano Music Collections | Artlist" [level=3] [ref=e1222]:
+              - button "Cinematic piano Music Collections | Artlist" [ref=e1224]:
+                - img "Cinematic piano Music Collections | Artlist" [ref=e1227]
+            - link "Artlist Cinematic piano Music Collections | Artlist" [ref=e1229]:
+              - /url: https://artlist.io/collection/cinematic-piano/10355
+              - generic [ref=e1234]: Artlist
+              - generic [ref=e1236]: Cinematic piano Music Collections | Artlist
+          - generic [ref=e1237] [cursor=pointer]:
+            - heading "Cinematic photo of Brook playing piano" [level=3] [ref=e1239]:
+              - button "Cinematic photo of Brook playing piano" [ref=e1241]:
+                - img "Cinematic photo of Brook playing piano" [ref=e1244]
+            - link "Facebook Cinematic photo of Brook playing piano" [ref=e1246]:
+              - /url: https://www.facebook.com/groups/vokabai/posts/1338577077828823/
+              - generic [ref=e1251]: Facebook
+              - generic [ref=e1253]: Cinematic photo of Brook playing piano
+          - generic [ref=e1254] [cursor=pointer]:
+            - heading "Page 2 | Cinematic piano music Photos - Download Free High-Quality Pictures | Freepik" [level=3] [ref=e1256]:
+              - button "Page 2 | Cinematic piano music Photos - Download Free High-Quality Pictures | Freepik" [ref=e1258]:
+                - img "Page 2 | Cinematic piano music Photos - Download Free High-Quality Pictures | Freepik" [ref=e1261]
+            - link "Freepik Page 2 | Cinematic piano music Photos - Download Free High-Quality Pictures | Freepik" [ref=e1263]:
+              - /url: https://www.freepik.com/photos/cinematic-piano-music/2
+              - generic [ref=e1268]: Freepik
+              - generic [ref=e1270]: Page 2 | Cinematic piano music Photos - Download Free High-Quality Pictures | Freepik
+          - generic [ref=e1271] [cursor=pointer]:
+            - 'heading "Cinematic & Romantic piano music. A Song Without Words. #ambientmusic #piano #cinematicmusic - YouTube" [level=3] [ref=e1273]':
+              - 'button "Cinematic & Romantic piano music. A Song Without Words. #ambientmusic #piano #cinematicmusic - YouTube" [ref=e1275]':
+                - 'img "Cinematic & Romantic piano music. A Song Without Words. #ambientmusic #piano #cinematicmusic - YouTube" [ref=e1278]'
+            - 'link "YouTube Cinematic & Romantic piano music. A Song Without Words. #ambientmusic #piano #cinematicmusic - YouTube" [ref=e1280]':
+              - /url: https://www.youtube.com/watch?v=OwB6wOGDP-g
+              - generic [ref=e1285]: YouTube
+              - generic [ref=e1287]: "Cinematic & Romantic piano music. A Song Without Words. #ambientmusic #piano #cinematicmusic - YouTube"
+          - generic [ref=e1288] [cursor=pointer]:
+            - heading "Grayscale Photo of Person Playing Piano · Free Stock Photo" [level=3] [ref=e1290]:
+              - button "Grayscale Photo of Person Playing Piano · Free Stock Photo" [ref=e1292]:
+                - img "Grayscale Photo of Person Playing Piano · Free Stock Photo" [ref=e1295]
+            - link "Pexels Grayscale Photo of Person Playing Piano · Free Stock Photo" [ref=e1297]:
+              - /url: https://www.pexels.com/photo/grayscale-photo-of-person-playing-piano-8681987/
+              - generic [ref=e1302]: Pexels
+              - generic [ref=e1304]: Grayscale Photo of Person Playing Piano · Free Stock Photo
+          - generic [ref=e1305] [cursor=pointer]:
+            - heading "Poster Sexy couple in an intimate situation with piano - PIXERS.US" [level=3] [ref=e1307]:
+              - button "Poster Sexy couple in an intimate situation with piano - PIXERS.US" [ref=e1309]:
+                - img "Poster Sexy couple in an intimate situation with piano - PIXERS.US" [ref=e1312]
+            - link "Pixers Poster Sexy couple in an intimate situation with piano - PIXERS.US" [ref=e1314]:
+              - /url: https://pixers.us/posters/sexy-couple-in-an-intimate-situation-with-piano-41271616
+              - generic [ref=e1319]: Pixers
+              - generic [ref=e1321]: Poster Sexy couple in an intimate situation with piano - PIXERS.US
+          - generic [ref=e1322] [cursor=pointer]:
+            - heading "Stream Benny Benassi - Cinema (Piano Cover) by Jason Leech | Listen online for free on SoundCloud" [level=3] [ref=e1324]:
+              - button "Stream Benny Benassi - Cinema (Piano Cover) by Jason Leech | Listen online for free on SoundCloud" [ref=e1326]:
+                - img "Stream Benny Benassi - Cinema (Piano Cover) by Jason Leech | Listen online for free on SoundCloud" [ref=e1329]
+            - link "SoundCloud Stream Benny Benassi - Cinema (Piano Cover) by Jason Leech | Listen online for free on SoundCloud" [ref=e1331]:
+              - /url: https://soundcloud.com/jasonleechmusic/benny-benassi-cinema-piano-cover
+              - generic [ref=e1336]: SoundCloud
+              - generic [ref=e1338]: Stream Benny Benassi - Cinema (Piano Cover) by Jason Leech | Listen online for free on SoundCloud
+          - generic [ref=e1339] [cursor=pointer]:
+            - heading "The Piano (1993) | The Criterion Collection" [level=3] [ref=e1341]:
+              - button "The Piano (1993) | The Criterion Collection" [ref=e1343]:
+                - img "The Piano (1993) | The Criterion Collection" [ref=e1346]
+            - link "The Criterion Collection The Piano (1993) | The Criterion Collection" [ref=e1348]:
+              - /url: https://www.criterion.com/films/30424-the-piano?srsltid=AfmBOoqAzPgSNA93dtLDhwURe0hw6WfjGcbcI_4Y8diI2VadrgJLIl6r
+              - generic [ref=e1353]: The Criterion Collection
+              - generic [ref=e1355]: The Piano (1993) | The Criterion Collection
+          - generic [ref=e1356] [cursor=pointer]:
+            - heading "Originals Cinematic Soft Piano – Soft Piano VST Library | Spitfire Audio" [level=3] [ref=e1358]:
+              - button "Originals Cinematic Soft Piano – Soft Piano VST Library | Spitfire Audio" [ref=e1360]:
+                - img "Originals Cinematic Soft Piano – Soft Piano VST Library | Spitfire Audio" [ref=e1363]
+            - link "Spitfire Audio Originals Cinematic Soft Piano – Soft Piano VST Library | Spitfire Audio" [ref=e1365]:
+              - /url: https://www.spitfireaudio.com/products/originals-cinematic-soft-piano?srsltid=AfmBOopN_nh1L81wgl3vk9ToQNIbERLobL9MVS6QzIMm9iLH2DdpQ6d0
+              - generic [ref=e1370]: Spitfire Audio
+              - generic [ref=e1372]: Originals Cinematic Soft Piano – Soft Piano VST Library | Spitfire Audio
+          - generic [ref=e1373] [cursor=pointer]:
+            - heading "Cinematic Piano | Piano Hive, Janette Mason, James Alexander Thompson | Piano Hive" [level=3] [ref=e1375]:
+              - button "Cinematic Piano | Piano Hive, Janette Mason, James Alexander Thompson | Piano Hive" [ref=e1377]:
+                - img "Cinematic Piano | Piano Hive, Janette Mason, James Alexander Thompson | Piano Hive" [ref=e1380]
+            - link "Piano Hive - Bandcamp Cinematic Piano | Piano Hive, Janette Mason, James Alexander Thompson | Piano Hive" [ref=e1382]:
+              - /url: https://pianohive.bandcamp.com/album/cinematic-piano
+              - generic [ref=e1387]: Piano Hive - Bandcamp
+              - generic [ref=e1389]: Cinematic Piano | Piano Hive, Janette Mason, James Alexander Thompson | Piano Hive
+          - generic [ref=e1390] [cursor=pointer]:
+            - generic [ref=e1391]:
+              - 'heading "Romantic Piano: Chopin''s Nocturne in E-flat Major | TikTok" [level=3] [ref=e1392]':
+                - 'button "Romantic Piano: Chopin''s Nocturne in E-flat Major | TikTok" [ref=e1394]':
+                  - 'img "Romantic Piano: Chopin''s Nocturne in E-flat Major | TikTok" [ref=e1397]'
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - 'link "TikTok Romantic Piano: Chopin''s Nocturne in E-flat Major | TikTok" [ref=e1399]':
+              - /url: https://www.tiktok.com/@melodiesinmotion634/video/7565317188807167246
+              - generic [ref=e1404]: TikTok
+              - generic [ref=e1406]: "Romantic Piano: Chopin's Nocturne in E-flat Major | TikTok"
+          - generic [ref=e1407] [cursor=pointer]:
+            - generic [ref=e1408]:
+              - heading "The detail of dusty cinematic old electronic piano keyboard. This image shows arts of music and musician's environment Stock Photo - Alamy" [level=3] [ref=e1409]:
+                - button "The detail of dusty cinematic old electronic piano keyboard. This image shows arts of music and musician's environment Stock Photo - Alamy" [ref=e1411]:
+                  - img "The detail of dusty cinematic old electronic piano keyboard. This image shows arts of music and musician's environment Stock Photo - Alamy" [ref=e1414]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "Alamy The detail of dusty cinematic old electronic piano keyboard. This image shows arts of music and musician's environment Stock Photo - Alamy" [ref=e1416]:
+              - /url: https://www.alamy.com/stock-image-the-detail-of-dusty-cinematic-old-electronic-piano-keyboard-this-image-166528196.html
+              - generic [ref=e1421]: Alamy
+              - generic [ref=e1423]: The detail of dusty cinematic old electronic piano keyboard. This image shows arts of music and musician's environment Stock Photo - Alamy
+          - generic [ref=e1424] [cursor=pointer]:
+            - heading "Intimate Performance - song and lyrics by Cinematic Piano, Dark Piano, Piano Soul | Spotify" [level=3] [ref=e1426]:
+              - button "Intimate Performance - song and lyrics by Cinematic Piano, Dark Piano, Piano Soul | Spotify" [ref=e1428]:
+                - img "Intimate Performance - song and lyrics by Cinematic Piano, Dark Piano, Piano Soul | Spotify" [ref=e1431]
+            - link "Spotify Intimate Performance - song and lyrics by Cinematic Piano, Dark Piano, Piano Soul | Spotify" [ref=e1433]:
+              - /url: https://open.spotify.com/track/4XWvOWwUR3c2TG5whagXli
+              - generic [ref=e1438]: Spotify
+              - generic [ref=e1440]: Intimate Performance - song and lyrics by Cinematic Piano, Dark Piano, Piano Soul | Spotify
+          - generic [ref=e1441] [cursor=pointer]:
+            - 'heading "Vermeer and Music: The Art of Love and Leisure | Theatre in cinema in Moscow | TheatreHD" [level=3] [ref=e1443]':
+              - 'button "Vermeer and Music: The Art of Love and Leisure | Theatre in cinema in Moscow | TheatreHD" [ref=e1445]':
+                - 'img "Vermeer and Music: The Art of Love and Leisure | Theatre in cinema in Moscow | TheatreHD" [ref=e1448]'
+            - 'link "TheatreHD Vermeer and Music: The Art of Love and Leisure | Theatre in cinema in Moscow | TheatreHD" [ref=e1450]':
+              - /url: https://moscow.theatrehd.com/en/films/vermeer-and-music-the-art-of-love-and-leisure
+              - generic [ref=e1455]: TheatreHD
+              - generic [ref=e1457]: "Vermeer and Music: The Art of Love and Leisure | Theatre in cinema in Moscow | TheatreHD"
+          - generic [ref=e1458] [cursor=pointer]:
+            - 'heading "MORRICONE ⠀ Love Theme from Cinema Paradiso 🎬 ⠀ Share in the comments how this music makes you feel ✨ ⠀ #enniomorricone #enniomorriconemusic #cinemaparadiso #love #lovetheme #piano #pianocover #pianoreel #kawaipiano" [level=3] [ref=e1460]':
+              - 'button "MORRICONE ⠀ Love Theme from Cinema Paradiso 🎬 ⠀ Share in the comments how this music makes you feel ✨ ⠀ #enniomorricone #enniomorriconemusic #cinemaparadiso #love #lovetheme #piano #pianocover #pianoreel #kawaipiano" [ref=e1462]':
+                - 'img "MORRICONE ⠀ Love Theme from Cinema Paradiso 🎬 ⠀ Share in the comments how this music makes you feel ✨ ⠀ #enniomorricone #enniomorriconemusic #cinemaparadiso #love #lovetheme #piano #pianocover #pianoreel #kawaipiano" [ref=e1465]'
+            - 'link "Instagram MORRICONE ⠀ Love Theme from Cinema Paradiso 🎬 ⠀ Share in the comments how this music makes you feel ✨ ⠀ #enniomorricone #enniomorriconemusic #cinemaparadiso #love #lovetheme #piano #pianocover #pianoreel #kawaipiano" [ref=e1467]':
+              - /url: https://www.instagram.com/reel/C-yYJSno_Ob/
+              - generic [ref=e1472]: Instagram
+              - generic [ref=e1474]: "MORRICONE ⠀ Love Theme from Cinema Paradiso 🎬 ⠀ Share in the comments how this music makes you feel ✨ ⠀ #enniomorricone #enniomorriconemusic #cinemaparadiso #love #lovetheme #piano #pianocover #pianoreel #kawaipiano"
+          - generic [ref=e1475] [cursor=pointer]:
+            - 'heading "The Piano Teacher Movie 2001 Poster Canvas: How This Art Piece Transformed My Living Room Into" [level=3] [ref=e1477]':
+              - 'button "The Piano Teacher Movie 2001 Poster Canvas: How This Art Piece Transformed My Living Room Into" [ref=e1479]':
+                - 'img "The Piano Teacher Movie 2001 Poster Canvas: How This Art Piece Transformed My Living Room Into" [ref=e1482]'
+            - 'link "AliExpress The Piano Teacher Movie 2001 Poster Canvas: How This Art Piece Transformed My Living Room Into" [ref=e1484]':
+              - /url: https://www.aliexpress.com/s/wiki-ssr/article/the-piano-teacher-movie-2001
+              - generic [ref=e1489]: AliExpress
+              - generic [ref=e1491]: "The Piano Teacher Movie 2001 Poster Canvas: How This Art Piece Transformed My Living Room Into"
+          - generic [ref=e1492] [cursor=pointer]:
+            - heading "Piano de Película by Cinema Sonum Tickets in Córdoba | Fever" [level=3] [ref=e1494]:
+              - button "Piano de Película by Cinema Sonum Tickets in Córdoba | Fever" [ref=e1496]:
+                - img "Piano de Película by Cinema Sonum Tickets in Córdoba | Fever" [ref=e1499]
+            - link "Fever Piano de Película by Cinema Sonum Tickets in Córdoba | Fever" [ref=e1501]:
+              - /url: https://feverup.com/m/627702/en?srsltid=AfmBOooKiBd0V2oC02g-3TwiUmDEQaulSsRDh5cX004l5kWu4E20pID5
+              - generic [ref=e1506]: Fever
+              - generic [ref=e1508]: Piano de Película by Cinema Sonum Tickets in Córdoba | Fever
+          - generic [ref=e1509] [cursor=pointer]:
+            - generic [ref=e1510]:
+              - heading "118 Cinema Piano Player Stock Videos, Footage, & 4K Video Clips - Getty Images" [level=3] [ref=e1511]:
+                - button "118 Cinema Piano Player Stock Videos, Footage, & 4K Video Clips - Getty Images" [ref=e1513]:
+                  - img "118 Cinema Piano Player Stock Videos, Footage, & 4K Video Clips - Getty Images" [ref=e1516]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "Getty Images 118 Cinema Piano Player Stock Videos, Footage, & 4K Video Clips - Getty Images" [ref=e1518]:
+              - /url: https://www.gettyimages.com/videos/cinema-piano-player
+              - generic [ref=e1523]: Getty Images
+              - generic [ref=e1525]: 118 Cinema Piano Player Stock Videos, Footage, & 4K Video Clips - Getty Images
+          - generic [ref=e1526] [cursor=pointer]:
+            - heading "Love Dream Liszt by Onoychenko – Royalty Free music" [level=3] [ref=e1528]:
+              - button "Love Dream Liszt by Onoychenko – Royalty Free music" [ref=e1530]:
+                - img "Love Dream Liszt by Onoychenko – Royalty Free music" [ref=e1533]
+            - link "Icons8 Love Dream Liszt by Onoychenko – Royalty Free music" [ref=e1535]:
+              - /url: https://icons8.com/music/track/love-dream-liszt--1
+              - generic [ref=e1540]: Icons8
+              - generic [ref=e1542]: Love Dream Liszt by Onoychenko – Royalty Free music
+          - generic [ref=e1543] [cursor=pointer]:
+            - heading "Cinematic piano Music Collections | Artlist" [level=3] [ref=e1545]:
+              - button "Cinematic piano Music Collections | Artlist" [ref=e1547]:
+                - img "Cinematic piano Music Collections | Artlist" [ref=e1550]
+            - link "Artlist Cinematic piano Music Collections | Artlist" [ref=e1552]:
+              - /url: https://artlist.io/collection/cinematic-piano/10355
+              - generic [ref=e1557]: Artlist
+              - generic [ref=e1559]: Cinematic piano Music Collections | Artlist
+          - generic [ref=e1560] [cursor=pointer]:
+            - 'heading "Frame of reference: A blend of cinema and love" [level=3] [ref=e1562]':
+              - 'button "Frame of reference: A blend of cinema and love" [ref=e1564]':
+                - 'img "Frame of reference: A blend of cinema and love" [ref=e1567]'
+            - 'link "The New Indian Express Frame of reference: A blend of cinema and love" [ref=e1569]':
+              - /url: https://www.newindianexpress.com/magazine/2023/Feb/18/frame-of-reference-a-blend-of-cinema-and-love-2548081.html
+              - generic [ref=e1574]: The New Indian Express
+              - generic [ref=e1576]: "Frame of reference: A blend of cinema and love"
+          - generic [ref=e1577] [cursor=pointer]:
+            - generic [ref=e1578]:
+              - heading "Cinematic Piano Romantic Emotional Music For Media - Royalty Free/Music Licensing - YouTube" [level=3] [ref=e1579]:
+                - button "Cinematic Piano Romantic Emotional Music For Media - Royalty Free/Music Licensing - YouTube" [ref=e1581]:
+                  - img "Cinematic Piano Romantic Emotional Music For Media - Royalty Free/Music Licensing - YouTube" [ref=e1584]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "YouTube Cinematic Piano Romantic Emotional Music For Media - Royalty Free/Music Licensing - YouTube" [ref=e1586]:
+              - /url: https://www.youtube.com/watch?v=hbQIPtR1it0
+              - generic [ref=e1591]: YouTube
+              - generic [ref=e1593]: Cinematic Piano Romantic Emotional Music For Media - Royalty Free/Music Licensing - YouTube
+          - generic [ref=e1594] [cursor=pointer]:
+            - heading "10,000+ Free Cinematic Piano Music & Piano Images - Pixabay" [level=3] [ref=e1596]:
+              - button "10,000+ Free Cinematic Piano Music & Piano Images - Pixabay" [ref=e1598]:
+                - img "10,000+ Free Cinematic Piano Music & Piano Images - Pixabay" [ref=e1601]
+            - link "Pixabay 10,000+ Free Cinematic Piano Music & Piano Images - Pixabay" [ref=e1603]:
+              - /url: https://pixabay.com/images/search/cinematic%20piano%20music/
+              - generic [ref=e1608]: Pixabay
+              - generic [ref=e1610]: 10,000+ Free Cinematic Piano Music & Piano Images - Pixabay
+          - generic [ref=e1611] [cursor=pointer]:
+            - heading "Intimate Performance - song and lyrics by Cinematic Piano, Dark Piano, Piano Soul | Spotify" [level=3] [ref=e1613]:
+              - button "Intimate Performance - song and lyrics by Cinematic Piano, Dark Piano, Piano Soul | Spotify" [ref=e1615]:
+                - img "Intimate Performance - song and lyrics by Cinematic Piano, Dark Piano, Piano Soul | Spotify" [ref=e1618]
+            - link "Spotify Intimate Performance - song and lyrics by Cinematic Piano, Dark Piano, Piano Soul | Spotify" [ref=e1620]:
+              - /url: https://open.spotify.com/track/4XWvOWwUR3c2TG5whagXli
+              - generic [ref=e1625]: Spotify
+              - generic [ref=e1627]: Intimate Performance - song and lyrics by Cinematic Piano, Dark Piano, Piano Soul | Spotify
+          - generic [ref=e1628] [cursor=pointer]:
+            - heading "Cinematic Piano — Darwin Music" [level=3] [ref=e1630]:
+              - button "Cinematic Piano — Darwin Music" [ref=e1632]:
+                - img "Cinematic Piano — Darwin Music" [ref=e1635]
+            - link "Darwin Music Cinematic Piano — Darwin Music" [ref=e1637]:
+              - /url: http://www.darwinmusiccompany.com/cinematic-piano
+              - generic [ref=e1642]: Darwin Music
+              - generic [ref=e1644]: Cinematic Piano — Darwin Music
+          - generic [ref=e1645] [cursor=pointer]:
+            - heading "Stream Royalty Free Music (FREE DOWNLOAD) | Listen to [Creative Commons Music] CINEMATIC ATMOSPHERIC SLOW GRAND PIANO COMPOSER BACKGROUND MUSIC playlist online for free on SoundCloud" [level=3] [ref=e1647]:
+              - button "Stream Royalty Free Music (FREE DOWNLOAD) | Listen to [Creative Commons Music] CINEMATIC ATMOSPHERIC SLOW GRAND PIANO COMPOSER BACKGROUND MUSIC playlist online for free on SoundCloud" [ref=e1649]:
+                - img "Stream Royalty Free Music (FREE DOWNLOAD) | Listen to [Creative Commons Music] CINEMATIC ATMOSPHERIC SLOW GRAND PIANO COMPOSER BACKGROUND MUSIC playlist online for free on SoundCloud" [ref=e1652]
+            - link "SoundCloud Stream Royalty Free Music (FREE DOWNLOAD) | Listen to [Creative Commons Music] CINEMATIC ATMOSPHERIC SLOW GRAND PIANO COMPOSER BACKGROUND MUSIC playlist online for free on SoundCloud" [ref=e1654]:
+              - /url: https://soundcloud.com/royaltyfreebackgroundmusic/sets/creative-commons-music-163
+              - generic [ref=e1659]: SoundCloud
+              - generic [ref=e1661]: Stream Royalty Free Music (FREE DOWNLOAD) | Listen to [Creative Commons Music] CINEMATIC ATMOSPHERIC SLOW GRAND PIANO COMPOSER BACKGROUND MUSIC playlist online for free on SoundCloud
+          - generic [ref=e1662] [cursor=pointer]:
+            - generic [ref=e1663]:
+              - heading "THE PIANO TEACHER - American Cinematheque" [level=3] [ref=e1664]:
+                - button "THE PIANO TEACHER - American Cinematheque" [ref=e1666]:
+                  - img "THE PIANO TEACHER - American Cinematheque" [ref=e1669]
+              - generic:
+                - generic: вчера
+            - link "American Cinematheque THE PIANO TEACHER - American Cinematheque" [ref=e1671]:
+              - /url: https://www.americancinematheque.com/now-showing/the-piano-teacher-06-01-2026/
+              - generic [ref=e1676]: American Cinematheque
+              - generic [ref=e1678]: THE PIANO TEACHER - American Cinematheque
+          - generic [ref=e1679] [cursor=pointer]:
+            - heading "Pianist Closeup Playing Piano Cinematic Shallow Stock Footage Video (100% Royalty-free) 25982864 | Shutterstock" [level=3] [ref=e1681]:
+              - button "Pianist Closeup Playing Piano Cinematic Shallow Stock Footage Video (100% Royalty-free) 25982864 | Shutterstock" [ref=e1683]:
+                - img "Pianist Closeup Playing Piano Cinematic Shallow Stock Footage Video (100% Royalty-free) 25982864 | Shutterstock" [ref=e1686]
+            - link "Shutterstock Pianist Closeup Playing Piano Cinematic Shallow Stock Footage Video (100% Royalty-free) 25982864 | Shutterstock" [ref=e1688]:
+              - /url: https://www.shutterstock.com/video/clip-25982864-pianist-closeup-playing-piano-cinematic-shallow-depth
+              - generic [ref=e1693]: Shutterstock
+              - generic [ref=e1695]: Pianist Closeup Playing Piano Cinematic Shallow Stock Footage Video (100% Royalty-free) 25982864 | Shutterstock
+          - generic [ref=e1696] [cursor=pointer]:
+            - heading "The Piano (1993) - IMDb" [level=3] [ref=e1698]:
+              - button "The Piano (1993) - IMDb" [ref=e1700]:
+                - img "The Piano (1993) - IMDb" [ref=e1703]
+            - link "IMDb The Piano (1993) - IMDb" [ref=e1705]:
+              - /url: https://www.imdb.com/title/tt0107822/
+              - generic [ref=e1710]: IMDb
+              - generic [ref=e1712]: The Piano (1993) - IMDb
+          - generic [ref=e1713] [cursor=pointer]:
+            - heading "The Piano Teacher in Tbilisi ᐉ Events Schedule | YOLO | Yolo" [level=3] [ref=e1715]:
+              - button "The Piano Teacher in Tbilisi ᐉ Events Schedule | YOLO | Yolo" [ref=e1717]:
+                - img "The Piano Teacher in Tbilisi ᐉ Events Schedule | YOLO | Yolo" [ref=e1720]
+            - link "Yolo The Piano Teacher in Tbilisi ᐉ Events Schedule | YOLO | Yolo" [ref=e1722]:
+              - /url: https://yolo.ge/en/poster/pianistka765434567
+              - generic [ref=e1727]: Yolo
+              - generic [ref=e1729]: The Piano Teacher in Tbilisi ᐉ Events Schedule | YOLO | Yolo
+          - generic [ref=e1730] [cursor=pointer]:
+            - 'heading "Los Angeles Theater Review: I LOVE A PIANO (3-D Theatricals in Fullerton and Redondo Beach) - Stage and Cinema" [level=3] [ref=e1732]':
+              - 'button "Los Angeles Theater Review: I LOVE A PIANO (3-D Theatricals in Fullerton and Redondo Beach) - Stage and Cinema" [ref=e1734]':
+                - 'img "Los Angeles Theater Review: I LOVE A PIANO (3-D Theatricals in Fullerton and Redondo Beach) - Stage and Cinema" [ref=e1737]'
+            - 'link "Stage and Cinema Los Angeles Theater Review: I LOVE A PIANO (3-D Theatricals in Fullerton and Redondo Beach) - Stage and Cinema" [ref=e1739]':
+              - /url: https://stageandcinema.com/2012/09/11/i-love-a-piano/
+              - generic [ref=e1744]: Stage and Cinema
+              - generic [ref=e1746]: "Los Angeles Theater Review: I LOVE A PIANO (3-D Theatricals in Fullerton and Redondo Beach) - Stage and Cinema"
+          - generic [ref=e1747] [cursor=pointer]:
+            - 'heading "Piano Sheet e-Book: EP 1: A story about love, life and freedom – James Malikey" [level=3] [ref=e1749]':
+              - 'button "Piano Sheet e-Book: EP 1: A story about love, life and freedom – James Malikey" [ref=e1751]':
+                - 'img "Piano Sheet e-Book: EP 1: A story about love, life and freedom – James Malikey" [ref=e1754]'
+            - 'link "James Malikey Piano Sheet e-Book: EP 1: A story about love, life and freedom – James Malikey" [ref=e1756]':
+              - /url: https://jamesmalikeystore.com/products/piano-sheet-book-album-1
+              - generic [ref=e1761]: James Malikey
+              - generic [ref=e1763]: "Piano Sheet e-Book: EP 1: A story about love, life and freedom – James Malikey"
+          - generic [ref=e1764] [cursor=pointer]:
+            - generic [ref=e1765]:
+              - heading "Love Theme from Cinema Paradiso - Ennio Morricone | TikTok" [level=3] [ref=e1766]:
+                - button "Love Theme from Cinema Paradiso - Ennio Morricone | TikTok" [ref=e1768]:
+                  - img "Love Theme from Cinema Paradiso - Ennio Morricone | TikTok" [ref=e1771]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "TikTok Love Theme from Cinema Paradiso - Ennio Morricone | TikTok" [ref=e1773]:
+              - /url: https://www.tiktok.com/@letstalkfilms/video/7427543134353067294
+              - generic [ref=e1778]: TikTok
+              - generic [ref=e1780]: Love Theme from Cinema Paradiso - Ennio Morricone | TikTok
+          - generic [ref=e1781] [cursor=pointer]:
+            - generic [ref=e1782]:
+              - heading "Neon Closeup Modern Piano Keyboard Stock Photo - Download Image Now - Neon Lighting, Piano, Jazz Music - iStock" [level=3] [ref=e1783]:
+                - button "Neon Closeup Modern Piano Keyboard Stock Photo - Download Image Now - Neon Lighting, Piano, Jazz Music - iStock" [ref=e1785]:
+                  - img "Neon Closeup Modern Piano Keyboard Stock Photo - Download Image Now - Neon Lighting, Piano, Jazz Music - iStock" [ref=e1788]
+              - generic:
+                - generic:
+                  - generic:
+                    - img
+            - link "iStock Neon Closeup Modern Piano Keyboard Stock Photo - Download Image Now - Neon Lighting, Piano, Jazz Music - iStock" [ref=e1790]:
+              - /url: https://www.istockphoto.com/photo/neon-close-up-modern-piano-keyboard-gm1477903814-506320208
+              - generic [ref=e1795]: iStock
+              - generic [ref=e1797]: Neon Closeup Modern Piano Keyboard Stock Photo - Download Image Now - Neon Lighting, Piano, Jazz Music - iStock
+          - generic [ref=e1798] [cursor=pointer]:
+            - 'heading "Ennio Morricone: Nuovo Cinema Paradiso - Love Theme - (Arr. for Piano by Luciano Michelini) - song and lyrics by Ennio Morricone, Andrea Morricone, Luciano Michelini | Spotify" [level=3] [ref=e1800]':
+              - 'button "Ennio Morricone: Nuovo Cinema Paradiso - Love Theme - (Arr. for Piano by Luciano Michelini) - song and lyrics by Ennio Morricone, Andrea Morricone, Luciano Michelini | Spotify" [ref=e1802]':
+                - 'img "Ennio Morricone: Nuovo Cinema Paradiso - Love Theme - (Arr. for Piano by Luciano Michelini) - song and lyrics by Ennio Morricone, Andrea Morricone, Luciano Michelini | Spotify" [ref=e1805]'
+            - 'link "Spotify Ennio Morricone: Nuovo Cinema Paradiso - Love Theme - (Arr. for Piano by Luciano Michelini) - song and lyrics by Ennio Morricone, Andrea Morricone, Luciano Michelini | Spotify" [ref=e1807]':
+              - /url: https://open.spotify.com/track/6j2CpmjTUwjMiDkkZTWmMN
+              - generic [ref=e1812]: Spotify
+              - generic [ref=e1814]: "Ennio Morricone: Nuovo Cinema Paradiso - Love Theme - (Arr. for Piano by Luciano Michelini) - song and lyrics by Ennio Morricone, Andrea Morricone, Luciano Michelini | Spotify"
+          - generic [ref=e1815] [cursor=pointer]:
+            - heading "James Malikey (@jamesmalikeymusic) • Facebook" [level=3] [ref=e1817]:
+              - button "James Malikey (@jamesmalikeymusic) • Facebook" [ref=e1819]:
+                - img "James Malikey (@jamesmalikeymusic) • Facebook" [ref=e1822]
+            - link "Facebook James Malikey (@jamesmalikeymusic) • Facebook" [ref=e1824]:
+              - /url: https://www.facebook.com/jamesmalikeymusic/?locale=tl_PH
+              - generic [ref=e1829]: Facebook
+              - generic [ref=e1831]: James Malikey (@jamesmalikeymusic) • Facebook
+          - generic [ref=e1832] [cursor=pointer]:
+            - heading "TWO PIANOS — A FRENCH MASTERPIECE COMES TO SAVOR After years in self-imposed exile, pianist Mathias (François Civil) returns to Lyon at the invitation of his legendary mentor Eléna (Charlotte Rampling) —" [level=3] [ref=e1834]:
+              - button "TWO PIANOS — A FRENCH MASTERPIECE COMES TO SAVOR After years in self-imposed exile, pianist Mathias (François Civil) returns to Lyon at the invitation of his legendary mentor Eléna (Charlotte Rampling) —" [ref=e1836]:
+                - img "TWO PIANOS — A FRENCH MASTERPIECE COMES TO SAVOR After years in self-imposed exile, pianist Mathias (François Civil) returns to Lyon at the invitation of his legendary mentor Eléna (Charlotte Rampling) —" [ref=e1839]
+            - link "Instagram TWO PIANOS — A FRENCH MASTERPIECE COMES TO SAVOR After years in self-imposed exile, pianist Mathias (François Civil) returns to Lyon at the invitation of his legendary mentor Eléna (Charlotte Rampling) —" [ref=e1841]:
+              - /url: https://www.instagram.com/p/DX6vox_DTIq/
+              - generic [ref=e1846]: Instagram
+              - generic [ref=e1848]: TWO PIANOS — A FRENCH MASTERPIECE COMES TO SAVOR After years in self-imposed exile, pianist Mathias (François Civil) returns to Lyon at the invitation of his legendary mentor Eléna (Charlotte Rampling) —
+          - generic [ref=e1849] [cursor=pointer]:
+            - heading "Inspiring Romantic Piano - YouTube" [level=3] [ref=e1851]:
+              - button "Inspiring Romantic Piano - YouTube" [ref=e1853]:
+                - img "Inspiring Romantic Piano - YouTube" [ref=e1856]
+            - link "YouTube Inspiring Romantic Piano - YouTube" [ref=e1858]:
+              - /url: https://www.youtube.com/watch?v=naQiVnWwyBc
+              - generic [ref=e1863]: YouTube
+              - generic [ref=e1865]: Inspiring Romantic Piano - YouTube
+          - generic [ref=e1866] [cursor=pointer]:
+            - heading "Free Intimate Piano Kiss Image - Romance, Piano, Kiss | Download at StockCake" [level=3] [ref=e1868]:
+              - button "Free Intimate Piano Kiss Image - Romance, Piano, Kiss | Download at StockCake" [ref=e1870]:
+                - img "Free Intimate Piano Kiss Image - Romance, Piano, Kiss | Download at StockCake" [ref=e1873]
+            - link "StockCake Free Intimate Piano Kiss Image - Romance, Piano, Kiss | Download at StockCake" [ref=e1875]:
+              - /url: https://stockcake.com/i/intimate-piano-kiss_2348355_1353336
+              - generic [ref=e1880]: StockCake
+              - generic [ref=e1882]: Free Intimate Piano Kiss Image - Romance, Piano, Kiss | Download at StockCake
+          - generic [ref=e1883] [cursor=pointer]:
+            - heading "Spitfire Audio Originals Keys Bundle | Sweetwater" [level=3] [ref=e1885]:
+              - button "Spitfire Audio Originals Keys Bundle | Sweetwater" [ref=e1887]:
+                - img "Spitfire Audio Originals Keys Bundle | Sweetwater" [ref=e1890]
+            - link "Sweetwater Spitfire Audio Originals Keys Bundle | Sweetwater" [ref=e1892]:
+              - /url: https://www.sweetwater.com/store/detail/SpitfireBun4--spitfire-audio-originals-keys-bundle
+              - generic [ref=e1897]: Sweetwater
+              - generic [ref=e1899]: Spitfire Audio Originals Keys Bundle | Sweetwater
+        - generic [ref=e1902]:
+          - heading "Page Navigation" [level=1] [ref=e1903]
+          - button "Ещё результаты" [ref=e1904] [cursor=pointer]:
+            - generic [ref=e1905]:
+              - separator [ref=e1906]
+              - generic [ref=e1907]:
+                - generic [ref=e1908]: Ещё результаты
+                - img [ref=e1910]
+      - navigation
