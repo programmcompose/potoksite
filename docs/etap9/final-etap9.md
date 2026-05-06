@@ -72,17 +72,6 @@
 
     Многие прорывы в карьере происходят именно благодаря связям, которые вы строите в сообществе.
 
-## Ресурсы для дальнейшего роста
-
-### YouTube-каналы
-- **[Nocturnal Music Production](https://www.youtube.com/@NocturnalMusicProduction)** — бизнес для продюсеров
-- **[How to Mix](https://www.youtube.com/@HowToMix)** — продвижение и индустрия
-- **[You Suck at Producing](https://www.youtube.com/@YouSuckAtProducing)** — честные разговоры о продакшне
-
-### Подкасты
-- **[How I Work](https://howiworkpodcast.com/)** — интервью с креативными профессионалами
-- **[Song Exploder](https://songexploder.net/)** — разбор творчества музыкантов
-
 <div class="potok-lesson-wrapper">
   <input type="checkbox" class="potok-lesson" data-lesson="etap9-done">
   <label class="potok-lesson-label">✅ Этап №9 пройден</label>

@@ -105,13 +105,6 @@
 3. **Начните с пробного периода** — покажите, что вы надёжны
 4. **Работайте на репутацию** — качество важнее скорости
 
-## Полезные ресурсы
-
-### YouTube-каналы
-- **[Bobby Sessions](https://www.youtube.com/@BobbySessions)** — честные разговоры о битмейкинге и продакшне
-- **[Nocturnal Music Production](https://www.youtube.com/@NocturnalMusicProduction)** — бизнес-советы для продюсеров
-- **[Suno AI Music](https://www.youtube.com/@SunoAI)** — как AI меняет индустрию
-
 ---
 
 **← [Назад: Социальные сети →](socseti.md)** | **[Далее: Стоки →](stoki.md)**

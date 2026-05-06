@@ -115,17 +115,6 @@ XXXTentacion начал с **самоучительного продакшна**
 !!! important
     **Ваше ментальное здоровье важнее любого трека.** Если вы чувствуете, что тонете — остановитесь. Отдых — это часть процесса.
 
-## Полезные ресурсы
-
-### YouTube-каналы
-- **[The Honest Brothers](https://www.youtube.com/@TheHonestBrothers)** — ментальное здоровье музыкантов
-- **[Matt Berman](https://www.youtube.com/@MattBerman)** — психология творчества
-- **[Better Than Yesterday](https://www.youtube.com/@BetterThanYesterday)** — продуктивность и творчество
-
-### Подкасты
-- **[How I Work](https://howiworkpodcast.com/)** — интервью с креативными людьми о их процессе
-- **[Song Exploder](https://songexploder.net/)** — разбор творчества музыкантов
-
 ---
 
 **← [Назад: Выкладывание трека на площадки →](vyklozhenie-traka.md)** | **[Далее: Когда начать монетизировать →](monetizatsiya.md)**

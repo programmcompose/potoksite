@@ -107,12 +107,6 @@ AudioJungle (часть Envato Market) — площадка для музыки,
 !!! important
     **Пассивный доход — не мгновенный.** Первые продажи могут прийти через 3-6 месяцев. Ключ — количество и качество каталога.
 
-## Полезные ресурсы
-
-### YouTube-каналы
-- **[Stock Music Secrets](https://www.youtube.com/@StockMusicSecrets)** — советы по продаже стоковой музыки
-- **[BeatStars Official](https://www.youtube.com/@BeatStars)** —官方 канал с советами по продаже битов
-
 ---
 
 **← [Назад: Продажа битов и сведения →](prodazha-bitov.md)** | **[Далее: Прогресс в продвижении →](progress-prodvizhenie.md)**

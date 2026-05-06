@@ -56,14 +56,6 @@ PinkPantheress начала карьеру с коротких треков в T
 
 Если вы начнёте делать музыку только «под тренды», вы потеряете то, что делает вас уникальными.
 
-## Полезные ресурсы
-
-### YouTube-каналы
-- **[ProductionMusic](https://www.youtube.com/@ProductionMusic)** — разбор индустрии, как монетизировать музыку
-- **[How to Mix](https://www.youtube.com/@HowToMix)** — советы по продвижению и бизнесу для продюсеров
-- **[You Suck at Producing](https://www.youtube.com/@YouSuckAtProducing)** — честные разговоры о битмейкинге и продакшне
-- **[Борис Ренчев](https://www.youtube.com/@borisrenchev)** — российский канал о продакшне и продвижении
-
 ---
 
 **← [Назад: Этап №9 →](index.md)** | **[Далее: Социальные сети →](socseti.md)**
