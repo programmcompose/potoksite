@@ -574,13 +574,37 @@ html {
 }
 
 /* ========================================
-   Mermaid diagrams
-   ======================================== */
+    Mermaid diagrams
+    ======================================== */
 [data-md-color-scheme="slate"] .mermaid {
   background: rgba(17, 24, 39, 0.95) !important;
   border-radius: 8px;
   padding: 1em;
   border: 1px solid var(--border-subtle);
+}
+
+/* Force light-colored nodes in dark theme so text is readable */
+[data-md-color-scheme="slate"] .mermaid svg .node rect,
+[data-md-color-scheme="slate"] .mermaid svg .node > rect {
+  fill: #FDFBDF !important;
+  stroke: #C8C090 !important;
+  stroke-width: 2px !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid svg .node text,
+[data-md-color-scheme="slate"] .mermaid svg .node > text {
+  fill: #282828 !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid svg .edgePath,
+[data-md-color-scheme="slate"] .mermaid svg .cluster edgePath {
+  stroke: #9CA3AF !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid svg .markerPath,
+[data-md-color-scheme="slate"] .mermaid svg .arrowheadPath {
+  fill: #9CA3AF !important;
+  stroke: #9CA3AF !important;
 }
 
 [data-md-color-scheme="default"] .mermaid {
