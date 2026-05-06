@@ -320,42 +320,23 @@
   display: none;
 }
 
-/* Hide Material green indicator, use orange via pseudo-element */
-.md-typeset .task-list-item .task-list-indicator {
-  display: none !important;
-}
-
-.md-typeset .task-list-item label.task-list-control {
-  position: relative;
-}
-
-.md-typeset .task-list-item label.task-list-control::before {
-  content: '';
+.md-typeset .task-list-item input[type="checkbox"] {
   display: inline-block;
-  width: 16px;
-  height: 16px;
-  border-radius: 3px;
-  border: 2px solid var(--accent-orange);
+  width: 20px;
+  height: 20px;
+  border: 2.5px solid var(--accent-orange);
+  border-radius: 4px;
+  accent-color: var(--accent-orange);
+  cursor: pointer;
   vertical-align: middle;
-  margin-right: 0.5em;
+  margin-right: 0.6em;
   flex-shrink: 0;
   transition: background-color 0.15s ease;
+  appearance: auto;
 }
 
-.md-typeset .task-list-item label.task-list-control:has(input[type="checkbox"]:checked)::before {
-  background-color: var(--accent-orange);
-}
-
-.md-typeset .task-list-item label.task-list-control:has(input[type="checkbox"]:checked)::after {
-  content: '';
-  display: inline-block;
-  width: 6px;
-  height: 10px;
-  border: solid #fff;
-  border-width: 0 2px 2px 0;
-  transform: rotate(45deg) translate(-1px, -1px);
-  vertical-align: middle;
-  margin-top: -2px;
+.md-typeset .task-list-item .task-list-indicator {
+  display: none !important;
 }
 
 /* Text span — strikethrough when checked */
