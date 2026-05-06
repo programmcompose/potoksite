@@ -322,8 +322,8 @@
 }
 
 /* ========================================
-   Code blocks
-   ======================================== */
+    Code blocks
+    ======================================== */
 .md-typeset code {
   border-radius: 4px;
   padding: 0.2em 0.4em;
@@ -331,6 +331,17 @@
 
 .md-typeset pre > code {
   border-radius: 8px;
+}
+
+/* Dark theme — readable code blocks */
+[data-md-color-scheme="slate"] .md-typeset pre > code {
+  background-color: #1e293b !important;
+  color: #FDFBDF !important;
+}
+
+[data-md-color-scheme="slate"] .md-typeset code {
+  background-color: #1e293b !important;
+  color: #FDFBDF !important;
 }
 
 /* ========================================
