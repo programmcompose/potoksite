@@ -11,7 +11,7 @@
 <span class="hero-tag"><i data-lucide="mic-vocal" class="icon"></i> Звукозапись</span>
 <span class="hero-tag"><i data-lucide="message-circle" class="icon"></i> Комьюнити и чаты</span>
 <span class="hero-tag"><i data-lucide="disc-2" class="icon"></i> Битмейкинг</span>
-<span class="hero-tag"><i data-lucide="piano-keyboards" class="icon"></i> Живая музыка</span>
+<span class="hero-tag"><i data-lucide="guitar" class="icon"></i> Живая музыка</span>
 </div>
 </div>
 
