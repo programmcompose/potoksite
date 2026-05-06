@@ -89,6 +89,7 @@ extra_javascript:
   - assets/javascripts/lucide-init.js
   - assets/javascripts/tasklist-persist.js
   - assets/javascripts/tasklist-strikethrough.js
+  - assets/javascripts/search-ctrlk.js
 
 hooks:
   - hooks/clean_graph_names.py
