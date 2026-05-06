@@ -107,10 +107,6 @@
 
 ## Полезные ресурсы
 
-### Книги
-- **[The Beatmaker's Guide to Selling Beats](https://www.amazon.com/dp/B08F3YQZQX)** — практическое руководство по продаже битов
-- **[Beats, Rhymes, and Life](https://www.amazon.com/Beats-Rhymes-Life-Thoughts-Culture/dp/0062209532)** (Jay-Z) — взгляд изнутри на музыкальную индустрию
-
 ### YouTube-каналы
 - **[Bobby Sessions](https://www.youtube.com/@BobbySessions)** — честные разговоры о битмейкинге и продакшне
 - **[Nocturnal Music Production](https://www.youtube.com/@NocturnalMusicProduction)** — бизнес-советы для продюсеров

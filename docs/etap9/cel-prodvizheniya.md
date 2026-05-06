@@ -58,11 +58,6 @@ PinkPantheress начала карьеру с коротких треков в T
 
 ## Полезные ресурсы
 
-### Книги
-- **[How to Start a Rock Band](https://www.amazon.com/How-Start-Rock-Band-Everything/dp/1616287061)** (Phil Gallese) — не только про рок, но про построение карьеры в музыке в целом
-- **[All You Need to Know About the Music Business](https://www.amazon.com/Need-Know-Music-Business/dp/0028053739)** (Donald Passman) — библия музыкального бизнеса, контракты, роялти, лейблы
-- **[The War of Art](https://www.amazon.com/War-Art-Break-Creativity-Thrives/dp/1577314792)** (Steven Pressfield) — про творческий блок и дисциплину
-
 ### YouTube-каналы
 - **[ProductionMusic](https://www.youtube.com/@ProductionMusic)** — разбор индустрии, как монетизировать музыку
 - **[How to Mix](https://www.youtube.com/@HowToMix)** — советы по продвижению и бизнесу для продюсеров

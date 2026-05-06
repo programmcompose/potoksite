@@ -106,10 +106,6 @@
 
 ## Полезные ресурсы
 
-### Книги
-- **[Difficult Conversations](https://www.amazon.com/Difficult-Conversations-What-Say-When/dp/0140282073)** — как вести сложные разговоры
-- **[Never Split the Difference](https://www.amazon.com/Never-Split-Difference-Negotiator-Techniques/dp/0062407805)** (Chris Voss) — переговоры
-
 ### YouTube-каналы
 - **[ProductionMusic](https://www.youtube.com/@ProductionMusic)** — работа с клиентами для продюсеров
 - **[How to Mix](https://www.youtube.com/@HowToMix)** — профессиональные отношения в индустрии

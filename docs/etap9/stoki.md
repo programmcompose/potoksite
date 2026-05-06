@@ -109,10 +109,6 @@ AudioJungle (часть Envato Market) — площадка для музыки,
 
 ## Полезные ресурсы
 
-### Книги
-- **[Stock Music: The Ultimate Guide](https://www.amazon.com/dp/B07XQZXQ4G)** — полное руководство по стоковой музыке
-- **[The Musician's Guide to Licensing](https://www.amazon.com/Musicians-Guide-Licensing-Making-Money/dp/1617802636)** — как зарабатывать на лицензировании музыки
-
 ### YouTube-каналы
 - **[Stock Music Secrets](https://www.youtube.com/@StockMusicSecrets)** — советы по продаже стоковой музыки
 - **[BeatStars Official](https://www.youtube.com/@BeatStars)** —官方 канал с советами по продаже битов

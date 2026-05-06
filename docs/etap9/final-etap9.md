@@ -74,9 +74,6 @@
 
 ## Ресурсы для дальнейшего роста
 
-### Книги
-- **[The Creative Act](https://www.amazon.com/Creative-Act-Use-Infinite-Power/dp/0593652886)** (Rick Rubin)
-
 ### YouTube-каналы
 - **[Nocturnal Music Production](https://www.youtube.com/@NocturnalMusicProduction)** — бизнес для продюсеров
 - **[How to Mix](https://www.youtube.com/@HowToMix)** — продвижение и индустрия

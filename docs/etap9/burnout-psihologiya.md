@@ -81,7 +81,7 @@ XXXTentacion начал с **самоучительного продакшна**
 
 - **Спорт** — физическая активность улучшает креативность
 - **Медитация** — 10 минут в день снижают тревожность
-- **Чтение** — книги расширяют кругозор и дают новые идеи
+- **Чтение** — расширяет кругозор и даёт новые идеи
 
 ### 3. Создавайте рутину
 
@@ -116,12 +116,6 @@ XXXTentacion начал с **самоучительного продакшна**
     **Ваше ментальное здоровье важнее любого трека.** Если вы чувствуете, что тонете — остановитесь. Отдых — это часть процесса.
 
 ## Полезные ресурсы
-
-### Книги
-- **[The War of Art](https://www.amazon.com/War-Art-Break-Creativity-Thrives/dp/1577314792)** (Steven Pressfield) — **обязательно к прочтению** про творческий блок
-- **[Big Magic](https://www.amazon.com/Big-Magic-Creative-Living-Defiantly/dp/1524767566)** (Elizabeth Gilbert) — про творчество и жизнь
-- **[The Creative Act](https://www.amazon.com/Creative-Act-Use-Infinite-Power/dp/0593652886)** (Rick Rubin) — от легенды продакшна о творческом процессе
-- **[Flow](https://www.amazon.com/Flow-Psychology-Optimal-Experience/dp/0062662817)** (Mihaly Csikszentmihalyi) — психология состояния потока
 
 ### YouTube-каналы
 - **[The Honest Brothers](https://www.youtube.com/@TheHonestBrothers)** — ментальное здоровье музыкантов
