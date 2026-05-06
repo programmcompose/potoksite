@@ -597,14 +597,14 @@ html {
 /* Force light-colored nodes in dark theme so text is readable */
 [data-md-color-scheme="slate"] .mermaid svg .node rect,
 [data-md-color-scheme="slate"] .mermaid svg .node > rect {
-  fill: #FDFBDF !important;
-  stroke: #C8C090 !important;
+  fill: #1F2937 !important;
+  stroke: #6B7280 !important;
   stroke-width: 2px !important;
 }
 
 [data-md-color-scheme="slate"] .mermaid svg .node text,
 [data-md-color-scheme="slate"] .mermaid svg .node > text {
-  fill: #282828 !important;
+  fill: #F9FAFB !important;
 }
 
 [data-md-color-scheme="slate"] .mermaid svg .edgePath,
@@ -616,6 +616,11 @@ html {
 [data-md-color-scheme="slate"] .mermaid svg .arrowheadPath {
   fill: #9CA3AF !important;
   stroke: #9CA3AF !important;
+}
+
+/* All remaining text in mermaid diagrams (edge labels, cluster labels, etc.) */
+[data-md-color-scheme="slate"] .mermaid svg text {
+  fill: #F9FAFB !important;
 }
 
 [data-md-color-scheme="default"] .mermaid {
