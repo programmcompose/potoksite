@@ -1177,6 +1177,12 @@ html {
    ======================================== */
 [data-md-color-scheme="slate"] .hero-section {
   border-width: 1px !important;
+  background:
+    radial-gradient(ellipse at center, rgba(255, 120, 0, 0.35) 0%, transparent 70%),
+    linear-gradient(135deg, #BF360C 0%, #E65100 50%, #F57C00 100%) !important;
+  box-shadow:
+    0 4px 24px rgba(255, 87, 34, 0.2),
+    inset 0 1px 0 rgba(255, 152, 0, 0.15) !important;
 }
 
 [data-md-color-scheme="slate"] .hero-section h1 {
