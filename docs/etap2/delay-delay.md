@@ -2,9 +2,9 @@
 
 Delay создаёт повторения (эхо) исходного сигнала. В отличие от реверба, даёт чёткие, дискретные повторы.
 
-![Soundtoys EchoBoy](/assets/echoboy-ui.png)
+![Soundtoys EchoBoy](../assets/echoboy-ui.png)
 
-![Waves H-Delay](/assets/waves-hdelay-ui.jpg)
+![Waves H-Delay](../assets/waves-hdelay-ui.jpg)
 
 ## Основы
 
