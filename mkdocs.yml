@@ -146,8 +146,7 @@ markdown_extensions:
 nav:
   - "<span class='nav-icon' data-lucide='home'></span> Главная": index.md
   - "<span class='nav-icon' data-lucide='library'></span> Этапы":
-      - "<span class='nav-icon' data-lucide='target'></span> Этап №0: Подготовка к продакшну":
-          - "etap0/index.md"
+      - "<span class='nav-icon' data-lucide='target'></span> Этап №0: Подготовка к продакшну": "etap0/index.md"
       - "<span class='nav-icon' data-lucide='flame'></span> Этап №1: Первые Биты":
           - "etap1/index.md"
           - "<span class='nav-icon' data-lucide='music-2'></span> Что такое сэмпл": "etap1/che-takoe-sampl.md"
