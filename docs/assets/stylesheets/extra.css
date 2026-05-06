@@ -322,6 +322,28 @@
 
 .md-typeset .task-list-item-checkbox {
   margin-right: 0.5em;
+  accent-color: var(--accent-orange);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  flex-shrink: 0;
+  margin-top: 0.2em;
+}
+
+.md-typeset .task-list-item-checkbox:hover {
+  transform: scale(1.1);
+  transition: transform 0.15s ease;
+}
+
+.md-typeset .task-list-item-checkbox:checked + .task-list-label,
+.md-typeset .task-list-item input:checked ~ span {
+  color: var(--text-secondary);
+}
+
+.md-typeset .task-list-item input:checked ~ p,
+.md-typeset .task-list-item input:checked ~ span {
+  text-decoration: line-through;
+  opacity: 0.6;
 }
 
 /* Ordered lists keep numbers */

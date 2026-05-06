@@ -87,6 +87,7 @@ extra_javascript:
   - assets/javascripts/etap0-bg.js
   - assets/javascripts/gamification.js
   - assets/javascripts/lucide-init.js
+  - assets/javascripts/tasklist-persist.js
 
 hooks:
   - hooks/clean_graph_names.py
