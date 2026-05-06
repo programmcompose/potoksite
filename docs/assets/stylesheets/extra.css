@@ -699,29 +699,38 @@ html {
    ======================================== */
 .desktop-warning {
   display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  padding: 16px 20px;
-  margin: 24px 0;
-  border-radius: 12px;
-  border-left: 4px solid var(--accent-orange);
-  font-size: 0.95rem;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 24px;
+  margin: 28px 0;
+  border-radius: 14px;
+  border: 2px solid;
+  font-size: 1rem;
   line-height: 1.5;
+  box-shadow: 0 0 20px rgba(242, 153, 74, 0.15);
 }
 
 .desktop-warning .warning-icon {
-  font-size: 1.4rem;
+  font-size: 1.8rem;
   flex-shrink: 0;
-  margin-top: 2px;
 }
 
 [data-md-color-scheme="slate"] .desktop-warning {
-  background: rgba(242, 153, 74, 0.08);
-  color: #F5D0A9;
+  background: linear-gradient(135deg, rgba(242, 153, 74, 0.15), rgba(245, 158, 112, 0.08));
+  color: #FFD6A5;
+  border-color: rgba(242, 153, 74, 0.5);
+}
+
+[data-md-color-scheme="slate"] .desktop-warning strong {
+  color: #FFB26B;
 }
 
 [data-md-color-scheme="default"] .desktop-warning {
-  background: rgba(242, 153, 74, 0.12);
-  color: #7A4A1E;
-  border-left-color: #D97706;
+  background: linear-gradient(135deg, rgba(245, 158, 112, 0.25), rgba(251, 191, 146, 0.12));
+  color: #78350F;
+  border-color: rgba(234, 179, 8, 0.6);
+}
+
+[data-md-color-scheme="default"] .desktop-warning strong {
+  color: #92400E;
 }
