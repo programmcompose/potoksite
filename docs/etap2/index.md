@@ -1,8 +1,5 @@
 <div class="hero-section etap2">
-<h1>Этап №2 — Сведение и обработка</h1>
-<p class="hero-subtitle">
-Профессиональный саунд: EQ, компрессия, сатурация, реверб, delay, мастеринг, работа с референсами.
-</p>
+<h1 class="unbounded">Этап №2</h1>
 <div class="hero-tags">
 <span class="hero-tag"><i data-lucide="equalizer" class="icon"></i> EQ</span>
 <span class="hero-tag"><i data-lucide="gauge" class="icon"></i> Компрессия</span>

@@ -1,8 +1,5 @@
 <div class="hero-section etap3">
-<h1>Этап №3 — Усложнённые биты</h1>
-<p class="hero-subtitle">
-Синтезаторы, chop-техники, сложные драм-партии, FX-манипуляции, структура трека, жанровые стили.
-</p>
+<h1 class="unbounded">Этап №3</h1>
 <div class="hero-tags">
 <span class="hero-tag"><i data-lucide="sliders-vertical" class="icon"></i> Синтезаторы</span>
 <span class="hero-tag"><i data-lucide="scissors" class="icon"></i> Chop-техники</span>

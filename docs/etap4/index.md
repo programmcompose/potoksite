@@ -1,8 +1,5 @@
 <div class="hero-section etap4">
-<h1>Этап №4 — Теория музыки и аккорды</h1>
-<p class="hero-subtitle">
-Ноты, интервалы, тональности, аккорды, прогрессии, мелодия, ритмика, тембр, импровизация.
-</p>
+<h1 class="unbounded">Этап №4</h1>
 <div class="hero-tags">
 <span class="hero-tag"><i data-lucide="music" class="icon"></i> Ноты</span>
 <span class="hero-tag"><i data-lucide="git-branch" class="icon"></i> Интервалы</span>
