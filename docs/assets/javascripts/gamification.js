@@ -217,7 +217,9 @@
       earlySession: false,
       firstVisit: null,
       lastVisit: null,
-      pagesViewed: 0
+      pagesViewed: 0,
+      lastSessionXP: 0,
+      lastPageXP: 0
     };
   }
 
@@ -227,6 +229,7 @@
   var sessionStart = null;
   var sessionTimer = null;
   var visitedSections = new Set();
+  var SESSION_COOLDOWN = 30000;
 
   function startSession() {
     var now = Date.now();
@@ -237,8 +240,16 @@
       state.stats.firstVisit = now;
     }
     state.stats.lastVisit = now;
-    state.stats.sessions++;
     state.stats.pagesViewed++;
+
+    // Cooldown для сессий — не чаще чем раз в SESSION_COOLDOWN
+    var lastSession = state.stats.lastSessionXP || 0;
+    var sessionAwarded = false;
+    if (now - lastSession >= SESSION_COOLDOWN) {
+      state.stats.sessions++;
+      state.stats.lastSessionXP = now;
+      sessionAwarded = true;
+    }
 
     // Проверяем время суток
     if (hour >= 23 || hour < 0) state.stats.nightSession = true;
@@ -252,14 +263,20 @@
       saveStats();
     }, 60000);
 
-    // Начисляем XP за сессию
-    addXP(XP_REWARDS.session_start, 'session_start');
+    // Начисляем XP за сессию (только если cooldown прошёл)
+    if (sessionAwarded) {
+      addXP(XP_REWARDS.session_start, 'session_start');
+    }
 
     // Отслеживаем текущий раздел
     trackSection();
 
-    // Начисляем XP за просмотр
-    addXP(XP_REWARDS.page_view, 'page_view');
+    // Cooldown для page_view — не чаще 10 секунд
+    var lastPageXP = state.stats.lastPageXP || 0;
+    if (now - lastPageXP >= 10000) {
+      addXP(XP_REWARDS.page_view, 'page_view');
+      state.stats.lastPageXP = now;
+    }
 
     saveStats();
     checkBadges();
