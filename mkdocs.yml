@@ -88,6 +88,9 @@ extra_javascript:
   - assets/javascripts/gamification.js
   - assets/javascripts/lucide-init.js
 
+hooks:
+  - hooks/clean_graph_names.py
+
 markdown_extensions:
   - admonition:
   - attr_list
