@@ -1,11 +1,11 @@
-// Persist task-list checkbox states via localStorage
+// Make task-list checkboxes interactive and persist via localStorage
 (function () {
   function getPageKey() {
     return 'tasklist:' + location.pathname;
   }
 
   function saveState() {
-    var items = document.querySelectorAll('.md-typeset .task-list-item-checkbox');
+    var items = document.querySelectorAll('.md-typeset .task-list-item input[type="checkbox"]');
     var state = {};
     items.forEach(function (cb, i) {
       state[i] = cb.checked;
@@ -18,7 +18,7 @@
     if (!raw) return;
     try {
       var state = JSON.parse(raw);
-      var items = document.querySelectorAll('.md-typeset .task-list-item-checkbox');
+      var items = document.querySelectorAll('.md-typeset .task-list-item input[type="checkbox"]');
       items.forEach(function (cb, i) {
         if (state[i]) cb.checked = true;
       });
@@ -26,10 +26,11 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
-    restoreState();
-    var items = document.querySelectorAll('.md-typeset .task-list-item-checkbox');
+    var items = document.querySelectorAll('.md-typeset .task-list-item input[type="checkbox"]');
     items.forEach(function (cb) {
+      cb.removeAttribute('disabled');
       cb.addEventListener('change', saveState);
     });
+    restoreState();
   });
 })();
