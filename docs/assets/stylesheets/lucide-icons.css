@@ -43,6 +43,36 @@
   height: 18px;
 }
 
+/* FAQ page icon (h1) */
+.md-typeset h1 .page-icon {
+  width: 32px;
+  height: 32px;
+  vertical-align: middle;
+  margin-right: 0.35em;
+  color: var(--accent-orange);
+  opacity: 0.9;
+}
+
+/* FAQ section icons (h2) */
+.md-typeset h2 .section-icon {
+  width: 24px;
+  height: 24px;
+  vertical-align: middle;
+  margin-right: 0.3em;
+  color: var(--accent-orange);
+  opacity: 0.85;
+}
+
+/* FAQ question icons (h3) */
+.md-typeset h3 .q-icon {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  margin-right: 0.3em;
+  color: var(--accent-blue);
+  opacity: 0.75;
+}
+
 /* Inline icons in body text */
 .md-typeset p .icon,
 .md-typeset li .icon,
