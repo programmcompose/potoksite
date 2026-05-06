@@ -17,12 +17,25 @@
 
 ### Выбор лада
 
-- **Ионийский** — стандартный майор
-- **Эолийский** — натуральный минор
-- **Дорийский** — минор с надеждой
-- **Фригийский** — экзотика, опасность
-- **Лидийский** — магия, сновидение
-- **Миксолидийский** — свобода, эпик
+Все лады построены из одних и тех же нот, но с разной тоникой. Ниже — ступени каждого лада относительно тоники (на примере C). **Жирные** ступени отличаются от обычного мажора.
+
+| Лад | Характер | Ступени гаммы | Отличия от мажора |
+|-----|---------|--------------|------------------|
+| **Ионийский** | Стандартный майор | C D E F G A B | — |
+| **Дорийский** | Минор с надеждой | D E F G A B C | **b3**, **b7** |
+| **Фригийский** | Экзотика, опасность | E F G A B C D | **b2**, **b3**, **b6**, **b7** |
+| **Лидийский** | Магия, сновидение | F G A B C D E | **#4** |
+| **Миксолидийский** | Свобода, эпик | G A B C D E F | **b7** |
+| **Эолийский** | Натуральный минор | A B C D E F G | **b3**, **b6**, **b7** |
+
+<div class="mode-visual">
+<div class="mode-row"><span class="mode-name">Ионийский</span> <span class="degrees">1&nbsp;&nbsp; 2&nbsp;&nbsp; 3&nbsp;&nbsp; 4&nbsp;&nbsp; 5&nbsp;&nbsp; 6&nbsp;&nbsp; 7</span></div>
+<div class="mode-row"><span class="mode-name">Дорийский</span>  <span class="degrees">1&nbsp;&nbsp; 2&nbsp;&nbsp; <b class="lowered">b3</b>&nbsp;&nbsp; 4&nbsp;&nbsp; 5&nbsp;&nbsp; 6&nbsp;&nbsp; <b class="lowered">b7</b></span></div>
+<div class="mode-row"><span class="mode-name">Фригийский</span> <span class="degrees">1&nbsp;&nbsp; <b class="lowered">b2</b>&nbsp;&nbsp; <b class="lowered">b3</b>&nbsp;&nbsp; 4&nbsp;&nbsp; 5&nbsp;&nbsp; <b class="lowered">b6</b>&nbsp;&nbsp; <b class="lowered">b7</b></span></div>
+<div class="mode-row"><span class="mode-name">Лидийский</span>  <span class="degrees">1&nbsp;&nbsp; 2&nbsp;&nbsp; 3&nbsp;&nbsp; <b class="raised">#4</b>&nbsp;&nbsp; 5&nbsp;&nbsp; 6&nbsp;&nbsp; 7</span></div>
+<div class="mode-row"><span class="mode-name">Миксолидийский</span> <span class="degrees">1&nbsp;&nbsp; 2&nbsp;&nbsp; 3&nbsp;&nbsp; 4&nbsp;&nbsp; 5&nbsp;&nbsp; 6&nbsp;&nbsp; <b class="lowered">b7</b></span></div>
+<div class="mode-row"><span class="mode-name">Эолийский</span>  <span class="degrees">1&nbsp;&nbsp; 2&nbsp;&nbsp; <b class="lowered">b3</b>&nbsp;&nbsp; 4&nbsp;&nbsp; 5&nbsp;&nbsp; <b class="lowered">b6</b>&nbsp;&nbsp; <b class="lowered">b7</b></span></div>
+</div>
 
 ## Тип движения
 

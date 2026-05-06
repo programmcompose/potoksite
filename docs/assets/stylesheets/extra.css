@@ -741,3 +741,52 @@ html {
 [data-md-color-scheme="default"] .desktop-warning strong {
   color: #92400E;
 }
+
+/* ========================================
+   Mode visual comparison
+   ======================================== */
+.mode-visual {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 1.2em 1.5em;
+  margin: 1.5em 0;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 0.95em;
+  line-height: 2;
+}
+
+.mode-row {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  padding: 0.2em 0;
+}
+
+.mode-name {
+  flex: 0 0 140px;
+  font-weight: 600;
+  color: var(--text-heading);
+}
+
+.degrees {
+  font-family: 'Consolas', 'Monaco', monospace;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.degrees .lowered {
+  color: #F87171;
+}
+
+.degrees .raised {
+  color: #60A5FA;
+}
+
+[data-md-color-scheme="default"] .degrees .lowered {
+  color: #DC2626;
+}
+
+[data-md-color-scheme="default"] .degrees .raised {
+  color: #2563EB;
+}
