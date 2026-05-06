@@ -55,7 +55,7 @@ plugins:
   - glightbox
   - mermaid2:
       arguments:
-        theme: dark
+        theme: neutral
   - graph:
       name: "title"
       debug: true
@@ -128,7 +128,7 @@ markdown_extensions:
       custom_fences:
         - name: mermaid
           class: mermaid
-          format: !!python/name:pymdownx.superfences.fence_code_format
+          format: !!python/name:mermaid2.fence_mermaid_custom
   - pymdownx.tabbed:
       alternate_style: true
       slugify: !!python/object/apply:pymdownx.slugs.slugify
