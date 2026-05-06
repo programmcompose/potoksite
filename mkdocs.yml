@@ -239,6 +239,16 @@ nav:
           - "<span class='nav-icon' data-lucide='horn'></span> Джаз — Вариации жанра": "etap6/jazz-variatsii-zhandra.md"
           - "<span class='nav-icon' data-lucide='mic'></span> Работа с реальными инструментами": "etap6/real-instruments-zapish.md"
           - "<span class='nav-icon' data-lucide='circle-check'></span> Финал этапа": "etap6/final-etap6.md"
+      - "<span class='nav-icon' data-lucide='mic-vocal'></span> Этап №7: Сведение Вокала и Мастеринг":
+          - "etap7/index.md"
+          - "<span class='nav-icon' data-lucide='mic'></span> Запись вокала": "etap7/zapis-vokala.md"
+          - "<span class='nav-icon' data-lucide='scissors'></span> Редакция вокала": "etap7/redaktsiya-vokala.md"
+          - "<span class='nav-icon' data-lucide='sliders-horizontal'></span> Основные обработки": "etap7/osnovnye-obrabotki.md"
+          - "<span class='nav-icon' data-lucide='users'></span> Работа с бэками": "etap7/rabota-s-beikami.md"
+          - "<span class='nav-icon' data-lucide='mixer-vertical'></span> Сведение с битом": "etap7/svedenie-s-bitom.md"
+          - "<span class='nav-icon' data-lucide='bar-chart-3'></span> Финальный чек микса": "etap7/final-chek-miksa.md"
+          - "<span class='nav-icon' data-lucide='radio'></span> Работа с референсами": "etap7/referensy-i-stream.md"
+          - "<span class='nav-icon' data-lucide='square'></span> FL Studio и Ableton": "etap7/fl-ableton-vokal.md"
   - "<span class='nav-icon' data-lucide='volume-2'></span> Основы звука":
       - "zvuk/index.md"
       - "<span class='nav-icon' data-lucide='book-open'></span> Что такое звук": "zvuk/osnovy-zvuka.md"
