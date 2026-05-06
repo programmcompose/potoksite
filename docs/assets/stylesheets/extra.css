@@ -487,11 +487,11 @@
 
 .hero-section.etap1 {
   background:
-    radial-gradient(ellipse at center, rgba(255, 152, 0, 0.2) 0%, transparent 70%),
-    linear-gradient(135deg, #FFB74D 0%, #FF9800 50%, #F57C00 100%) !important;
-  border-color: rgba(255, 152, 0, 0.3) !important;
+    radial-gradient(ellipse at center, rgba(106, 27, 154, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #9C27B0 0%, #7B1FA2 50%, #4A148C 100%) !important;
+  border-color: rgba(106, 27, 154, 0.3) !important;
   box-shadow:
-    0 4px 24px rgba(255, 152, 0, 0.12),
+    0 4px 24px rgba(106, 27, 154, 0.12),
     inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
 }
 .hero-section.etap1 h1 {
@@ -770,8 +770,8 @@
 }
 .hero-section.etap1::before {
   background:
-    radial-gradient(circle at 30% 40%, rgba(255, 152, 0, 0.12) 0%, transparent 50%),
-    radial-gradient(circle at 70% 60%, rgba(255, 87, 34, 0.1) 0%, transparent 50%);
+    radial-gradient(circle at 30% 40%, rgba(106, 27, 154, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(156, 39, 176, 0.1) 0%, transparent 50%);
 }
 .hero-section.etap2::before {
   background:
@@ -1216,9 +1216,9 @@ html {
 
 [data-md-color-scheme="slate"] .hero-section.etap1 {
   background:
-    radial-gradient(ellipse at center, rgba(255, 152, 0, 0.15) 0%, transparent 70%),
-    linear-gradient(135deg, #E65100 0%, #BF360C 50%, #9E2A0B 100%) !important;
-  border-color: rgba(255, 138, 0, 0.25) !important;
+    radial-gradient(ellipse at center, rgba(106, 27, 154, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #4A148C 0%, #311B92 50%, #1A0B2E 100%) !important;
+  border-color: rgba(106, 27, 154, 0.25) !important;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
 }
 [data-md-color-scheme="slate"] .hero-section.etap1 .hero-subtitle {
