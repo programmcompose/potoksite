@@ -1,4 +1,16 @@
-# Этап №0 — Подготовка к продакшну
+<div class="hero-section etap0">
+<h1>Этап №0</h1>
+<p class="hero-subtitle">
+Подготовка к музыкальному продакшну — выбор DAW, оборудование, настройка и организация рабочего процесса.
+</p>
+<div class="hero-tags">
+<span class="hero-tag"><i data-lucide="monitor" class="icon"></i> DAW</span>
+<span class="hero-tag"><i data-lucide="headphones" class="icon"></i> Оборудование</span>
+<span class="hero-tag"><i data-lucide="settings" class="icon"></i> Настройка</span>
+<span class="hero-tag"><i data-lucide="laptop" class="icon"></i> Оптимизация</span>
+<span class="hero-tag"><i data-lucide="folder-tree" class="icon"></i> Организация</span>
+</div>
+</div>
 
 ![Этап №0 - Подготовка работы и DAW](etap0-cover.png)
 

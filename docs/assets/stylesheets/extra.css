@@ -458,6 +458,297 @@
   color: #4e342e;
 }
 
+/* ========================================
+   Hero section variants
+   ======================================== */
+.hero-section.etap0 {
+  background:
+    radial-gradient(ellipse at center, rgba(180, 180, 180, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #90A4AE 0%, #78909C 50%, #546E7A 100%) !important;
+  border-color: rgba(120, 144, 156, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(84, 110, 122, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
+}
+.hero-section.etap0 h1 {
+  background: linear-gradient(135deg, #37474F 0%, #263238 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.etap0 .hero-subtitle {
+  color: #37474F;
+}
+.hero-section.etap0 .hero-tag {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.45);
+  color: #37474F;
+}
+
+.hero-section.etap1 {
+  background:
+    radial-gradient(ellipse at center, rgba(255, 152, 0, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #FFB74D 0%, #FF9800 50%, #F57C00 100%) !important;
+  border-color: rgba(255, 152, 0, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(255, 152, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+.hero-section.etap1 h1 {
+  background: linear-gradient(135deg, #BF360C 0%, #8D2400 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.etap1 .hero-subtitle {
+  color: #BF360C;
+}
+.hero-section.etap1 .hero-tag {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #BF360C;
+}
+
+.hero-section.etap2 {
+  background:
+    radial-gradient(ellipse at center, rgba(33, 150, 243, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #64B5F6 0%, #42A5F5 50%, #1E88E5 100%) !important;
+  border-color: rgba(33, 150, 243, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(33, 150, 243, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+.hero-section.etap2 h1 {
+  background: linear-gradient(135deg, #1565C0 0%, #0D47A1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.etap2 .hero-subtitle {
+  color: #1565C0;
+}
+.hero-section.etap2 .hero-tag {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #1565C0;
+}
+
+.hero-section.etap3 {
+  background:
+    radial-gradient(ellipse at center, rgba(156, 39, 176, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #CE93D8 0%, #AB47BC 50%, #8E24AA 100%) !important;
+  border-color: rgba(156, 39, 176, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(156, 39, 176, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+.hero-section.etap3 h1 {
+  background: linear-gradient(135deg, #6A1B9A 0%, #4A148C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.etap3 .hero-subtitle {
+  color: #6A1B9A;
+}
+.hero-section.etap3 .hero-tag {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #6A1B9A;
+}
+
+.hero-section.etap4 {
+  background:
+    radial-gradient(ellipse at center, rgba(76, 175, 80, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #81C784 0%, #66BB6A 50%, #43A047 100%) !important;
+  border-color: rgba(76, 175, 80, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(76, 175, 80, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+.hero-section.etap4 h1 {
+  background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.etap4 .hero-subtitle {
+  color: #2E7D32;
+}
+.hero-section.etap4 .hero-tag {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #2E7D32;
+}
+
+.hero-section.etap5 {
+  background:
+    radial-gradient(ellipse at center, rgba(233, 30, 99, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #F06292 0%, #EC407A 50%, #D81B60 100%) !important;
+  border-color: rgba(233, 30, 99, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(233, 30, 99, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+.hero-section.etap5 h1 {
+  background: linear-gradient(135deg, #880E4F 0%, #6A0035 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.etap5 .hero-subtitle {
+  color: #880E4F;
+}
+.hero-section.etap5 .hero-tag {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #880E4F;
+}
+
+.hero-section.etap6 {
+  background:
+    radial-gradient(ellipse at center, rgba(255, 87, 34, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #FFAB91 0%, #FF7043 50%, #F4511E 100%) !important;
+  border-color: rgba(255, 87, 34, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(255, 87, 34, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+.hero-section.etap6 h1 {
+  background: linear-gradient(135deg, #BF360C 0%, #9E2A0B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.etap6 .hero-subtitle {
+  color: #BF360C;
+}
+.hero-section.etap6 .hero-tag {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #BF360C;
+}
+
+.hero-section.etap7 {
+  background:
+    radial-gradient(ellipse at center, rgba(103, 58, 183, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #B39DDB 0%, #9575CD 50%, #7E57C2 100%) !important;
+  border-color: rgba(103, 58, 183, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(103, 58, 183, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+.hero-section.etap7 h1 {
+  background: linear-gradient(135deg, #4527A0 0%, #311B92 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.etap7 .hero-subtitle {
+  color: #4527A0;
+}
+.hero-section.etap7 .hero-tag {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #4527A0;
+}
+
+.hero-section.etap8 {
+  background:
+    radial-gradient(ellipse at center, rgba(0, 150, 136, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #4DB6AC 0%, #26A69A 50%, #00897B 100%) !important;
+  border-color: rgba(0, 150, 136, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(0, 150, 136, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+.hero-section.etap8 h1 {
+  background: linear-gradient(135deg, #00695C 0%, #004D40 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.etap8 .hero-subtitle {
+  color: #00695C;
+}
+.hero-section.etap8 .hero-tag {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #00695C;
+}
+
+.hero-section.etap9 {
+  background:
+    radial-gradient(ellipse at center, rgba(255, 215, 0, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #FFF176 0%, #FFEE58 50%, #FFD600 100%) !important;
+  border-color: rgba(255, 215, 0, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(255, 215, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+.hero-section.etap9 h1 {
+  background: linear-gradient(135deg, #F57F17 0%, #E65100 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.etap9 .hero-subtitle {
+  color: #F57F17;
+}
+.hero-section.etap9 .hero-tag {
+  background: rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.55);
+  color: #F57F17;
+}
+
+.hero-section.plugins {
+  background:
+    radial-gradient(ellipse at center, rgba(121, 85, 72, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #A1887F 0%, #8D6E63 50%, #6D4C41 100%) !important;
+  border-color: rgba(121, 85, 72, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(109, 76, 65, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
+}
+.hero-section.plugins h1 {
+  background: linear-gradient(135deg, #3E2723 0%, #2C1A16 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.plugins .hero-subtitle {
+  color: #3E2723;
+}
+.hero-section.plugins .hero-tag {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.45);
+  color: #3E2723;
+}
+
+.hero-section.zvuk {
+  background:
+    radial-gradient(ellipse at center, rgba(96, 125, 139, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #80CBC0 0%, #5FB8D3 50%, #3A8D9E 100%) !important;
+  border-color: rgba(96, 125, 139, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(58, 141, 158, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
+}
+.hero-section.zvuk h1 {
+  background: linear-gradient(135deg, #1565C0 0%, #0D47A1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.zvuk .hero-subtitle {
+  color: #1565C0;
+}
+.hero-section.zvuk .hero-tag {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #1565C0;
+}
+
 /* Animated wave decoration */
 .hero-section::before {
   content: '';
@@ -471,6 +762,66 @@
     radial-gradient(circle at 70% 60%, rgba(255, 165, 0, 0.1) 0%, transparent 50%);
   animation: hero-float 20s ease-in-out infinite;
   pointer-events: none;
+}
+.hero-section.etap0::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(144, 164, 174, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(120, 144, 156, 0.1) 0%, transparent 50%);
+}
+.hero-section.etap1::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(255, 152, 0, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(255, 87, 34, 0.1) 0%, transparent 50%);
+}
+.hero-section.etap2::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(33, 150, 243, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(66, 165, 245, 0.1) 0%, transparent 50%);
+}
+.hero-section.etap3::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(156, 39, 176, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(186, 104, 200, 0.1) 0%, transparent 50%);
+}
+.hero-section.etap4::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(76, 175, 80, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(129, 199, 132, 0.1) 0%, transparent 50%);
+}
+.hero-section.etap5::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(233, 30, 99, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(240, 98, 146, 0.1) 0%, transparent 50%);
+}
+.hero-section.etap6::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(255, 87, 34, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(255, 138, 101, 0.1) 0%, transparent 50%);
+}
+.hero-section.etap7::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(103, 58, 183, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(149, 117, 205, 0.1) 0%, transparent 50%);
+}
+.hero-section.etap8::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(0, 150, 136, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(77, 182, 172, 0.1) 0%, transparent 50%);
+}
+.hero-section.etap9::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(255, 215, 0, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(255, 238, 88, 0.1) 0%, transparent 50%);
+}
+.hero-section.plugins::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(121, 85, 72, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(141, 110, 99, 0.1) 0%, transparent 50%);
+}
+.hero-section.zvuk::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(96, 125, 139, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(128, 203, 192, 0.1) 0%, transparent 50%);
 }
 
 @keyframes hero-float {
@@ -819,4 +1170,194 @@ html {
 
 [data-md-color-scheme="default"] .degrees .raised {
   color: #2563EB;
+}
+
+/* ========================================
+   Hero section — dark theme
+   ======================================== */
+[data-md-color-scheme="slate"] .hero-section {
+  border-width: 1px !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section h1 {
+  -webkit-text-fill-color: #E0E0E0 !important;
+  background: none !important;
+}
+
+[data-md-color-scheme="slate"] .hero-subtitle {
+  color: #B0B0B0 !important;
+}
+
+[data-md-color-scheme="slate"] .hero-tag {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #B0B0B0 !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.etap0 {
+  background:
+    radial-gradient(ellipse at center, rgba(144, 164, 174, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #37474F 0%, #263238 50%, #1C2A30 100%) !important;
+  border-color: rgba(90, 120, 130, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap0 .hero-subtitle {
+  color: #90A4AE !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap0 .hero-tag {
+  color: #90A4AE !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.etap1 {
+  background:
+    radial-gradient(ellipse at center, rgba(255, 152, 0, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #E65100 0%, #BF360C 50%, #9E2A0B 100%) !important;
+  border-color: rgba(255, 138, 0, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap1 .hero-subtitle {
+  color: #FFB74D !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap1 .hero-tag {
+  color: #FFB74D !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.etap2 {
+  background:
+    radial-gradient(ellipse at center, rgba(33, 150, 243, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #1565C0 0%, #0D47A1 50%, #0A3570 100%) !important;
+  border-color: rgba(66, 165, 245, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap2 .hero-subtitle {
+  color: #64B5F6 !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap2 .hero-tag {
+  color: #64B5F6 !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.etap3 {
+  background:
+    radial-gradient(ellipse at center, rgba(156, 39, 176, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #6A1B9A 0%, #4A148C 50%, #380D6E 100%) !important;
+  border-color: rgba(186, 104, 200, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap3 .hero-subtitle {
+  color: #CE93D8 !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap3 .hero-tag {
+  color: #CE93D8 !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.etap4 {
+  background:
+    radial-gradient(ellipse at center, rgba(76, 175, 80, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #2E7D32 0%, #1B5E20 50%, #134715 100%) !important;
+  border-color: rgba(129, 199, 132, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap4 .hero-subtitle {
+  color: #81C784 !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap4 .hero-tag {
+  color: #81C784 !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.etap5 {
+  background:
+    radial-gradient(ellipse at center, rgba(233, 30, 99, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #880E4F 0%, #6A0035 50%, #500028 100%) !important;
+  border-color: rgba(240, 98, 146, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap5 .hero-subtitle {
+  color: #F06292 !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap5 .hero-tag {
+  color: #F06292 !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.etap6 {
+  background:
+    radial-gradient(ellipse at center, rgba(255, 87, 34, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #BF360C 0%, #9E2A0B 50%, #802008 100%) !important;
+  border-color: rgba(255, 138, 101, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap6 .hero-subtitle {
+  color: #FFAB91 !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap6 .hero-tag {
+  color: #FFAB91 !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.etap7 {
+  background:
+    radial-gradient(ellipse at center, rgba(103, 58, 183, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #4527A0 0%, #311B92 50%, #241270 100%) !important;
+  border-color: rgba(149, 117, 205, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap7 .hero-subtitle {
+  color: #B39DDB !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap7 .hero-tag {
+  color: #B39DDB !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.etap8 {
+  background:
+    radial-gradient(ellipse at center, rgba(0, 150, 136, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #00695C 0%, #004D40 50%, #00362E 100%) !important;
+  border-color: rgba(77, 182, 172, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap8 .hero-subtitle {
+  color: #4DB6AC !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap8 .hero-tag {
+  color: #4DB6AC !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.etap9 {
+  background:
+    radial-gradient(ellipse at center, rgba(255, 215, 0, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #F57F17 0%, #E65100 50%, #CC4300 100%) !important;
+  border-color: rgba(255, 238, 88, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap9 .hero-subtitle {
+  color: #FFF176 !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap9 .hero-tag {
+  color: #FFF176 !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.plugins {
+  background:
+    radial-gradient(ellipse at center, rgba(121, 85, 72, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #4E342E 0%, #3E2723 50%, #2C1A16 100%) !important;
+  border-color: rgba(141, 110, 99, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.plugins .hero-subtitle {
+  color: #A1887F !important;
+}
+[data-md-color-scheme="slate"] .hero-section.plugins .hero-tag {
+  color: #A1887F !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.zvuk {
+  background:
+    radial-gradient(ellipse at center, rgba(96, 125, 139, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #1565C0 0%, #0D47A1 50%, #0A3570 100%) !important;
+  border-color: rgba(128, 203, 192, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.zvuk .hero-subtitle {
+  color: #80CBC0 !important;
+}
+[data-md-color-scheme="slate"] .hero-section.zvuk .hero-tag {
+  color: #80CBC0 !important;
 }
