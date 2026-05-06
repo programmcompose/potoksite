@@ -693,3 +693,35 @@ html {
 [data-md-color-scheme="slate"] .md-content__inner {
   color: var(--text-main);
 }
+
+/* ========================================
+   Desktop warning banner
+   ======================================== */
+.desktop-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 16px 20px;
+  margin: 24px 0;
+  border-radius: 12px;
+  border-left: 4px solid var(--accent-orange);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.desktop-warning .warning-icon {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+[data-md-color-scheme="slate"] .desktop-warning {
+  background: rgba(242, 153, 74, 0.08);
+  color: #F5D0A9;
+}
+
+[data-md-color-scheme="default"] .desktop-warning {
+  background: rgba(242, 153, 74, 0.12);
+  color: #7A4A1E;
+  border-left-color: #D97706;
+}
