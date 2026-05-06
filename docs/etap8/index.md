@@ -1,3 +1,19 @@
+<div class="hero-section etap8">
+<h1>Этап №8</h1>
+<p class="hero-subtitle">
+Кино- и игровой саунд-дизайн — создание оркестровых и атмосферных треков для визуального контента.
+</p>
+<div class="hero-tags">
+<span class="hero-tag"><i data-lucide="book-open" class="icon"></i> Kontakt</span>
+<span class="hero-tag"><i data-lucide="music" class="icon"></i> Оркестровка</span>
+<span class="hero-tag"><i data-lucide="film" class="icon"></i> Саундтрек</span>
+<span class="hero-tag"><i data-lucide="cloud-fog" class="icon"></i> Эмбиент</span>
+<span class="hero-tag"><i data-lucide="settings" class="icon"></i> Видеоряд</span>
+</div>
+</div>
+
+![Этап №8 - Саундтреки и Эмбиент](etap8-cover.png)
+
 # Этап №8 — Саундтреки и Эмбиент
 
 Вы освоили битмейкинг, сведение, живые инструменты и вокал. Теперь пришло время **кино- и игрового саунд-дизайна** — создания оркестровых и атмосферных треков для визуального контента.

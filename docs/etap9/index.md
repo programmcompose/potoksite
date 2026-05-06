@@ -1,3 +1,19 @@
+<div class="hero-section etap9">
+<h1>Этап №9</h1>
+<p class="hero-subtitle">
+Превратите навыки в карьеру — продвигайте себя, монетизируйте творчество и выстраивайте профессиональные отношения.
+</p>
+<div class="hero-tags">
+<span class="hero-tag"><i data-lucide="target" class="icon"></i> Цель пиара</span>
+<span class="hero-tag"><i data-lucide="share-2" class="icon"></i> Соцсети</span>
+<span class="hero-tag"><i data-lucide="dollar-sign" class="icon"></i> Продажа битов</span>
+<span class="hero-tag"><i data-lucide="database" class="icon"></i> Стоки</span>
+<span class="hero-tag"><i data-lucide="rocket" class="icon"></i> Продвижение</span>
+</div>
+</div>
+
+![Этап №9 - Продвижение и Заработок](etap9-cover.png)
+
 # Этап №9 — Продвижение и Способы заработка
 
 Вы освоили битмейкинг, сведение, работу с вокалом, живыми инструментами и саунд-дизайн. Теперь пришло время **превратить навыки в карьеру** — научиться продвигать себя, монетизировать творчество и выстраивать профессиональные отношения.

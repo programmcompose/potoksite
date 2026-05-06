@@ -1,3 +1,19 @@
+<div class="hero-section etap7">
+<h1>Этап №7</h1>
+<p class="hero-subtitle">
+Профессионально работайте с вокалом — записывайте, обрабатывайте и сводите голос с треком.
+</p>
+<div class="hero-tags">
+<span class="hero-tag"><i data-lucide="mic" class="icon"></i> Запись вокала</span>
+<span class="hero-tag"><i data-lucide="scissors" class="icon"></i> Редакция</span>
+<span class="hero-tag"><i data-lucide="sliders-horizontal" class="icon"></i> Обработки</span>
+<span class="hero-tag"><i data-lucide="users" class="icon"></i> Бэки</span>
+<span class="hero-tag"><i data-lucide="bar-chart-3" class="icon"></i> Мастеринг</span>
+</div>
+</div>
+
+![Этап №7 - Сведение Вокала и Мастеринг](etap7-cover.png)
+
 # Этап №7 — Сведение Вокала и Мастеринг
 
 Вы освоили создание битов, работу с живыми инструментами и базовое сведение. Теперь пришло время **профессионально работать с вокалом** — записывать, обрабатывать и сводить голос с треком.

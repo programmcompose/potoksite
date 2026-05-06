@@ -1,3 +1,19 @@
+<div class="hero-section etap5">
+<h1>Этап №5</h1>
+<p class="hero-subtitle">
+Электронная музыка — это искусство создания звука с нуля. От синусоиды до дропа, от сэмплирования до модульного синтеза.
+</p>
+<div class="hero-tags">
+<span class="hero-tag"><i data-lucide="sliders-horizontal" class="icon"></i> Синтез</span>
+<span class="hero-tag"><i data-lucide="scissors" class="icon"></i> Сэмплирование</span>
+<span class="hero-tag"><i data-lucide="headphones" class="icon"></i> EDM жанры</span>
+<span class="hero-tag"><i data-lucide="ghost" class="icon"></i> Стили</span>
+<span class="hero-tag"><i data-lucide="puzzle" class="icon"></i> Саунд-дизайн</span>
+</div>
+</div>
+
+![Этап №5 - EDM и Саунд-дизайн](etap5-cover.png)
+
 # Этап №5 — EDM и Саунд-дизайн
 
 Электронная музыка — это **искусство создания звука с нуля**. От синусоиды до дропа, от сэмплирования до модульного синтеза — в этом этапе вы освоите мир EDM-продакшна и саунд-дизайна.
