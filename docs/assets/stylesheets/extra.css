@@ -350,13 +350,10 @@
 }
 
 /* Text span — strikethrough when checked */
-.md-typeset .task-list-item:has(input[type="checkbox"]:checked) {
-  opacity: 0.5 !important;
-}
-
 .md-typeset .task-list-item:has(input[type="checkbox"]:checked) .task-text {
   text-decoration: line-through !important;
   color: var(--text-secondary) !important;
+  opacity: 0.5;
 }
 
 /* Ordered lists keep numbers */
