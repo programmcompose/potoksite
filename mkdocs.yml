@@ -74,7 +74,6 @@ extra_css:
   - assets/stylesheets/extra.css
   - assets/stylesheets/stage-lock.css
   - assets/stylesheets/progress.css
-  - assets/stylesheets/bookmarks.css
   - assets/stylesheets/etap0-bg.css
   - assets/stylesheets/gamification.css
   - assets/stylesheets/lucide-icons.css
@@ -86,7 +85,6 @@ extra_javascript:
   - assets/javascripts/stage-unlock.js
   - assets/javascripts/scroll-cards.js
   - assets/javascripts/progress.js
-  - assets/javascripts/bookmarks.js
   - assets/javascripts/etap0-bg.js
   - assets/javascripts/gamification.js
   - assets/javascripts/lucide-init.js
