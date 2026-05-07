@@ -76,11 +76,14 @@
           var regex = new RegExp('(^|[^a-zA-Zа-яёА-ЯЁ0-9])' + escapeRegex(term) + '([^a-zA-Zа-яёА-ЯЁ0-9]|$)', 'gi');
 
           if (regex.test(text)) {
+            var replaced = false;
+            var result = text.replace(regex, function(match, p1, p2) {
+              var inner = match.replace(/^([^a-zA-Zа-яёА-ЯЁ0-9])|([^a-zA-Zа-яёА-ЯЁ0-9])$/g, '');
+              p1 += '<span class="glossary-term" data-term="' + entry.term + '">' + inner + '</span>';
+              return p1 + p2;
+            });
             var span = document.createElement('span');
-            span.className = 'glossary-term';
-            span.setAttribute('data-term', entry.term);
-            span.innerHTML = text.replace(regex, '$1<span class="glossary-match">' + entry.term + '</span>$2');
-
+            span.innerHTML = result;
             textNode.parentNode.replaceChild(span, textNode);
             break;
           }
