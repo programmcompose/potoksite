@@ -1014,6 +1014,35 @@ html {
   background-color: #1F2937 !important;
 }
 
+[data-md-color-scheme="slate"] .mermaid .edgeLabel {
+  color: #F9FAFB !important;
+  background-color: #1F2937 !important;
+  padding: 2px 6px !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid .edgeLabel label {
+  color: #F9FAFB !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid svg .rect {
+  fill: #1F2937 !important;
+  stroke: #9CA3AF !important;
+  stroke-width: 2px !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid svg .label {
+  color: #F9FAFB !important;
+  fill: #F9FAFB !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid svg .node rect,
+[data-md-color-scheme="slate"] .mermaid svg .node > rect,
+[data-md-color-scheme="slate"] .mermaid svg .cluster rect {
+  fill: #1E2A3A !important;
+  stroke: #9CA3AF !important;
+  stroke-width: 2px !important;
+}
+
 /* Light theme */
 [data-md-color-scheme="default"] .mermaid {
   background: rgba(239, 234, 205, 0.8) !important;
