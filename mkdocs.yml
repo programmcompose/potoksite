@@ -89,6 +89,7 @@ extra_javascript:
   - assets/javascripts/bookmarks.js
   - assets/javascripts/etap0-bg.js
   - assets/javascripts/gamification.js
+  - assets/javascripts/bridge.js
   - assets/javascripts/lucide-init.js
   - assets/javascripts/tasklist-persist.js
   - assets/javascripts/tasklist-strikethrough.js
