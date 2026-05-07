@@ -988,16 +988,30 @@ html {
   stroke-width: 2px !important;
 }
 
-[data-md-color-scheme="slate"] .mermaid svg text {
-  fill: #F9FAFB !important;
+[data-md-color-scheme="slate"] .mermaid svg text,
+[data-md-color-scheme="slate"] .mermaid svg .nodeLabel,
+[data-md-color-scheme="slate"] .mermaid svg .edgeLabel,
+[data-md-color-scheme="slate"] .mermaid svg label,
+[data-md-color-scheme="slate"] .mermaid svg .cluster label {
+  fill: #E5E7EB !important;
+  color: #E5E7EB !important;
 }
 
 [data-md-color-scheme="slate"] .mermaid svg .edgePath,
 [data-md-color-scheme="slate"] .mermaid svg .arrowheadPath,
 [data-md-color-scheme="slate"] .mermaid svg .markerPath,
 [data-md-color-scheme="slate"] .mermaid svg path {
-  stroke: #6B7280 !important;
-  fill: #6B7280 !important;
+  stroke: #9CA3AF !important;
+  fill: none !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid svg .arrowhead {
+  fill: #9CA3AF !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid svg .edgeLabel {
+  fill: #F9FAFB !important;
+  background-color: #1F2937 !important;
 }
 
 /* Light theme */

@@ -55,7 +55,7 @@ plugins:
   - glightbox
   - mermaid2:
       arguments:
-        theme: neutral
+        theme: light
   - graph:
       name: "title"
       debug: true
