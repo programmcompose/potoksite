@@ -1717,3 +1717,87 @@ html {
     font-size: 1.1rem;
   }
 }
+
+/* ========================================
+ FIX: Mermaid v9+ Dark Theme
+ ======================================== */
+
+/* Dark theme - flowchart nodes */
+[data-md-color-scheme="slate"] .mermaid .node rect,
+[data-md-color-scheme="slate"] .mermaid .node circle,
+[data-md-color-scheme="slate"] .mermaid .node polygon,
+[data-md-color-scheme="slate"] .mermaid .node path {
+ fill: #1F2937 !important;
+ stroke: #9CA3AF !important;
+ stroke-width: 2px !important;
+}
+
+/* Dark theme - node text MUST be white */
+[data-md-color-scheme="slate"] .mermaid .node text,
+[data-md-color-scheme="slate"] .mermaid .node .label,
+[data-md-color-scheme="slate"] .mermaid .nodeLabel text,
+[data-md-color-scheme="slate"] .mermaid .edgeLabel text,
+[data-md-color-scheme="slate"] .mermaid .label {
+ fill: #FFFFFF !important;
+ color: #FFFFFF !important;
+ font-weight: 500 !important;
+}
+
+/* Dark theme - edge labels */
+[data-md-color-scheme="slate"] .mermaid .edgeLabel {
+ fill: #FFFFFF !important;
+ color: #FFFFFF !important;
+ background-color: #1F2937 !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid .edgeLabel .label {
+ fill: #FFFFFF !important;
+ color: #FFFFFF !important;
+ background-color: transparent !important;
+}
+
+/* Dark theme - arrows and lines */
+[data-md-color-scheme="slate"] .mermaid .edgePath .path,
+[data-md-color-scheme="slate"] .mermaid .arrowheadPath,
+[data-md-color-scheme="slate"] .mermaid .markerPath,
+[data-md-color-scheme="slate"] .mermaid line,
+[data-md-color-scheme="slate"] .mermaid path {
+ stroke: #9CA3AF !important;
+ fill: none !important;
+}
+
+/* Dark theme - arrowheads */
+[data-md-color-scheme="slate"] .mermaid .arrowhead {
+ fill: #9CA3AF !important;
+ stroke: #9CA3AF !important;
+}
+
+/* Dark theme - clusters */
+[data-md-color-scheme="slate"] .mermaid .cluster rect,
+[data-md-color-scheme="slate"] .mermaid .cluster path {
+ fill: #111827 !important;
+ stroke: #6B7280 !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid .cluster text {
+ fill: #FFFFFF !important;
+}
+
+/* Light theme fixes */
+[data-md-color-scheme="default"] .mermaid .node rect,
+[data-md-color-scheme="default"] .mermaid .node circle,
+[data-md-color-scheme="default"] .mermaid .node polygon {
+ fill: #FDFBDF !important;
+ stroke: #C8C090 !important;
+}
+
+[data-md-color-scheme="default"] .mermaid .node text,
+[data-md-color-scheme="default"] .mermaid .label {
+ fill: #282828 !important;
+ color: #282828 !important;
+}
+
+[data-md-color-scheme="default"] .mermaid .edgePath .path,
+[data-md-color-scheme="default"] .mermaid path {
+ stroke: #5a5a5a !important;
+}
