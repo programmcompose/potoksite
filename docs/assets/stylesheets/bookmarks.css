@@ -1,0 +1,352 @@
+/* ========================================
+   Bookmarks — Стили закладок
+   ======================================== */
+
+/* ---------- FAB (floating action button) ---------- */
+.potok-bookmark-fab {
+  position: fixed;
+  top: 6rem;
+  right: 1.5rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background-color: var(--accent-orange);
+  color: #fff;
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.25s ease, transform 0.25s ease, background-color 0.2s ease, box-shadow 0.2s ease;
+  pointer-events: none;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 8px rgba(242, 153, 74, 0.25);
+  padding: 0;
+  margin: 0;
+}
+
+.potok-bookmark-fab.show {
+  opacity: 0.9;
+  transform: translateY(0);
+  pointer-events: auto;
+}
+
+.potok-bookmark-fab:hover {
+  opacity: 1;
+  background-color: var(--accent-orange-hover);
+  box-shadow: 0 4px 16px rgba(242, 153, 74, 0.35);
+}
+
+.potok-bookmark-fab:active {
+  transform: scale(0.92);
+}
+
+.potok-bookmark-fab:focus-visible {
+  outline: 2px solid var(--accent-orange);
+  outline-offset: 2px;
+}
+
+.potok-bookmark-fab svg {
+  width: 20px;
+  height: 20px;
+  pointer-events: none;
+}
+
+/* ---------- Sidebar widget ---------- */
+.potok-bookmarks-widget {
+  margin: 0.5rem 0.8rem 0.6rem;
+  padding: 0.8rem 0.6rem;
+  border-radius: 12px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.8rem;
+  line-height: 1.4;
+  animation: potok-bookmarks-fade-in 0.4s ease both;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.potok-bookmarks-widget__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.potok-bookmarks-widget__title {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 700;
+  font-size: 0.78rem;
+  color: var(--text-heading);
+  letter-spacing: 0.02em;
+}
+
+.potok-bookmark-widget-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--accent-orange);
+  stroke-width: 2;
+}
+
+.potok-bookmarks-widget__count {
+  font-weight: 600;
+  font-size: 0.75rem;
+  color: var(--accent-orange);
+  font-variant-numeric: tabular-nums;
+  background-color: rgba(242, 153, 74, 0.1);
+  padding: 0.1rem 0.45rem;
+  border-radius: 6px;
+}
+
+/* ---------- Bookmarks list ---------- */
+.potok-bookmarks-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.potok-bookmark-item {
+  margin: 0.2rem 0;
+  animation: potok-bookmarks-item-fade-in 0.3s ease both;
+}
+
+.potok-bookmark-item:nth-child(1) { animation-delay: 0.02s; }
+.potok-bookmark-item:nth-child(2) { animation-delay: 0.04s; }
+.potok-bookmark-item:nth-child(3) { animation-delay: 0.06s; }
+.potok-bookmark-item:nth-child(4) { animation-delay: 0.08s; }
+.potok-bookmark-item:nth-child(5) { animation-delay: 0.1s; }
+.potok-bookmark-item:nth-child(6) { animation-delay: 0.12s; }
+.potok-bookmark-item:nth-child(7) { animation-delay: 0.14s; }
+.potok-bookmark-item:nth-child(8) { animation-delay: 0.16s; }
+.potok-bookmark-item:nth-child(9) { animation-delay: 0.18s; }
+.potok-bookmark-item:nth-child(10) { animation-delay: 0.2s; }
+
+.potok-bookmark-item__link {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.4rem;
+  border-radius: 6px;
+  color: var(--text-main);
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-decoration: none;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  width: 100%;
+  text-align: left;
+}
+
+.potok-bookmark-item__link:hover {
+  background-color: var(--bg-hover);
+  color: var(--text-heading);
+}
+
+.potok-bookmark-item__icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  color: var(--accent-orange);
+  stroke-width: 2;
+}
+
+.potok-bookmark-item__url {
+  display: block;
+  font-size: 0.68rem;
+  color: var(--text-secondary);
+  padding: 0 0.4rem 0.15rem;
+  text-decoration: none;
+  font-family: 'JetBrains Mono', 'Consolas', monospace;
+  transition: color 0.2s ease;
+}
+
+.potok-bookmark-item__url:hover {
+  color: var(--accent-orange);
+}
+
+.potok-bookmark-item__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  padding: 0;
+}
+
+.potok-bookmark-item__remove:hover {
+  background-color: rgba(239, 83, 80, 0.12);
+  color: #ef5350;
+}
+
+.potok-bookmark-item__remove:focus-visible {
+  outline: 2px solid var(--accent-orange);
+  outline-offset: 1px;
+}
+
+.potok-bookmark-item__remove-icon {
+  width: 14px;
+  height: 14px;
+  stroke-width: 2;
+}
+
+/* ---------- Empty state ---------- */
+.potok-bookmark-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 1.2rem 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.78rem;
+  font-style: italic;
+}
+
+.potok-bookmark-empty-icon {
+  width: 28px;
+  height: 28px;
+  opacity: 0.35;
+  color: var(--accent-orange);
+  stroke-width: 1.5;
+}
+
+/* ---------- Clear all button ---------- */
+.potok-bookmarks-clear {
+  display: block;
+  width: 100%;
+  margin-top: 0.5rem;
+  padding: 0.35rem 0.6rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+  text-align: center;
+}
+
+.potok-bookmarks-clear:hover {
+  background-color: rgba(239, 83, 80, 0.08);
+  color: #ef5350;
+  border-color: rgba(239, 83, 80, 0.25);
+}
+
+.potok-bookmarks-clear:focus-visible {
+  outline: 2px solid var(--accent-orange);
+  outline-offset: 1px;
+}
+
+/* ---------- Animations ---------- */
+@keyframes potok-bookmarks-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes potok-bookmarks-item-fade-in {
+  from {
+    opacity: 0;
+    transform: translateX(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ---------- Toast ---------- */
+.potok-bookmark-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  background-color: var(--accent-orange);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 600;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 100;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  box-shadow: 0 4px 16px rgba(242, 153, 74, 0.25);
+}
+
+.potok-bookmark-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ---------- Responsive ---------- */
+@media screen and (max-width: 59.9375em) {
+  .potok-bookmark-fab {
+    top: 5rem;
+    right: 1rem;
+    width: 36px;
+    height: 36px;
+  }
+
+  .potok-bookmark-fab svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .potok-bookmarks-widget {
+    margin: 0.3rem 0.5rem 0.4rem;
+    padding: 0.6rem 0.5rem;
+  }
+
+  .potok-bookmarks-widget__title {
+    font-size: 0.74rem;
+  }
+
+  .potok-bookmarks-widget__count {
+    font-size: 0.7rem;
+  }
+
+  .potok-bookmarks-list {
+    max-height: 240px;
+  }
+
+  .potok-bookmark-item__link {
+    font-size: 0.74rem;
+    padding: 0.3rem 0.35rem;
+  }
+
+  .potok-bookmark-item__url {
+    font-size: 0.64rem;
+  }
+}
+
+@media screen and (max-width: 36em) {
+  .potok-bookmark-fab {
+    top: 4.5rem;
+    right: 0.75rem;
+    width: 34px;
+    height: 34px;
+  }
+
+  .potok-bookmarks-widget {
+    margin: 0.2rem 0.4rem 0.3rem;
+    padding: 0.5rem 0.4rem;
+  }
+}
