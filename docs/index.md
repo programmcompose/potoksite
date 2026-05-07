@@ -20,6 +20,28 @@
   <span><strong>Рекомендуется использовать этот сайт на компьютере.</strong> Интерактивные инструменты, таблицы и навигация оптимизированы для десктопного просмотра.</span>
 </div>
 
+<div class="quest-hero-card">
+<div class="quest-hero-card__inner">
+<div class="quest-hero-card__icon">
+<i data-lucide="sword" class="quest-hero-icon"></i>
+</div>
+<div class="quest-hero-card__content">
+<h3 class="quest-hero-card__title">IY Quest — Геймифицированный курс</h3>
+<p class="quest-hero-card__desc">100 заданий, 10 этапов, XP и достижения. Проходи страницы курса — прогресс обновляется автоматически!</p>
+<div class="quest-hero-card__tags">
+<span class="quest-tag">100 заданий</span>
+<span class="quest-tag">XP система</span>
+<span class="quest-tag">Достижения</span>
+<span class="quest-tag">Авто-прогресс</span>
+</div>
+<a class="quest-hero-card__btn" href="tools/iy-quest/index.html">
+<i data-lucide="play" class="quest-hero-icon-sm"></i>
+Начать квест
+</a>
+</div>
+</div>
+</div>
+
 ## <i data-lucide="library" class="heading-icon"></i> Структура курса
 
 ### Этап 0 — [Подготовка](etap0/index.md)
