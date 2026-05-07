@@ -15,6 +15,7 @@
   ];
 
   var seqCols = 16;
+  var seqRowsHeight = 180;
   var seqBottomPad = 60;
   var seqLeftPad = 60;
   var seqRightPad = 30;
@@ -113,10 +114,10 @@
       lastStepTime = now;
     }
 
-    // Sequencer area
-    var seqAreaTop = h * 0.50;
+    // Sequencer area — bottom of page
     var seqAreaBottom = h - seqBottomPad;
-    var seqAreaHeight = seqAreaBottom - seqAreaTop;
+    var seqAreaHeight = seqRowsHeight;
+    var seqAreaTop = seqAreaBottom - seqAreaHeight;
     var seqAreaLeft = seqLeftPad;
     var seqAreaRight = w - seqRightPad;
     var seqAreaWidth = seqAreaRight - seqAreaLeft;
