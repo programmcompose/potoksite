@@ -1035,12 +1035,23 @@ html {
   fill: #F9FAFB !important;
 }
 
+/* Dark theme - Mermaid flowchart nodes */
 [data-md-color-scheme="slate"] .mermaid svg .node rect,
 [data-md-color-scheme="slate"] .mermaid svg .node > rect,
 [data-md-color-scheme="slate"] .mermaid svg .cluster rect {
-  fill: #1E2A3A !important;
+  fill: #1F2937 !important;
   stroke: #9CA3AF !important;
   stroke-width: 2px !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid svg .node text,
+[data-md-color-scheme="slate"] .mermaid svg .nodeLabel,
+[data-md-color-scheme="slate"] .mermaid svg .edgeLabel,
+[data-md-color-scheme="slate"] .mermaid svg label,
+[data-md-color-scheme="slate"] .mermaid svg .cluster label {
+  fill: #FFFFFF !important;
+  color: #FFFFFF !important;
+  font-weight: 500 !important;
 }
 
 /* Light theme */
