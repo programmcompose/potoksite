@@ -32,7 +32,15 @@
     });
 
     window.addEventListener('scroll', function () {
-      if (canvas) canvas.style.opacity = window.scrollY > 80 ? '0.05' : '0.2';
+      if (!canvas) return;
+      var scroll = window.scrollY;
+      if (scroll < 50) {
+        canvas.style.opacity = '0.2';
+      } else if (scroll < 300) {
+        canvas.style.opacity = String(0.2 - (scroll - 50) / 250 * 0.18);
+      } else {
+        canvas.style.opacity = '0.01';
+      }
     }, { passive: true });
   }
 
