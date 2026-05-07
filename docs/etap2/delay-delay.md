@@ -42,6 +42,14 @@ Delay создаёт повторения (эхо) исходного сигна
 !!! tip "Delay vs Reverb"
     Delay даёт чёткость + пространство. Reverb даёт «облако» + глубину. Часто лучше использовать delay вместо reverb — микс остаётся прозрачнее.
 
+## Примеры плагинов
+
+| Плагин | Тип | Характер |
+|---|---|---|
+| **Soundtoys EchoBoy** | Analog delay | БBD, ленточный и цифровой режимы — тёплые повторы с окрасом |
+| **Waves H-Delay** | Hybrid delay | Цифровая точность + аналоговый характер, ping-pong, встроенный EQ |
+| **Eventide Eclipse** | Multi-algorithm delay | 6 алгоритмов от slapback до granular delay — психоделические повторы и самогенерация |
+
 ---
 
 **← [Назад: Reverb / Реверберация](reverb-reverberatsiya.md)** | **[Далее: Chorus / Хорус →](chorus-chorus.md)**
