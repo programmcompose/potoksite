@@ -78,6 +78,7 @@ extra_css:
   - assets/stylesheets/gamification.css
   - assets/stylesheets/lucide-icons.css
   - assets/stylesheets/glossary-tooltip.css
+  - assets/stylesheets/graph-override.css
 
 extra_javascript:
   - https://unpkg.com/lucide@latest
@@ -94,6 +95,7 @@ extra_javascript:
   - assets/javascripts/tasklist-strikethrough.js
   - assets/javascripts/search-ctrlk.js
   - assets/javascripts/glossary-tooltip.js
+  - assets/javascripts/graph-override.js
 
 hooks:
   - hooks/clean_graph_names.py
