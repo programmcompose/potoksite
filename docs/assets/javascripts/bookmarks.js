@@ -116,7 +116,6 @@
 
     document.body.appendChild(fabEl);
     updateFABState();
-    fabEl.classList.add('show');
   }
 
   function updateFABState() {
