@@ -75,6 +75,7 @@ extra_css:
   - assets/stylesheets/stage-lock.css
   - assets/stylesheets/progress.css
   - assets/stylesheets/etap0-bg.css
+  - assets/stylesheets/etap1-bg.css
   - assets/stylesheets/gamification.css
   - assets/stylesheets/lucide-icons.css
   - assets/stylesheets/glossary-tooltip.css
@@ -87,6 +88,7 @@ extra_javascript:
   - assets/javascripts/scroll-cards.js
   - assets/javascripts/progress.js
   - assets/javascripts/etap0-bg.js
+  - assets/javascripts/etap1-bg.js
   - assets/javascripts/gamification.js
   - assets/javascripts/bridge.js
   - assets/javascripts/bookmarks.js
