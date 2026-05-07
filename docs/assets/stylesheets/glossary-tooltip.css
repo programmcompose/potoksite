@@ -42,51 +42,28 @@
 
 /* Term name */
 .glossary-tooltip__term {
-  font-size: 0.95em;
+  font-size: 1.2em;
   font-weight: 700;
   color: var(--accent-orange);
-  margin-bottom: 6px;
+  margin-bottom: 8px;
   display: flex;
   align-items: center;
   gap: 6px;
 }
 
 .glossary-tooltip__term i {
-  width: 14px;
-  height: 14px;
+  width: 16px;
+  height: 16px;
   fill: var(--accent-orange);
   flex-shrink: 0;
 }
 
 /* Definition text */
 .glossary-tooltip__def {
-  font-size: 0.82em;
-  line-height: 1.55;
+  font-size: 1.05em;
+  line-height: 1.6;
   color: var(--text-main);
   margin-bottom: 10px;
-}
-
-/* Link to dictionary */
-.glossary-tooltip__link {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 0.78em;
-  font-weight: 600;
-  color: var(--accent-orange);
-  text-decoration: none;
-  padding: 3px 0;
-  transition: color 0.15s ease;
-}
-
-.glossary-tooltip__link:hover {
-  color: var(--accent-orange-hover);
-}
-
-.glossary-tooltip__link i {
-  width: 12px;
-  height: 12px;
-  fill: var(--accent-orange);
 }
 
 /* Dark theme overrides */
@@ -103,14 +80,6 @@
   fill: #FFB74D;
 }
 
-[data-md-color-scheme="slate"] .glossary-tooltip__link {
-  color: #FFB74D;
-}
-
-[data-md-color-scheme="slate"] .glossary-tooltip__link i {
-  fill: #FFB74D;
-}
-
 /* Light theme overrides */
 [data-md-color-scheme="default"] .glossary-tooltip__card {
   background: #f5f2d0;
@@ -122,14 +91,6 @@
 }
 
 [data-md-color-scheme="default"] .glossary-tooltip__term i {
-  fill: #E08A3E;
-}
-
-[data-md-color-scheme="default"] .glossary-tooltip__link {
-  color: #E08A3E;
-}
-
-[data-md-color-scheme="default"] .glossary-tooltip__link i {
   fill: #E08A3E;
 }
 

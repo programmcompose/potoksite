@@ -5,7 +5,8 @@
   var debounceTimer = null;
 
   function loadGlossary() {
-    return fetch('/potoksite/glossary.json')
+    var baseUrl = '/potoksite';
+    return fetch(baseUrl + '/glossary.json')
       .then(function(r) { return r.json(); })
       .then(function(data) {
         glossaryData = data;
@@ -106,24 +107,12 @@
   function showTooltip(entry, targetEl, x, y) {
     if (!tooltipEl) createTooltip();
 
-    var linkHtml = '';
-    if (entry.link) {
-      linkHtml = '<a href="' + entry.link + '" class="glossary-tooltip__link">' +
-        '<i data-lucide="book-open"></i> ' + (entry.link_text || 'Читать в словаре') +
-        '</a>';
-    } else if (entry.slug) {
-      linkHtml = '<a href="/potoksite/glossary.md#' + entry.slug + '" class="glossary-tooltip__link">' +
-        '<i data-lucide="book-open"></i> Читать в словаре' +
-        '</a>';
-    }
-
     tooltipEl.innerHTML =
       '<div class="glossary-tooltip__card">' +
         '<div class="glossary-tooltip__term">' +
           '<i data-lucide="book-a"></i> ' + entry.term +
         '</div>' +
         '<div class="glossary-tooltip__def">' + entry.definition + '</div>' +
-        linkHtml +
       '</div>';
 
     // Position tooltip
