@@ -53,8 +53,8 @@
 | Duplicate | **Ctrl+Shift+D** |
 | Slice audio | **Ctrl+T** |
 | Consolidate | **Ctrl+J** |
-| Maximize device | **Tab** |
-| Arrangement/Session | **Ctrl+Tab** |
+| Warp клип | **Ctrl+J** |
+| Session/Arrangement | **Tab** |
 | Global loop | **L** |
 
 ## Паттерны в голове
