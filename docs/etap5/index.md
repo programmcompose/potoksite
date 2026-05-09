@@ -1,3 +1,5 @@
+# Этап №5 — EDM и Саунд-дизайн
+
 <div class="hero-section etap5">
 <h1>Этап №5</h1>
 <p class="hero-subtitle">

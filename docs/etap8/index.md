@@ -1,3 +1,5 @@
+# Этап №8 — Саундтреки и Эмбиент
+
 <div class="hero-section etap8">
 <h1>Этап №8</h1>
 <p class="hero-subtitle">

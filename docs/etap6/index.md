@@ -1,3 +1,5 @@
+# Этап №6 — Живая Музыка
+
 <div class="hero-section etap6">
 <h1>Этап №6</h1>
 <p class="hero-subtitle">

@@ -1,3 +1,5 @@
+# Этап №9 — Продвижение и Заработок
+
 <div class="hero-section etap9">
 <h1>Этап №9</h1>
 <p class="hero-subtitle">

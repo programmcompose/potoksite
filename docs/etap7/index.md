@@ -1,3 +1,5 @@
+# Этап №7 — Сведение Вокала и Мастеринг
+
 <div class="hero-section etap7">
 <h1>Этап №7</h1>
 <p class="hero-subtitle">
