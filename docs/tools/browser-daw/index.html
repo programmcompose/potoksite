@@ -1200,21 +1200,22 @@ header p {
 
   function buildMidiBlob(bpm, drumEvents, synthEvents) {
     const tpb = 480; // ticks per beat
-    const noteDur = tpb >> 2; // 16th note = 120 ticks (matches DAW playback)
+    const stepTicks = tpb >> 2; // each step = 16th note = 120 ticks (matches DAW: 60/bpm/4)
+    const noteDur = stepTicks;
 
     // Collect all MIDI events as { tick, data: Uint8Array }
     const evts = [];
 
     drumEvents.forEach(({ step, note }) => {
-      evts.push({ tick: step * tpb, data: new Uint8Array([0x99, note, 0x40]) });  // note-on ch10
-      evts.push({ tick: step * tpb + noteDur, data: new Uint8Array([0x89, note, 0x00]) }); // note-off ch10
+      evts.push({ tick: step * stepTicks, data: new Uint8Array([0x99, note, 0x40]) });
+      evts.push({ tick: step * stepTicks + noteDur, data: new Uint8Array([0x89, note, 0x00]) });
     });
 
     synthEvents.forEach(({ step, note, channel }) => {
       const midiNote = noteToMidiNum(note);
       const ch = channel & 0x0F;
-      evts.push({ tick: step * tpb, data: new Uint8Array([0x90 | ch, midiNote, 0x40]) });
-      evts.push({ tick: step * tpb + noteDur, data: new Uint8Array([0x80 | ch, midiNote, 0x00]) });
+      evts.push({ tick: step * stepTicks, data: new Uint8Array([0x90 | ch, midiNote, 0x40]) });
+      evts.push({ tick: step * stepTicks + noteDur, data: new Uint8Array([0x80 | ch, midiNote, 0x00]) });
     });
 
     // Sort by tick (stable: note-on before note-off at same tick)
