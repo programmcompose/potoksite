@@ -1245,12 +1245,12 @@ header p {
 
     events.sort((a, b) => a.tick - b.tick);
 
-    function writeTrackChunk(evts, includeTempo) {
+    function writeTrackChunk(evts, isFirstTrack) {
       const arr = [];
       let lastTick = 0;
 
-      // Tempo meta-event (0xFF 0x51) at tick 0
-      if (includeTempo) {
+      // Tempo meta-event (0xFF 0x51) — write in the first track
+      if (isFirstTrack) {
         const tempoMicro = Math.round(60000000 / bpm);
         writeVarLen(arr, 0);
         arr.push(0xFF, 0x51, 0x03);
@@ -1261,7 +1261,7 @@ header p {
         writeVarLen(arr, evt.tick - lastTick);
         lastTick = evt.tick;
         const status = evt.type === 'on' ? 0x90 : 0x80;
-        arr.push((status << 4) | (evt.channel & 0x0F));
+        arr.push(status | (evt.channel & 0x0F));
         arr.push(evt.note);
         arr.push(evt.type === 'on' ? 64 : 0);
       });
@@ -1285,8 +1285,9 @@ header p {
     ]);
 
     const parts = [header];
-    if (drumEvts.length) parts.push(writeTrackChunk(drumEvts, true));
-    if (synthEvts.length) parts.push(writeTrackChunk(synthEvts, false));
+    let firstTrack = true;
+    if (drumEvts.length) { parts.push(writeTrackChunk(drumEvts, firstTrack)); firstTrack = false; }
+    if (synthEvts.length) { parts.push(writeTrackChunk(synthEvts, firstTrack)); firstTrack = false; }
 
     // Update track count in header
     parts[0][11] = parts.length - 1; // subtract header from track count
