@@ -3,13 +3,7 @@
 <p class="hero-subtitle">
 Подготовка к музыкальному продакшну — выбор DAW, оборудование, настройка и организация рабочего процесса.
 </p>
-<div class="hero-tags">
-<span class="hero-tag"><i data-lucide="monitor" class="icon"></i> DAW</span>
-<span class="hero-tag"><i data-lucide="headphones" class="icon"></i> Оборудование</span>
-<span class="hero-tag"><i data-lucide="settings" class="icon"></i> Настройка</span>
-<span class="hero-tag"><i data-lucide="laptop" class="icon"></i> Оптимизация</span>
-<span class="hero-tag"><i data-lucide="folder-tree" class="icon"></i> Организация</span>
-</div>
+
 </div>
 
 Перед началом создания музыки нужно выбрать DAW, настроить оборудование и рабочее место.
