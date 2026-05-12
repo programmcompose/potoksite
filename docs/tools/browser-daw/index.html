@@ -767,11 +767,26 @@ header p {
     }).connect(masterGain);
     drumPlayers.kick.triggerAttackRelease('C1', '8n');
 
-    drumPlayers.snare = new Tone.NoiseSynth({
+    // Snare = Membrane (body/thwack) + Noise (snap) через mid-boost фильтр
+    const snareFilter = new Tone.Filter(2000, 'bandpass', 1.8).connect(masterGain);
+    const snareBody = new Tone.MembraneSynth({
+      pitchDecay: 0.02,
+      octaves: 3,
+      envelope: { attack: 0.001, decay: 0.12, sustain: 0, release: 0.04 },
+      harmonics: [1, 3, 0.5]
+    }).connect(snareFilter);
+    const snareNoise = new Tone.NoiseSynth({
       noise: { type: 'white' },
-      envelope: { attack: 0.001, decay: 0.15, sustain: 0, release: 0.05 }
-    }).connect(masterGain);
-    drumPlayers.snare.volume.value = -6;
+      envelope: { attack: 0.001, decay: 0.18, sustain: 0, release: 0.06 }
+    }).connect(snareFilter);
+    snareBody.volume.value = -2;
+    snareNoise.volume.value = -8;
+    drumPlayers.snare = {
+      triggerAttackRelease: (d) => {
+        snareBody.triggerAttackRelease('F2', d);
+        snareNoise.triggerAttackRelease(d);
+      }
+    };
 
     drumPlayers['hh-closed'] = new Tone.MetalSynth({
       frequency: 800,
