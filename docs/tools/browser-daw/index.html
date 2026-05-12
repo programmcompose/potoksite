@@ -1276,21 +1276,13 @@ header p {
       return new Uint8Array(chunk);
     }
 
-    const drumEvts = events.filter(e => e.channel === 9);
-    const synthEvts = events.filter(e => e.channel !== 9);
-
+    // Format 0 = single-track file; all channels coexist in one track
     const header = new Uint8Array([
       0x4D, 0x54, 0x68, 0x64, 0x00, 0x00, 0x00, 0x06,
-      0x00, 0x01, 0x00, 0x00, 0x01, 0xE0
+      0x00, 0x00, 0x00, 0x01, 0x01, 0xE0
     ]);
 
-    const parts = [header];
-    let firstTrack = true;
-    if (drumEvts.length) { parts.push(writeTrackChunk(drumEvts, firstTrack)); firstTrack = false; }
-    if (synthEvts.length) { parts.push(writeTrackChunk(synthEvts, firstTrack)); firstTrack = false; }
-
-    // Update track count in header
-    parts[0][11] = parts.length - 1; // subtract header from track count
+    const parts = [header, writeTrackChunk(events, true)];
 
     const blob = new Blob(parts, { type: 'audio/midi' });
     const url = URL.createObjectURL(blob);
