@@ -652,7 +652,8 @@ header p {
 
     <div class="transport-group">
       <button class="toggle-btn active" id="loopBtn">Loop</button>
-      <button class="toggle-btn" id="exportMidiBtn" title="Export MIDI">Export MIDI</button>
+      <button class="toggle-btn" id="exportDrumsBtn" title="Export MIDI (Drums)">Export Drums MIDI</button>
+      <button class="toggle-btn" id="exportSynthBtn" title="Export MIDI (Melody + Bass)">Export Melody+Bass MIDI</button>
     </div>
 
     <button class="theme-toggle" id="themeToggle" title="Тема">
@@ -1155,9 +1156,8 @@ header p {
     if (Tone.Transport) Tone.Transport.bpm.value = bpm;
   });
 
-  document.getElementById('exportMidiBtn').addEventListener('click', () => {
-    exportMidi();
-  });
+  document.getElementById('exportDrumsBtn').addEventListener('click', () => { exportDrumsMidi(); });
+  document.getElementById('exportSynthBtn').addEventListener('click', () => { exportSynthMidi(); });
 
   document.getElementById('loopBtn').addEventListener('click', (e) => {
     e.target.classList.toggle('active');
@@ -1275,11 +1275,9 @@ header p {
     return new Blob([buf], { type: 'audio/midi' });
   }
 
-  function exportMidi() {
+  function exportDrumsMidi() {
     try {
       const bpm = parseInt(document.getElementById('bpmSlider').value) || 120;
-
-      // Gather drum events
       const drumEvents = [];
       DRUM_TRACKS.forEach(track => {
         const drumNote = { kick: 38, snare: 39, 'hh-closed': 42, 'hh-open': 46 }[track.id] ?? 38;
@@ -1287,8 +1285,14 @@ header p {
           if (active) drumEvents.push({ step, note: drumNote });
         });
       });
+      const blob = buildMidiBlob(bpm, drumEvents, []);
+      downloadMidiBlob(blob, 'drums.mid');
+    } catch (err) { console.error('[MIDI Export Drums] Error:', err); }
+  }
 
-      // Gather synth events
+  function exportSynthMidi() {
+    try {
+      const bpm = parseInt(document.getElementById('bpmSlider').value) || 120;
       const synthEvents = [];
       SYNTH_TRACKS.forEach(track => {
         pianoRollData[track.id].forEach(key => {
@@ -1296,20 +1300,20 @@ header p {
           synthEvents.push({ step: parseInt(s), note, channel: track.id === 'bass' ? 1 : 5 });
         });
       });
+      const blob = buildMidiBlob(bpm, [], synthEvents);
+      downloadMidiBlob(blob, 'melody-bass.mid');
+    } catch (err) { console.error('[MIDI Export Synth] Error:', err); }
+  }
 
-      const blob = buildMidiBlob(bpm, drumEvents, synthEvents);
-
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = 'pattern.mid';
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
-      URL.revokeObjectURL(url);
-    } catch (err) {
-      console.error('[MIDI Export] Error:', err);
-    }
+  function downloadMidiBlob(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
   }
 
   // --- Init ---
