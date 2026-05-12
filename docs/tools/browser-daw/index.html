@@ -1265,8 +1265,8 @@ header p {
     v.setUint16(off, tpb); off += 2;         // ticks/beat
 
     // MTrk
-    v.setUint8(off++, 0x54); v.setUint8(off++, 0x72);
-    v.setUint8(off++, 0x63); v.setUint8(off++, 0x6B);
+    v.setUint8(off++, 0x4D); v.setUint8(off++, 0x54);
+    v.setUint8(off++, 0x72); v.setUint8(off++, 0x6B);
     v.setUint32(off, trackArr.length); off += 4;
 
     new Uint8Array(buf, off, trackArr.length).set(trackArr);
