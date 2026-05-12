@@ -746,7 +746,6 @@ header p {
   let trackGains = {};
   let trackPans = {};
   let masterGain;
-
   let playheadInterval = null;
 
   async function initAudio() {
@@ -1246,9 +1245,18 @@ header p {
 
     events.sort((a, b) => a.tick - b.tick);
 
-    function writeTrackChunk(evts) {
+    function writeTrackChunk(evts, includeTempo) {
       const arr = [];
       let lastTick = 0;
+
+      // Tempo meta-event (0xFF 0x51) at tick 0
+      if (includeTempo) {
+        const tempoMicro = Math.round(60000000 / bpm);
+        writeVarLen(arr, 0);
+        arr.push(0xFF, 0x51, 0x03);
+        arr.push((tempoMicro >> 16) & 0xFF, (tempoMicro >> 8) & 0xFF, tempoMicro & 0xFF);
+      }
+
       evts.forEach(evt => {
         writeVarLen(arr, evt.tick - lastTick);
         lastTick = evt.tick;
@@ -1268,16 +1276,22 @@ header p {
       return new Uint8Array(chunk);
     }
 
-    const drumTrack = writeTrackChunk(events.filter(e => e.channel === 9));
-    const synthTrack = writeTrackChunk(events.filter(e => e.channel !== 9));
+    const drumEvts = events.filter(e => e.channel === 9);
+    const synthEvts = events.filter(e => e.channel !== 9);
 
     const header = new Uint8Array([
       0x4D, 0x54, 0x68, 0x64, 0x00, 0x00, 0x00, 0x06,
-      0x00, 0x01, 0x00, 0x02, 0x01, 0xE0
+      0x00, 0x01, 0x00, 0x00, 0x01, 0xE0
     ]);
 
-    const totalLen = header.length + drumTrack.length + synthTrack.length;
-    const blob = new Blob([header, drumTrack, synthTrack], { type: 'audio/midi' });
+    const parts = [header];
+    if (drumEvts.length) parts.push(writeTrackChunk(drumEvts, true));
+    if (synthEvts.length) parts.push(writeTrackChunk(synthEvts, false));
+
+    // Update track count in header
+    parts[0][11] = parts.length - 1; // subtract header from track count
+
+    const blob = new Blob(parts, { type: 'audio/midi' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
