@@ -1200,7 +1200,7 @@ header p {
 
   function buildMidiBlob(bpm, drumEvents, synthEvents) {
     const tpb = 480; // ticks per beat
-    const noteDur = tpb; // each step = 1 quarter note
+    const noteDur = tpb >> 2; // 16th note = 120 ticks (matches DAW playback)
 
     // Collect all MIDI events as { tick, data: Uint8Array }
     const evts = [];
