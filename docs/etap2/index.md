@@ -5,13 +5,7 @@
 <p class="hero-subtitle">
 Освойте основы сведения: EQ, компрессия, реверберация, делэй, сатурация и другие VST-плагины для профессионального микса.
 </p>
-<div class="hero-tags">
-<span class="hero-tag"><i data-lucide="sliders-horizontal" class="icon"></i> EQ</span>
-<span class="hero-tag"><i data-lucide="trending-down" class="icon"></i> Компрессия</span>
-<span class="hero-tag"><i data-lucide="flame" class="icon"></i> Сатурация</span>
-<span class="hero-tag"><i data-lucide="waves" class="icon"></i> Reverb</span>
-<span class="hero-tag"><i data-lucide="repeat" class="icon"></i> Delay</span>
-</div>
+
 </div>
 
 Добро пожаловать во второй этап! Здесь вы освоите все основные VST-плагины и научитесь сводить треки до профессионального уровня.

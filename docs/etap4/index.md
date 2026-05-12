@@ -5,13 +5,7 @@
 <p class="hero-subtitle">
 Фундамент музыкального образования: ноты, интервалы, тональности, аккорды, ритмика и импровизация.
 </p>
-<div class="hero-tags">
-<span class="hero-tag"><i data-lucide="music" class="icon"></i> Ноты</span>
-<span class="hero-tag"><i data-lucide="ruler" class="icon"></i> Интервалы</span>
-<span class="hero-tag"><i data-lucide="music-4" class="icon"></i> Аккорды</span>
-<span class="hero-tag"><i data-lucide="drumstick" class="icon"></i> Ритмика</span>
-<span class="hero-tag"><i data-lucide="mic-vocal" class="icon"></i> Импровизация</span>
-</div>
+
 </div>
 
 Четвёртый этап закладывает теоретическую базу для создания музыки. Вы изучите ноты, интервалы, аккорды, тональности и научитесь применять теорию на практике.

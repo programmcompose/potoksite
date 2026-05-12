@@ -5,13 +5,7 @@
 <p class="hero-subtitle">
 Кино- и игровой саунд-дизайн — создание оркестровых и атмосферных треков для визуального контента.
 </p>
-<div class="hero-tags">
-<span class="hero-tag"><i data-lucide="book-open" class="icon"></i> Kontakt</span>
-<span class="hero-tag"><i data-lucide="music" class="icon"></i> Оркестровка</span>
-<span class="hero-tag"><i data-lucide="film" class="icon"></i> Саундтрек</span>
-<span class="hero-tag"><i data-lucide="cloud-fog" class="icon"></i> Эмбиент</span>
-<span class="hero-tag"><i data-lucide="settings" class="icon"></i> Видеоряд</span>
-</div>
+
 </div>
 
 # Этап №8 — Саундтреки и Эмбиент

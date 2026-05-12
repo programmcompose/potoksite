@@ -5,13 +5,7 @@
 <p class="hero-subtitle">
 Выходите за рамки простых битов: мелодии, чопы, усложнённая драмка, жанровые стили и спидран-фишки.
 </p>
-<div class="hero-tags">
-<span class="hero-tag"><i data-lucide="music-2" class="icon"></i> Мелодии</span>
-<span class="hero-tag"><i data-lucide="piano" class="icon"></i> VST Синтезаторы</span>
-<span class="hero-tag"><i data-lucide="scissors" class="icon"></i> Chop</span>
-<span class="hero-tag"><i data-lucide="drumstick" class="icon"></i> Драмка</span>
-<span class="hero-tag"><i data-lucide="zap" class="icon"></i> Спидран</span>
-</div>
+
 </div>
 
 Третий этап — переход от простых битов к сложным композициям. Вы научитесь создавать мелодии, работать с VST-синтезаторами, чопить сэмплы и усложнять драмку.

@@ -5,13 +5,7 @@
 <p class="hero-subtitle">
 Напишите свой первый бит с нуля — от подбора сэмплов до рендера готового трека.
 </p>
-<div class="hero-tags">
-<span class="hero-tag"><i data-lucide="music" class="icon"></i> Сэмпл</span>
-<span class="hero-tag"><i data-lucide="activity" class="icon"></i> Драмка</span>
-<span class="hero-tag"><i data-lucide="sliders-vertical" class="icon"></i> Микшер</span>
-<span class="hero-tag"><i data-lucide="waveform" class="icon"></i> 808 Bass</span>
-<span class="hero-tag"><i data-lucide="download" class="icon"></i> Рендер</span>
-</div>
+
 </div>
 
 Добро пожаловать в первый практический этап! Здесь вы напишете свой первый бит с нуля — от подбора сэмплов до рендера готового трека.

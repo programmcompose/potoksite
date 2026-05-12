@@ -5,13 +5,7 @@
 <p class="hero-subtitle">
 Вы освоили битмейкинг и сведение. Теперь пришло время выйти за рамки электроники и освоить живые инструменты.
 </p>
-<div class="hero-tags">
-<span class="hero-tag"><i data-lucide="guitar" class="icon"></i> Рок</span>
-<span class="hero-tag"><i data-lucide="heart-crack" class="icon"></i> Пост-Панк</span>
-<span class="hero-tag"><i data-lucide="clouds-rain" class="icon"></i> Гранж</span>
-<span class="hero-tag"><i data-lucide="hand" class="icon"></i> Метал</span>
-<span class="hero-tag"><i data-lucide="horn" class="icon"></i> Джаз</span>
-</div>
+
 </div>
 
 # Этап №6 — Живая Музыка
