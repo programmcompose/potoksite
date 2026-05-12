@@ -1190,107 +1190,125 @@ header p {
     if (e.target === document.getElementById('audioOverlay')) initAudio();
   });
 
-  // --- MIDI Export ---
-  function noteToMidi(note) {
+  // --- MIDI Export (clean rewrite with ArrayBuffer) ---
+  function noteToMidiNum(note) {
     const notes = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
     const match = note.match(/^([A-G]#?)(\d)$/);
     if (!match) return 60;
-    const name = match[1];
-    const octave = parseInt(match[2]);
-    return (octave + 1) * 12 + notes.indexOf(name);
+    return (parseInt(match[2]) + 1) * 12 + notes.indexOf(match[1]);
   }
 
-  function writeVarLen(arr, value) {
-    let bytes = [];
-    let v = value;
-    bytes.push(v & 0x7F);
-    v >>= 7;
-    while (v > 0) {
-      bytes.push((v & 0x7F) | 0x80);
-      v >>= 7;
+  function buildMidiBlob(bpm, drumEvents, synthEvents) {
+    const tpb = 480; // ticks per beat
+    const noteDur = tpb; // each step = 1 quarter note
+
+    // Collect all MIDI events as { tick, data: Uint8Array }
+    const evts = [];
+
+    drumEvents.forEach(({ step, note }) => {
+      evts.push({ tick: step * tpb, data: new Uint8Array([0x99, note, 0x40]) });  // note-on ch10
+      evts.push({ tick: step * tpb + noteDur, data: new Uint8Array([0x89, note, 0x00]) }); // note-off ch10
+    });
+
+    synthEvents.forEach(({ step, note, channel }) => {
+      const midiNote = noteToMidiNum(note);
+      const ch = channel & 0x0F;
+      evts.push({ tick: step * tpb, data: new Uint8Array([0x90 | ch, midiNote, 0x40]) });
+      evts.push({ tick: step * tpb + noteDur, data: new Uint8Array([0x80 | ch, midiNote, 0x00]) });
+    });
+
+    // Sort by tick (stable: note-on before note-off at same tick)
+    evts.sort((a, b) => a.tick - b.tick);
+
+    console.log('[MIDI Export] BPM:', bpm, 'Drum events:', drumEvents.length, 'Synth events:', synthEvents.length, 'Total MIDI events:', evts.length);
+
+    // --- Build track data ---
+    const trackBytes = [];
+    const wvl = (v) => {
+      let b = v & 0x7F;
+      let tmp = v >> 7;
+      while (tmp > 0) { trackBytes.push(b | 0x80); b = tmp & 0x7F; tmp >>= 7; }
+      trackBytes.push(b);
+    };
+
+    let lastTick = 0;
+
+    // Tempo meta-event
+    wvl(0);
+    const tempo = Math.round(60000000 / bpm);
+    trackBytes.push(0xFF, 0x51, 0x03, (tempo >> 16) & 0xFF, (tempo >> 8) & 0xFF, tempo & 0xFF);
+
+    // Note events
+    for (const e of evts) {
+      wvl(e.tick - lastTick);
+      lastTick = e.tick;
+      trackBytes.push(...e.data);
     }
-    for (let i = bytes.length - 1; i >= 0; i--) arr.push(bytes[i]);
+
+    // End of track
+    wvl(0);
+    trackBytes.push(0xFF, 0x2F, 0x00);
+
+    // --- Assemble file: header + MTrk chunk ---
+    const trackArr = new Uint8Array(trackBytes);
+    const totalLen = 14 /* header */ + 8 /* MTrk id+len */ + trackArr.length;
+    const buf = new ArrayBuffer(totalLen);
+    const v = new DataView(buf);
+    let off = 0;
+
+    // MThd
+    v.setUint8(off++, 0x4D); v.setUint8(off++, 0x54);
+    v.setUint8(off++, 0x68); v.setUint8(off++, 0x64);
+    v.setUint32(off, 6); off += 4;           // chunk size
+    v.setUint16(off, 0); off += 2;           // format 0
+    v.setUint16(off, 1); off += 2;           // 1 track
+    v.setUint16(off, tpb); off += 2;         // ticks/beat
+
+    // MTrk
+    v.setUint8(off++, 0x54); v.setUint8(off++, 0x72);
+    v.setUint8(off++, 0x63); v.setUint8(off++, 0x6B);
+    v.setUint32(off, trackArr.length); off += 4;
+
+    new Uint8Array(buf, off, trackArr.length).set(trackArr);
+
+    return new Blob([buf], { type: 'audio/midi' });
   }
 
   function exportMidi() {
-    const ticksPerBeat = 480;
-    const bpm = parseInt(document.getElementById('bpmSlider').value);
-    const events = [];
-    const noteLen = ticksPerBeat / 4;
+    try {
+      const bpm = parseInt(document.getElementById('bpmSlider').value) || 120;
 
-    // Drum events
-    DRUM_TRACKS.forEach(track => {
-      stepGrid[track.id].forEach((active, step) => {
-        if (!active) return;
-        let drumNote = 38;
-        if (track.id === 'snare') drumNote = 39;
-        else if (track.id === 'hh-closed') drumNote = 42;
-        else if (track.id === 'hh-open') drumNote = 46;
-        events.push({ tick: step * ticksPerBeat, type: 'on', note: drumNote, channel: 9 });
-        events.push({ tick: step * ticksPerBeat + noteLen, type: 'off', note: drumNote, channel: 9 });
+      // Gather drum events
+      const drumEvents = [];
+      DRUM_TRACKS.forEach(track => {
+        const drumNote = { kick: 38, snare: 39, 'hh-closed': 42, 'hh-open': 46 }[track.id] ?? 38;
+        stepGrid[track.id].forEach((active, step) => {
+          if (active) drumEvents.push({ step, note: drumNote });
+        });
       });
-    });
 
-    // Synth events
-    SYNTH_TRACKS.forEach(track => {
-      pianoRollData[track.id].forEach(key => {
-        const [s, note] = key.split('-');
-        const step = parseInt(s);
-        const midiNote = noteToMidi(note);
-        const ch = track.id === 'bass' ? 1 : 5;
-        events.push({ tick: step * ticksPerBeat, type: 'on', note: midiNote, channel: ch });
-        events.push({ tick: step * ticksPerBeat + noteLen, type: 'off', note: midiNote, channel: ch });
+      // Gather synth events
+      const synthEvents = [];
+      SYNTH_TRACKS.forEach(track => {
+        pianoRollData[track.id].forEach(key => {
+          const [s, note] = key.split('-');
+          synthEvents.push({ step: parseInt(s), note, channel: track.id === 'bass' ? 1 : 5 });
+        });
       });
-    });
 
-    events.sort((a, b) => a.tick - b.tick);
+      const blob = buildMidiBlob(bpm, drumEvents, synthEvents);
 
-    function writeTrackChunk(evts, isFirstTrack) {
-      const arr = [];
-      let lastTick = 0;
-
-      // Tempo meta-event (0xFF 0x51) — write in the first track
-      if (isFirstTrack) {
-        const tempoMicro = Math.round(60000000 / bpm);
-        writeVarLen(arr, 0);
-        arr.push(0xFF, 0x51, 0x03);
-        arr.push((tempoMicro >> 16) & 0xFF, (tempoMicro >> 8) & 0xFF, tempoMicro & 0xFF);
-      }
-
-      evts.forEach(evt => {
-        writeVarLen(arr, evt.tick - lastTick);
-        lastTick = evt.tick;
-        const status = evt.type === 'on' ? 0x90 : 0x80;
-        arr.push(status | (evt.channel & 0x0F));
-        arr.push(evt.note);
-        arr.push(evt.type === 'on' ? 64 : 0);
-      });
-      writeVarLen(arr, 0);
-      arr.push(0xFF, 0x2F, 0x00);
-
-      const chunk = [];
-      chunk.push(0x54, 0x72, 0x63, 0x6B);
-      const len = arr.length;
-      chunk.push((len >> 24) & 0xFF, (len >> 16) & 0xFF, (len >> 8) & 0xFF, len & 0xFF);
-      chunk.push(...arr);
-      return new Uint8Array(chunk);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'pattern.mid';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('[MIDI Export] Error:', err);
     }
-
-    // Format 0 = single-track file; all channels coexist in one track
-    const header = new Uint8Array([
-      0x4D, 0x54, 0x68, 0x64, 0x00, 0x00, 0x00, 0x06,
-      0x00, 0x00, 0x00, 0x01, 0x01, 0xE0
-    ]);
-
-    const parts = [header, writeTrackChunk(events, true)];
-
-    const blob = new Blob(parts, { type: 'audio/midi' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'pattern.mid';
-    a.click();
-    URL.revokeObjectURL(url);
   }
 
   // --- Init ---
