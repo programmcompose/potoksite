@@ -781,11 +781,11 @@ header p {
     }).connect(snareFilter);
     snareBody.volume.value = -2;
     snareNoise.volume.value = -8;
+    // drumPlayers.snare должен быть Tone-совместимым (disconnect/connect для re-route)
     drumPlayers.snare = {
-      triggerAttackRelease: (d) => {
-        snareBody.triggerAttackRelease('F2', d);
-        snareNoise.triggerAttackRelease(d);
-      }
+      disconnect: () => { snareBody.disconnect(); snareNoise.disconnect(); },
+      connect: (dest) => { snareBody.connect(dest); snareNoise.connect(dest); },
+      triggerAttackRelease: (d) => { snareBody.triggerAttackRelease('F2', d); snareNoise.triggerAttackRelease(d); }
     };
 
     drumPlayers['hh-closed'] = new Tone.MetalSynth({
