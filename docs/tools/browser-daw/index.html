@@ -651,8 +651,8 @@ header p {
     </div>
 
     <div class="transport-group">
-      <button class="toggle-btn" id="metroBtn">Metro</button>
       <button class="toggle-btn active" id="loopBtn">Loop</button>
+      <button class="toggle-btn" id="exportMidiBtn" title="Export MIDI">Export MIDI</button>
     </div>
 
     <button class="theme-toggle" id="themeToggle" title="Тема">
@@ -715,7 +715,7 @@ header p {
   const ALL_TRACKS = [...DRUM_TRACKS, ...SYNTH_TRACKS];
 
   // Piano roll note definitions
-  const BASS_NOTES = ['C4', 'B3', 'A3', 'G3', 'F3', 'E3', 'D3', 'C3'];
+  const BASS_NOTES = ['C4', 'B3', 'A3', 'G3', 'F3', 'E3', 'D3', 'C3', 'B2', 'A2', 'G2', 'F2', 'E2', 'D2', 'C2'];
   const MELODY_NOTES = ['C6', 'B5', 'A5', 'G5', 'F5', 'E5', 'D5', 'C5', 'B4', 'A4', 'G4', 'F4', 'E4', 'D4', 'C4'];
 
   // --- State ---
@@ -746,7 +746,7 @@ header p {
   let trackGains = {};
   let trackPans = {};
   let masterGain;
-  let metroSynth;
+
   let playheadInterval = null;
 
   async function initAudio() {
@@ -756,16 +756,7 @@ header p {
     // Master gain
     masterGain = new Tone.Gain(1).toDestination();
 
-    // Metronome
-    metroSynth = new Tone.MetalSynth({
-      frequency: 200,
-      envelope: { attack: 0.001, decay: 0.05, release: 0.01 },
-      harmonicity: 5.1,
-      modulationIndex: 32,
-      resonance: 4000,
-      octaves: 1.5,
-    }).connect(masterGain);
-    metroSynth.volume.value = -15;
+
 
     // Drum players (using Tone.js synthesis for now — samples will be loaded when available)
     drumPlayers.kick = new Tone.MembraneSynth({
@@ -885,10 +876,7 @@ header p {
     function playStep(step) {
       currentStep = step;
 
-      // Metro on beat 1
-      if (document.getElementById('metroBtn').classList.contains('active') && step % 4 === 0) {
-        metroSynth.triggerAttackRelease('32n', Tone.now());
-      }
+
 
       // Play drum sounds
       DRUM_TRACKS.forEach(t => {
@@ -1097,7 +1085,7 @@ header p {
     ch.innerHTML = `
       <span class="mixer-channel-name">${name}</span>
       <span class="mixer-label">Vol</span>
-      <input type="range" class="mixer-fader" min="-24" max="6" step="0.5" value="0" data-mix-id="${id}" data-param="volume">
+      <input type="range" class="mixer-fader" min="-60" max="6" step="0.5" value="0" data-mix-id="${id}" data-param="volume">
       <span class="mixer-label">Pan</span>
       <input type="range" class="mixer-pan" min="-100" max="100" step="1" value="0" data-mix-id="${id}" data-param="pan">
       ${!isMaster ? `<button class="mixer-mute" data-mix-id="${id}">M</button>` : ''}
@@ -1168,8 +1156,8 @@ header p {
     if (Tone.Transport) Tone.Transport.bpm.value = bpm;
   });
 
-  document.getElementById('metroBtn').addEventListener('click', (e) => {
-    e.target.classList.toggle('active');
+  document.getElementById('exportMidiBtn').addEventListener('click', () => {
+    exportMidi();
   });
 
   document.getElementById('loopBtn').addEventListener('click', (e) => {
@@ -1202,6 +1190,101 @@ header p {
   document.getElementById('audioOverlay').addEventListener('click', (e) => {
     if (e.target === document.getElementById('audioOverlay')) initAudio();
   });
+
+  // --- MIDI Export ---
+  function noteToMidi(note) {
+    const notes = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+    const match = note.match(/^([A-G]#?)(\d)$/);
+    if (!match) return 60;
+    const name = match[1];
+    const octave = parseInt(match[2]);
+    return (octave + 1) * 12 + notes.indexOf(name);
+  }
+
+  function writeVarLen(arr, value) {
+    let bytes = [];
+    let v = value;
+    bytes.push(v & 0x7F);
+    v >>= 7;
+    while (v > 0) {
+      bytes.push((v & 0x7F) | 0x80);
+      v >>= 7;
+    }
+    for (let i = bytes.length - 1; i >= 0; i--) arr.push(bytes[i]);
+  }
+
+  function exportMidi() {
+    const ticksPerBeat = 480;
+    const bpm = parseInt(document.getElementById('bpmSlider').value);
+    const events = [];
+    const noteLen = ticksPerBeat / 4;
+
+    // Drum events
+    DRUM_TRACKS.forEach(track => {
+      stepGrid[track.id].forEach((active, step) => {
+        if (!active) return;
+        let drumNote = 38;
+        if (track.id === 'snare') drumNote = 39;
+        else if (track.id === 'hh-closed') drumNote = 42;
+        else if (track.id === 'hh-open') drumNote = 46;
+        events.push({ tick: step * ticksPerBeat, type: 'on', note: drumNote, channel: 9 });
+        events.push({ tick: step * ticksPerBeat + noteLen, type: 'off', note: drumNote, channel: 9 });
+      });
+    });
+
+    // Synth events
+    SYNTH_TRACKS.forEach(track => {
+      pianoRollData[track.id].forEach(key => {
+        const [s, note] = key.split('-');
+        const step = parseInt(s);
+        const midiNote = noteToMidi(note);
+        const ch = track.id === 'bass' ? 1 : 5;
+        events.push({ tick: step * ticksPerBeat, type: 'on', note: midiNote, channel: ch });
+        events.push({ tick: step * ticksPerBeat + noteLen, type: 'off', note: midiNote, channel: ch });
+      });
+    });
+
+    events.sort((a, b) => a.tick - b.tick);
+
+    function writeTrackChunk(evts) {
+      const arr = [];
+      let lastTick = 0;
+      evts.forEach(evt => {
+        writeVarLen(arr, evt.tick - lastTick);
+        lastTick = evt.tick;
+        const status = evt.type === 'on' ? 0x90 : 0x80;
+        arr.push((status << 4) | (evt.channel & 0x0F));
+        arr.push(evt.note);
+        arr.push(evt.type === 'on' ? 64 : 0);
+      });
+      writeVarLen(arr, 0);
+      arr.push(0xFF, 0x2F, 0x00);
+
+      const chunk = [];
+      chunk.push(0x54, 0x72, 0x63, 0x6B);
+      const len = arr.length;
+      chunk.push((len >> 24) & 0xFF, (len >> 16) & 0xFF, (len >> 8) & 0xFF, len & 0xFF);
+      chunk.push(...arr);
+      return new Uint8Array(chunk);
+    }
+
+    const drumTrack = writeTrackChunk(events.filter(e => e.channel === 9));
+    const synthTrack = writeTrackChunk(events.filter(e => e.channel !== 9));
+
+    const header = new Uint8Array([
+      0x4D, 0x54, 0x68, 0x64, 0x00, 0x00, 0x00, 0x06,
+      0x00, 0x01, 0x00, 0x02, 0x01, 0xE0
+    ]);
+
+    const totalLen = header.length + drumTrack.length + synthTrack.length;
+    const blob = new Blob([header, drumTrack, synthTrack], { type: 'audio/midi' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'pattern.mid';
+    a.click();
+    URL.revokeObjectURL(url);
+  }
 
   // --- Init ---
   buildTrackLanes();
