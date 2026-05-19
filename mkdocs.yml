@@ -73,7 +73,7 @@ extra:
 extra_css:
   - assets/stylesheets/extra.css
   - assets/stylesheets/stage-lock.css
-  - assets/stylesheets/progress.css
+
   - assets/stylesheets/etap0-bg.css
   - assets/stylesheets/etap1-bg.css
   - assets/stylesheets/gamification.css
@@ -86,7 +86,7 @@ extra_javascript:
   - assets/javascripts/back-to-top.js
   - assets/javascripts/stage-unlock.js
   - assets/javascripts/scroll-cards.js
-  - assets/javascripts/progress.js
+
   - assets/javascripts/etap0-bg.js
   - assets/javascripts/etap1-bg.js
   - assets/javascripts/gamification.js
