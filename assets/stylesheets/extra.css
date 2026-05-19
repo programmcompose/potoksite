@@ -1,0 +1,1803 @@
+/* ========================================
+   Design Tokens — Music Production Course
+   ======================================== */
+
+/* ---------- Dark theme tokens ---------- */
+[data-md-color-scheme="slate"] {
+  /* --- Backgrounds --- */
+  --bg-main: #0B1220;
+  --bg-sidebar: #0F172A;
+  --bg-card: #111827;
+  --bg-hover: #1F2937;
+
+  /* --- Text --- */
+  --text-main: #E5E7EB;
+  --text-secondary: #9CA3AF;
+  --text-heading: #F9FAFB;
+
+  /* --- Accents --- */
+  --accent-orange: #F2994A;
+  --accent-orange-hover: #FFB26B;
+  --accent-blue: #3B82F6;
+  --accent-blue-hover: #60A5FA;
+
+  /* --- Borders --- */
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.1);
+
+  /* --- Map to MkDocs variables --- */
+  --md-default-bg-color: var(--bg-main);
+  --md-default-bg-color--light: var(--bg-sidebar);
+  --md-default-bg-color--lighter: var(--bg-card);
+  --md-primary-fg-color: var(--bg-sidebar);
+  --md-primary-fg-color--dark: var(--bg-card);
+  --md-accent-fg-color: var(--accent-blue);
+  --md-typeset-color: var(--text-main);
+
+  /* MkDocs internal color derivations */
+  --md-default-fg-color: var(--text-main);
+  --md-default-fg-color--light: var(--text-secondary);
+  --md-default-fg-color--lighter: var(--text-secondary);
+  --md-default-fg-color--lightest: var(--border-subtle);
+  --md-code-fg-color: #0d1117;
+}
+
+/* ---------- Light theme tokens ---------- */
+[data-md-color-scheme="default"] {
+  --bg-main: #FDFBDF;
+  --bg-sidebar: #f5f2d0;
+  --bg-card: #efeacd;
+  --bg-hover: #e5e0c0;
+
+  --text-main: #282828;
+  --text-secondary: #5a5a5a;
+  --text-heading: #1a1a1a;
+
+  --accent-orange: #E08A3E;
+  --accent-orange-hover: #F2994A;
+  --accent-blue: #2563EB;
+  --accent-blue-hover: #3B82F6;
+
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-default: rgba(0, 0, 0, 0.12);
+
+  --md-default-bg-color: var(--bg-main);
+  --md-default-bg-color--light: var(--bg-sidebar);
+  --md-default-bg-color--lighter: var(--bg-card);
+  --md-primary-fg-color: var(--bg-sidebar);
+  --md-primary-fg-color--dark: var(--bg-card);
+  --md-accent-fg-color: var(--accent-blue);
+  --md-typeset-color: var(--text-main);
+
+  --md-default-fg-color: var(--text-main);
+  --md-default-fg-color--light: var(--text-secondary);
+  --md-default-fg-color--lighter: var(--text-secondary);
+  --md-default-fg-color--lightest: var(--border-subtle);
+  --md-code-fg-color: #0d1117;
+}
+
+/* ========================================
+   Load fonts
+   ======================================== */
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&display=swap');
+
+/* ========================================
+   Global layer background
+   ======================================== */
+
+/* Main content area — deep dark with subtle gradient */
+[data-md-color-scheme="slate"] .md-main {
+  background: radial-gradient(ellipse at 20% 0%, #111827 0%, #0B1220 60%);
+}
+
+/* Sidebar background */
+[data-md-color-scheme="slate"] .md-sidebar--primary {
+  background-color: var(--bg-sidebar);
+  border-right: 1px solid var(--border-subtle);
+}
+
+/* ========================================
+   Logo
+   ======================================== */
+.md-logo {
+  filter: drop-shadow(0 0 6px rgba(242, 153, 74, 0.4))
+          drop-shadow(0 0 14px rgba(242, 153, 74, 0.2));
+  transition: filter 0.3s ease;
+}
+
+.md-logo:hover {
+  filter: drop-shadow(0 0 10px rgba(242, 153, 74, 0.7))
+          drop-shadow(0 0 24px rgba(242, 153, 74, 0.35));
+}
+
+/* ========================================
+   Typography
+   ======================================== */
+
+/* Headings */
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3,
+.md-typeset h4,
+.md-typeset h5,
+.md-typeset h6 {
+  color: var(--text-heading);
+}
+
+[data-md-color-scheme="default"] .md-typeset h1,
+[data-md-color-scheme="default"] .md-typeset h2,
+[data-md-color-scheme="default"] .md-typeset h3,
+[data-md-color-scheme="default"] .md-typeset h4 {
+  color: var(--text-heading);
+}
+
+/* Body text */
+.md-typeset,
+.md-content {
+  color: var(--text-main);
+}
+
+/* Secondary text elements */
+.md-typeset small,
+.md-typeset .admonition p:last-child {
+  color: var(--text-secondary);
+}
+
+/* Thicker headings */
+.md-typeset h1,
+.md-typeset h2,
+.md-typeset h3 {
+  font-weight: 800;
+}
+
+.md-typeset h1 {
+  font-weight: 900;
+}
+
+/* Heading content — lighter weight */
+.md-typeset h1 + ul,
+.md-typeset h1 + ul li,
+.md-typeset h2 + ul,
+.md-typeset h2 + ul li,
+.md-typeset h3 + ul,
+.md-typeset h3 + ul li {
+  font-weight: 400;
+}
+
+/* ========================================
+   Links — blue for interactive UI
+   ======================================== */
+.md-typeset a {
+  color: var(--accent-blue);
+  transition: color 0.2s ease;
+}
+
+.md-typeset a:hover {
+  color: var(--accent-blue-hover);
+}
+
+/* ========================================
+   Sidebar navigation
+   ======================================== */
+
+/* Default nav link */
+.md-nav__link {
+  color: var(--text-secondary);
+  transition: color 0.2s ease, background-color 0.2s ease;
+}
+
+/* Hover */
+.md-nav__link:hover {
+  color: var(--text-main);
+}
+
+/* Nav item hover background */
+.md-nav__item > .md-nav__link:hover {
+  background-color: var(--bg-hover);
+}
+
+/* Active nav link */
+.md-nav__link--active,
+.md-nav__item--active > .md-nav__link,
+.md-nav__item--active > .md-nav__link:hover {
+  color: #FFFFFF !important;
+  font-weight: 700;
+  background-color: var(--bg-hover);
+  border-left: 3px solid var(--accent-orange);
+  padding-left: calc(var(--md-nav-item-spacing, 0.6rem) - 3px);
+}
+
+/* Active nav link — right sidebar (TOC) */
+.md-nav__title--active,
+.md-nav__title--active:hover {
+  color: var(--accent-orange) !important;
+  font-weight: 700;
+}
+
+/* Section headers in nav */
+.md-nav__item--section > .md-nav__link {
+  font-weight: 600;
+}
+
+/* ========================================
+   Cards — content sections
+   ======================================== */
+
+/* Grid card containers */
+.grid.cards {
+  gap: 1.5rem;
+}
+
+/* Individual card styling */
+.grid.cards > .md-typeset__scrollwrap,
+.grid.cards > li {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+.grid.cards > .md-typeset__scrollwrap.scroll-card-visible,
+.grid.cards > li.scroll-card-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Card inner content — dark card look */
+[data-md-color-scheme="slate"] .grid.cards ul li > p,
+[data-md-color-scheme="slate"] .grid.cards li > :first-child {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 24px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+[data-md-color-scheme="slate"] .grid.cards ul li:hover > p,
+[data-md-color-scheme="slate"] .grid.cards li:hover > :first-child {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  border-color: var(--border-default);
+}
+
+/* Light theme cards */
+[data-md-color-scheme="default"] .grid.cards ul li > p,
+[data-md-color-scheme="default"] .grid.cards li > :first-child {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 24px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+[data-md-color-scheme="default"] .grid.cards ul li:hover > p {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .grid.cards > .md-typeset__scrollwrap,
+  .grid.cards > li {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ========================================
+   List styling — custom blue markers
+   ======================================== */
+.md-typeset ul,
+.md-typeset ol {
+  list-style: none;
+  padding-left: 1.2em;
+}
+
+.md-typeset ul li {
+  position: relative;
+  padding-left: 0.8em;
+  margin-bottom: 0.35em;
+}
+
+.md-typeset ul li::before {
+  content: '';
+  position: absolute;
+  left: -1.2em;
+  top: 0.55em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--accent-blue);
+  flex-shrink: 0;
+}
+
+/* Hide custom bullet dots for task-list checkboxes */
+.md-typeset .task-list-item {
+  padding-left: 0.2em;
+}
+
+.md-typeset .task-list-item::before {
+  display: none;
+}
+
+/* Hide Material green indicator */
+.md-typeset .task-list-item .task-list-indicator:before {
+  background-color: var(--accent-orange) !important;
+  -webkit-mask-image: var(--md-tasklist-icon) !important;
+  mask-image: var(--md-tasklist-icon) !important;
+  width: 20px !important;
+  height: 20px !important;
+}
+
+.md-typeset .task-list-item [type="checkbox"]:checked + .task-list-indicator:before {
+  background-color: var(--accent-orange) !important;
+  -webkit-mask-image: var(--md-tasklist-icon--checked) !important;
+  mask-image: var(--md-tasklist-icon--checked) !important;
+}
+
+/* Text span — strikethrough when checked */
+.md-typeset .task-list-item:has(input[type="checkbox"]:checked) .task-text {
+  text-decoration: line-through !important;
+  color: var(--text-secondary) !important;
+  opacity: 0.5;
+}
+
+/* Ordered lists keep numbers */
+.md-typeset ol {
+  padding-left: 1.8em;
+}
+
+.md-typeset ol li {
+  padding-left: 0.4em;
+  margin-bottom: 0.35em;
+}
+
+/* ========================================
+    Code blocks
+    ======================================== */
+.md-typeset code {
+  border-radius: 4px;
+  padding: 0.2em 0.4em;
+}
+
+.md-typeset pre > code {
+  border-radius: 8px;
+}
+
+/* Dark theme — readable code blocks */
+[data-md-color-scheme="slate"] .md-typeset pre > code {
+  background-color: #1e293b !important;
+  color: #FDFBDF !important;
+}
+
+[data-md-color-scheme="slate"] .md-typeset code {
+  background-color: #1e293b !important;
+  color: #FDFBDF !important;
+}
+
+/* ========================================
+   Tables
+   ======================================== */
+.md-typeset table:not([class]) {
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.md-typeset table:not([class]) th {
+  background-color: rgba(59, 130, 246, 0.08);
+  color: var(--text-heading);
+  font-weight: 700;
+}
+
+.md-typeset table:not([class]) td {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* ========================================
+   Admonitions
+   ======================================== */
+.md-typeset .admonition {
+  border-radius: 8px;
+}
+
+/* ========================================
+   Hero section
+   ======================================== */
+.hero-section {
+  text-align: center;
+  padding: 3.5em 2em;
+  margin: 1.5em 0 2em;
+  border-radius: 16px;
+  position: relative;
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at center, rgba(255, 215, 0, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #FFD54F 0%, #FFC107 50%, #FFB300 100%) !important;
+  border: 1px solid rgba(255, 184, 0, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(255, 160, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+
+.hero-section h1 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 2.5em;
+  font-weight: 900;
+  margin: 0 0 0.6em;
+  background: linear-gradient(135deg, #5D4037 0%, #3E2723 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  line-height: 1.2;
+}
+
+.hero-subtitle {
+  font-size: 1.15em;
+  line-height: 1.6;
+  max-width: 640px;
+  margin: 0 auto 1.5em;
+  color: #4e342e;
+}
+
+.hero-tags {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5em;
+  margin-top: 1em;
+}
+
+.hero-tag {
+  display: inline-block;
+  padding: 0.35em 0.9em;
+  border-radius: 20px;
+  font-size: 0.85em;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  color: #4e342e;
+}
+
+/* ========================================
+   Hero section variants
+   ======================================== */
+.hero-section.etap0 {
+  background:
+    radial-gradient(ellipse at center, rgba(180, 180, 180, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #90A4AE 0%, #78909C 50%, #546E7A 100%) !important;
+  border-color: rgba(120, 144, 156, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(84, 110, 122, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
+}
+.hero-section.etap0 h1 {
+  background: linear-gradient(135deg, #37474F 0%, #263238 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.etap0 .hero-subtitle {
+  color: #37474F;
+}
+.hero-section.etap0 .hero-tag {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.45);
+  color: #37474F;
+}
+
+.hero-section.etap1 {
+  background:
+    radial-gradient(ellipse at center, rgba(106, 27, 154, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #9C27B0 0%, #7B1FA2 50%, #4A148C 100%) !important;
+  border-color: rgba(106, 27, 154, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(106, 27, 154, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+.hero-section.etap1 h1 {
+  background: linear-gradient(135deg, #BF360C 0%, #8D2400 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.etap1 .hero-subtitle {
+  color: #BF360C;
+}
+.hero-section.etap1 .hero-tag {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #BF360C;
+}
+
+.hero-section.etap2 {
+  background:
+    radial-gradient(ellipse at center, rgba(33, 150, 243, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #64B5F6 0%, #42A5F5 50%, #1E88E5 100%) !important;
+  border-color: rgba(33, 150, 243, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(33, 150, 243, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+.hero-section.etap2 h1 {
+  background: linear-gradient(135deg, #1565C0 0%, #0D47A1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.etap2 .hero-subtitle {
+  color: #1565C0;
+}
+.hero-section.etap2 .hero-tag {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #1565C0;
+}
+
+.hero-section.etap3 {
+  background:
+    radial-gradient(ellipse at center, rgba(156, 39, 176, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #CE93D8 0%, #AB47BC 50%, #8E24AA 100%) !important;
+  border-color: rgba(156, 39, 176, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(156, 39, 176, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+.hero-section.etap3 h1 {
+  background: linear-gradient(135deg, #6A1B9A 0%, #4A148C 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.etap3 .hero-subtitle {
+  color: #6A1B9A;
+}
+.hero-section.etap3 .hero-tag {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #6A1B9A;
+}
+
+.hero-section.etap4 {
+  background:
+    radial-gradient(ellipse at center, rgba(76, 175, 80, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #81C784 0%, #66BB6A 50%, #43A047 100%) !important;
+  border-color: rgba(76, 175, 80, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(76, 175, 80, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+.hero-section.etap4 h1 {
+  background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.etap4 .hero-subtitle {
+  color: #2E7D32;
+}
+.hero-section.etap4 .hero-tag {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #2E7D32;
+}
+
+.hero-section.etap5 {
+  background:
+    radial-gradient(ellipse at center, rgba(233, 30, 99, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #F06292 0%, #EC407A 50%, #D81B60 100%) !important;
+  border-color: rgba(233, 30, 99, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(233, 30, 99, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+.hero-section.etap5 h1 {
+  background: linear-gradient(135deg, #880E4F 0%, #6A0035 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.etap5 .hero-subtitle {
+  color: #880E4F;
+}
+.hero-section.etap5 .hero-tag {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #880E4F;
+}
+
+.hero-section.etap6 {
+  background:
+    radial-gradient(ellipse at center, rgba(255, 87, 34, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #FFAB91 0%, #FF7043 50%, #F4511E 100%) !important;
+  border-color: rgba(255, 87, 34, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(255, 87, 34, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+.hero-section.etap6 h1 {
+  background: linear-gradient(135deg, #BF360C 0%, #9E2A0B 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.etap6 .hero-subtitle {
+  color: #BF360C;
+}
+.hero-section.etap6 .hero-tag {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #BF360C;
+}
+
+.hero-section.etap7 {
+  background:
+    radial-gradient(ellipse at center, rgba(103, 58, 183, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #B39DDB 0%, #9575CD 50%, #7E57C2 100%) !important;
+  border-color: rgba(103, 58, 183, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(103, 58, 183, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+.hero-section.etap7 h1 {
+  background: linear-gradient(135deg, #4527A0 0%, #311B92 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.etap7 .hero-subtitle {
+  color: #4527A0;
+}
+.hero-section.etap7 .hero-tag {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #4527A0;
+}
+
+.hero-section.etap8 {
+  background:
+    radial-gradient(ellipse at center, rgba(0, 150, 136, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #4DB6AC 0%, #26A69A 50%, #00897B 100%) !important;
+  border-color: rgba(0, 150, 136, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(0, 150, 136, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+.hero-section.etap8 h1 {
+  background: linear-gradient(135deg, #00695C 0%, #004D40 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.etap8 .hero-subtitle {
+  color: #00695C;
+}
+.hero-section.etap8 .hero-tag {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #00695C;
+}
+
+.hero-section.etap9 {
+  background:
+    radial-gradient(ellipse at center, rgba(255, 215, 0, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #FFF176 0%, #FFEE58 50%, #FFD600 100%) !important;
+  border-color: rgba(255, 215, 0, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(255, 215, 0, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+}
+.hero-section.etap9 h1 {
+  background: linear-gradient(135deg, #F57F17 0%, #E65100 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.etap9 .hero-subtitle {
+  color: #F57F17;
+}
+.hero-section.etap9 .hero-tag {
+  background: rgba(255, 255, 255, 0.4);
+  border-color: rgba(255, 255, 255, 0.55);
+  color: #F57F17;
+}
+
+.hero-section.plugins {
+  background:
+    radial-gradient(ellipse at center, rgba(121, 85, 72, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #A1887F 0%, #8D6E63 50%, #6D4C41 100%) !important;
+  border-color: rgba(121, 85, 72, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(109, 76, 65, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
+}
+.hero-section.plugins h1 {
+  background: linear-gradient(135deg, #3E2723 0%, #2C1A16 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.plugins .hero-subtitle {
+  color: #3E2723;
+}
+.hero-section.plugins .hero-tag {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.45);
+  color: #3E2723;
+}
+
+.hero-section.zvuk {
+  background:
+    radial-gradient(ellipse at center, rgba(96, 125, 139, 0.2) 0%, transparent 70%),
+    linear-gradient(135deg, #80CBC0 0%, #5FB8D3 50%, #3A8D9E 100%) !important;
+  border-color: rgba(96, 125, 139, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(58, 141, 158, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.7) !important;
+}
+.hero-section.zvuk h1 {
+  background: linear-gradient(135deg, #1565C0 0%, #0D47A1 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.zvuk .hero-subtitle {
+  color: #1565C0;
+}
+.hero-section.zvuk .hero-tag {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #1565C0;
+}
+
+/* Animated wave decoration */
+.hero-section::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background:
+    radial-gradient(circle at 30% 40%, rgba(255, 215, 0, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(255, 165, 0, 0.1) 0%, transparent 50%);
+  animation: hero-float 20s ease-in-out infinite;
+  pointer-events: none;
+}
+.hero-section.etap0::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(144, 164, 174, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(120, 144, 156, 0.1) 0%, transparent 50%);
+}
+.hero-section.etap1::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(106, 27, 154, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(156, 39, 176, 0.1) 0%, transparent 50%);
+}
+.hero-section.etap2::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(33, 150, 243, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(66, 165, 245, 0.1) 0%, transparent 50%);
+}
+.hero-section.etap3::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(156, 39, 176, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(186, 104, 200, 0.1) 0%, transparent 50%);
+}
+.hero-section.etap4::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(76, 175, 80, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(129, 199, 132, 0.1) 0%, transparent 50%);
+}
+.hero-section.etap5::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(233, 30, 99, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(240, 98, 146, 0.1) 0%, transparent 50%);
+}
+.hero-section.etap6::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(255, 87, 34, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(255, 138, 101, 0.1) 0%, transparent 50%);
+}
+.hero-section.etap7::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(103, 58, 183, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(149, 117, 205, 0.1) 0%, transparent 50%);
+}
+.hero-section.etap8::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(0, 150, 136, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(77, 182, 172, 0.1) 0%, transparent 50%);
+}
+.hero-section.etap9::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(255, 215, 0, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(255, 238, 88, 0.1) 0%, transparent 50%);
+}
+.hero-section.plugins::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(121, 85, 72, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(141, 110, 99, 0.1) 0%, transparent 50%);
+}
+.hero-section.zvuk::before {
+  background:
+    radial-gradient(circle at 30% 40%, rgba(96, 125, 139, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 70% 60%, rgba(128, 203, 192, 0.1) 0%, transparent 50%);
+}
+
+@keyframes hero-float {
+  0%, 100% { transform: translate(0, 0) rotate(0deg); }
+  33% { transform: translate(10px, -10px) rotate(1deg); }
+  66% { transform: translate(-10px, 10px) rotate(-1deg); }
+}
+
+/* ========================================
+   Smooth scrolling (no theme transitions)
+   ======================================== */
+html {
+  scroll-behavior: smooth;
+}
+
+/* ========================================
+   Light theme — dark gray text and icons
+   ======================================== */
+[data-md-color-scheme="default"] .md-header__title .md-ellipsis {
+  color: #3a3a3a;
+}
+
+[data-md-color-scheme="default"] .md-logo {
+  color: #3a3a3a;
+}
+
+[data-md-color-scheme="default"] .md-logo svg {
+  fill: #3a3a3a;
+}
+
+[data-md-color-scheme="default"] .md-header__button {
+  color: #3a3a3a;
+}
+
+[data-md-color-scheme="default"] .md-icon,
+[data-md-color-scheme="default"] .md-icon--light {
+  color: #3a3a3a;
+  fill: #3a3a3a;
+}
+
+[data-md-color-scheme="default"] .md-nav__link {
+  color: #4a4a4a;
+}
+
+[data-md-color-scheme="default"] .md-search__input::placeholder {
+  color: #7a7a7a;
+}
+
+[data-md-color-scheme="default"] .md-search__input {
+  color: #3a3a3a;
+}
+
+/* ========================================
+   Back to top button — blue
+   ======================================== */
+#iy-back-to-top {
+  position: fixed !important;
+  bottom: 1.5rem !important;
+  right: 1.5rem !important;
+  width: 36px !important;
+  height: 36px !important;
+  border-radius: 50% !important;
+  border: none !important;
+  background-color: var(--accent-blue) !important;
+  color: #fff !important;
+  cursor: pointer !important;
+  opacity: 0 !important;
+  transform: translateY(8px) !important;
+  transition: opacity 0.25s ease, transform 0.25s ease, background-color 0.2s ease !important;
+  pointer-events: none !important;
+  z-index: 20 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#iy-back-to-top svg {
+  width: 20px !important;
+  height: 20px !important;
+  fill: currentColor !important;
+}
+
+#iy-back-to-top.show {
+  opacity: 0.9 !important;
+  transform: translateY(0) !important;
+  pointer-events: auto !important;
+}
+
+#iy-back-to-top:hover {
+  opacity: 1 !important;
+  background-color: var(--accent-blue-hover) !important;
+}
+
+/* ========================================
+   Custom scrollbar
+   ======================================== */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--bg-hover);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
+}
+
+/* ========================================
+   Header
+   ======================================== */
+[data-md-color-scheme="slate"] .md-header {
+  background-color: var(--bg-sidebar);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+/* ========================================
+   Footer
+   ======================================== */
+[data-md-color-scheme="slate"] .md-footer {
+  background-color: var(--bg-sidebar);
+  border-top: 1px solid var(--border-subtle);
+}
+
+[data-md-color-scheme="default"] .md-footer {
+  background-color: var(--bg-card);
+}
+
+/* ========================================
+   Images
+   ======================================== */
+.md-typeset img {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+/* ========================================
+    Mermaid diagrams
+    ======================================== */
+.mermaid {
+  border-radius: 8px;
+  padding: 1em;
+}
+
+/* Dark theme */
+[data-md-color-scheme="slate"] .mermaid {
+  background: rgba(17, 24, 39, 0.95) !important;
+  border: 1px solid var(--border-subtle);
+}
+
+[data-md-color-scheme="slate"] .mermaid svg .node rect,
+[data-md-color-scheme="slate"] .mermaid svg .node > rect,
+[data-md-color-scheme="slate"] .mermaid svg .cluster rect {
+  fill: #1F2937 !important;
+  stroke: #6B7280 !important;
+  stroke-width: 2px !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid svg text,
+[data-md-color-scheme="slate"] .mermaid svg .nodeLabel,
+[data-md-color-scheme="slate"] .mermaid svg .edgeLabel,
+[data-md-color-scheme="slate"] .mermaid svg label,
+[data-md-color-scheme="slate"] .mermaid svg .cluster label {
+  fill: #E5E7EB !important;
+  color: #E5E7EB !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid svg .edgePath,
+[data-md-color-scheme="slate"] .mermaid svg .arrowheadPath,
+[data-md-color-scheme="slate"] .mermaid svg .markerPath,
+[data-md-color-scheme="slate"] .mermaid svg path {
+  stroke: #9CA3AF !important;
+  fill: none !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid svg .arrowhead {
+  fill: #9CA3AF !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid svg .edgeLabel {
+  fill: #F9FAFB !important;
+  background-color: #1F2937 !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid .edgeLabel {
+  color: #F9FAFB !important;
+  background-color: #1F2937 !important;
+  padding: 2px 6px !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid .edgeLabel label {
+  color: #F9FAFB !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid svg .rect {
+  fill: #1F2937 !important;
+  stroke: #9CA3AF !important;
+  stroke-width: 2px !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid svg .label {
+  color: #F9FAFB !important;
+  fill: #F9FAFB !important;
+}
+
+/* Dark theme - Mermaid flowchart nodes */
+[data-md-color-scheme="slate"] .mermaid svg .node rect,
+[data-md-color-scheme="slate"] .mermaid svg .node > rect,
+[data-md-color-scheme="slate"] .mermaid svg .cluster rect {
+  fill: #1F2937 !important;
+  stroke: #9CA3AF !important;
+  stroke-width: 2px !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid svg .node text,
+[data-md-color-scheme="slate"] .mermaid svg .nodeLabel,
+[data-md-color-scheme="slate"] .mermaid svg .edgeLabel,
+[data-md-color-scheme="slate"] .mermaid svg label,
+[data-md-color-scheme="slate"] .mermaid svg .cluster label {
+  fill: #FFFFFF !important;
+  color: #FFFFFF !important;
+  font-weight: 500 !important;
+}
+
+/* Light theme */
+[data-md-color-scheme="default"] .mermaid {
+  background: rgba(239, 234, 205, 0.8) !important;
+}
+
+[data-md-color-scheme="default"] .mermaid svg .node rect,
+[data-md-color-scheme="default"] .mermaid svg .node > rect,
+[data-md-color-scheme="default"] .mermaid svg .cluster rect {
+  fill: #FDFBDF !important;
+  stroke: #C8C090 !important;
+  stroke-width: 2px !important;
+}
+
+/* ========================================
+   Audio players
+   ======================================== */
+.md-typeset audio.audio-player {
+  display: block;
+  width: 100%;
+  max-width: 400px;
+  margin: 0.6em 0;
+  border-radius: 8px;
+  height: 44px;
+}
+
+.md-typeset table audio.audio-player {
+  width: 150px;
+  height: 34px;
+  margin: 2px 0;
+}
+
+/* ========================================
+   Graph plugin overrides
+   ======================================== */
+#graph .link,
+.modal_graph .link {
+  marker-end: none !important;
+  marker-start: none !important;
+}
+
+#graph .nodes .node circle,
+.modal_graph .nodes .node circle {
+  filter: none !important;
+  transition: r 0.2s;
+}
+
+#graph .links .link,
+.modal_graph .links .link {
+  stroke: var(--md-default-fg-color--lighter);
+  stroke-opacity: 0.35;
+}
+
+#graph .nodes .node text,
+.modal_graph .nodes .node text {
+  fill: var(--md-default-fg-color--light);
+  pointer-events: none;
+}
+
+#graph .nodes .node.current text,
+.modal_graph .nodes .node.current text {
+  fill: var(--md-typeset-a-color);
+  font-weight: 700;
+}
+
+/* ========================================
+   Search
+   ======================================== */
+[data-md-color-scheme="slate"] .md-search__form {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+}
+
+[data-md-color-scheme="slate"] .md-search__form:hover {
+  border-color: var(--border-default);
+}
+
+/* ========================================
+   Content area background cards
+   ======================================== */
+[data-md-color-scheme="slate"] .md-content__inner {
+  color: var(--text-main);
+}
+
+/* ========================================
+   Desktop warning banner
+   ======================================== */
+ .desktop-warning {
+   display: flex;
+   align-items: center;
+   gap: 14px;
+   padding: 18px 24px;
+   margin: 28px 0;
+   border-radius: 14px;
+   border: 2px solid;
+   font-size: 1rem;
+   line-height: 1.5;
+}
+
+.desktop-warning .warning-icon {
+   font-size: 1.8rem;
+   flex-shrink: 0;
+}
+
+[data-md-color-scheme="slate"] .desktop-warning {
+   background: rgba(255, 255, 255, 0.04);
+   color: var(--text-main);
+   border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-md-color-scheme="slate"] .desktop-warning strong {
+   color: #F9FAFB;
+}
+
+[data-md-color-scheme="default"] .desktop-warning {
+   background: rgba(0, 0, 0, 0.03);
+   color: var(--text-main);
+   border-color: rgba(0, 0, 0, 0.12);
+}
+
+[data-md-color-scheme="default"] .desktop-warning strong {
+   color: #1F2937;
+}
+
+/* ========================================
+   Mode visual comparison
+   ======================================== */
+.mode-visual {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 1.2em 1.5em;
+  margin: 1.5em 0;
+  font-family: 'Consolas', 'Monaco', monospace;
+  font-size: 0.95em;
+  line-height: 2;
+}
+
+.mode-row {
+  display: flex;
+  align-items: center;
+  gap: 1em;
+  padding: 0.2em 0;
+}
+
+.mode-name {
+  flex: 0 0 140px;
+  font-weight: 600;
+  color: var(--text-heading);
+}
+
+.degrees {
+  font-family: 'Consolas', 'Monaco', monospace;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.degrees .lowered {
+  color: #F87171;
+}
+
+.degrees .raised {
+  color: #60A5FA;
+}
+
+[data-md-color-scheme="default"] .degrees .lowered {
+  color: #DC2626;
+}
+
+[data-md-color-scheme="default"] .degrees .raised {
+  color: #2563EB;
+}
+
+/* ========================================
+   Hero section — dark theme
+   ======================================== */
+[data-md-color-scheme="slate"] .hero-section {
+  border-width: 1px !important;
+  background:
+    radial-gradient(ellipse at center, rgba(255, 87, 34, 0.25) 0%, transparent 70%),
+    linear-gradient(135deg, #1A0A00 0%, #2D1200 30%, #3E1A00 60%, #4A2000 100%) !important;
+  box-shadow:
+    0 4px 24px rgba(255, 87, 34, 0.1),
+    inset 0 1px 0 rgba(255, 87, 34, 0.08) !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section h1 {
+  -webkit-text-fill-color: #E0E0E0 !important;
+  background: none !important;
+}
+
+[data-md-color-scheme="slate"] .hero-subtitle {
+  color: #B0B0B0 !important;
+}
+
+[data-md-color-scheme="slate"] .hero-tag {
+  background: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #B0B0B0 !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.etap0 {
+  background:
+    radial-gradient(ellipse at center, rgba(144, 164, 174, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #37474F 0%, #263238 50%, #1C2A30 100%) !important;
+  border-color: rgba(90, 120, 130, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap0 .hero-subtitle {
+  color: #90A4AE !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap0 .hero-tag {
+  color: #90A4AE !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.etap1 {
+  background:
+    radial-gradient(ellipse at center, rgba(106, 27, 154, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #4A148C 0%, #311B92 50%, #1A0B2E 100%) !important;
+  border-color: rgba(106, 27, 154, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap1 .hero-subtitle {
+  color: #FFB74D !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap1 .hero-tag {
+  color: #FFB74D !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.etap2 {
+  background:
+    radial-gradient(ellipse at center, rgba(33, 150, 243, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #1565C0 0%, #0D47A1 50%, #0A3570 100%) !important;
+  border-color: rgba(66, 165, 245, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap2 .hero-subtitle {
+  color: #64B5F6 !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap2 .hero-tag {
+  color: #64B5F6 !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.etap3 {
+  background:
+    radial-gradient(ellipse at center, rgba(156, 39, 176, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #6A1B9A 0%, #4A148C 50%, #380D6E 100%) !important;
+  border-color: rgba(186, 104, 200, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap3 .hero-subtitle {
+  color: #CE93D8 !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap3 .hero-tag {
+  color: #CE93D8 !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.etap4 {
+  background:
+    radial-gradient(ellipse at center, rgba(76, 175, 80, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #2E7D32 0%, #1B5E20 50%, #134715 100%) !important;
+  border-color: rgba(129, 199, 132, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap4 .hero-subtitle {
+  color: #81C784 !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap4 .hero-tag {
+  color: #81C784 !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.etap5 {
+  background:
+    radial-gradient(ellipse at center, rgba(233, 30, 99, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #880E4F 0%, #6A0035 50%, #500028 100%) !important;
+  border-color: rgba(240, 98, 146, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap5 .hero-subtitle {
+  color: #F06292 !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap5 .hero-tag {
+  color: #F06292 !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.etap6 {
+  background:
+    radial-gradient(ellipse at center, rgba(255, 87, 34, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #BF360C 0%, #9E2A0B 50%, #802008 100%) !important;
+  border-color: rgba(255, 138, 101, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap6 .hero-subtitle {
+  color: #FFAB91 !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap6 .hero-tag {
+  color: #FFAB91 !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.etap7 {
+  background:
+    radial-gradient(ellipse at center, rgba(103, 58, 183, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #4527A0 0%, #311B92 50%, #241270 100%) !important;
+  border-color: rgba(149, 117, 205, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap7 .hero-subtitle {
+  color: #B39DDB !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap7 .hero-tag {
+  color: #B39DDB !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.etap8 {
+  background:
+    radial-gradient(ellipse at center, rgba(0, 150, 136, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #00695C 0%, #004D40 50%, #00362E 100%) !important;
+  border-color: rgba(77, 182, 172, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap8 .hero-subtitle {
+  color: #4DB6AC !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap8 .hero-tag {
+  color: #4DB6AC !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.etap9 {
+  background:
+    radial-gradient(ellipse at center, rgba(255, 215, 0, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #F57F17 0%, #E65100 50%, #CC4300 100%) !important;
+  border-color: rgba(255, 238, 88, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap9 .hero-subtitle {
+  color: #FFF176 !important;
+}
+[data-md-color-scheme="slate"] .hero-section.etap9 .hero-tag {
+  color: #FFF176 !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.plugins {
+  background:
+    radial-gradient(ellipse at center, rgba(121, 85, 72, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #4E342E 0%, #3E2723 50%, #2C1A16 100%) !important;
+  border-color: rgba(141, 110, 99, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.plugins .hero-subtitle {
+  color: #A1887F !important;
+}
+[data-md-color-scheme="slate"] .hero-section.plugins .hero-tag {
+  color: #A1887F !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.zvuk {
+  background:
+    radial-gradient(ellipse at center, rgba(96, 125, 139, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, #1565C0 0%, #0D47A1 50%, #0A3570 100%) !important;
+  border-color: rgba(128, 203, 192, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+[data-md-color-scheme="slate"] .hero-section.zvuk .hero-subtitle {
+  color: #80CBC0 !important;
+}
+[data-md-color-scheme="slate"] .hero-section.zvuk .hero-tag {
+  color: #80CBC0 !important;
+}
+
+/* ========================================
+   IY Quest Widget — Sidebar progress tracker
+   ======================================== */
+
+.potok-quest-widget {
+  margin: 12px 8px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.85rem;
+  line-height: 1.4;
+  transition: border-color 0.2s ease;
+}
+
+.potok-quest-widget:hover {
+  border-color: var(--accent-orange);
+}
+
+.potok-quest-widget__header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.potok-quest-widget__title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent-orange);
+}
+
+.quest-widget-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--accent-orange);
+  flex-shrink: 0;
+}
+
+.quest-widget-icon-sm {
+  width: 14px;
+  height: 14px;
+  color: var(--accent-orange);
+  flex-shrink: 0;
+}
+
+.potok-quest-widget__stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  gap: 8px;
+}
+
+.potok-quest-widget__tasks {
+  font-weight: 700;
+  color: var(--text-heading);
+  font-size: 0.9rem;
+}
+
+.potok-quest-widget__xp {
+  font-weight: 600;
+  color: var(--accent-orange);
+  font-size: 0.8rem;
+}
+
+.potok-quest-widget__track {
+  width: 100%;
+  height: 6px;
+  background: var(--bg-hover);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-bottom: 6px;
+}
+
+.potok-quest-widget__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-orange), var(--accent-orange-hover));
+  border-radius: 6px;
+  transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.potok-quest-widget__rank {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.potok-quest-widget__link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 10px;
+  background: rgba(242, 153, 74, 0.08);
+  border: 1px solid rgba(242, 153, 74, 0.15);
+  color: var(--accent-orange);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.82rem;
+  transition: all 0.2s ease;
+  justify-content: center;
+}
+
+.potok-quest-widget__link:hover {
+  background: rgba(242, 153, 74, 0.15);
+  border-color: var(--accent-orange);
+  color: var(--accent-orange-hover);
+}
+
+/* Quest toast notifications */
+.potok-quest-toast {
+  position: fixed;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(100px);
+  padding: 14px 24px;
+  border-radius: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  color: var(--text-heading);
+  font-size: 0.9rem;
+  font-weight: 600;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  max-width: calc(100vw - 40px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.potok-quest-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+  pointer-events: auto;
+}
+
+.potok-quest-toast::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--toast-accent, #4caf50), var(--accent-orange));
+  border-radius: 14px 14px 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .potok-quest-toast {
+    transition: none;
+  }
+  .potok-quest-widget:hover {
+    border-color: var(--border-subtle);
+  }
+  .potok-quest-widget__link:hover {
+    border-color: rgba(242, 153, 74, 0.15);
+  }
+}
+
+/* ========================================
+   IY Quest Hero Card — Main page
+   ======================================== */
+
+.quest-hero-card {
+  margin: 2em 0 2.5em;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.quest-hero-card__inner {
+  display: flex;
+  align-items: stretch;
+  gap: 24px;
+  padding: 28px 32px;
+  border-radius: 16px;
+  background:
+    radial-gradient(ellipse at 30% 50%, rgba(242, 153, 74, 0.12) 0%, transparent 60%),
+    linear-gradient(135deg, var(--bg-card) 0%, var(--bg-hover) 100%);
+  border: 1px solid var(--border-default);
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.quest-hero-card__inner:hover {
+  border-color: var(--accent-orange);
+  box-shadow: 0 8px 32px rgba(242, 153, 74, 0.1);
+}
+
+.quest-hero-card__icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-hover));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 16px rgba(242, 153, 74, 0.2);
+}
+
+.quest-hero-icon {
+  width: 32px;
+  height: 32px;
+  color: #fff;
+}
+
+.quest-hero-icon-sm {
+  width: 18px;
+  height: 18px;
+  color: #fff;
+}
+
+.quest-hero-card__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.quest-hero-card__title {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  margin: 0 0 8px;
+  line-height: 1.3;
+}
+
+.quest-hero-card__desc {
+  font-size: 0.95rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  margin: 0 0 14px;
+}
+
+.quest-hero-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.quest-tag {
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  background: rgba(242, 153, 74, 0.1);
+  border: 1px solid rgba(242, 153, 74, 0.2);
+  color: var(--accent-orange);
+}
+
+.quest-hero-card__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--accent-orange), var(--accent-orange-hover));
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 0.95rem;
+  box-shadow: 0 4px 16px rgba(242, 153, 74, 0.25);
+  transition: all 0.25s ease;
+}
+
+.quest-hero-card__btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 24px rgba(242, 153, 74, 0.35);
+  color: #fff;
+}
+
+@media (max-width: 600px) {
+  .quest-hero-card__inner {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 20px 24px;
+  }
+  .quest-hero-card__icon {
+    width: 52px;
+    height: 52px;
+  }
+  .quest-hero-icon {
+    width: 26px;
+    height: 26px;
+  }
+  .quest-hero-card__title {
+    font-size: 1.1rem;
+  }
+}
+
+/* ========================================
+ FIX: Mermaid v9+ Dark Theme
+ ======================================== */
+
+/* Dark theme - flowchart nodes */
+[data-md-color-scheme="slate"] .mermaid .node rect,
+[data-md-color-scheme="slate"] .mermaid .node circle,
+[data-md-color-scheme="slate"] .mermaid .node polygon,
+[data-md-color-scheme="slate"] .mermaid .node path {
+ fill: #1F2937 !important;
+ stroke: #9CA3AF !important;
+ stroke-width: 2px !important;
+}
+
+/* Dark theme - node text MUST be white */
+[data-md-color-scheme="slate"] .mermaid .node text,
+[data-md-color-scheme="slate"] .mermaid .node .label,
+[data-md-color-scheme="slate"] .mermaid .nodeLabel text,
+[data-md-color-scheme="slate"] .mermaid .edgeLabel text,
+[data-md-color-scheme="slate"] .mermaid .label {
+ fill: #FFFFFF !important;
+ color: #FFFFFF !important;
+ font-weight: 500 !important;
+}
+
+/* Dark theme - edge labels */
+[data-md-color-scheme="slate"] .mermaid .edgeLabel {
+ fill: #FFFFFF !important;
+ color: #FFFFFF !important;
+ background-color: #1F2937 !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid .edgeLabel .label {
+ fill: #FFFFFF !important;
+ color: #FFFFFF !important;
+ background-color: transparent !important;
+}
+
+/* Dark theme - arrows and lines */
+[data-md-color-scheme="slate"] .mermaid .edgePath .path,
+[data-md-color-scheme="slate"] .mermaid .arrowheadPath,
+[data-md-color-scheme="slate"] .mermaid .markerPath,
+[data-md-color-scheme="slate"] .mermaid line,
+[data-md-color-scheme="slate"] .mermaid path {
+ stroke: #9CA3AF !important;
+ fill: none !important;
+}
+
+/* Dark theme - arrowheads */
+[data-md-color-scheme="slate"] .mermaid .arrowhead {
+ fill: #9CA3AF !important;
+ stroke: #9CA3AF !important;
+}
+
+/* Dark theme - clusters */
+[data-md-color-scheme="slate"] .mermaid .cluster rect,
+[data-md-color-scheme="slate"] .mermaid .cluster path {
+ fill: #111827 !important;
+ stroke: #6B7280 !important;
+}
+
+[data-md-color-scheme="slate"] .mermaid .cluster text {
+ fill: #FFFFFF !important;
+}
+
+/* Light theme fixes */
+[data-md-color-scheme="default"] .mermaid .node rect,
+[data-md-color-scheme="default"] .mermaid .node circle,
+[data-md-color-scheme="default"] .mermaid .node polygon {
+ fill: #FDFBDF !important;
+ stroke: #C8C090 !important;
+}
+
+[data-md-color-scheme="default"] .mermaid .node text,
+[data-md-color-scheme="default"] .mermaid .label {
+ fill: #282828 !important;
+ color: #282828 !important;
+}
+
+[data-md-color-scheme="default"] .mermaid .edgePath .path,
+[data-md-color-scheme="default"] .mermaid path {
+ stroke: #5a5a5a !important;
+}
