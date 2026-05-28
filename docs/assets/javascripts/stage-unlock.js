@@ -12,16 +12,16 @@
   // Измените даты здесь. Формат: 'YYYY-MM-DD'
   // alwaysUnlocked: true — этап всегда доступен (для Этапа №0)
   const STAGE_SCHEDULE = {
-    0: { unlockDate: '2024-01-01', alwaysUnlocked: true, label: 'Этап №0' },
-    1: { unlockDate: '2026-06-19', alwaysUnlocked: true, label: 'Этап №1' },
-    2: { unlockDate: '2026-06-26', alwaysUnlocked: true, label: 'Этап №2' },
-    3: { unlockDate: '2026-07-03', alwaysUnlocked: true, label: 'Этап №3' },
-    4: { unlockDate: '2026-07-10', alwaysUnlocked: true, label: 'Этап №4' },
-    5: { unlockDate: '2026-07-17', alwaysUnlocked: true, label: 'Этап №5' },
-    6: { unlockDate: '2026-07-31', alwaysUnlocked: true, label: 'Этап №6' },
-    7: { unlockDate: '2026-08-07', alwaysUnlocked: true, label: 'Этап №7' },
-    8: { unlockDate: '2026-08-14', alwaysUnlocked: true, label: 'Этап №8' },
-    9: { unlockDate: '2026-08-21', alwaysUnlocked: true, label: 'Этап №9' },
+    0: { unlockDate: '2024-01-01', label: 'Этап №0' },
+    1: { unlockDate: '2026-06-19', label: 'Этап №1' },
+    2: { unlockDate: '2026-06-26', label: 'Этап №2' },
+    3: { unlockDate: '2026-07-03', label: 'Этап №3' },
+    4: { unlockDate: '2026-07-10', label: 'Этап №4' },
+    5: { unlockDate: '2026-07-17', label: 'Этап №5' },
+    6: { unlockDate: '2026-07-31', label: 'Этап №6' },
+    7: { unlockDate: '2026-08-07', label: 'Этап №7' },
+    8: { unlockDate: '2026-08-14', label: 'Этап №8' },
+    9: { unlockDate: '2026-08-21', label: 'Этап №9' },
   };
 
   // Смещение дат для тестирования (в днях).
