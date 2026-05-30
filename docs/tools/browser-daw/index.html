@@ -778,10 +778,9 @@ header p {
         oscillator: { type: 'sine' },
         envelope: { attack: 0.001, decay: 0.3, sustain: 0, release: 0.1 }
       }).connect(masterGain);
-      drumPlayers.kick.triggerAttackRelease('C1', '8n');
 
       // Snare = Membrane (body/thwack) + Noise (snap) через mid-boost фильтр
-      const snareFilter = new Tone.Filter(2000, 'bandpass', 1.8).connect(masterGain);
+      const snareFilter = new Tone.Filter(3000, 'bandpass', 1.5);
       const snareBody = new Tone.MembraneSynth({
         pitchDecay: 0.02,
         octaves: 3,
@@ -792,34 +791,32 @@ header p {
         noise: { type: 'white' },
         envelope: { attack: 0.001, decay: 0.18, sustain: 0, release: 0.06 }
       }).connect(snareFilter);
-      snareBody.volume.value = -2;
-      snareNoise.volume.value = -8;
-      // drumPlayers.snare должен быть Tone-совместимым (disconnect/connect для re-route)
+      snareBody.volume.value = -3;
+      snareNoise.volume.value = -6;
+      snareFilter.connect(masterGain);
+      // drumPlayers.snare — filter остаётся в цепи при re-route
       drumPlayers.snare = {
-        disconnect: () => { snareBody.disconnect(); snareNoise.disconnect(); },
-        connect: (dest) => { snareBody.connect(dest); snareNoise.connect(dest); },
+        disconnect: () => { snareFilter.disconnect(); },
+        connect: (dest) => { snareFilter.connect(dest); },
         triggerAttackRelease: (d) => { snareBody.triggerAttackRelease('F2', d); snareNoise.triggerAttackRelease(d); }
       };
 
-      drumPlayers['hh-closed'] = new Tone.MetalSynth({
-        frequency: 800,
-        envelope: { attack: 0.001, decay: 0.03, release: 0.001 },
-        harmonicity: 5.1,
-        modulationIndex: 32,
-        resonance: 4000,
-        octaves: 1.5,
-      }).connect(masterGain);
-      drumPlayers['hh-closed'].volume.value = -12;
+      // Hi-hat = Noise + highpass filter (реалистичный звук цимбал)
+      const hhClosedFilter = new Tone.Filter(8000, 'highpass').connect(masterGain);
+      drumPlayers['hh-closed'] = new Tone.NoiseSynth({
+        noise: { type: 'white' },
+        envelope: { attack: 0.001, decay: 0.05, sustain: 0, release: 0.001 }
+      }).connect(hhClosedFilter);
+      drumPlayers['hh-closed'].volume.value = -8;
+      drumPlayers['hh-closed']._filter = hhClosedFilter;
 
-      drumPlayers['hh-open'] = new Tone.MetalSynth({
-        frequency: 600,
-        envelope: { attack: 0.001, decay: 0.15, release: 0.01 },
-        harmonicity: 5.1,
-        modulationIndex: 32,
-        resonance: 4000,
-        octaves: 1.5,
-      }).connect(masterGain);
-      drumPlayers['hh-open'].volume.value = -12;
+      const hhOpenFilter = new Tone.Filter(6000, 'highpass').connect(masterGain);
+      drumPlayers['hh-open'] = new Tone.NoiseSynth({
+        noise: { type: 'white' },
+        envelope: { attack: 0.001, decay: 0.25, sustain: 0, release: 0.02 }
+      }).connect(hhOpenFilter);
+      drumPlayers['hh-open'].volume.value = -8;
+      drumPlayers['hh-open']._filter = hhOpenFilter;
 
       // Synth players
       synthPlayers.bass = new Tone.MonoSynth({
@@ -847,8 +844,15 @@ header p {
 
         // Re-route drum/synth to go through gain
         if (drumPlayers[t.id]) {
-          drumPlayers[t.id].disconnect();
-          drumPlayers[t.id].connect(trackGains[t.id]);
+          const player = drumPlayers[t.id];
+          // Hi-hat: re-route filter (not the noise source)
+          if (player._filter) {
+            player._filter.disconnect();
+            player._filter.connect(trackGains[t.id]);
+          } else {
+            player.disconnect();
+            player.connect(trackGains[t.id]);
+          }
         }
         if (synthPlayers[t.id]) {
           synthPlayers[t.id].disconnect();
@@ -907,27 +911,29 @@ header p {
     function playStep(step) {
       currentStep = step;
 
-
-
-      // Play drum sounds
-      DRUM_TRACKS.forEach(t => {
-        if (stepGrid[t.id][step] && !mixerState[t.id].muted && !mixerState['master'].muted) {
-          if (t.id === 'kick') drumPlayers.kick.triggerAttackRelease('C1', '8n');
-          else if (t.id === 'snare') drumPlayers.snare.triggerAttackRelease('8n');
-          else drumPlayers[t.id].triggerAttackRelease('16n');
-        }
-      });
-
-      // Play synth notes
-      SYNTH_TRACKS.forEach(t => {
-        const notes = pianoRollData[t.id];
-        notes.forEach(key => {
-          const [s, note] = key.split('-');
-          if (parseInt(s) === step && !mixerState[t.id].muted && !mixerState['master'].muted) {
-            synthPlayers[t.id].triggerAttackRelease(note, '16n');
+      try {
+        // Play drum sounds
+        DRUM_TRACKS.forEach(t => {
+          if (stepGrid[t.id][step] && !mixerState[t.id].muted && !mixerState['master'].muted) {
+            if (t.id === 'kick') drumPlayers.kick.triggerAttackRelease('C1', '8n');
+            else if (t.id === 'snare') drumPlayers.snare.triggerAttackRelease('8n');
+            else drumPlayers[t.id].triggerAttackRelease('16n');
           }
         });
-      });
+
+        // Play synth notes
+        SYNTH_TRACKS.forEach(t => {
+          const notes = pianoRollData[t.id];
+          notes.forEach(key => {
+            const [s, note] = key.split('-');
+            if (parseInt(s) === step && !mixerState[t.id].muted && !mixerState['master'].muted) {
+              synthPlayers[t.id].triggerAttackRelease(note, '16n');
+            }
+          });
+        });
+      } catch (err) {
+        console.error('[DAW] playStep error at step', step, err);
+      }
 
       updatePlayheadVisual(step);
     }
@@ -937,9 +943,14 @@ header p {
 
     function nextStep() {
       if (!isPlaying) return;
-      let next = (currentStep + 1) % STEPS;
-      playStep(next);
-      playheadInterval = setTimeout(nextStep, stepDuration * 1000);
+      try {
+        let next = (currentStep + 1) % STEPS;
+        playStep(next);
+        playheadInterval = setTimeout(nextStep, stepDuration * 1000);
+      } catch (err) {
+        console.error('[DAW] nextStep error:', err);
+        stopPlayback();
+      }
     }
 
     playheadInterval = setTimeout(nextStep, stepDuration * 1000);
@@ -1191,8 +1202,8 @@ header p {
   document.getElementById('exportSynthBtn').addEventListener('click', () => { exportSynthMidi(); });
 
   document.getElementById('loopBtn').addEventListener('click', (e) => {
-    e.target.classList.toggle('active');
-    loopEnabled = e.target.classList.contains('active');
+    e.currentTarget.classList.toggle('active');
+    loopEnabled = e.currentTarget.classList.contains('active');
   });
 
   // --- Theme ---
