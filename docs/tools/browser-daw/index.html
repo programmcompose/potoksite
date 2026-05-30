@@ -760,100 +760,107 @@ header p {
       msg.style.color = '#ef5350';
       return;
     }
+
+    // Hide overlay immediately — audio context is alive
+    document.getElementById('audioOverlay').classList.add('hidden');
     audioStarted = true;
 
-    // Master gain
-    masterGain = new Tone.Gain(1).toDestination();
+    try {
+      // Master gain
+      masterGain = new Tone.Gain(1).toDestination();
 
 
 
-    // Drum players (using Tone.js synthesis for now — samples will be loaded when available)
-    drumPlayers.kick = new Tone.MembraneSynth({
-      pitchDecay: 0.05,
-      octaves: 4,
-      oscillator: { type: 'sine' },
-      envelope: { attack: 0.001, decay: 0.3, sustain: 0, release: 0.1 }
-    }).connect(masterGain);
-    drumPlayers.kick.triggerAttackRelease('C1', '8n');
+      // Drum players (using Tone.js synthesis for now — samples will be loaded when available)
+      drumPlayers.kick = new Tone.MembraneSynth({
+        pitchDecay: 0.05,
+        octaves: 4,
+        oscillator: { type: 'sine' },
+        envelope: { attack: 0.001, decay: 0.3, sustain: 0, release: 0.1 }
+      }).connect(masterGain);
+      drumPlayers.kick.triggerAttackRelease('C1', '8n');
 
-    // Snare = Membrane (body/thwack) + Noise (snap) через mid-boost фильтр
-    const snareFilter = new Tone.Filter(2000, 'bandpass', 1.8).connect(masterGain);
-    const snareBody = new Tone.MembraneSynth({
-      pitchDecay: 0.02,
-      octaves: 3,
-      envelope: { attack: 0.001, decay: 0.12, sustain: 0, release: 0.04 },
-      harmonics: [1, 3, 0.5]
-    }).connect(snareFilter);
-    const snareNoise = new Tone.NoiseSynth({
-      noise: { type: 'white' },
-      envelope: { attack: 0.001, decay: 0.18, sustain: 0, release: 0.06 }
-    }).connect(snareFilter);
-    snareBody.volume.value = -2;
-    snareNoise.volume.value = -8;
-    // drumPlayers.snare должен быть Tone-совместимым (disconnect/connect для re-route)
-    drumPlayers.snare = {
-      disconnect: () => { snareBody.disconnect(); snareNoise.disconnect(); },
-      connect: (dest) => { snareBody.connect(dest); snareNoise.connect(dest); },
-      triggerAttackRelease: (d) => { snareBody.triggerAttackRelease('F2', d); snareNoise.triggerAttackRelease(d); }
-    };
+      // Snare = Membrane (body/thwack) + Noise (snap) через mid-boost фильтр
+      const snareFilter = new Tone.Filter(2000, 'bandpass', 1.8).connect(masterGain);
+      const snareBody = new Tone.MembraneSynth({
+        pitchDecay: 0.02,
+        octaves: 3,
+        envelope: { attack: 0.001, decay: 0.12, sustain: 0, release: 0.04 },
+        harmonics: [1, 3, 0.5]
+      }).connect(snareFilter);
+      const snareNoise = new Tone.NoiseSynth({
+        noise: { type: 'white' },
+        envelope: { attack: 0.001, decay: 0.18, sustain: 0, release: 0.06 }
+      }).connect(snareFilter);
+      snareBody.volume.value = -2;
+      snareNoise.volume.value = -8;
+      // drumPlayers.snare должен быть Tone-совместимым (disconnect/connect для re-route)
+      drumPlayers.snare = {
+        disconnect: () => { snareBody.disconnect(); snareNoise.disconnect(); },
+        connect: (dest) => { snareBody.connect(dest); snareNoise.connect(dest); },
+        triggerAttackRelease: (d) => { snareBody.triggerAttackRelease('F2', d); snareNoise.triggerAttackRelease(d); }
+      };
 
-    drumPlayers['hh-closed'] = new Tone.MetalSynth({
-      frequency: 800,
-      envelope: { attack: 0.001, decay: 0.03, release: 0.001 },
-      harmonicity: 5.1,
-      modulationIndex: 32,
-      resonance: 4000,
-      octaves: 1.5,
-    }).connect(masterGain);
-    drumPlayers['hh-closed'].volume.value = -12;
+      drumPlayers['hh-closed'] = new Tone.MetalSynth({
+        frequency: 800,
+        envelope: { attack: 0.001, decay: 0.03, release: 0.001 },
+        harmonicity: 5.1,
+        modulationIndex: 32,
+        resonance: 4000,
+        octaves: 1.5,
+      }).connect(masterGain);
+      drumPlayers['hh-closed'].volume.value = -12;
 
-    drumPlayers['hh-open'] = new Tone.MetalSynth({
-      frequency: 600,
-      envelope: { attack: 0.001, decay: 0.15, release: 0.01 },
-      harmonicity: 5.1,
-      modulationIndex: 32,
-      resonance: 4000,
-      octaves: 1.5,
-    }).connect(masterGain);
-    drumPlayers['hh-open'].volume.value = -12;
+      drumPlayers['hh-open'] = new Tone.MetalSynth({
+        frequency: 600,
+        envelope: { attack: 0.001, decay: 0.15, release: 0.01 },
+        harmonicity: 5.1,
+        modulationIndex: 32,
+        resonance: 4000,
+        octaves: 1.5,
+      }).connect(masterGain);
+      drumPlayers['hh-open'].volume.value = -12;
 
-    // Synth players
-    synthPlayers.bass = new Tone.MonoSynth({
-      oscillator: { type: 'triangle' },
-      filter: { Q: 2, type: 'lowpass', frequency: 800 },
-      envelope: { attack: 0.01, decay: 0.2, sustain: 0.4, release: 0.3 },
-      filterEnvelope: { attack: 0.01, decay: 0.2, sustain: 0.3, release: 0.3, baseFrequency: 200, octaves: 2, exponent: 2 }
-    }).connect(masterGain);
-    synthPlayers.bass.volume.value = -3;
+      // Synth players
+      synthPlayers.bass = new Tone.MonoSynth({
+        oscillator: { type: 'triangle' },
+        filter: { Q: 2, type: 'lowpass', frequency: 800 },
+        envelope: { attack: 0.01, decay: 0.2, sustain: 0.4, release: 0.3 },
+        filterEnvelope: { attack: 0.01, decay: 0.2, sustain: 0.3, release: 0.3, baseFrequency: 200, octaves: 2, exponent: 2 }
+      }).connect(masterGain);
+      synthPlayers.bass.volume.value = -3;
 
-    synthPlayers.melody = new Tone.MonoSynth({
-      oscillator: { type: 'sawtooth' },
-      filter: { Q: 3, type: 'lowpass', frequency: 2000 },
-      envelope: { attack: 0.02, decay: 0.3, sustain: 0.3, release: 0.5 },
-      filterEnvelope: { attack: 0.02, decay: 0.3, sustain: 0.3, release: 0.5, baseFrequency: 300, octaves: 3, exponent: 2 }
-    }).connect(masterGain);
-    synthPlayers.melody.volume.value = -6;
+      synthPlayers.melody = new Tone.MonoSynth({
+        oscillator: { type: 'sawtooth' },
+        filter: { Q: 3, type: 'lowpass', frequency: 2000 },
+        envelope: { attack: 0.02, decay: 0.3, sustain: 0.3, release: 0.5 },
+        filterEnvelope: { attack: 0.02, decay: 0.3, sustain: 0.3, release: 0.5, baseFrequency: 300, octaves: 3, exponent: 2 }
+      }).connect(masterGain);
+      synthPlayers.melody.volume.value = -6;
 
-    // Per-track gain nodes
-    ALL_TRACKS.forEach(t => {
-      trackGains[t.id] = new Tone.Gain(1);
-      trackPans[t.id] = new Tone.Panner(0);
-      trackGains[t.id].connect(trackPans[t.id]);
-      trackPans[t.id].connect(masterGain);
+      // Per-track gain nodes
+      ALL_TRACKS.forEach(t => {
+        trackGains[t.id] = new Tone.Gain(1);
+        trackPans[t.id] = new Tone.Panner(0);
+        trackGains[t.id].connect(trackPans[t.id]);
+        trackPans[t.id].connect(masterGain);
 
-      // Re-route drum/synth to go through gain
-      if (drumPlayers[t.id]) {
-        drumPlayers[t.id].disconnect();
-        drumPlayers[t.id].connect(trackGains[t.id]);
-      }
-      if (synthPlayers[t.id]) {
-        synthPlayers[t.id].disconnect();
-        synthPlayers[t.id].connect(trackGains[t.id]);
-      }
-    });
+        // Re-route drum/synth to go through gain
+        if (drumPlayers[t.id]) {
+          drumPlayers[t.id].disconnect();
+          drumPlayers[t.id].connect(trackGains[t.id]);
+        }
+        if (synthPlayers[t.id]) {
+          synthPlayers[t.id].disconnect();
+          synthPlayers[t.id].connect(trackGains[t.id]);
+        }
+      });
 
-    Tone.Transport.bpm.value = DEFAULT_BPM;
-    document.getElementById('audioOverlay').classList.add('hidden');
+      Tone.Transport.bpm.value = DEFAULT_BPM;
+    } catch (err) {
+      console.error('[DAW] Audio setup error:', err);
+      // Overlay already hidden — user can still access the UI
+    }
   }
 
   // --- Preview ---
