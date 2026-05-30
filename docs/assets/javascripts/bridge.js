@@ -253,7 +253,7 @@
         '<div class="potok-quest-widget__fill" style="width:' + rankProgress + '%"></div>' +
       '</div>' +
       '<div class="potok-quest-widget__rank">' + rank.name + '</div>' +
-      '<a class="potok-quest-widget__link" href="tools/iy-quest/index.html">' +
+      '<a class="potok-quest-widget__link" href="https://programmcompose.github.io/potoksite/tools/iy-quest/index.html">' +
         '<i data-lucide="external-link" class="quest-widget-icon-sm"></i>' +
         ' Открыть квест' +
       '</a>';
