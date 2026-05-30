@@ -750,7 +750,16 @@ header p {
   let playheadInterval = null;
 
   async function initAudio() {
-    await Tone.start();
+    try {
+      await Tone.start();
+    } catch (err) {
+      const overlay = document.getElementById('audioOverlay');
+      overlay.classList.remove('hidden');
+      const msg = overlay.querySelector('p');
+      msg.textContent = '⚠️ Audio не запущен: ' + err.message;
+      msg.style.color = '#ef5350';
+      return;
+    }
     audioStarted = true;
 
     // Master gain
