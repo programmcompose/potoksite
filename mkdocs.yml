@@ -178,6 +178,7 @@ nav:
           - "<span class='nav-icon' data-lucide='waves'></span> Reverb / Реверберация": "etap2/reverb-reverberatsiya.md"
           - "<span class='nav-icon' data-lucide='repeat'></span> Delay / Делэй": "etap2/delay-delay.md"
           - "<span class='nav-icon' data-lucide='sparkles'></span> Chorus / Хорус": "etap2/chorus-chorus.md"
+          - "<span class='nav-icon' data-lucide='eye'></span> Как понять плагин": "etap2/kak-ponyat-plagin.md"
           - "<span class='nav-icon' data-lucide='trending-down'></span> Compression / Компрессия": "etap2/compression-kompressiya.md"
           - "<span class='nav-icon' data-lucide='blocks'></span> Limiter и Clipper": "etap2/limiter-clipper.md"
           - "<span class='nav-icon' data-lucide='palette'></span> Стилизация сэмплов": "etap2/sample-styling.md"
