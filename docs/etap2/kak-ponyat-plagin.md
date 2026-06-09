@@ -32,7 +32,7 @@
 
 ## Пример: компрессия с осцилоскопом
 
-![Компрессия с Осцилоскопом](assets/compression-oscilloscope.png)
+![Компрессия с Осцилоскопом](../assets/compression-oscilloscope.png)
 
 На скриншоте видно, как компрессия «приплющивает» пики waveform — gain reduction визуален.
 
