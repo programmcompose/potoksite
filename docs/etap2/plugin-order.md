@@ -31,7 +31,7 @@
 | DAW | Особенность |
 |---|---|
 | **Ableton** | Device chain — визуальный порядок. Device Rack для группировки. Return tracks для send-эффектов |
-| **FL Studio** | Plugin架 в mixer insert. Sidechain через manual sidechain или ducking. Fruit Send для send-эффектов |
+| **FL Studio** | Plugin chain в mixer insert. Sidechain через manual sidechain или ducking. Fruit Send для send-эффектов |
 
 ## Сенды и посылы (Send / Return)
 
