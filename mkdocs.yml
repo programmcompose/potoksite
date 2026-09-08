@@ -72,6 +72,7 @@ extra:
 
 extra_css:
   - assets/stylesheets/extra.css
+  - assets/stylesheets/ambient.css
   - assets/stylesheets/stage-lock.css
 
   - assets/stylesheets/etap0-bg.css
@@ -86,6 +87,7 @@ extra_javascript:
   - assets/javascripts/back-to-top.js
   - assets/javascripts/stage-unlock.js
   - assets/javascripts/scroll-cards.js
+  - assets/javascripts/article-reveal.js
 
   - assets/javascripts/etap0-bg.js
   - assets/javascripts/etap1-bg.js

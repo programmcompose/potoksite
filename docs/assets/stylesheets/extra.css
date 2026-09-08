@@ -25,6 +25,12 @@
   --border-subtle: rgba(255, 255, 255, 0.06);
   --border-default: rgba(255, 255, 255, 0.1);
 
+  /* --- Ambient glow --- */
+  --glow-orange: rgba(242, 153, 74, 0.28);
+  --glow-blue: rgba(59, 130, 246, 0.18);
+  --glow-orange-soft: rgba(242, 153, 74, 0.10);
+  --article-surface: rgba(17, 24, 39, 0.42);
+
   /* --- Map to MkDocs variables --- */
   --md-default-bg-color: var(--bg-main);
   --md-default-bg-color--light: var(--bg-sidebar);
@@ -61,6 +67,12 @@
   --border-subtle: rgba(0, 0, 0, 0.08);
   --border-default: rgba(0, 0, 0, 0.12);
 
+  /* --- Ambient glow --- */
+  --glow-orange: rgba(224, 138, 62, 0.22);
+  --glow-blue: rgba(37, 99, 235, 0.10);
+  --glow-orange-soft: rgba(224, 138, 62, 0.08);
+  --article-surface: rgba(253, 251, 223, 0.55);
+
   --md-default-bg-color: var(--bg-main);
   --md-default-bg-color--light: var(--bg-sidebar);
   --md-default-bg-color--lighter: var(--bg-card);
@@ -85,9 +97,9 @@
    Global layer background
    ======================================== */
 
-/* Main content area — deep dark with subtle gradient */
+/* Main content area — ambient mesh lives in ambient.css */
 [data-md-color-scheme="slate"] .md-main {
-  background: radial-gradient(ellipse at 20% 0%, #111827 0%, #0B1220 60%);
+  background-color: var(--bg-main);
 }
 
 /* Sidebar background */
@@ -942,8 +954,10 @@ html {
    Header
    ======================================== */
 [data-md-color-scheme="slate"] .md-header {
-  background-color: var(--bg-sidebar);
+  background-color: rgba(15, 23, 42, 0.72);
   border-bottom: 1px solid var(--border-subtle);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
 }
 
 /* ========================================
