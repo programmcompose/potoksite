@@ -1,3 +1,15 @@
+/* Graph / Connected Pages — temporarily hidden */
+#graph,
+#graph_button,
+.graph,
+.md-nav--graph,
+.modal_graph,
+#modal_background,
+#graph-toggle-btn,
+#graph-modal {
+  display: none !important;
+}
+
 /* ========================================
    Ambient background + modern article UI
    ======================================== */

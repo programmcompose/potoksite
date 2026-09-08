@@ -56,9 +56,10 @@ plugins:
   - mermaid2:
       arguments:
         theme: dark
-  - graph:
-      name: "title"
-      debug: true
+  # Graph / Connected Pages — временно выключено
+  # - graph:
+  #     name: "title"
+  #     debug: true
 
 extra:
   generator: false
@@ -80,7 +81,7 @@ extra_css:
   - assets/stylesheets/gamification.css
   - assets/stylesheets/lucide-icons.css
   - assets/stylesheets/glossary-tooltip.css
-  - assets/stylesheets/graph-override.css
+  # - assets/stylesheets/graph-override.css
 
 extra_javascript:
   - https://unpkg.com/lucide@latest
@@ -99,10 +100,10 @@ extra_javascript:
   - assets/javascripts/tasklist-strikethrough.js
   - assets/javascripts/search-ctrlk.js
   - assets/javascripts/glossary-tooltip.js
-  - assets/javascripts/graph-override.js
+  # - assets/javascripts/graph-override.js
 
 hooks:
-  - hooks/clean_graph_names.py
+  # - hooks/clean_graph_names.py
   - hooks/glossary_json.py
 
 markdown_extensions:

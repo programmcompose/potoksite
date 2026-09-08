@@ -1100,6 +1100,19 @@ html {
 }
 
 /* ========================================
+   Graph plugin — temporarily hidden
+   ======================================== */
+#graph,
+#graph_button,
+.graph,
+.modal_graph,
+#modal_background,
+#graph-toggle-btn,
+#graph-modal {
+  display: none !important;
+}
+
+/* ========================================
    Graph plugin overrides
    ======================================== */
 #graph .link,
