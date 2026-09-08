@@ -1,8 +1,3 @@
-<div class="preview-banner">
-  <i data-lucide="flask-conical" class="preview-banner__icon"></i>
-  <span><strong>Превью-версия</strong> — правки для учеников. Основной сайт пока без изменений: <a href="https://programmcompose.github.io/potoksite/">programmcompose.github.io/potoksite</a></span>
-</div>
-
 <div class="hero-section">
 <h1>18 ПОТОК</h1>
 <p class="hero-subtitle">
