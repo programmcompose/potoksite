@@ -324,47 +324,57 @@ body.tour-on .chassis:has(.mod.spotlight) { position: relative; z-index: 4; }
 .filter-viz {
   display: block;
   width: 100%;
-  height: 44px;
-  margin-top: 8px;
-  background: #070b14;
-  border-radius: 6px;
-  border: 1px solid var(--border-subtle);
+  height: 72px;
+  margin-top: 10px;
+  background: radial-gradient(ellipse at 50% 20%, #1c140c 0%, #08060a 72%);
+  border-radius: 8px;
+  border: 1px solid rgba(242, 153, 74, 0.35);
+  box-shadow: inset 0 0 22px rgba(242, 153, 74, 0.12), 0 0 14px rgba(242, 153, 74, 0.08);
 }
 
 .scope-wrap {
-  background: #050a08;
-  border: 1px solid #1a3320;
+  background: radial-gradient(ellipse at 50% 30%, #1a120a 0%, #060504 75%);
+  border: 1px solid rgba(242, 153, 74, 0.35);
   border-radius: 8px;
   overflow: hidden;
   position: relative;
+  box-shadow: inset 0 0 22px rgba(242, 153, 74, 0.1), 0 0 14px rgba(242, 153, 74, 0.08);
 }
-#scopeCanvas { display: block; width: 100%; height: 92px; }
+#scopeCanvas { display: block; width: 100%; height: 118px; }
 .scope-label {
   position: absolute;
   top: 6px; left: 8px;
-  font-size: 0.55em;
-  letter-spacing: 0.08em;
+  font-size: 0.58em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #3d7a4a;
+  color: var(--accent-orange);
+  text-shadow: 0 0 8px rgba(242, 153, 74, 0.7);
+  z-index: 1;
+  pointer-events: none;
 }
 
 .adsr-wrap {
-  background: #070b14;
-  border-radius: 6px;
-  border: 1px solid var(--border-subtle);
+  background: radial-gradient(ellipse at 50% 20%, #1c140c 0%, #08060a 72%);
+  border-radius: 8px;
+  border: 1px solid rgba(242, 153, 74, 0.35);
   overflow: hidden;
-  margin-top: 8px;
+  margin-top: 10px;
   position: relative;
+  box-shadow: inset 0 0 22px rgba(242, 153, 74, 0.12), 0 0 14px rgba(242, 153, 74, 0.08);
 }
-#adsrCanvas { display: block; width: 100%; height: 72px; }
+#adsrCanvas { display: block; width: 100%; height: 96px; }
 .adsr-legend {
   display: flex;
   justify-content: space-between;
-  font-size: 0.52em;
-  color: var(--text-secondary);
-  padding: 4px 6px 0;
-  letter-spacing: 0.04em;
+  font-size: 0.58em;
+  font-weight: 700;
+  padding: 6px 6px 0;
+  letter-spacing: 0.06em;
 }
+.adsr-legend .leg-a { color: #7CFF9A; text-shadow: 0 0 8px rgba(124,255,154,0.45); }
+.adsr-legend .leg-d { color: #F2994A; text-shadow: 0 0 8px rgba(242,153,74,0.45); }
+.adsr-legend .leg-s { color: #FFD36A; text-shadow: 0 0 8px rgba(255,211,106,0.45); }
+.adsr-legend .leg-r { color: #FF7A6B; text-shadow: 0 0 8px rgba(255,122,107,0.45); }
 
 .presets {
   display: flex;
@@ -675,7 +685,12 @@ body.tour-on .chassis:has(.mod.spotlight) { position: relative; z-index: 4; }
             <div class="knob-wrap" data-knob="release" data-min="0.02" data-max="3" data-curve="log"></div>
           </div>
           <div class="adsr-wrap"><canvas id="adsrCanvas"></canvas></div>
-          <div class="adsr-legend"><span>A</span><span>D</span><span>S</span><span>R</span></div>
+          <div class="adsr-legend">
+            <span class="leg-a">Attack</span>
+            <span class="leg-d">Decay</span>
+            <span class="leg-s">Sustain</span>
+            <span class="leg-r">Release</span>
+          </div>
         </section>
 
         <section class="mod" id="mod-mod">
@@ -927,14 +942,17 @@ registerProcessor('moog-ladder', MoogLadderProcessor);
         c.beginPath(); c.arc(xc, yc, r + 3, 0, Math.PI * 2); c.fillStyle = body; c.fill();
         c.strokeStyle = 'rgba(255,255,255,0.1)'; c.lineWidth = 1; c.stroke();
         c.beginPath(); c.arc(xc, yc, r, start, start + sweep, false);
-        c.strokeStyle = 'rgba(255,255,255,0.1)'; c.lineWidth = 3; c.lineCap = 'round'; c.stroke();
+        c.strokeStyle = 'rgba(255,255,255,0.12)'; c.lineWidth = 4; c.lineCap = 'round'; c.stroke();
+        c.shadowColor = '#F2994A';
+        c.shadowBlur = 10;
         c.beginPath(); c.arc(xc, yc, r, start, ang, false);
-        c.strokeStyle = '#F2994A'; c.lineWidth = 3; c.stroke();
+        c.strokeStyle = '#FFB26B'; c.lineWidth = 3.5; c.stroke();
+        c.shadowBlur = 0;
         c.beginPath();
         c.moveTo(xc, yc);
         c.lineTo(xc + Math.cos(ang) * (r - 4), yc + Math.sin(ang) * (r - 4));
         c.strokeStyle = '#F9FAFB'; c.lineWidth = 2.2; c.stroke();
-        c.beginPath(); c.arc(xc, yc, 2.4, 0, Math.PI * 2); c.fillStyle = '#F2994A'; c.fill();
+        c.beginPath(); c.arc(xc, yc, 2.6, 0, Math.PI * 2); c.fillStyle = '#F2994A'; c.fill();
         val.textContent = meta.format(state[key]);
       }
     };
@@ -1315,61 +1333,133 @@ registerProcessor('moog-ladder', MoogLadderProcessor);
     });
   }
 
-  function drawFilter() {
-    const cnv = document.getElementById('filterCanvas');
-    const pr = Math.min(devicePixelRatio || 1, 2);
-    const w = cnv.clientWidth || 220;
-    const h = 44;
-    cnv.width = w * pr; cnv.height = h * pr;
-    const c = cnv.getContext('2d');
-    c.setTransform(pr, 0, 0, pr, 0, 0);
-    c.fillStyle = '#070b14';
+  function crtBg(c, w, h) {
+    const g = c.createRadialGradient(w * 0.5, h * 0.35, 4, w * 0.5, h * 0.5, Math.max(w, h) * 0.7);
+    g.addColorStop(0, '#1e160e');
+    g.addColorStop(1, '#07050a');
+    c.fillStyle = g;
     c.fillRect(0, 0, w, h);
-    const cutoffX = Math.log(state.cutoff / 40) / Math.log(16000 / 40);
-    c.beginPath();
-    for (let x = 0; x < w; x++) {
-      const t = x / w;
-      const dist = t - cutoffX;
-      let mag = dist < 0 ? 1 : Math.pow(0.08, dist * 3.2);
-      const peak = Math.exp(-Math.pow((t - cutoffX) * 18, 2)) * state.res * 1.4;
-      mag = Math.min(1.35, mag + peak);
-      const y = h - 6 - mag * (h - 12);
-      if (x === 0) c.moveTo(x, y); else c.lineTo(x, y);
+    c.strokeStyle = 'rgba(242,153,74,0.12)';
+    c.lineWidth = 1;
+    for (let i = 1; i < 4; i++) {
+      const y = (h / 4) * i;
+      c.beginPath(); c.moveTo(0, y); c.lineTo(w, y); c.stroke();
     }
-    c.strokeStyle = '#F2994A';
-    c.lineWidth = 1.6;
-    c.stroke();
+    for (let i = 1; i < 5; i++) {
+      const x = (w / 5) * i;
+      c.beginPath(); c.moveTo(x, 0); c.lineTo(x, h); c.stroke();
+    }
   }
 
-  function drawADSR() {
-    const cnv = document.getElementById('adsrCanvas');
+  function drawFilter() {
+    const cnv = document.getElementById('filterCanvas');
     const pr = Math.min(devicePixelRatio || 1, 2);
     const w = cnv.clientWidth || 220;
     const h = 72;
     cnv.width = w * pr; cnv.height = h * pr;
     const c = cnv.getContext('2d');
     c.setTransform(pr, 0, 0, pr, 0, 0);
-    c.fillStyle = '#070b14';
-    c.fillRect(0, 0, w, h);
+    crtBg(c, w, h);
+    const cutoffX = Math.log(state.cutoff / 40) / Math.log(16000 / 40);
+    const ys = [];
+    for (let x = 0; x < w; x++) {
+      const t = x / w;
+      const dist = t - cutoffX;
+      let mag = dist < 0 ? 1 : Math.pow(0.08, dist * 3.2);
+      const peak = Math.exp(-Math.pow((t - cutoffX) * 18, 2)) * state.res * 1.55;
+      mag = Math.min(1.45, mag + peak);
+      ys.push(h - 10 - mag * (h - 22));
+    }
+    c.beginPath();
+    c.moveTo(0, h);
+    ys.forEach((y, x) => c.lineTo(x, y));
+    c.lineTo(w, h);
+    const fill = c.createLinearGradient(0, 0, 0, h);
+    fill.addColorStop(0, 'rgba(255,178,107,0.55)');
+    fill.addColorStop(0.45, 'rgba(242,153,74,0.28)');
+    fill.addColorStop(1, 'rgba(242,153,74,0.02)');
+    c.fillStyle = fill;
+    c.fill();
+    c.beginPath();
+    ys.forEach((y, x) => { if (x === 0) c.moveTo(x, y); else c.lineTo(x, y); });
+    c.shadowColor = '#F2994A';
+    c.shadowBlur = 14;
+    c.strokeStyle = '#FFB26B';
+    c.lineWidth = 2.4;
+    c.stroke();
+    c.shadowBlur = 0;
+    const cx = cutoffX * w;
+    c.setLineDash([3, 4]);
+    c.strokeStyle = 'rgba(255,211,106,0.7)';
+    c.lineWidth = 1;
+    c.beginPath(); c.moveTo(cx, 8); c.lineTo(cx, h - 6); c.stroke();
+    c.setLineDash([]);
+    c.fillStyle = '#FFD36A';
+    c.font = 'bold 9px Unbounded, sans-serif';
+    c.textAlign = 'center';
+    const label = state.cutoff >= 1000 ? (state.cutoff / 1000).toFixed(1) + 'k' : Math.round(state.cutoff) + 'Hz';
+    c.fillText(label, Math.max(18, Math.min(w - 18, cx)), 12);
+  }
+
+  function drawADSR() {
+    const cnv = document.getElementById('adsrCanvas');
+    const pr = Math.min(devicePixelRatio || 1, 2);
+    const w = cnv.clientWidth || 220;
+    const h = 96;
+    cnv.width = w * pr; cnv.height = h * pr;
+    const c = cnv.getContext('2d');
+    c.setTransform(pr, 0, 0, pr, 0, 0);
+    crtBg(c, w, h);
     const a = state.attack, d = state.decay, s = state.sustain, r = state.release;
-    const susT = 0.45;
+    const susT = 0.5;
     const tot = a + d + susT + r;
-    const pad = 6;
-    const gw = w - pad * 2, gh = h - pad * 2;
-    const X = (t) => pad + (t / tot) * gw;
-    const Y = (v) => pad + gh - v * gh;
+    const pad = { t: 14, r: 10, b: 12, l: 10 };
+    const gw = w - pad.l - pad.r, gh = h - pad.t - pad.b;
+    const X = (t) => pad.l + (t / tot) * gw;
+    const Y = (v) => pad.t + gh - v * gh;
+    const phases = [
+      { key: 'A', t0: 0, t1: a, color: 'rgba(124,255,154,0.18)', edge: '#7CFF9A' },
+      { key: 'D', t0: a, t1: a + d, color: 'rgba(242,153,74,0.18)', edge: '#F2994A' },
+      { key: 'S', t0: a + d, t1: a + d + susT, color: 'rgba(255,211,106,0.16)', edge: '#FFD36A' },
+      { key: 'R', t0: a + d + susT, t1: tot, color: 'rgba(255,122,107,0.16)', edge: '#FF7A6B' }
+    ];
+    phases.forEach((ph) => {
+      const x1 = X(ph.t0), x2 = X(ph.t1);
+      c.fillStyle = ph.color;
+      c.fillRect(x1, pad.t, x2 - x1, gh);
+      if (x2 - x1 > 18) {
+        c.fillStyle = ph.edge;
+        c.font = 'bold 11px Unbounded, sans-serif';
+        c.textAlign = 'center';
+        c.fillText(ph.key, (x1 + x2) / 2, pad.t + 12);
+      }
+    });
     const pts = [
       [0, 0], [a, 1], [a + d, s], [a + d + susT, s], [tot, 0]
     ];
     c.beginPath();
+    c.moveTo(X(0), Y(0));
+    pts.forEach((p) => c.lineTo(X(p[0]), Y(p[1])));
+    c.lineTo(X(tot), Y(0));
+    const fill = c.createLinearGradient(0, pad.t, 0, pad.t + gh);
+    fill.addColorStop(0, 'rgba(255,178,107,0.5)');
+    fill.addColorStop(1, 'rgba(242,153,74,0.05)');
+    c.fillStyle = fill;
+    c.fill();
+    c.beginPath();
     pts.forEach((p, i) => { if (i === 0) c.moveTo(X(p[0]), Y(p[1])); else c.lineTo(X(p[0]), Y(p[1])); });
-    c.strokeStyle = '#F2994A';
-    c.lineWidth = 2;
+    c.shadowColor = '#F2994A';
+    c.shadowBlur = 16;
+    c.strokeStyle = '#FFB26B';
+    c.lineWidth = 2.6;
+    c.lineJoin = 'round';
     c.stroke();
+    c.shadowBlur = 0;
     pts.forEach((p) => {
-      c.beginPath(); c.arc(X(p[0]), Y(p[1]), 3, 0, Math.PI * 2);
-      c.fillStyle = '#0B1220'; c.fill();
-      c.strokeStyle = '#F2994A'; c.stroke();
+      c.beginPath(); c.arc(X(p[0]), Y(p[1]), 5, 0, Math.PI * 2);
+      c.fillStyle = '#FFB26B'; c.fill();
+      c.beginPath(); c.arc(X(p[0]), Y(p[1]), 2.2, 0, Math.PI * 2);
+      c.fillStyle = '#fff8e8'; c.fill();
     });
   }
 
@@ -1381,22 +1471,38 @@ registerProcessor('moog-ladder', MoogLadderProcessor);
       scopeRaf = requestAnimationFrame(loop);
       const pr = Math.min(devicePixelRatio || 1, 2);
       const w = cnv.clientWidth || 200;
-      const h = 92;
+      const h = 118;
       cnv.width = w * pr; cnv.height = h * pr;
       const c = cnv.getContext('2d');
       c.setTransform(pr, 0, 0, pr, 0, 0);
-      c.fillStyle = 'rgba(5,10,8,0.35)';
-      c.fillRect(0, 0, w, h);
+      crtBg(c, w, h);
       analyser.getByteTimeDomainData(buf);
       c.beginPath();
-      c.strokeStyle = '#F2994A';
-      c.lineWidth = 1.5;
       for (let i = 0; i < buf.length; i++) {
         const x = (i / (buf.length - 1)) * w;
-        const y = (buf[i] / 255) * h;
+        const y = (buf[i] / 255) * (h - 8) + 4;
         if (i === 0) c.moveTo(x, y); else c.lineTo(x, y);
       }
+      c.lineTo(w, h / 2);
+      c.lineTo(0, h / 2);
+      c.closePath();
+      const fill = c.createLinearGradient(0, 0, 0, h);
+      fill.addColorStop(0, 'rgba(255,178,107,0.22)');
+      fill.addColorStop(1, 'rgba(242,153,74,0)');
+      c.fillStyle = fill;
+      c.fill();
+      c.beginPath();
+      for (let i = 0; i < buf.length; i++) {
+        const x = (i / (buf.length - 1)) * w;
+        const y = (buf[i] / 255) * (h - 8) + 4;
+        if (i === 0) c.moveTo(x, y); else c.lineTo(x, y);
+      }
+      c.shadowColor = '#F2994A';
+      c.shadowBlur = 18;
+      c.strokeStyle = '#FFB26B';
+      c.lineWidth = 2.2;
       c.stroke();
+      c.shadowBlur = 0;
     };
     cancelAnimationFrame(scopeRaf);
     loop();
