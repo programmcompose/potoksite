@@ -605,7 +605,7 @@ body.tour-on .chassis:has(.mod.spotlight) { position: relative; z-index: 4; }
   <header>
     <div>
       <h1><i data-lucide="audio-lines"></i> Аналоговый синтезатор</h1>
-      <p>Субтрактивный синтез как у Minimoog: богатая волна, лестничный фильтр, ADSR. Крути блоки слева направо — так идёт звук.</p>
+      <p>Субтрактивный синтез как у Minimoog: волна, лестничный фильтр, ADSR. Несколько нот сразу — можно играть аккорды.</p>
     </div>
     <div class="header-actions">
       <button class="btn btn-ghost" id="tourReplay" type="button">
@@ -734,15 +734,15 @@ body.tour-on .chassis:has(.mod.spotlight) { position: relative; z-index: 4; }
       </div>
       <p class="hint">
         Клавиши <kbd>A</kbd>–<kbd>K</kbd> белые · <kbd>W</kbd> <kbd>E</kbd> <kbd>T</kbd> <kbd>Y</kbd> <kbd>U</kbd> чёрные ·
-        <kbd>Z</kbd>/<kbd>X</kbd> октава · нужна английская раскладка
+        <kbd>Z</kbd>/<kbd>X</kbd> октава · можно зажимать несколько нот · нужна английская раскладка
       </p>
     </div>
     <div class="keyboard" id="keyboard"></div>
   </div>
 
   <p class="course-link">
-    Теория синтеза → <a href="../../etap5/sintez-zvuka.html">Этап 5: Синтез звука</a>
-    · фильтры в DAW → <a href="../../etap3/vst-sintezatory.html">VST синтезаторы</a>
+    Теория синтеза → <a href="../../etap5/sintez-zvuka/">Этап 5: Синтез звука</a>
+    · фильтры в DAW → <a href="../../etap3/vst-sintezatory/">VST синтезаторы</a>
   </p>
 </div>
 
@@ -831,20 +831,22 @@ body.tour-on .chassis:has(.mod.spotlight) { position: relative; z-index: 4; }
     },
     {
       title: 'Играй',
-      body: 'Клавиатура внизу или клавиши A–K. Возьми пресет Bass или Acid и крути только Cutoff и Resonance — сразу услышишь, зачем фильтр. Туториал можно открыть снова кнопкой сверху.',
+      body: 'Клавиатура внизу или клавиши A–K. Можно зажимать несколько нот сразу — синтезатор полифонический. Возьми пресет Pad и сыграй аккорд.',
       highlight: 'keysBar'
     }
   ];
 
   const state = Object.assign({ octave: 3, wave: 'sawtooth' }, PRESETS.init);
   const knobs = {};
-  const held = [];
+  const voices = new Map();
+  const voiceAge = [];
   const activeKeys = new Set();
+  const MAX_VOICES = 8;
 
   let ctx = null;
-  let nodes = null;
-  let currentMidi = 48;
-  let gateOn = false;
+  let shared = null;
+  let useWorklet = false;
+  let lastHz = 261.63;
   let tourIndex = 0;
   let scopeRaf = 0;
 
@@ -1023,9 +1025,11 @@ registerProcessor('moog-ladder', MoogLadderProcessor);
       b.classList.toggle('active', b.dataset.wave === w);
     });
     document.getElementById('whyOsc').textContent = WAVE_WHY[w];
-    if (nodes) {
-      nodes.osc1.type = w;
-      nodes.osc2.type = w === 'sine' ? 'triangle' : w;
+    if (shared) {
+      voices.forEach((v) => {
+        v.osc1.type = w;
+        v.osc2.type = w === 'sine' ? 'triangle' : w;
+      });
     }
   }
 
@@ -1129,51 +1133,22 @@ registerProcessor('moog-ladder', MoogLadderProcessor);
   }
 
   async function ensureAudio() {
-    if (nodes) return;
+    if (shared) {
+      if (ctx.state === 'suspended') await ctx.resume();
+      return;
+    }
     ctx = new (window.AudioContext || window.webkitAudioContext)();
     if (ctx.state === 'suspended') await ctx.resume();
 
-    let filterIn, filterOut, cutoffParam, resParam, driveParam;
     try {
       const blob = new Blob([WORKLET_SRC], { type: 'application/javascript' });
       const url = URL.createObjectURL(blob);
       await ctx.audioWorklet.addModule(url);
       URL.revokeObjectURL(url);
-      const node = new AudioWorkletNode(ctx, 'moog-ladder', {
-        numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [1]
-      });
-      filterIn = filterOut = node;
-      cutoffParam = node.parameters.get('cutoff');
-      resParam = node.parameters.get('resonance');
-      driveParam = node.parameters.get('drive');
-      cutoffParam.value = 0;
+      useWorklet = true;
     } catch (err) {
-      const stages = [];
-      for (let i = 0; i < 4; i++) {
-        const f = ctx.createBiquadFilter();
-        f.type = 'lowpass';
-        f.Q.value = 0.5;
-        stages.push(f);
-      }
-      stages[0].connect(stages[1]); stages[1].connect(stages[2]); stages[2].connect(stages[3]);
-      stages.forEach((s) => { s.frequency.value = 0; });
-      filterIn = stages[0];
-      filterOut = stages[3];
-      cutoffParam = stages.map((s) => s.frequency);
-      resParam = stages[0].Q;
-      driveParam = null;
+      useWorklet = false;
     }
-
-    const osc1 = ctx.createOscillator();
-    const osc2 = ctx.createOscillator();
-    osc1.type = state.wave;
-    osc2.type = state.wave === 'sine' ? 'triangle' : state.wave;
-    osc1.frequency.value = midiToHz(48);
-    osc2.frequency.value = midiToHz(48);
-
-    const g1 = ctx.createGain(); g1.gain.value = 0.32;
-    const g2 = ctx.createGain(); g2.gain.value = 0.05;
-    const nGain = ctx.createGain(); nGain.gain.value = 0;
 
     const noiseBuf = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
     const nd = noiseBuf.getChannelData(0);
@@ -1182,144 +1157,244 @@ registerProcessor('moog-ladder', MoogLadderProcessor);
     noise.buffer = noiseBuf;
     noise.loop = true;
 
-    const mix = ctx.createGain(); mix.gain.value = 1;
-    osc1.connect(g1); g1.connect(mix);
-    osc2.connect(g2); g2.connect(mix);
-    noise.connect(nGain); nGain.connect(mix);
-    mix.connect(filterIn);
-
     const cutoffBase = ctx.createConstantSource();
     cutoffBase.offset.value = state.cutoff;
-    const envCv = ctx.createGain(); envCv.gain.value = 0;
-    const envSrc = ctx.createConstantSource(); envSrc.offset.value = 1;
-    envSrc.connect(envCv);
-    const lfo = ctx.createOscillator(); lfo.type = 'triangle'; lfo.frequency.value = state.lfoRate;
-    const lfoGain = ctx.createGain(); lfoGain.gain.value = 0;
+    const lfo = ctx.createOscillator();
+    lfo.type = 'triangle';
+    lfo.frequency.value = state.lfoRate;
+    const lfoGain = ctx.createGain();
+    lfoGain.gain.value = 0;
     lfo.connect(lfoGain);
 
-    const connectCutoff = (param) => {
-      cutoffBase.connect(param);
-      envCv.connect(param);
-      lfoGain.connect(param);
-    };
-    if (Array.isArray(cutoffParam)) cutoffParam.forEach(connectCutoff);
-    else connectCutoff(cutoffParam);
-
-    const vca = ctx.createGain(); vca.gain.value = 0.0001;
-    const master = ctx.createGain(); master.gain.value = state.volume;
+    const bus = ctx.createGain();
+    bus.gain.value = 0.55;
+    const master = ctx.createGain();
+    master.gain.value = state.volume;
     const analyser = ctx.createAnalyser();
     analyser.fftSize = 1024;
     analyser.smoothingTimeConstant = 0.4;
-
-    filterOut.connect(vca);
-    vca.connect(master);
+    bus.connect(master);
     master.connect(analyser);
     analyser.connect(ctx.destination);
 
-    osc1.start(); osc2.start(); noise.start(); cutoffBase.start(); envSrc.start(); lfo.start();
+    noise.start();
+    cutoffBase.start();
+    lfo.start();
 
-    nodes = {
-      osc1, osc2, g1, g2, nGain, cutoffBase, envCv, lfo, lfoGain, vca, master, analyser,
-      resParam, driveParam, stagesCutoff: Array.isArray(cutoffParam) ? cutoffParam : null
-    };
+    shared = { noise, cutoffBase, lfo, lfoGain, bus, master, analyser };
     applyParams();
     startScope();
   }
 
+  function createLadder() {
+    if (useWorklet) {
+      const node = new AudioWorkletNode(ctx, 'moog-ladder', {
+        numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [1]
+      });
+      const cutoff = node.parameters.get('cutoff');
+      const res = node.parameters.get('resonance');
+      const drive = node.parameters.get('drive');
+      cutoff.value = 0;
+      res.value = state.res;
+      drive.value = state.drive;
+      return {
+        input: node,
+        output: node,
+        params: [cutoff],
+        setRes(v, t) { res.setTargetAtTime(v, t, 0.03); },
+        setDrive(v, t) { drive.setTargetAtTime(v, t, 0.03); },
+        dispose() { try { node.disconnect(); } catch (e) {} }
+      };
+    }
+    const stages = [];
+    for (let i = 0; i < 4; i++) {
+      const f = ctx.createBiquadFilter();
+      f.type = 'lowpass';
+      f.frequency.value = 0;
+      f.Q.value = i === 0 ? (0.4 + state.res * 12) : 0.5;
+      stages.push(f);
+    }
+    stages[0].connect(stages[1]);
+    stages[1].connect(stages[2]);
+    stages[2].connect(stages[3]);
+    return {
+      input: stages[0],
+      output: stages[3],
+      params: stages.map((s) => s.frequency),
+      setRes(v, t) { stages[0].Q.setTargetAtTime(0.4 + v * 12, t, 0.03); },
+      setDrive() {},
+      dispose() { stages.forEach((s) => { try { s.disconnect(); } catch (e) {} }); }
+    };
+  }
+
+  function connectCutoff(ladder) {
+    ladder.params.forEach((p) => {
+      shared.cutoffBase.connect(p);
+      shared.lfoGain.connect(p);
+    });
+  }
+
+  function disconnectCutoff(ladder) {
+    ladder.params.forEach((p) => {
+      try { shared.cutoffBase.disconnect(p); } catch (e) {}
+      try { shared.lfoGain.disconnect(p); } catch (e) {}
+    });
+  }
+
+  function disposeVoice(voice) {
+    if (voice.dead) return;
+    voice.dead = true;
+    if (voice.timer) clearTimeout(voice.timer);
+    try { voice.osc1.stop(); } catch (e) {}
+    try { voice.osc2.stop(); } catch (e) {}
+    try { shared.noise.disconnect(voice.nGain); } catch (e) {}
+    ['osc1', 'osc2', 'g1', 'g2', 'nGain', 'mix', 'vca', 'envCv', 'envSrc'].forEach((k) => {
+      try { voice[k].disconnect(); } catch (e) {}
+    });
+    disconnectCutoff(voice.ladder);
+    try { voice.envCv.disconnect(); } catch (e) {}
+    voice.ladder.dispose();
+    voices.delete(voice.midi);
+    const i = voiceAge.indexOf(voice.midi);
+    if (i !== -1) voiceAge.splice(i, 1);
+    if (voices.size === 0) document.getElementById('ledOsc').classList.remove('on');
+  }
+
+  function stealOldest() {
+    while (voices.size >= MAX_VOICES && voiceAge.length) {
+      const old = voiceAge.shift();
+      const v = voices.get(old);
+      if (v) disposeVoice(v);
+    }
+  }
+
+  function triggerVoiceEnv(voice) {
+    const now = ctx.currentTime;
+    const a = state.attack, d = state.decay, s = state.sustain;
+    const vca = voice.vca.gain;
+    vca.cancelScheduledValues(now);
+    vca.setValueAtTime(0.0001, now);
+    vca.linearRampToValueAtTime(1, now + a);
+    vca.linearRampToValueAtTime(Math.max(s, 0.0001), now + a + d);
+    const envHz = state.envAmt * Math.max(80, 9000 - state.cutoff);
+    const eg = voice.envCv.gain;
+    eg.cancelScheduledValues(now);
+    eg.setValueAtTime(0, now);
+    eg.linearRampToValueAtTime(envHz, now + a);
+    eg.linearRampToValueAtTime(envHz * s, now + a + d);
+  }
+
+  function releaseVoice(voice) {
+    if (!voice || voice.releasing) return;
+    voice.releasing = true;
+    const now = ctx.currentTime;
+    const r = Math.max(state.release, 0.02);
+    const vca = voice.vca.gain;
+    vca.cancelScheduledValues(now);
+    vca.setValueAtTime(Math.max(vca.value, 0.0001), now);
+    vca.exponentialRampToValueAtTime(0.0001, now + r);
+    const eg = voice.envCv.gain;
+    eg.cancelScheduledValues(now);
+    eg.setValueAtTime(Math.max(eg.value, 0), now);
+    eg.linearRampToValueAtTime(0, now + r);
+    voice.timer = setTimeout(() => disposeVoice(voice), r * 1000 + 80);
+  }
+
+  function spawnVoice(midi) {
+    const existing = voices.get(midi);
+    if (existing) disposeVoice(existing);
+    stealOldest();
+
+    const hz = midiToHz(midi);
+    const now = ctx.currentTime;
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    osc1.type = state.wave;
+    osc2.type = state.wave === 'sine' ? 'triangle' : state.wave;
+    const glide = state.glide > 0.001 ? state.glide : 0.006;
+    const from = Math.max(lastHz, 20);
+    osc1.frequency.setValueAtTime(from, now);
+    osc2.frequency.setValueAtTime(from, now);
+    osc1.frequency.exponentialRampToValueAtTime(Math.max(hz, 20), now + glide);
+    osc2.frequency.exponentialRampToValueAtTime(Math.max(hz, 20), now + glide);
+    osc2.detune.value = state.detune;
+
+    const g1 = ctx.createGain(); g1.gain.value = 0.22;
+    const g2 = ctx.createGain(); g2.gain.value = state.osc2Mix * 0.22;
+    const nGain = ctx.createGain(); nGain.gain.value = state.noise * 0.18;
+    const mix = ctx.createGain(); mix.gain.value = 1;
+    osc1.connect(g1); g1.connect(mix);
+    osc2.connect(g2); g2.connect(mix);
+    shared.noise.connect(nGain); nGain.connect(mix);
+
+    const ladder = createLadder();
+    mix.connect(ladder.input);
+    connectCutoff(ladder);
+
+    const envSrc = ctx.createConstantSource();
+    envSrc.offset.value = 1;
+    const envCv = ctx.createGain();
+    envCv.gain.value = 0;
+    envSrc.connect(envCv);
+    ladder.params.forEach((p) => envCv.connect(p));
+
+    const vca = ctx.createGain();
+    vca.gain.value = 0.0001;
+    ladder.output.connect(vca);
+    vca.connect(shared.bus);
+
+    osc1.start();
+    osc2.start();
+    envSrc.start();
+
+    const voice = { midi, osc1, osc2, g1, g2, nGain, mix, ladder, envSrc, envCv, vca, dead: false, releasing: false, timer: null };
+    voices.set(midi, voice);
+    voiceAge.push(midi);
+    lastHz = hz;
+    triggerVoiceEnv(voice);
+    return voice;
+  }
+
   function applyParams() {
-    if (!nodes) {
+    if (!shared) {
       drawFilter();
       drawADSR();
       return;
     }
     const now = ctx.currentTime;
-    nodes.g2.gain.setTargetAtTime(state.osc2Mix * 0.32, now, 0.03);
-    nodes.osc2.detune.setTargetAtTime(state.detune, now, 0.03);
-    nodes.nGain.gain.setTargetAtTime(state.noise * 0.25, now, 0.03);
-    nodes.cutoffBase.offset.setTargetAtTime(state.cutoff, now, 0.03);
-    if (nodes.resParam) {
-      if (nodes.stagesCutoff) nodes.resParam.setTargetAtTime(0.4 + state.res * 12, now, 0.03);
-      else nodes.resParam.setTargetAtTime(state.res, now, 0.03);
-    }
-    if (nodes.driveParam) nodes.driveParam.setTargetAtTime(state.drive, now, 0.03);
-    nodes.lfo.frequency.setTargetAtTime(state.lfoRate, now, 0.03);
-    nodes.lfoGain.gain.setTargetAtTime(state.lfoAmt * state.cutoff * 0.7, now, 0.04);
-    nodes.master.gain.setTargetAtTime(state.volume, now, 0.03);
+    shared.cutoffBase.offset.setTargetAtTime(state.cutoff, now, 0.03);
+    shared.lfo.frequency.setTargetAtTime(state.lfoRate, now, 0.03);
+    shared.lfoGain.gain.setTargetAtTime(state.lfoAmt * state.cutoff * 0.7, now, 0.04);
+    shared.master.gain.setTargetAtTime(state.volume, now, 0.03);
+    voices.forEach((v) => {
+      if (v.dead) return;
+      v.osc1.type = state.wave;
+      v.osc2.type = state.wave === 'sine' ? 'triangle' : state.wave;
+      v.g2.gain.setTargetAtTime(state.osc2Mix * 0.22, now, 0.03);
+      v.osc2.detune.setTargetAtTime(state.detune, now, 0.03);
+      v.nGain.gain.setTargetAtTime(state.noise * 0.18, now, 0.03);
+      v.ladder.setRes(state.res, now);
+      v.ladder.setDrive(state.drive, now);
+    });
     drawFilter();
     drawADSR();
     Object.keys(knobs).forEach((k) => knobs[k].paint());
   }
 
-  function triggerEnv() {
-    if (!nodes) return;
-    const now = ctx.currentTime;
-    const a = state.attack, d = state.decay, s = state.sustain, r = state.release;
-    const vca = nodes.vca.gain;
-    vca.cancelScheduledValues(now);
-    vca.setValueAtTime(Math.max(vca.value, 0.0001), now);
-    vca.linearRampToValueAtTime(1, now + a);
-    vca.linearRampToValueAtTime(Math.max(s, 0.0001), now + a + d);
-
-    const envHz = state.envAmt * Math.max(80, 9000 - state.cutoff);
-    const eg = nodes.envCv.gain;
-    eg.cancelScheduledValues(now);
-    eg.setValueAtTime(Math.max(eg.value, 0), now);
-    eg.linearRampToValueAtTime(envHz, now + a);
-    eg.linearRampToValueAtTime(envHz * s, now + a + d);
-  }
-
-  function releaseEnv() {
-    if (!nodes) return;
-    const now = ctx.currentTime;
-    const r = state.release;
-    const vca = nodes.vca.gain;
-    vca.cancelScheduledValues(now);
-    vca.setValueAtTime(Math.max(vca.value, 0.0001), now);
-    vca.exponentialRampToValueAtTime(0.0001, now + r);
-    const eg = nodes.envCv.gain;
-    eg.cancelScheduledValues(now);
-    eg.setValueAtTime(Math.max(eg.value, 0), now);
-    eg.linearRampToValueAtTime(0, now + r);
-  }
-
-  function setPitch(midi, glide) {
-    if (!nodes) return;
-    currentMidi = midi;
-    const hz = midiToHz(midi);
-    const now = ctx.currentTime;
-    const t = glide && state.glide > 0.001 ? state.glide : 0.008;
-    nodes.osc1.frequency.cancelScheduledValues(now);
-    nodes.osc2.frequency.cancelScheduledValues(now);
-    nodes.osc1.frequency.setValueAtTime(nodes.osc1.frequency.value, now);
-    nodes.osc2.frequency.setValueAtTime(nodes.osc2.frequency.value, now);
-    nodes.osc1.frequency.exponentialRampToValueAtTime(Math.max(hz, 20), now + t);
-    nodes.osc2.frequency.exponentialRampToValueAtTime(Math.max(hz, 20), now + t);
-    document.getElementById('noteDisplay').textContent = midiName(midi);
-  }
-
   async function noteOn(midi) {
     await ensureAudio();
-    if (held.indexOf(midi) === -1) held.push(midi);
-    setPitch(midi, gateOn);
-    triggerEnv();
-    gateOn = true;
+    spawnVoice(midi);
     document.getElementById('ledOsc').classList.add('on');
+    document.getElementById('noteDisplay').textContent = midiName(midi);
     const el = keyEl(midi);
     if (el) el.classList.add('pressed');
   }
 
   function noteOff(midi) {
-    const i = held.indexOf(midi);
-    if (i !== -1) held.splice(i, 1);
     const el = keyEl(midi);
     if (el) el.classList.remove('pressed');
-    if (held.length === 0) {
-      releaseEnv();
-      gateOn = false;
-      document.getElementById('ledOsc').classList.remove('on');
-    } else {
-      setPitch(held[held.length - 1], true);
-    }
+    const voice = voices.get(midi);
+    if (voice) releaseVoice(voice);
   }
 
   function loadPreset(id) {
@@ -1465,7 +1540,7 @@ registerProcessor('moog-ladder', MoogLadderProcessor);
 
   function startScope() {
     const cnv = document.getElementById('scopeCanvas');
-    const analyser = nodes.analyser;
+    const analyser = shared.analyser;
     const buf = new Uint8Array(analyser.fftSize);
     const loop = () => {
       scopeRaf = requestAnimationFrame(loop);
