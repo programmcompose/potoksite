@@ -400,7 +400,7 @@ body.tour-on .chassis:has(.mod.spotlight) { position: relative; z-index: 4; }
 .keys-bar {
   background: linear-gradient(180deg, #2a1a10 0%, #1a100a 100%);
   border-radius: 10px;
-  padding: 12px 12px 8px;
+  padding: 12px 0 8px;
   border: 1px solid #4a2e1a;
 }
 .keys-meta {
@@ -410,6 +410,7 @@ body.tour-on .chassis:has(.mod.spotlight) { position: relative; z-index: 4; }
   gap: 10px;
   margin-bottom: 8px;
   flex-wrap: wrap;
+  padding: 0 12px;
 }
 .note-big {
   font-size: 1.15em;
@@ -442,29 +443,46 @@ body.tour-on .chassis:has(.mod.spotlight) { position: relative; z-index: 4; }
 }
 
 .keyboard {
-  display: flex;
-  position: relative;
+  display: block;
+  width: 100%;
   height: 128px;
-  overflow-x: auto;
-  justify-content: center;
-  padding-bottom: 4px;
+  overflow: hidden;
+}
+.keyboard-rail {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 118px;
+  background: #d4ccb8;
+  overflow: hidden;
 }
 .white-key {
-  width: 32px;
+  flex: 1 1 0;
+  min-width: 0;
   height: 118px;
   background: linear-gradient(180deg, #f7f4ea 0%, #e6e0d0 88%, #cfc8b4 100%);
-  border: 1px solid #9a9280;
-  border-radius: 0 0 5px 5px;
+  border: none;
+  box-shadow: inset -1px 0 0 #9a9280, inset 0 -8px 14px rgba(0,0,0,0.12);
   position: relative;
   z-index: 1;
   cursor: pointer;
-  box-shadow: inset 0 -6px 10px rgba(0,0,0,0.08), 0 3px 4px rgba(0,0,0,0.3);
 }
 .white-key:hover { background: #fffaf0; }
 .white-key.pressed {
   background: linear-gradient(180deg, #e8c090 0%, var(--accent-orange) 100%);
-  height: 116px;
-  margin-top: 2px;
+}
+.white-key.in-map {
+  box-shadow: inset 0 -4px 0 var(--accent-orange), inset 0 -6px 10px rgba(0,0,0,0.08);
+}
+.oct-mark {
+  position: absolute;
+  bottom: 22px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.48em;
+  font-weight: 700;
+  color: #8a8070;
+  pointer-events: none;
 }
 .black-key {
   width: 20px;
@@ -477,11 +495,12 @@ body.tour-on .chassis:has(.mod.spotlight) { position: relative; z-index: 4; }
   cursor: pointer;
   box-shadow: inset 0 -3px 4px rgba(255,255,255,0.08), 0 3px 8px rgba(0,0,0,0.5);
 }
+.black-key.in-map {
+  box-shadow: inset 0 -3px 0 var(--accent-orange), inset 0 -3px 4px rgba(255,255,255,0.08), 0 3px 8px rgba(0,0,0,0.5);
+}
 .black-key:hover { background: #2a2a2a; }
 .black-key.pressed {
   background: var(--accent-orange);
-  height: 72px;
-  margin-top: 2px;
 }
 .key-lab {
   position: absolute;
@@ -559,9 +578,10 @@ body.tour-on .chassis:has(.mod.spotlight) { position: relative; z-index: 4; }
   body { padding: 8px; }
   .mods { grid-template-columns: 1fr; }
   header h1 { font-size: 1.15em; }
-  .white-key { width: 28px; height: 100px; }
-  .black-key { width: 18px; height: 62px; }
-  .keyboard { height: 110px; justify-content: flex-start; }
+  .white-key { height: 100px; }
+  .black-key { height: 62px; }
+  .keyboard { height: 110px; }
+  .keyboard-rail { height: 100px; }
   .flow-step { min-width: 120px; }
 }
 </style>
@@ -991,40 +1011,81 @@ registerProcessor('moog-ladder', MoogLadderProcessor);
     }
   }
 
+  function mappedStartMidi() {
+    return 12 * (state.octave + 1);
+  }
+
+  function visibleOctaves() {
+    const wrap = document.getElementById('keyboard');
+    const w = wrap.clientWidth || 800;
+    return Math.max(2, Math.min(6, Math.floor(w / (7 * 22))));
+  }
+
+  function keyboardStartMidi(octCount) {
+    const mapped = mappedStartMidi();
+    let start = mapped - 12;
+    const minStart = 24;
+    const maxStart = 108 - octCount * 12;
+    if (start < minStart) start = minStart;
+    if (start > maxStart) start = Math.max(minStart, maxStart);
+    return Math.round(start / 12) * 12;
+  }
+
   function buildKeyboard() {
     const wrap = document.getElementById('keyboard');
     wrap.innerHTML = '';
-    const start = 12 * (state.octave + 1);
-    const whites = [];
-    for (let oct = 0; oct < 2; oct++) {
-      WHITE.forEach((semi) => whites.push({ midi: start + oct * 12 + semi, semi }));
+    const rail = document.createElement('div');
+    rail.className = 'keyboard-rail';
+    wrap.appendChild(rail);
+
+    const octCount = visibleOctaves();
+    const start = keyboardStartMidi(octCount);
+    const mapStart = mappedStartMidi();
+
+    for (let oct = 0; oct < octCount; oct++) {
+      WHITE.forEach((semi) => {
+        const midi = start + oct * 12 + semi;
+        const el = document.createElement('div');
+        el.className = 'white-key';
+        el.dataset.midi = String(midi);
+        const local = midi - mapStart;
+        if (local >= 0 && local <= 12) el.classList.add('in-map');
+        if (COMP_LABELS[local] !== undefined) {
+          const lab = document.createElement('span');
+          lab.className = 'key-lab';
+          lab.textContent = COMP_LABELS[local];
+          el.appendChild(lab);
+        }
+        if (midi % 12 === 0) {
+          const mark = document.createElement('span');
+          mark.className = 'oct-mark';
+          mark.textContent = midiName(midi);
+          el.appendChild(mark);
+        }
+        bindKeyEl(el, midi);
+        rail.appendChild(el);
+      });
     }
-    whites.forEach((w, i) => {
-      const el = document.createElement('div');
-      el.className = 'white-key';
-      el.dataset.midi = w.midi;
-      const local = w.midi - start;
-      if (COMP_LABELS[local] !== undefined) {
-        const lab = document.createElement('span');
-        lab.className = 'key-lab';
-        lab.textContent = COMP_LABELS[local];
-        el.appendChild(lab);
-      }
-      bindKeyEl(el, w.midi);
-      wrap.appendChild(el);
-    });
-    const whiteW = wrap.querySelector('.white-key').offsetWidth || 32;
+
+    rail.offsetWidth;
+    const whiteEls = rail.querySelectorAll('.white-key');
+    const whiteW = whiteEls[0] ? whiteEls[0].getBoundingClientRect().width : 32;
+    const blackW = Math.max(12, Math.min(22, whiteW * 0.62));
     const blacks = [1, 3, 6, 8, 10];
-    for (let oct = 0; oct < 2; oct++) {
+    for (let oct = 0; oct < octCount; oct++) {
       blacks.forEach((semi) => {
         const midi = start + oct * 12 + semi;
         const idx = WHITE.findIndex((s) => s > semi);
         const whitesBefore = oct * 7 + (idx === -1 ? 7 : idx);
+        const prev = whiteEls[whitesBefore - 1];
+        if (!prev) return;
         const el = document.createElement('div');
         el.className = 'black-key';
-        el.dataset.midi = midi;
-        el.style.left = (whitesBefore * whiteW - 10) + 'px';
-        const local = midi - start;
+        el.dataset.midi = String(midi);
+        el.style.width = blackW + 'px';
+        el.style.left = (prev.offsetLeft + prev.offsetWidth - blackW / 2) + 'px';
+        const local = midi - mapStart;
+        if (local >= 0 && local <= 12) el.classList.add('in-map');
         if (COMP_LABELS[local]) {
           const lab = document.createElement('span');
           lab.className = 'key-lab';
@@ -1032,10 +1093,9 @@ registerProcessor('moog-ladder', MoogLadderProcessor);
           el.appendChild(lab);
         }
         bindKeyEl(el, midi);
-        wrap.appendChild(el);
+        rail.appendChild(el);
       });
     }
-    wrap.style.minWidth = (14 * whiteW) + 'px';
   }
 
   function bindKeyEl(el, midi) {
@@ -1459,7 +1519,12 @@ registerProcessor('moog-ladder', MoogLadderProcessor);
     try { seen = localStorage.getItem('iy-analog-synth-tutorial') === '1'; } catch (e) {}
     if (!seen) showTour(0);
 
-    window.addEventListener('resize', () => { drawFilter(); drawADSR(); buildKeyboard(); });
+    window.addEventListener('resize', () => {
+      drawFilter();
+      drawADSR();
+      clearTimeout(window.__kbTimer);
+      window.__kbTimer = setTimeout(buildKeyboard, 80);
+    });
     if (typeof lucide !== 'undefined') {
       lucide.createIcons({ attrs: { 'stroke-width': 1.8, width: 18, height: 18 } });
     }
