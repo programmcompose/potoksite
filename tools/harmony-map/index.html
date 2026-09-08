@@ -1,0 +1,1568 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Кварто-квинтовый круг — Интерактивный инструмент</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,700;0,9..144,800;1,9..144,500;1,9..144,700&family=Manrope:wght@400;500;600;700&family=Unbounded:wght@700;900&display=swap');
+
+:root {
+  --bg-main: #0B1220;
+  --bg-sidebar: #0F172A;
+  --bg-card: #111827;
+  --bg-hover: #1F2937;
+  --text-main: #F3EDE2;
+  --text-secondary: #9A9286;
+  --text-heading: #FFF8EE;
+  --accent-orange: #F2994A;
+  --accent-orange-hover: #FFB26B;
+  --accent-blue: #3B82F6;
+  --major: #F6C177;
+  --major-hot: #F2994A;
+  --major-glow: rgba(242, 153, 74, 0.28);
+  --minor: #C4B5FD;
+  --minor-deep: #A78BFA;
+  --minor-glow: rgba(167, 139, 250, 0.28);
+  --path: #FFE0A3;
+  --success: #7DCEA0;
+  --danger: #E07A7A;
+  --warning: #F6C177;
+  --border-subtle: rgba(255, 248, 238, 0.06);
+  --border-default: rgba(255, 248, 238, 0.1);
+  --radius: 18px;
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.42);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Manrope', system-ui, sans-serif;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% -10%, rgba(242, 153, 74, 0.16), transparent 52%),
+    radial-gradient(ellipse 45% 40% at 100% 100%, rgba(167, 139, 250, 0.1), transparent 50%),
+    radial-gradient(ellipse 35% 30% at 0% 80%, rgba(242, 153, 74, 0.06), transparent 45%),
+    var(--bg-main);
+  color: var(--text-main);
+  min-height: 100vh;
+  padding: 20px 16px 40px;
+  overflow-x: hidden;
+}
+
+.container { max-width: 1080px; margin: 0 auto; }
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 18px;
+  color: var(--accent-orange);
+  text-decoration: none;
+  font-size: 0.82em;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: color 0.2s, gap 0.2s;
+}
+.back-link i { width: 16px; height: 16px; color: var(--accent-orange); }
+.back-link:hover { color: var(--accent-orange-hover); gap: 10px; }
+
+header {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+header h1 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(1.35rem, 3.4vw, 2.05rem);
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  background: linear-gradient(120deg, #FFE7C2 0%, var(--major-hot) 42%, #E8D5FF 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 8px;
+}
+
+header p {
+  font-size: 0.95em;
+  color: var(--text-secondary);
+  max-width: 560px;
+  margin: 0 auto;
+  line-height: 1.55;
+}
+
+.mode-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 18px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.mode-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border-radius: 999px;
+  border: 1px solid var(--border-default);
+  background: rgba(17, 24, 39, 0.55);
+  color: var(--text-main);
+  font-size: 0.86em;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+}
+.mode-tab i { width: 16px; height: 16px; color: var(--accent-orange); }
+.mode-tab:hover {
+  border-color: rgba(242, 153, 74, 0.45);
+  background: var(--bg-hover);
+  transform: translateY(-1px);
+}
+.mode-tab.active {
+  background: linear-gradient(135deg, rgba(242, 153, 74, 0.95), #E08A3E);
+  color: #1A1208;
+  border-color: transparent;
+  box-shadow: 0 8px 24px rgba(242, 153, 74, 0.28);
+}
+.mode-tab.active i { color: #1A1208; }
+
+.stage {
+  position: relative;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(242, 153, 74, 0.08), transparent 42%),
+    linear-gradient(180deg, rgba(17, 24, 39, 0.82), rgba(11, 18, 32, 0.92));
+  border: 1px solid var(--border-subtle);
+  border-radius: 28px;
+  padding: 18px 12px 10px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.stage::before {
+  content: '';
+  position: absolute;
+  inset: -40% -20% auto;
+  height: 70%;
+  background: radial-gradient(circle, rgba(242, 153, 74, 0.12), transparent 68%);
+  pointer-events: none;
+}
+
+.circle-wrap {
+  display: flex;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+#fifthsCircle {
+  max-width: min(100%, 620px);
+  height: auto;
+  cursor: pointer;
+  filter: drop-shadow(0 12px 40px rgba(0, 0, 0, 0.35));
+}
+
+.stage-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  padding: 4px 18px 12px;
+  position: relative;
+  z-index: 1;
+}
+
+.legend {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+  font-size: 0.75em;
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.swatch {
+  width: 9px; height: 9px; border-radius: 50%;
+  box-shadow: 0 0 10px currentColor;
+}
+.swatch.major { background: var(--major); color: var(--major); }
+.swatch.minor { background: var(--minor); color: var(--minor); }
+.swatch.path { background: var(--path); color: var(--path); }
+
+.stage-hint {
+  font-size: 0.75em;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.panel {
+  background: rgba(17, 24, 39, 0.72);
+  backdrop-filter: blur(16px);
+  border-radius: var(--radius);
+  padding: 22px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-subtle);
+  animation: rise 0.45s ease;
+}
+
+@keyframes rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+.panel-title {
+  font-size: 0.72em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--text-secondary);
+  margin-bottom: 16px;
+}
+
+.chord-detail {
+  text-align: center;
+  min-height: 88px;
+}
+
+.chord-name {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(2.2rem, 5vw, 3.2rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  margin-bottom: 8px;
+  transition: color 0.3s, text-shadow 0.3s;
+}
+.chord-name.major {
+  color: var(--major);
+  text-shadow: 0 0 28px rgba(246, 193, 119, 0.28);
+}
+.chord-name.minor {
+  color: var(--minor);
+  font-style: italic;
+  text-shadow: 0 0 28px rgba(196, 181, 253, 0.28);
+}
+
+.chord-notes {
+  font-size: 0.92em;
+  margin: 8px 0 10px;
+  color: var(--major-hot);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.chord-emotion {
+  font-size: 0.95em;
+  color: var(--text-secondary);
+  line-height: 1.65;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.chord-relatives {
+  margin-top: 14px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.chord-relatives span {
+  display: inline-flex;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(255, 248, 238, 0.04);
+  border: 1px solid var(--border-subtle);
+  cursor: pointer;
+  transition: transform 0.15s, background 0.15s, border-color 0.15s;
+  font-size: 0.8em;
+  font-weight: 700;
+}
+.chord-relatives span:hover {
+  background: rgba(242, 153, 74, 0.12);
+  border-color: rgba(242, 153, 74, 0.35);
+  transform: translateY(-1px);
+  color: var(--text-heading);
+}
+
+.keyboard-row {
+  display: flex;
+  justify-content: center;
+  gap: 3px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+
+.key-btn {
+  width: 42px;
+  height: 64px;
+  border-radius: 0 0 8px 8px;
+  border: 1px solid var(--border-default);
+  background: linear-gradient(180deg, #1c2740, #121a2c);
+  color: var(--text-main);
+  font-size: 0.7em;
+  cursor: pointer;
+  transition: transform 0.12s, background 0.12s, box-shadow 0.12s;
+  font-family: inherit;
+  font-weight: 700;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 8px;
+}
+.key-btn:hover, .key-btn.active {
+  background: linear-gradient(180deg, var(--accent-orange-hover), var(--accent-orange));
+  color: #1A1208;
+  box-shadow: 0 6px 18px rgba(242, 153, 74, 0.35);
+  transform: translateY(2px);
+}
+.key-btn.black {
+  background: linear-gradient(180deg, #1a1a1a, #0a0a0a);
+  height: 42px;
+  width: 28px;
+  margin: 0 -7px;
+  z-index: 1;
+  border-color: rgba(255,255,255,0.06);
+}
+.key-btn.black:hover, .key-btn.black.active {
+  background: linear-gradient(180deg, var(--minor), var(--minor-deep));
+  color: #1A1208;
+}
+
+.key-hint {
+  text-align: center;
+  font-size: 0.75em;
+  color: var(--text-secondary);
+  margin-top: 10px;
+  opacity: 0.7;
+}
+
+.game-area { text-align: center; }
+
+.game-score {
+  display: flex;
+  justify-content: center;
+  gap: 36px;
+  margin-bottom: 20px;
+}
+.score-item { text-align: center; }
+.score-val {
+  font-family: 'Fraunces', serif;
+  font-size: 2.1em;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.score-label {
+  font-size: 0.7em;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--text-secondary);
+  font-weight: 700;
+}
+
+.game-prompt {
+  font-size: 1.08em;
+  font-weight: 600;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.game-options {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 10px;
+  max-width: 420px;
+  margin: 18px auto 0;
+}
+
+.game-btn {
+  padding: 14px;
+  border-radius: 14px;
+  border: 1px solid var(--border-default);
+  background: rgba(11, 18, 32, 0.7);
+  color: var(--text-main);
+  font-size: 0.95em;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s, background 0.2s;
+  font-family: inherit;
+}
+.game-btn:hover { border-color: var(--accent-orange); background: var(--bg-hover); transform: translateY(-1px); }
+.game-btn.correct {
+  border-color: var(--success);
+  background: rgba(125, 206, 160, 0.16);
+}
+.game-btn.wrong {
+  border-color: var(--danger);
+  background: rgba(224, 122, 122, 0.16);
+}
+.game-btn:disabled { opacity: 0.45; cursor: default; transform: none; }
+
+.journey {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px 4px;
+  min-height: 56px;
+  padding: 10px 12px 14px;
+  position: relative;
+  z-index: 1;
+}
+
+.journey-empty {
+  opacity: 0.4;
+  font-size: 0.88em;
+}
+
+.prog-chord {
+  padding: 8px 14px;
+  border-radius: 999px;
+  font-size: 0.88em;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid transparent;
+  font-family: 'Fraunces', serif;
+}
+.prog-chord.major-chord {
+  background: rgba(242, 153, 74, 0.12);
+  color: var(--major);
+  border-color: rgba(242, 153, 74, 0.28);
+}
+.prog-chord.minor-chord {
+  background: rgba(167, 139, 250, 0.12);
+  color: var(--minor);
+  border-color: rgba(167, 139, 250, 0.28);
+  font-style: italic;
+}
+.prog-chord:hover { transform: scale(1.06); }
+.prog-chord.now {
+  transform: scale(1.12);
+  box-shadow: 0 0 22px currentColor;
+}
+
+.chord-palette {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
+  gap: 8px;
+}
+
+.palette-btn {
+  padding: 11px 6px;
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  background: rgba(11, 18, 32, 0.55);
+  color: var(--text-main);
+  font-size: 0.84em;
+  cursor: pointer;
+  transition: transform 0.18s, box-shadow 0.18s, background 0.18s, border-color 0.18s;
+  font-family: 'Fraunces', serif;
+  font-weight: 700;
+}
+.palette-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0,0,0,0.28);
+}
+.palette-btn.major-p { border-color: rgba(242, 153, 74, 0.22); color: var(--major); }
+.palette-btn.major-p:hover { background: var(--major-glow); border-color: var(--major); }
+.palette-btn.minor-p { border-color: rgba(167, 139, 250, 0.22); color: var(--minor); font-style: italic; }
+.palette-btn.minor-p:hover { background: var(--minor-glow); border-color: var(--minor); }
+
+.actions {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 16px;
+}
+
+.play-prog-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, var(--accent-orange), #E08A3E);
+  color: #1A1208;
+  border: none;
+  border-radius: 999px;
+  font-size: 0.9em;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.play-prog-btn i { width: 16px; height: 16px; color: #1A1208; }
+.play-prog-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 26px rgba(242, 153, 74, 0.32);
+}
+.clear-btn {
+  background: rgba(255, 248, 238, 0.06) !important;
+  color: var(--text-main) !important;
+}
+.clear-btn i { color: var(--accent-orange) !important; }
+.clear-btn:hover { background: var(--bg-hover) !important; box-shadow: none !important; }
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(8px);
+  padding: 11px 22px;
+  border-radius: 999px;
+  font-size: 0.85em;
+  font-weight: 700;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transition: opacity 0.3s, transform 0.3s;
+  pointer-events: none;
+  z-index: 100;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast.success { background: var(--success); color: #102016; }
+.toast.error { background: var(--danger); color: #fff; }
+.toast.info { background: var(--accent-orange); color: #1A1208; }
+
+.course-link {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 0.82em;
+  color: var(--text-secondary);
+}
+.course-link a { color: var(--accent-orange); text-decoration: none; font-weight: 700; }
+.course-link a:hover { text-decoration: underline; }
+
+.hidden { display: none !important; }
+
+.audio-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(7, 11, 20, 0.82);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  backdrop-filter: blur(10px);
+}
+
+.audio-overlay-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 40px;
+  border-radius: 999px;
+  border: 1px solid rgba(242, 153, 74, 0.45);
+  background: linear-gradient(135deg, var(--accent-orange), #E08A3E);
+  color: #1A1208;
+  font-size: 1.05em;
+  font-weight: 800;
+  cursor: pointer;
+  font-family: inherit;
+  box-shadow: 0 0 50px rgba(242, 153, 74, 0.28);
+  transition: transform 0.2s;
+}
+.audio-overlay-btn i { width: 20px; height: 20px; color: #1A1208; }
+.audio-overlay-btn:active { transform: scale(0.96); }
+
+.progression-examples {
+  margin-top: 26px;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.progression-examples-title {
+  font-size: 0.95em;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 18px;
+  color: var(--text-heading);
+}
+
+.emotion-group { margin-bottom: 18px; }
+
+.emotion-header {
+  font-size: 0.78em;
+  font-weight: 800;
+  margin-bottom: 8px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.progression-item {
+  background: rgba(255, 248, 238, 0.025);
+  border-radius: 14px;
+  padding: 12px 14px;
+  margin-bottom: 7px;
+  border: 1px solid var(--border-subtle);
+  transition: background 0.2s, transform 0.2s, border-color 0.2s;
+  cursor: pointer;
+}
+.progression-item:hover {
+  background: rgba(242, 153, 74, 0.07);
+  border-color: rgba(242, 153, 74, 0.28);
+  transform: translateX(3px);
+}
+
+.prog-label {
+  font-size: 0.78em;
+  color: var(--text-secondary);
+  margin-bottom: 5px;
+  line-height: 1.45;
+}
+
+.prog-chords {
+  font-family: 'Fraunces', serif;
+  font-size: 1.12em;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--text-heading);
+}
+
+@media (max-width: 640px) {
+  body { padding: 12px 8px 32px; }
+  .panel { padding: 16px; }
+  .stage { border-radius: 20px; padding: 10px 6px 8px; }
+  .key-btn { width: 32px; height: 48px; font-size: 0.6em; }
+  .key-btn.black { width: 22px; height: 32px; }
+  .stage-meta { flex-direction: column; align-items: flex-start; padding: 4px 10px 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+<div class="container">
+  <a href="../index.html" class="back-link"><i data-lucide="arrow-left"></i> Все инструменты</a>
+  <header>
+    <h1>Кварто-квинтовый круг</h1>
+    <p>Слушайте аккорды и смотрите, как прогрессия путешествует по кругу — квинта, кварта, параллель</p>
+  </header>
+
+  <div class="mode-tabs">
+    <button class="mode-tab active" data-mode="explore"><i data-lucide="compass"></i> Круг</button>
+    <button class="mode-tab" data-mode="game"><i data-lucide="gamepad-2"></i> Игра</button>
+    <button class="mode-tab" data-mode="builder"><i data-lucide="music-4"></i> Прогрессии</button>
+  </div>
+
+  <div class="stage">
+    <div class="circle-wrap">
+      <canvas id="fifthsCircle" width="620" height="620"></canvas>
+    </div>
+    <div class="journey" id="progBuilder">
+      <span class="journey-empty">Соберите прогрессию — на круге появится золотой маршрут</span>
+    </div>
+    <div class="stage-meta">
+      <div class="legend">
+        <span><i class="swatch major"></i> Мажор</span>
+        <span><i class="swatch minor"></i> Минор</span>
+        <span><i class="swatch path"></i> Путь прогрессии</span>
+      </div>
+      <div class="stage-hint" id="stageHint">Нажмите аккорд на круге</div>
+    </div>
+  </div>
+
+  <div class="panel" id="explorePanel">
+    <div class="panel-title">Характер аккорда</div>
+    <div class="chord-detail" id="chordDetail">
+      <div class="chord-name" id="chordName" style="color:var(--text-secondary)">—</div>
+      <div class="chord-notes" id="chordNotes"></div>
+      <div class="chord-emotion" id="chordEmotion">Выберите аккорд на круге, чтобы услышать его и узнать характер</div>
+      <div class="chord-relatives" id="chordRelatives"></div>
+    </div>
+    <div class="keyboard-row" id="miniKeyboard"></div>
+    <div class="key-hint">Клавиатура: A S D F G H J — белые, W E T Y U — чёрные</div>
+  </div>
+
+  <div class="panel hidden" id="gamePanel">
+    <div class="panel-title">Угадай аккорд по звучанию</div>
+    <div class="game-area">
+      <div class="game-score">
+        <div class="score-item">
+          <div class="score-val" id="gameScore" style="color:var(--success)">0</div>
+          <div class="score-label">Очки</div>
+        </div>
+        <div class="score-item">
+          <div class="score-val" id="gameStreak" style="color:var(--warning)">0</div>
+          <div class="score-label">Серия</div>
+        </div>
+        <div class="score-item">
+          <div class="score-val" id="gameLevel" style="color:var(--minor)">1</div>
+          <div class="score-label">Уровень</div>
+        </div>
+      </div>
+      <div class="game-prompt" id="gamePrompt">Нажмите «Старт», чтобы начать</div>
+      <button class="play-prog-btn" id="gameStartBtn"><i data-lucide="play"></i> Старт</button>
+      <div class="game-options" id="gameOptions"></div>
+    </div>
+  </div>
+
+  <div class="panel hidden" id="builderPanel">
+    <div class="panel-title">Соберите или выберите прогрессию</div>
+    <div class="chord-palette" id="chordPalette"></div>
+    <div class="actions">
+      <button class="play-prog-btn" id="playProgBtn"><i data-lucide="play"></i> Играть путь</button>
+      <button class="play-prog-btn clear-btn" id="clearProgBtn"><i data-lucide="x"></i> Очистить</button>
+    </div>
+
+    <div class="progression-examples">
+      <div class="progression-examples-title">Примеры по эмоциям — нажмите, чтобы увидеть движение по кругу</div>
+
+      <div class="emotion-group">
+        <div class="emotion-header" style="color:var(--major)">Радость, энергия</div>
+        <div class="progression-item" data-prog="C,F,G,C">
+          <div class="prog-label">Классическая каденция — завершённость и сила</div>
+          <div class="prog-chords">I – IV – V – I</div>
+        </div>
+        <div class="progression-item" data-prog="C,G,Am,F">
+          <div class="prog-label">Популярнейшая поп-прогрессия, оптимистичная и динамичная</div>
+          <div class="prog-chords">I – V – vi – IV</div>
+        </div>
+        <div class="progression-item" data-prog="C,F,Am,G">
+          <div class="prog-label">Более лиричный вариант со светлой окраской</div>
+          <div class="prog-chords">I – IV – vi – V</div>
+        </div>
+      </div>
+
+      <div class="emotion-group">
+        <div class="emotion-header" style="color:var(--minor)">Грусть, меланхолия</div>
+        <div class="progression-item" data-prog="Am,F,C,G">
+          <div class="prog-label">Минорное начало задаёт грустный тон даже в мажоре</div>
+          <div class="prog-chords">vi – IV – I – V</div>
+        </div>
+        <div class="progression-item" data-prog="Am,Dm,E,Am">
+          <div class="prog-label">Более тёмная и замкнутая последовательность</div>
+          <div class="prog-chords">i – iv – V – i</div>
+        </div>
+        <div class="progression-item" data-prog="Am,G,F,E">
+          <div class="prog-label">Нисходящее движение с драматичным доминантным разрешением</div>
+          <div class="prog-chords">i – VII – VI – V</div>
+        </div>
+      </div>
+
+      <div class="emotion-group">
+        <div class="emotion-header" style="color:var(--accent-orange-hover)">Нежность, лиричность</div>
+        <div class="progression-item" data-prog="C,Am,Dm,G">
+          <div class="prog-label">Джазовая каденция — мягко, тепло, интеллигентно</div>
+          <div class="prog-chords">I – vi – ii – V</div>
+        </div>
+        <div class="progression-item" data-prog="C,Am,F,G">
+          <div class="prog-label">Прогрессия с вопросительной интонацией</div>
+          <div class="prog-chords">I – vi – IV – V</div>
+        </div>
+        <div class="progression-item" data-prog="Am,Dm,G,C">
+          <div class="prog-label">Мягкое постепенное движение к разрешению</div>
+          <div class="prog-chords">vi – ii – V – I</div>
+        </div>
+      </div>
+
+      <div class="emotion-group">
+        <div class="emotion-header" style="color:var(--danger)">Тревога, драма</div>
+        <div class="progression-item" data-prog="Am,E,Am,E">
+          <div class="prog-label">Драматичное чередование тоники и доминанты</div>
+          <div class="prog-chords">i – V – i – V</div>
+        </div>
+        <div class="progression-item" data-prog="Am,G,F,Am">
+          <div class="prog-label">Циклическое напряжение без устойчивого разрешения</div>
+          <div class="prog-chords">i – VII – VI – i</div>
+        </div>
+        <div class="progression-item" data-prog="C,G,Em,Am">
+          <div class="prog-label">Светлое начало уходит в минорную тень</div>
+          <div class="prog-chords">I – V – iii – vi</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="course-link">
+    Подробнее → <a href="../../etap5/akkordy.html">Этап №5: Аккорды и гармония</a>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="audio-overlay" id="audioOverlay">
+  <button class="audio-overlay-btn" id="audioStartBtn"><i data-lucide="volume-2"></i> Включить звук</button>
+</div>
+
+<script>
+(function() {
+  'use strict';
+
+  const FIFTHS_ORDER = ['C','G','D','A','E','B','F#','Db','Ab','Eb','Bb','F'];
+  const RELATIVE_MINORS = ['Am','Em','Bm','F#m','C#m','G#m','D#m','Bbm','Fm','Cm','Gm','Dm'];
+  const ENHARMONIC = { Gb:'F#', 'C#':'Db', 'D#':'Eb', 'G#':'Ab', 'A#':'Bb' };
+
+  const CHORD_DATA = {
+    'C':  { notes: ['C','E','G'],  type: 'major', emotion: 'Яркий, радостный, открытый. Домашний аккорд — точка отсчёта, ощущение покоя и уверенности. Часто используется как тоника в поп- и рок-музыке.', relativeMinor: 'Am', dominant: 'G', subdominant: 'F' },
+    'Cm': { notes: ['C','Eb','G'], type: 'minor', emotion: 'Глубокая меланхолия и трагизм. Тёмное, тяжёлое звучание. Используется в кинематографе для самых драматичных сцен.', relativeMajor: 'Eb', parallel: 'C' },
+    'G':  { notes: ['G','B','D'],  type: 'major', emotion: 'Тёплый, солнечный, открытый. Ощущение движения вперёд и надежды. В паре с C создаёт классическую гармонию тоника-доминанта.', relativeMinor: 'Em', dominant: 'D', subdominant: 'C' },
+    'Gm': { notes: ['G','Bb','D'], type: 'minor', emotion: 'Глубокая грусть и ностальгия. Мрачное, тяжёлое звучание. Встречается в блюзе и альтернативном роке.', relativeMajor: 'Bb', parallel: 'G' },
+    'D':  { notes: ['D','F#','A'], type: 'major', emotion: 'Энергичный, оптимистичный, светлый. Звучит «по-летнему». Часто используется в кантри, фолке и поп-музыке.', relativeMinor: 'Bm', dominant: 'A', subdominant: 'G' },
+    'Dm': { notes: ['D','F','A'],  type: 'minor', emotion: 'Нежная грусть и задумчивость. Мягкое, лиричное звучание. Один из самых используемых минорных аккордов в поп-музыке.', relativeMajor: 'F', parallel: 'D' },
+    'A':  { notes: ['A','C#','E'], type: 'major', emotion: 'Яркий, пронзительный, напряжённый. Энергия и решимость. Часто используется как доминанта, создающая ожидание разрешения.', relativeMinor: 'F#m', dominant: 'E', subdominant: 'D' },
+    'Am': { notes: ['A','C','E'],  type: 'minor', emotion: 'Интимный, задумчивый, нежный. Самый популярный минорный аккорд. Создаёт лиричное, меланхоличное настроение без чрезмерной драмы.', relativeMinor: null, relativeMajor: 'C', parallel: 'A' },
+    'E':  { notes: ['E','G#','B'], type: 'major', emotion: 'Мощный, энергичный, агрессивный. «Гитарный» аккорд — отлично звучит на открытых струнах. Используется в роке и металле для создания драйва.', relativeMinor: 'C#m', dominant: 'B', subdominant: 'A' },
+    'Em': { notes: ['E','G','B'],  type: 'minor', emotion: 'Драматичный, мрачный, но с внутренней силой. «Мужественная» грусть. Широко используется в роке, фолке и балладах.', relativeMajor: 'G', parallel: 'E' },
+    'B':  { notes: ['B','D#','F#'],type: 'major', emotion: 'Напряжённый, ожидающий разрешения. Нестабильное звучание, которое тянет к движению.', relativeMinor: 'G#m', dominant: 'F#', subdominant: 'E' },
+    'Bm': { notes: ['B','D','F#'], type: 'minor', emotion: 'Трагичный, кинематографичный, эпический. Глубокая печаль с оттенком величия.', relativeMajor: 'D', parallel: 'B' },
+    'F#': { notes: ['F#','A#','C#'],type: 'major', emotion: 'Экзотический, загадочный, с лёгкой напряжённостью. Нестандартное звучание, привлекающее внимание.', relativeMinor: 'D#m', dominant: 'C#', subdominant: 'B' },
+    'F#m':{ notes: ['F#','A','C#'],type: 'minor', emotion: 'Мрачный, таинственный, интроспективный. Создаёт атмосферу глубины и самоанализа.', relativeMajor: 'A', parallel: 'F#' },
+    'Db': { notes: ['Db','F','Ab'], type: 'major', emotion: 'Мягкий, бархатистый, романтичный. Тёплое, «объёмное» звучание. Любимый аккорд джазовых музыкантов.', relativeMinor: 'Bbm', dominant: 'Ab', subdominant: 'Gb' },
+    'Ab': { notes: ['Ab','C','Eb'], type: 'major', emotion: 'Бархатный, тёплый, немного ностальгический. Мягкое мажорное звучание с оттенком грусти.', relativeMinor: 'Fm', dominant: 'Eb', subdominant: 'Db' },
+    'Eb': { notes: ['Eb','G','Bb'], type: 'major', emotion: 'Тёплый, мягкий, бархатный. Любимый аккорд блюза и R&B. Создаёт расслабленное настроение.', relativeMinor: 'Cm', dominant: 'Bb', subdominant: 'Ab' },
+    'Bb': { notes: ['Bb','D','F'],  type: 'major', emotion: 'Тёплый, уютный, немного ностальгический. Винтажное звучание. Популярен в джазе и блюзе.', relativeMinor: 'Gm', dominant: 'F', subdominant: 'Eb' },
+    'Bbm':{ notes: ['Bb','Db','F'], type: 'minor', emotion: 'Тёмный, драматичный, с оттенком трагедии.', relativeMajor: 'Db', parallel: 'Bb' },
+    'F':  { notes: ['F','A','C'],  type: 'major', emotion: 'Светлый, воздушный, мечтательный. Ощущение простора и свободы. Один из самых красивых мажорных аккордов.', relativeMinor: 'Dm', dominant: 'C', subdominant: 'Bb' },
+    'Fm': { notes: ['F','Ab','C'], type: 'minor', emotion: 'Тёмный, напряжённый, драматичный. Один из самых мрачных минорных аккордов.', relativeMajor: 'Ab', parallel: 'F' },
+    'C#m':{ notes: ['C#','E','G#'],type: 'minor', emotion: 'Интенсивный, эмоциональный, страстный. Горячая грусть. Используется в рок-балладах.', relativeMajor: 'E', parallel: 'C#' },
+    'G#m':{ notes: ['G#','B','D#'],type: 'minor', emotion: 'Экзотический, загадочный минор. Атмосфера таинственности и напряжения.', relativeMajor: 'B', parallel: 'G#' },
+    'D#m':{ notes: ['D#','F#','A#'],type: 'minor', emotion: 'Редкий, экзотический. Используется для уникальной атмосферы.', relativeMajor: 'F#', parallel: 'D#' },
+    'C#': { notes: ['C#','F','G#'], type: 'major', emotion: 'Напряжённый, экзотический мажор.', relativeMinor: 'A#m', dominant: 'G#', subdominant: 'F#' }
+  };
+
+  let audioStarted = false;
+  let polySynth = null;
+  let currentMode = 'explore';
+  let selectedChord = null;
+  let hoverChord = null;
+  let gameScore = 0, gameStreak = 0, gameLevel = 1;
+  let currentQuestion = null;
+  let progression = [];
+  let playToken = 0;
+  let playIndex = -1;
+  let traveler = null;
+  let trail = [];
+  let rot = 0;
+
+  const canvas = document.getElementById('fifthsCircle');
+  const ctx = canvas.getContext('2d');
+  const SIZE = 620;
+
+  function setupCanvas() {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = SIZE * dpr;
+    canvas.height = SIZE * dpr;
+    canvas.style.width = '100%';
+    canvas.style.maxWidth = SIZE + 'px';
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  }
+
+  function initAudio() {
+    return Tone.start().then(function() {
+      audioStarted = true;
+      if (!polySynth) {
+        polySynth = new Tone.PolySynth(Tone.Synth, {
+          oscillator: { type: 'triangle' },
+          envelope: { attack: 0.03, decay: 0.16, sustain: 0.32, release: 0.45 }
+        }).toDestination();
+        polySynth.volume.value = -5;
+      }
+      hideAudioOverlay();
+    });
+  }
+
+  function resumeAudio() {
+    if (Tone.getContext && Tone.getContext().state === 'suspended') {
+      return Tone.getContext().resume();
+    }
+    return Promise.resolve();
+  }
+
+  function hideAudioOverlay() {
+    var overlay = document.getElementById('audioOverlay');
+    if (overlay) overlay.classList.add('hidden');
+  }
+
+  function cleanNote(n) {
+    return n.replace('##','#').replace('bb','b');
+  }
+
+  function getChordInfo(name) {
+    if (CHORD_DATA[name]) return CHORD_DATA[name];
+    const lower = name.toLowerCase();
+    for (const key of Object.keys(CHORD_DATA)) {
+      if (key.toLowerCase() === lower) return CHORD_DATA[key];
+    }
+    return null;
+  }
+
+  function playChordSound(chordName) {
+    resumeAudio();
+    if (!polySynth) return;
+    const data = getChordInfo(chordName);
+    if (!data) return;
+    const notes = data.notes.map(n => cleanNote(n) + '4');
+    polySynth.triggerAttackRelease(notes, '4n');
+  }
+
+  function showToast(msg, type) {
+    type = type || 'info';
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + type + ' show';
+    setTimeout(() => t.classList.remove('show'), 2200);
+  }
+
+  function refreshIcons() {
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons({ attrs: { 'stroke-width': 1.8, width: 16, height: 16 } });
+    }
+  }
+
+  function setStageHint(text) {
+    document.getElementById('stageHint').textContent = text;
+  }
+
+  function switchMode(mode) {
+    currentMode = mode;
+    document.querySelectorAll('.mode-tab').forEach(t => {
+      t.classList.toggle('active', t.dataset.mode === mode);
+    });
+    document.getElementById('explorePanel').classList.toggle('hidden', mode !== 'explore');
+    document.getElementById('gamePanel').classList.toggle('hidden', mode !== 'game');
+    document.getElementById('builderPanel').classList.toggle('hidden', mode !== 'builder');
+    if (mode === 'builder') {
+      setStageHint(progression.length ? 'Нажмите «Играть путь» — аккорды поедут по кругу' : 'Соберите прогрессию и смотрите маршрут');
+    } else if (mode === 'game') {
+      setStageHint('Угадайте, мажор или минор — ответ вспыхнет на круге');
+    } else {
+      setStageHint('Нажмите аккорд на круге');
+    }
+    updateProgressionDisplay();
+  }
+
+  document.querySelectorAll('.mode-tab').forEach(tab => {
+    tab.addEventListener('click', () => switchMode(tab.dataset.mode));
+  });
+
+  function normalizeRoot(root) {
+    return ENHARMONIC[root] || root;
+  }
+
+  function getSlot(name) {
+    if (!name) return null;
+    if (FIFTHS_ORDER.includes(name)) return { name: name, ring: 'major', index: FIFTHS_ORDER.indexOf(name) };
+    var mi = RELATIVE_MINORS.indexOf(name);
+    if (mi >= 0) return { name: name, ring: 'minor', index: mi };
+
+    var m = name.match(/^([A-G](?:#|b)?)(.*)$/);
+    if (!m) return null;
+    var root = normalizeRoot(m[1]);
+    var suf = m[2] || '';
+    if (suf === 'm' || suf === 'min') {
+      var idx = RELATIVE_MINORS.indexOf(root + 'm');
+      if (idx < 0 && root === 'Db') idx = RELATIVE_MINORS.indexOf('C#m');
+      if (idx >= 0) return { name: name, ring: 'minor', index: idx };
+    }
+    var fi = FIFTHS_ORDER.indexOf(root);
+    if (fi >= 0) return { name: name, ring: suf.indexOf('m') >= 0 && suf !== 'maj7' ? 'minor' : 'major', index: fi, special: suf };
+    return null;
+  }
+
+  function slotPolar(slot) {
+    var angle = (slot.index / 12) * Math.PI * 2 - Math.PI / 2;
+    var geometry = circleGeom();
+    var r = slot.ring === 'major' ? geometry.outerR : geometry.innerR;
+    return { angle: angle, r: r };
+  }
+
+  function slotXY(slot) {
+    var g = circleGeom();
+    var p = slotPolar(slot);
+    return { x: g.cx + Math.cos(p.angle) * p.r, y: g.cy + Math.sin(p.angle) * p.r, angle: p.angle, r: p.r };
+  }
+
+  function circleGeom() {
+    return {
+      cx: SIZE / 2,
+      cy: SIZE / 2,
+      outerR: SIZE / 2 - 58,
+      innerR: (SIZE / 2 - 58) * 0.62
+    };
+  }
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  function lerpAngle(a1, a2, t) {
+    var d = a2 - a1;
+    while (d > Math.PI) d -= Math.PI * 2;
+    while (d < -Math.PI) d += Math.PI * 2;
+    return a1 + d * t;
+  }
+
+  function easeInOut(t) {
+    return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+  }
+
+  function interpolateSlots(fromSlot, toSlot, t) {
+    var g = circleGeom();
+    var a = slotPolar(fromSlot);
+    var b = slotPolar(toSlot);
+    var e = easeInOut(t);
+    var angle = lerpAngle(a.angle, b.angle, e);
+    var r = lerp(a.r, b.r, e);
+    return { x: g.cx + Math.cos(angle) * r, y: g.cy + Math.sin(angle) * r };
+  }
+
+  function canvasPoint(e) {
+    var rect = canvas.getBoundingClientRect();
+    var scaleX = SIZE / rect.width;
+    var scaleY = SIZE / rect.height;
+    return {
+      x: (e.clientX - rect.left) * scaleX,
+      y: (e.clientY - rect.top) * scaleY
+    };
+  }
+
+  function hitTest(x, y) {
+    var g = circleGeom();
+    var i, angle, nx, ny;
+    for (i = 0; i < 12; i++) {
+      angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
+      nx = g.cx + Math.cos(angle) * g.outerR;
+      ny = g.cy + Math.sin(angle) * g.outerR;
+      if (Math.hypot(x - nx, y - ny) < 32) return FIFTHS_ORDER[i];
+    }
+    for (i = 0; i < 12; i++) {
+      angle = (i / 12) * Math.PI * 2 - Math.PI / 2;
+      nx = g.cx + Math.cos(angle) * g.innerR;
+      ny = g.cy + Math.sin(angle) * g.innerR;
+      if (Math.hypot(x - nx, y - ny) < 26) return RELATIVE_MINORS[i];
+    }
+    return null;
+  }
+
+  function drawRoundedGlow(x, y, radius, color, alpha) {
+    var grd = ctx.createRadialGradient(x, y, radius * 0.2, x, y, radius);
+    grd.addColorStop(0, color.replace('ALP', String(alpha)));
+    grd.addColorStop(1, color.replace('ALP', '0'));
+    ctx.fillStyle = grd;
+    ctx.beginPath();
+    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function samplePath(fromSlot, toSlot, steps) {
+    var pts = [];
+    for (var i = 0; i <= steps; i++) pts.push(interpolateSlots(fromSlot, toSlot, i / steps));
+    return pts;
+  }
+
+  function drawPathLine(points, alpha, width, withArrow) {
+    if (points.length < 2) return;
+    ctx.save();
+    ctx.shadowColor = 'rgba(255, 210, 140,' + Math.min(0.9, alpha + 0.15) + ')';
+    ctx.shadowBlur = 16;
+    ctx.beginPath();
+    ctx.moveTo(points[0].x, points[0].y);
+    for (var i = 1; i < points.length; i++) ctx.lineTo(points[i].x, points[i].y);
+    ctx.strokeStyle = 'rgba(255, 224, 163,' + alpha + ')';
+    ctx.lineWidth = width;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    ctx.stroke();
+    ctx.restore();
+
+    if (withArrow) {
+      var idx = Math.floor(points.length * 0.72);
+      var a = points[Math.max(0, idx - 1)];
+      var b = points[idx];
+      var ang = Math.atan2(b.y - a.y, b.x - a.x);
+      ctx.save();
+      ctx.translate(b.x, b.y);
+      ctx.rotate(ang);
+      ctx.beginPath();
+      ctx.moveTo(7, 0);
+      ctx.lineTo(-7, -6);
+      ctx.lineTo(-7, 6);
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(255, 232, 186,' + alpha + ')';
+      ctx.fill();
+      ctx.restore();
+    }
+  }
+
+  function drawCircleFrame() {
+    var g = circleGeom();
+    var t = performance.now();
+    var pulse = 0.5 + 0.5 * Math.sin(t / 700);
+    rot += 0.0012;
+
+    ctx.clearRect(0, 0, SIZE, SIZE);
+
+    var bg = ctx.createRadialGradient(g.cx, g.cy, 20, g.cx, g.cy, g.outerR + 40);
+    bg.addColorStop(0, 'rgba(242, 153, 74, 0.07)');
+    bg.addColorStop(0.55, 'rgba(17, 24, 39, 0.15)');
+    bg.addColorStop(1, 'rgba(11, 18, 32, 0)');
+    ctx.fillStyle = bg;
+    ctx.beginPath();
+    ctx.arc(g.cx, g.cy, g.outerR + 36, 0, Math.PI * 2);
+    ctx.fill();
+
+    ctx.save();
+    ctx.translate(g.cx, g.cy);
+    ctx.rotate(rot);
+    ctx.setLineDash([3, 14]);
+    ctx.strokeStyle = 'rgba(242, 153, 74, 0.16)';
+    ctx.lineWidth = 1.2;
+    ctx.beginPath();
+    ctx.arc(0, 0, g.outerR + 22, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.rotate(-rot * 2.2);
+    ctx.strokeStyle = 'rgba(196, 181, 253, 0.12)';
+    ctx.beginPath();
+    ctx.arc(0, 0, g.innerR - 22, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.restore();
+    ctx.setLineDash([]);
+
+    ctx.beginPath();
+    ctx.arc(g.cx, g.cy, g.outerR, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(246, 193, 119, 0.22)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.arc(g.cx, g.cy, g.innerR, 0, Math.PI * 2);
+    ctx.strokeStyle = 'rgba(196, 181, 253, 0.22)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    if (progression.length > 1) {
+      for (var i = 0; i < progression.length - 1; i++) {
+        var a = getSlot(progression[i]);
+        var b = getSlot(progression[i + 1]);
+        if (!a || !b) continue;
+        var traveled = playIndex > i;
+        var current = !!(traveler && traveler.to === progression[i + 1] && traveler.from === progression[i]);
+        var alpha = traveled ? 0.95 : current ? 0.8 : 0.55;
+        var width = traveled ? 6 : current ? 5.5 : 4.2;
+        drawPathLine(samplePath(a, b, 36), alpha, width, true);
+      }
+    }
+
+    if (trail.length > 1) {
+      for (i = 1; i < trail.length; i++) {
+        ctx.beginPath();
+        ctx.moveTo(trail[i - 1].x, trail[i - 1].y);
+        ctx.lineTo(trail[i].x, trail[i].y);
+        ctx.strokeStyle = 'rgba(255, 232, 186,' + (i / trail.length * 0.55) + ')';
+        ctx.lineWidth = 2 + (i / trail.length) * 3;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+      }
+    }
+
+    function drawNode(label, ring, index, isMajor) {
+      var angle = (index / 12) * Math.PI * 2 - Math.PI / 2;
+      var r = ring === 'major' ? g.outerR : g.innerR;
+      var x = g.cx + Math.cos(angle) * r;
+      var y = g.cy + Math.sin(angle) * r;
+      var isSel = selectedChord === label;
+      var isHover = hoverChord === label;
+      var inPath = progression.indexOf(label) !== -1;
+      var isNow = (playIndex >= 0 && progression[playIndex] === label) || (isSel && playIndex < 0);
+      var nodeR = ring === 'major' ? 29 : 23;
+      if (isNow) nodeR += 4 + pulse * 2;
+      else if (isHover) nodeR += 2;
+
+      var col = isMajor ? '242, 153, 74' : '167, 139, 250';
+      var textCol = isMajor ? '#FFE7C2' : '#EDE4FF';
+
+      if (isNow || isHover) {
+        drawRoundedGlow(x, y, nodeR + 26, 'rgba(' + col + ',ALP)', isNow ? 0.32 + pulse * 0.12 : 0.18);
+      } else if (inPath) {
+        drawRoundedGlow(x, y, nodeR + 16, 'rgba(' + col + ',ALP)', 0.14);
+      }
+
+      ctx.beginPath();
+      ctx.arc(x, y, nodeR, 0, Math.PI * 2);
+      ctx.fillStyle = isNow
+        ? (isMajor ? 'rgba(242, 153, 74, 0.42)' : 'rgba(167, 139, 250, 0.42)')
+        : 'rgba(15, 23, 42, 0.88)';
+      ctx.fill();
+      ctx.strokeStyle = isNow || isHover
+        ? 'rgba(' + col + ',0.95)'
+        : inPath
+          ? 'rgba(' + col + ',0.55)'
+          : 'rgba(' + col + ',0.28)';
+      ctx.lineWidth = isNow ? 2.8 : 1.5;
+      ctx.stroke();
+
+      ctx.fillStyle = isNow || isHover ? textCol : (isMajor ? 'rgba(246, 193, 119, 0.78)' : 'rgba(196, 181, 253, 0.78)');
+      ctx.font = (isMajor ? '700 ' : 'italic 650 ') + (isNow ? (isMajor ? '20' : '15') : (isMajor ? '17' : '13')) + 'px Fraunces, Georgia, serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(label, x, y + 1);
+    }
+
+    for (i = 0; i < 12; i++) drawNode(FIFTHS_ORDER[i], 'major', i, true);
+    for (i = 0; i < 12; i++) drawNode(RELATIVE_MINORS[i], 'minor', i, false);
+
+    if (traveler) {
+      var fs = getSlot(traveler.from);
+      var ts = getSlot(traveler.to);
+      if (fs && ts) {
+        var p = interpolateSlots(fs, ts, traveler.t);
+        trail.push(p);
+        if (trail.length > 18) trail.shift();
+        drawRoundedGlow(p.x, p.y, 34, 'rgba(255, 224, 163,ALP)', 0.55);
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 6, 0, Math.PI * 2);
+        ctx.fillStyle = '#FFF8EE';
+        ctx.fill();
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 2.2, 0, Math.PI * 2);
+        ctx.fillStyle = '#F2994A';
+        ctx.fill();
+      }
+    } else if (trail.length) {
+      trail.shift();
+    }
+
+    var centerName = playIndex >= 0 ? progression[playIndex] : (selectedChord || '');
+    var centerData = getChordInfo(centerName);
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    if (centerName) {
+      ctx.fillStyle = centerData && centerData.type === 'minor' ? 'rgba(196, 181, 253, 0.95)' : 'rgba(246, 193, 119, 0.95)';
+      ctx.font = (centerData && centerData.type === 'minor' ? 'italic ' : '') + '800 42px Fraunces, Georgia, serif';
+      ctx.fillText(centerName, g.cx, g.cy - 6);
+      ctx.font = '600 12px Manrope, sans-serif';
+      ctx.fillStyle = 'rgba(243, 237, 226, 0.42)';
+      if (playIndex >= 0) {
+        ctx.fillText((playIndex + 1) + ' / ' + progression.length, g.cx, g.cy + 28);
+      } else {
+        ctx.fillText(centerData && centerData.type === 'minor' ? 'минор' : 'мажор', g.cx, g.cy + 26);
+      }
+    } else {
+      ctx.fillStyle = 'rgba(243, 237, 226, 0.22)';
+      ctx.font = '700 13px Unbounded, sans-serif';
+      ctx.fillText('КВАРТО-КВИНТОВЫЙ', g.cx, g.cy - 8);
+      ctx.font = '600 11px Manrope, sans-serif';
+      ctx.fillStyle = 'rgba(243, 237, 226, 0.16)';
+      ctx.fillText('мажор снаружи  ·  минор внутри', g.cx, g.cy + 14);
+    }
+  }
+
+  function selectChord(name, fromUser) {
+    selectedChord = name;
+    var data = getChordInfo(name);
+    var nameEl = document.getElementById('chordName');
+    nameEl.textContent = name;
+    nameEl.className = 'chord-name ' + (data ? data.type : '');
+    document.getElementById('chordNotes').textContent = data ? 'Ноты: ' + data.notes.join('  ·  ') : '';
+    document.getElementById('chordEmotion').textContent = data ? data.emotion : '';
+
+    var relEl = document.getElementById('chordRelatives');
+    if (data) {
+      var html = '';
+      if (data.relativeMinor) html += '<span data-jump="' + data.relativeMinor + '">парал. ' + data.relativeMinor + '</span>';
+      if (data.relativeMajor) html += '<span data-jump="' + data.relativeMajor + '">парал. ' + data.relativeMajor + '</span>';
+      if (data.dominant) html += '<span data-jump="' + data.dominant + '">дом. ' + data.dominant + '</span>';
+      if (data.subdominant) html += '<span data-jump="' + data.subdominant + '">субд. ' + data.subdominant + '</span>';
+      relEl.innerHTML = html;
+      relEl.querySelectorAll('[data-jump]').forEach(function(el) {
+        el.addEventListener('click', function() { selectChord(el.getAttribute('data-jump'), true); });
+      });
+    } else {
+      relEl.innerHTML = '';
+    }
+
+    if (fromUser !== false) playChordSound(name);
+    setStageHint(name + (data ? ' — ' + (data.type === 'major' ? 'мажор' : 'минор') : ''));
+  }
+
+  canvas.addEventListener('click', function(e) {
+    var p = canvasPoint(e);
+    var name = hitTest(p.x, p.y);
+    if (!name) return;
+    selectChord(name, true);
+    initAudio();
+  });
+
+  canvas.addEventListener('mousemove', function(e) {
+    var p = canvasPoint(e);
+    hoverChord = hitTest(p.x, p.y);
+    canvas.style.cursor = hoverChord ? 'pointer' : 'default';
+  });
+
+  canvas.addEventListener('mouseleave', function() { hoverChord = null; });
+
+  function buildMiniKeyboard() {
+    var kb = document.getElementById('miniKeyboard');
+    var octaveNotes = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B','C'];
+    kb.innerHTML = '';
+    octaveNotes.forEach(function(note) {
+      var btn = document.createElement('button');
+      btn.className = 'key-btn' + (note.indexOf('#') >= 0 ? ' black' : '');
+      btn.textContent = note;
+      btn.addEventListener('click', function() {
+        initAudio().then(function() {
+          if (!polySynth) return;
+          polySynth.triggerAttackRelease(note + '4', '8n');
+        });
+        btn.classList.add('active');
+        setTimeout(function() { btn.classList.remove('active'); }, 200);
+      });
+      kb.appendChild(btn);
+    });
+  }
+
+  function getAllChordNames() {
+    return FIFTHS_ORDER.concat(RELATIVE_MINORS);
+  }
+
+  function generateQuestion() {
+    var allChords = getAllChordNames();
+    var correct = allChords[Math.floor(Math.random() * allChords.length)];
+    var data = getChordInfo(correct);
+    currentQuestion = { correct: correct, correctType: data ? data.type : 'major' };
+    selectedChord = null;
+    document.getElementById('gamePrompt').textContent = 'Уровень ' + gameLevel + ': мажорный или минорный?';
+    var optContainer = document.getElementById('gameOptions');
+    optContainer.innerHTML = '';
+    ['major', 'minor'].forEach(function(type) {
+      var btn = document.createElement('button');
+      btn.className = 'game-btn';
+      btn.textContent = type === 'major' ? 'Мажорный' : 'Минорный';
+      btn.addEventListener('click', function() { handleAnswer(type, btn); });
+      optContainer.appendChild(btn);
+    });
+    setTimeout(function() { playChordSound(correct); }, 500);
+  }
+
+  function handleAnswer(answer, btn) {
+    if (!currentQuestion) return;
+    var buttons = document.querySelectorAll('.game-btn');
+    buttons.forEach(function(b) { b.disabled = true; });
+    selectedChord = currentQuestion.correct;
+
+    if (answer === currentQuestion.correctType) {
+      btn.classList.add('correct');
+      gameScore += 10 * gameLevel;
+      gameStreak++;
+      if (gameStreak % 3 === 0) gameLevel++;
+      document.getElementById('gameScore').textContent = gameScore;
+      document.getElementById('gameStreak').textContent = gameStreak;
+      document.getElementById('gameLevel').textContent = gameLevel;
+      showToast('Верно! +' + (10 * gameLevel), 'success');
+    } else {
+      btn.classList.add('wrong');
+      buttons.forEach(function(b) {
+        var isCorrect = (currentQuestion.correctType === 'major' && b.textContent === 'Мажорный') ||
+                        (currentQuestion.correctType === 'minor' && b.textContent === 'Минорный');
+        if (isCorrect) b.classList.add('correct');
+      });
+      gameStreak = 0;
+      document.getElementById('gameStreak').textContent = 0;
+      var data = getChordInfo(currentQuestion.correct);
+      showToast('Это был ' + (data && data.type === 'major' ? 'мажорный' : 'минорный') + ' ' + currentQuestion.correct, 'error');
+    }
+    setTimeout(generateQuestion, 1600);
+  }
+
+  document.getElementById('gameStartBtn').addEventListener('click', function() {
+    initAudio().then(function() {
+      gameScore = 0; gameStreak = 0; gameLevel = 1;
+      document.getElementById('gameScore').textContent = 0;
+      document.getElementById('gameStreak').textContent = 0;
+      document.getElementById('gameLevel').textContent = 1;
+      document.getElementById('gameStartBtn').classList.add('hidden');
+      generateQuestion();
+    });
+  });
+
+  function buildChordPalette() {
+    var palette = document.getElementById('chordPalette');
+    palette.innerHTML = '';
+    getAllChordNames().forEach(function(name) {
+      var btn = document.createElement('button');
+      var data = getChordInfo(name);
+      var isMajor = data && data.type === 'major';
+      btn.className = 'palette-btn ' + (isMajor ? 'major-p' : 'minor-p');
+      btn.textContent = name;
+      btn.addEventListener('click', function() {
+        initAudio();
+        progression.push(name);
+        selectedChord = name;
+        updateProgressionDisplay();
+        playChordSound(name);
+        setStageHint('Маршрут из ' + progression.length + ' аккордов. Играйте путь — увидите полёт по кругу');
+      });
+      palette.appendChild(btn);
+    });
+  }
+
+  function updateProgressionDisplay() {
+    var container = document.getElementById('progBuilder');
+    if (!progression.length) {
+      container.innerHTML = currentMode === 'builder'
+        ? '<span class="journey-empty">Соберите прогрессию — на круге появится золотой маршрут</span>'
+        : '';
+      return;
+    }
+    container.innerHTML = '';
+    progression.forEach(function(chord, i) {
+      var data = getChordInfo(chord);
+      var span = document.createElement('span');
+      span.className = 'prog-chord ' + (data && data.type === 'major' ? 'major-chord' : 'minor-chord');
+      if (playIndex === i) span.classList.add('now');
+      span.textContent = chord;
+      span.addEventListener('click', function() {
+        progression.splice(i, 1);
+        updateProgressionDisplay();
+      });
+      container.appendChild(span);
+    });
+  }
+
+  function wait(ms) {
+    return new Promise(function(resolve) { setTimeout(resolve, ms); });
+  }
+
+  function animateTravel(from, to, duration) {
+    return new Promise(function(resolve) {
+      var start = null;
+      traveler = { from: from, to: to, t: 0 };
+      trail = [];
+      function step(ts) {
+        if (!start) start = ts;
+        var t = Math.min(1, (ts - start) / duration);
+        traveler.t = t;
+        if (t < 1 && traveler) requestAnimationFrame(step);
+        else {
+          traveler = null;
+          resolve();
+        }
+      }
+      requestAnimationFrame(step);
+    });
+  }
+
+  function stopPlayback() {
+    playToken += 1;
+    playIndex = -1;
+    traveler = null;
+    trail = [];
+  }
+
+  function playProgressionPath() {
+    if (!progression.length) return;
+    var token = ++playToken;
+    initAudio();
+    showToast('Смотрите путь по кругу', 'info');
+    (async function() {
+      for (var i = 0; i < progression.length; i++) {
+        if (token !== playToken) return;
+        if (i > 0) {
+          await animateTravel(progression[i - 1], progression[i], 860);
+          if (token !== playToken) return;
+        }
+        playIndex = i;
+        selectedChord = progression[i];
+        selectChord(progression[i], false);
+        playChordSound(progression[i]);
+        updateProgressionDisplay();
+        setStageHint((i + 1) + ' / ' + progression.length + '  ·  ' + progression[i]);
+        await wait(720);
+      }
+      if (token !== playToken) return;
+      playIndex = -1;
+      traveler = null;
+      updateProgressionDisplay();
+      setStageHint('Путь завершён — нажмите «Играть путь», чтобы повторить');
+    })();
+  }
+
+  document.getElementById('playProgBtn').addEventListener('click', playProgressionPath);
+  document.getElementById('clearProgBtn').addEventListener('click', function() {
+    stopPlayback();
+    progression = [];
+    selectedChord = null;
+    updateProgressionDisplay();
+    setStageHint('Соберите прогрессию и смотрите маршрут');
+  });
+
+  document.querySelectorAll('.progression-item').forEach(function(item) {
+    item.addEventListener('click', function() {
+      var chordStr = this.getAttribute('data-prog');
+      if (!chordStr) return;
+      stopPlayback();
+      progression = chordStr.split(',');
+      selectedChord = progression[0];
+      updateProgressionDisplay();
+      switchMode('builder');
+      showToast('Прогрессия загружена — летим по кругу', 'success');
+      playProgressionPath();
+    });
+  });
+
+  var KEY_MAP = {
+    'a': 'C', 'w': 'C#', 's': 'D', 'e': 'D#', 'd': 'E',
+    'f': 'F', 't': 'F#', 'g': 'G', 'y': 'G#', 'h': 'A',
+    'u': 'A#', 'j': 'B', 'k': 'C5'
+  };
+
+  document.addEventListener('keydown', function(e) {
+    if (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT') return;
+    var key = e.key.toLowerCase();
+    if (key in KEY_MAP && !e.repeat) {
+      initAudio();
+      if (!polySynth) return;
+      var note = KEY_MAP[key];
+      polySynth.triggerAttackRelease(note === 'C5' ? 'C5' : note + '4', '8n');
+    }
+  });
+
+  function loop() {
+    drawCircleFrame();
+    requestAnimationFrame(loop);
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    setupCanvas();
+    buildMiniKeyboard();
+    buildChordPalette();
+    updateProgressionDisplay();
+    refreshIcons();
+
+    document.getElementById('audioStartBtn').addEventListener('click', function() {
+      initAudio();
+    });
+
+    var startLoop = function() { requestAnimationFrame(loop); };
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(startLoop);
+    else startLoop();
+
+    Tone.start().then(function() {
+      var toneCtx = Tone.getContext();
+      if (toneCtx.state === 'running') {
+        audioStarted = true;
+        if (!polySynth) {
+          polySynth = new Tone.PolySynth(Tone.Synth, {
+            oscillator: { type: 'triangle' },
+            envelope: { attack: 0.03, decay: 0.16, sustain: 0.32, release: 0.45 }
+          }).toDestination();
+          polySynth.volume.value = -5;
+        }
+        hideAudioOverlay();
+      }
+    }).catch(function() {});
+  });
+
+  window.addEventListener('resize', setupCanvas);
+})();
+</script>
+</body>
+</html>

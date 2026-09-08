@@ -1,0 +1,102 @@
+/* ========================================
+   Glossary Tooltip — Custom hover tooltips
+   ======================================== */
+
+/* Glossary term highlight */
+.glossary-term {
+  border-bottom: 2px dashed var(--accent-orange);
+  cursor: help;
+  position: relative;
+  transition: background-color 0.15s ease;
+}
+
+.glossary-term:hover {
+  background-color: rgba(242, 153, 74, 0.08);
+}
+
+/* Tooltip container */
+.glossary-tooltip {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  max-width: 380px;
+  min-width: 200px;
+}
+
+.glossary-tooltip.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Tooltip card */
+.glossary-tooltip__card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  padding: 16px 18px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+}
+
+/* Term name */
+.glossary-tooltip__term {
+  font-size: 1.2em;
+  font-weight: 700;
+  color: var(--accent-orange);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.glossary-tooltip__term i {
+  width: 16px;
+  height: 16px;
+  fill: var(--accent-orange);
+  flex-shrink: 0;
+}
+
+/* Definition text */
+.glossary-tooltip__def {
+  font-size: 1.05em;
+  line-height: 1.6;
+  color: var(--text-main);
+  margin-bottom: 10px;
+}
+
+/* Dark theme overrides */
+[data-md-color-scheme="slate"] .glossary-tooltip__card {
+  background: rgba(17, 24, 39, 0.97);
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+[data-md-color-scheme="slate"] .glossary-tooltip__term {
+  color: #FFB74D;
+}
+
+[data-md-color-scheme="slate"] .glossary-tooltip__term i {
+  fill: #FFB74D;
+}
+
+/* Light theme overrides */
+[data-md-color-scheme="default"] .glossary-tooltip__card {
+  background: #f5f2d0;
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+[data-md-color-scheme="default"] .glossary-tooltip__term {
+  color: #E08A3E;
+}
+
+[data-md-color-scheme="default"] .glossary-tooltip__term i {
+  fill: #E08A3E;
+}
+
+/* Respect reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .glossary-tooltip {
+    transition: none;
+  }
+}
