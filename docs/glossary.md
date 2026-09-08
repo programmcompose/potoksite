@@ -4,7 +4,7 @@
 
 ## A
 
-**ADSR (Attack, Decay, Sustain, Release)** — огибающая envelopы звука.
+**ADSR (Attack, Decay, Sustain, Release)** — огибающая (envelope) звука.
 Четыре параметра, определяющие, как звук развивается во времени.
 
 > Подробнее: [Основные параметры компрессора включают Attack и Release →](etap2/compression-kompressiya.md)
