@@ -447,16 +447,6 @@ header p {
   box-shadow: 0 0 22px currentColor;
 }
 
-.journey-hop {
-  font-size: 0.62em;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-  padding: 0 4px;
-  opacity: 0.75;
-}
-
 .chord-palette {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
@@ -1025,25 +1015,6 @@ header p {
     return { x: g.cx + Math.cos(angle) * r, y: g.cy + Math.sin(angle) * r };
   }
 
-  function describeMove(fromName, toName) {
-    var a = getSlot(fromName);
-    var b = getSlot(toName);
-    if (!a || !b) return 'ход';
-    if (a.index === b.index && a.ring !== b.ring) return 'параллель';
-    var cw = (b.index - a.index + 12) % 12;
-    var ccw = (a.index - b.index + 12) % 12;
-    if (cw === 0 && a.ring === b.ring) return 'повтор';
-    if (cw === 6) return 'тритон';
-    if (cw <= ccw) {
-      if (cw === 1) return 'квинта';
-      if (cw === 2) return '2 квинты';
-      return cw + ' квинт';
-    }
-    if (ccw === 1) return 'кварта';
-    if (ccw === 2) return '2 кварты';
-    return ccw + ' кварт';
-  }
-
   function canvasPoint(e) {
     var rect = canvas.getBoundingClientRect();
     var scaleX = SIZE / rect.width;
@@ -1088,7 +1059,7 @@ header p {
     return pts;
   }
 
-  function drawPathLine(points, alpha, width, withArrow, label) {
+  function drawPathLine(points, alpha, width, withArrow) {
     if (points.length < 2) return;
     ctx.save();
     ctx.shadowColor = 'rgba(255, 210, 140,' + Math.min(0.9, alpha + 0.15) + ')';
@@ -1120,34 +1091,6 @@ header p {
       ctx.fill();
       ctx.restore();
     }
-
-    if (label) {
-      var mid = points[Math.floor(points.length / 2)];
-      ctx.save();
-      ctx.font = '700 10px Manrope, sans-serif';
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      var tw = ctx.measureText(label).width + 12;
-      ctx.fillStyle = 'rgba(11, 18, 32, 0.72)';
-      ctx.beginPath();
-      ctx.roundRect(mid.x - tw / 2, mid.y - 8, tw, 16, 8);
-      ctx.fill();
-      ctx.fillStyle = 'rgba(255, 232, 186, 0.92)';
-      ctx.fillText(label, mid.x, mid.y + 0.5);
-      ctx.restore();
-    }
-  }
-
-  if (!CanvasRenderingContext2D.prototype.roundRect) {
-    CanvasRenderingContext2D.prototype.roundRect = function(x, y, w, h, r) {
-      r = Math.min(r, w / 2, h / 2);
-      this.moveTo(x + r, y);
-      this.arcTo(x + w, y, x + w, y + h, r);
-      this.arcTo(x + w, y + h, x, y + h, r);
-      this.arcTo(x, y + h, x, y, r);
-      this.arcTo(x, y, x + w, y, r);
-      this.closePath();
-    };
   }
 
   function drawCircleFrame() {
@@ -1204,7 +1147,7 @@ header p {
         var current = !!(traveler && traveler.to === progression[i + 1] && traveler.from === progression[i]);
         var alpha = traveled ? 0.95 : current ? 0.8 : 0.55;
         var width = traveled ? 6 : current ? 5.5 : 4.2;
-        drawPathLine(samplePath(a, b, 36), alpha, width, true, describeMove(progression[i], progression[i + 1]));
+        drawPathLine(samplePath(a, b, 36), alpha, width, true);
       }
     }
 
@@ -1298,8 +1241,7 @@ header p {
       ctx.font = '600 12px Manrope, sans-serif';
       ctx.fillStyle = 'rgba(243, 237, 226, 0.42)';
       if (playIndex >= 0) {
-        var hop = playIndex > 0 ? describeMove(progression[playIndex - 1], progression[playIndex]) : 'старт';
-        ctx.fillText((playIndex + 1) + ' / ' + progression.length + '  ·  ' + hop, g.cx, g.cy + 28);
+        ctx.fillText((playIndex + 1) + ' / ' + progression.length, g.cx, g.cy + 28);
       } else {
         ctx.fillText(centerData && centerData.type === 'minor' ? 'минор' : 'мажор', g.cx, g.cy + 26);
       }
@@ -1472,12 +1414,6 @@ header p {
     }
     container.innerHTML = '';
     progression.forEach(function(chord, i) {
-      if (i > 0) {
-        var hop = document.createElement('span');
-        hop.className = 'journey-hop';
-        hop.textContent = describeMove(progression[i - 1], chord);
-        container.appendChild(hop);
-      }
       var data = getChordInfo(chord);
       var span = document.createElement('span');
       span.className = 'prog-chord ' + (data && data.type === 'major' ? 'major-chord' : 'minor-chord');
