@@ -35,6 +35,10 @@
   function highlightTerms() {
     if (!glossaryData) return;
 
+    // Glossary page already shows full definitions — highlighting there
+    // also ate the closing ")" in titles like "ADSR (Attack, …)".
+    if (/(?:^|\/)glossary\/?$/.test(location.pathname)) return;
+
     var contentAreas = document.querySelectorAll('.md-content__inner, .md-typeset');
     if (!contentAreas.length) return;
 
@@ -75,12 +79,13 @@
           var entry = termMap[term];
           var regex = new RegExp('(^|[^a-zA-Zа-яёА-ЯЁ0-9])' + escapeRegex(term) + '([^a-zA-Zа-яёА-ЯЁ0-9]|$)', 'gi');
 
+          // Reset lastIndex: .test() with /g advances it and can skip the match.
+          regex.lastIndex = 0;
           if (regex.test(text)) {
-            var replaced = false;
+            regex.lastIndex = 0;
             var result = text.replace(regex, function(match, p1, p2) {
-              var inner = match.replace(/^([^a-zA-Zа-яёА-ЯЁ0-9])|([^a-zA-Zа-яёА-ЯЁ0-9])$/g, '');
-              p1 += '<span class="glossary-term" data-term="' + entry.term + '">' + inner + '</span>';
-              return p1 + p2;
+              var inner = match.slice(p1.length, match.length - p2.length);
+              return p1 + '<span class="glossary-term" data-term="' + entry.term + '">' + inner + '</span>' + p2;
             });
             var span = document.createElement('span');
             span.innerHTML = result;
