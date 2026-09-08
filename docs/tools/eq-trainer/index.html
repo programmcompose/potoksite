@@ -4,1746 +4,1391 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>EQ-тренажёр — Курс по музыкальному продакшену</title>
+<script src="https://unpkg.com/lucide@latest"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700;900&display=swap');
-  :root {
-    --bg: #0B1220;
-    --bg-light: #363636;
-    --bg-lighter: #404040;
-    --bg-darker: #1e1e1e;
-    --text: #FDFBDF;
-    --accent: #00bcd4;
-    --accent-dim: #00838f;
-    --purple: #ab47bc;
-    --orange: #ff7043;
-    --success: #66bb6a;
-    --danger: #ef5350;
-    --warning: #ffd740;
-    --radius: 8px;
-    --shadow: 0 2px 8px rgba(0,0,0,0.4);
-  }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-
-  body {
-    font-family: 'Unbounded', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 16px;
-  }
-
-  .container { max-width: 900px; margin: 0 auto; }
-
-  header {
-    text-align: center;
-    margin-bottom: 20px;
-  }
-
-  header h1 {
-    font-size: 1.6em;
-    font-weight: 800;
-    background: linear-gradient(135deg, var(--accent), var(--purple));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 4px;
-  }
-
-  header h1 .emoji {
-    -webkit-text-fill-color: initial;
-  }
-
-  header p {
-    font-size: 0.9em;
-    opacity: 0.7;
-    max-width: 600px;
-    margin: 0 auto;
-    line-height: 1.5;
-  }
-
-  .back-link {
-    display: inline-block;
-    margin-bottom: 12px;
-    color: var(--accent);
-    text-decoration: none;
-    font-size: 0.85em;
-  }
-  .back-link:hover { text-decoration: underline; }
-
-  .panel {
-    background: var(--bg-light);
-    border-radius: var(--radius);
-    padding: 16px;
-    margin-bottom: 12px;
-    box-shadow: var(--shadow);
-  }
-
-  .panel-title {
-    font-size: 0.8em;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    opacity: 0.6;
-    margin-bottom: 12px;
-  }
-
-  .canvas-wrap {
-    background: var(--bg-darker);
-    border-radius: var(--radius);
-    overflow: hidden;
-    position: relative;
-  }
-
-  canvas {
-    display: block;
-    width: 100%;
-  }
-
-  .controls {
-    display: flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    align-items: center;
-    margin-bottom: 12px;
-  }
-
-  button {
-    background: var(--bg-lighter);
-    color: var(--text);
-    border: 1px solid rgba(255,255,255,0.1);
-    border-radius: var(--radius);
-    padding: 8px 16px;
-    font-size: 0.85em;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.15s;
-    font-family: inherit;
-  }
-
-  button:hover {
-    background: var(--accent-dim);
-    border-color: var(--accent);
-  }
-
-  button:active {
-    transform: scale(0.97);
-  }
-
-  button.primary {
-    background: var(--accent);
-    color: var(--bg);
-    border-color: var(--accent);
-  }
-
-  button.primary:hover {
-    background: #00e5ff;
-  }
-
-  button.success {
-    background: var(--success);
-    color: var(--bg);
-    border-color: var(--success);
-  }
-
-  button.danger {
-    background: var(--danger);
-    color: var(--text);
-    border-color: var(--danger);
-  }
-
-  button:disabled {
-    opacity: 0.3;
-    cursor: not-allowed;
-  }
-
-  .sample-selector {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 12px;
-  }
-
-  .sample-btn {
-    flex: 1;
-    text-align: center;
-    padding: 10px 8px;
-    font-size: 0.8em;
-  }
-
-  .sample-btn.active {
-    background: var(--accent);
-    color: var(--bg);
-    border-color: var(--accent);
-  }
-
-  .upload-zone {
-    margin-top: 12px;
-    border: 2px dashed var(--bg-lighter);
-    border-radius: var(--radius);
-    padding: 14px;
-    text-align: center;
-    transition: all 0.2s;
-    cursor: pointer;
-    position: relative;
-  }
-
-  .upload-zone:hover, .upload-zone.dragover {
-    border-color: var(--accent);
-    background: rgba(0,188,212,0.05);
-  }
-
-  .upload-zone input[type="file"] {
-    position: absolute;
-    inset: 0;
-    opacity: 0;
-    cursor: pointer;
-  }
-
-  .upload-zone-label {
-    font-size: 0.82em;
-    opacity: 0.7;
-    pointer-events: none;
-  }
-
-  .upload-zone-label .icon {
-    font-size: 1.4em;
-    display: block;
-    margin-bottom: 4px;
-  }
-
-  .custom-file-info {
-    display: none;
-    margin-top: 8px;
-    padding: 8px 12px;
-    background: var(--bg-darker);
-    border-radius: var(--radius);
-    font-size: 0.8em;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .custom-file-info.visible {
-    display: flex;
-  }
-
-  .custom-file-info .file-name {
-    flex: 1;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    opacity: 0.9;
-  }
-
-  .custom-file-info .file-remove {
-    background: var(--danger);
-    color: var(--text);
-    border: none;
-    border-radius: 4px;
-    padding: 2px 8px;
-    font-size: 0.85em;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-
-  .status-bar {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 10px 14px;
-    background: var(--bg-darker);
-    border-radius: var(--radius);
-    margin-bottom: 12px;
-    font-size: 0.85em;
-  }
-
-  .status-indicator {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--bg-lighter);
-    flex-shrink: 0;
-  }
-
-  .status-indicator.playing { background: var(--success); animation: pulse 0.8s infinite; }
-  .status-indicator.waiting { background: var(--warning); }
-  .status-indicator.done { background: var(--accent); }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  .mode-label {
-    font-weight: 700;
-    font-size: 1em;
-    padding: 4px 10px;
-    border-radius: 4px;
-    background: var(--bg-lighter);
-  }
-
-  .mode-label.before { color: var(--warning); }
-  .mode-label.after { color: var(--success); }
-
-  .guess-section {
-    display: none;
-  }
-
-  .guess-section.visible {
-    display: block;
-  }
-
-  .guess-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-
-  .guess-group label {
-    display: block;
-    font-size: 0.8em;
-    font-weight: 600;
-    opacity: 0.7;
-    margin-bottom: 6px;
-  }
-
-  .guess-group select {
-    width: 100%;
-    background: var(--bg-darker);
-    color: var(--text);
-    border: 1px solid var(--bg-lighter);
-    border-radius: var(--radius);
-    padding: 8px 10px;
-    font-size: 0.85em;
-    font-family: inherit;
-    cursor: pointer;
-  }
-
-  .result-box {
-    display: none;
-    padding: 14px;
-    border-radius: var(--radius);
-    margin-top: 12px;
-    font-size: 0.9em;
-    line-height: 1.6;
-  }
-
-  .result-box.visible { display: block; }
-  .result-box.correct { background: rgba(102,187,106,0.15); border: 1px solid var(--success); }
-  .result-box.wrong { background: rgba(239,83,80,0.15); border: 1px solid var(--danger); }
-
-  .score-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 14px;
-    background: var(--bg-darker);
-    border-radius: var(--radius);
-    margin-bottom: 12px;
-    font-size: 0.85em;
-  }
-
-  .score-item {
-    text-align: center;
-  }
-
-  .score-value {
-    font-size: 1.4em;
-    font-weight: 800;
-  }
-
-  .score-label {
-    font-size: 0.7em;
-    opacity: 0.5;
-    text-transform: uppercase;
-  }
-
-  .difficulty-selector {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 8px;
-  }
-
-  .diff-btn {
-    flex: 1;
-    padding: 6px 8px;
-    font-size: 0.75em;
-  }
-
-  .diff-btn.active {
-    background: var(--purple);
-    color: var(--text);
-    border-color: var(--purple);
-  }
-
-  .ab-controls {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-    justify-content: center;
-    margin: 12px 0;
-  }
-
-  .ab-btn {
-    min-width: 100px;
-    padding: 12px 16px;
-    font-size: 0.9em;
-    font-weight: 700;
-  }
-
-  .ab-btn.btn-before {
-    border-color: var(--warning);
-    color: var(--warning);
-  }
-
-  .ab-btn.btn-before:hover, .ab-btn.btn-before.active {
-    background: var(--warning);
-    color: var(--bg);
-  }
-
-  .ab-btn.btn-after {
-    border-color: var(--success);
-    color: var(--success);
-  }
-
-  .ab-btn.btn-after:hover, .ab-btn.btn-after.active {
-    background: var(--success);
-    color: var(--bg);
-  }
-
-  .key-hint {
-    font-size: 0.7em;
-    opacity: 0.5;
-    text-align: center;
-    margin-top: 4px;
-  }
-
-  .loop-btn {
-    padding: 8px 14px;
-    font-size: 0.8em;
-    border-radius: 20px;
-  }
-
-  .loop-btn.active {
-    background: var(--orange);
-    color: var(--bg);
-    border-color: var(--orange);
-    animation: pulse 1s infinite;
-  }
-
-  .eq-info {
-    font-size: 0.8em;
-    opacity: 0.6;
-    text-align: center;
-    margin-top: 8px;
-    line-height: 1.5;
-  }
-
-  .volume-control {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    margin: 10px 0;
-    font-size: 0.85em;
-  }
-
-  .volume-control input[type="range"] {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 180px;
-    height: 6px;
-    border-radius: 3px;
-    background: var(--bg-darker);
-    outline: none;
-    cursor: pointer;
-  }
-
-  .volume-control input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: var(--accent);
-    cursor: pointer;
-  }
-
-  .volume-control input[type="range"]::-moz-range-thumb {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    background: var(--accent);
-    cursor: pointer;
-    border: none;
-  }
-
-  .volume-control #volumeValue {
-    min-width: 36px;
-    text-align: right;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-    opacity: 0.8;
-  }
-
-  .wave-info {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.75em;
-    opacity: 0.5;
-    margin-top: 6px;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .waveform-wrap {
-    cursor: pointer;
-  }
-
-  @media (max-width: 600px) {
-    header h1 { font-size: 1.3em; }
-    .guess-grid { grid-template-columns: 1fr; }
-    .ab-btn { min-width: 80px; padding: 10px 12px; font-size: 0.8em; }
-  }
+
+:root,
+[data-theme="dark"] {
+  --bg-main: #0B1220;
+  --bg-sidebar: #0F172A;
+  --bg-card: #111827;
+  --bg-hover: #1F2937;
+  --text-main: #E5E7EB;
+  --text-secondary: #9CA3AF;
+  --text-heading: #F9FAFB;
+  --accent-orange: #F2994A;
+  --accent-orange-hover: #FFB26B;
+  --accent-blue: #3B82F6;
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.1);
+  --glow-orange: rgba(242, 153, 74, 0.28);
+  --glow-orange-soft: rgba(242, 153, 74, 0.10);
+  --success: #66bb6a;
+  --danger: #ef5350;
+  --warning: #ffd740;
+  --before: #F2994A;
+  --after: #66bb6a;
+  --radius: 14px;
+  --shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+[data-theme="light"] {
+  --bg-main: #FDFBDF;
+  --bg-sidebar: #f5f2d0;
+  --bg-card: #efeacd;
+  --bg-hover: #e5e0c0;
+  --text-main: #282828;
+  --text-secondary: #5a5a5a;
+  --text-heading: #1a1a1a;
+  --accent-orange: #E08A3E;
+  --accent-orange-hover: #F2994A;
+  --accent-blue: #2563EB;
+  --border-subtle: rgba(0, 0, 0, 0.08);
+  --border-default: rgba(0, 0, 0, 0.12);
+  --glow-orange: rgba(224, 138, 62, 0.22);
+  --glow-orange-soft: rgba(224, 138, 62, 0.08);
+  --success: #2e7d32;
+  --danger: #c62828;
+  --warning: #f9a825;
+  --before: #E08A3E;
+  --after: #2e7d32;
+  --shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Unbounded', system-ui, sans-serif;
+  background:
+    radial-gradient(ellipse at 50% -10%, var(--glow-orange-soft) 0%, transparent 55%),
+    var(--bg-main);
+  color: var(--text-main);
+  min-height: 100vh;
+  padding: 20px 16px 48px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.page { max-width: 760px; margin: 0 auto; }
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--accent-orange);
+  text-decoration: none;
+  font-size: 0.8em;
+}
+.back-link:hover { color: var(--accent-orange-hover); }
+.back-link i { width: 16px; height: 16px; stroke: var(--accent-orange); }
+
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--border-default);
+  background: var(--bg-card);
+  color: var(--text-main);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+}
+.theme-toggle:hover { border-color: var(--accent-orange); }
+.theme-toggle i { width: 18px; height: 18px; stroke: var(--accent-orange); }
+[data-theme="dark"] .icon-sun { display: none; }
+[data-theme="light"] .icon-moon { display: none; }
+
+header { margin-bottom: 20px; }
+header h1 {
+  font-size: 1.55em;
+  font-weight: 800;
+  color: var(--text-heading);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: -0.02em;
+}
+header h1 i { width: 28px; height: 28px; stroke: var(--accent-orange); }
+header p {
+  margin-top: 8px;
+  font-size: 0.86em;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  max-width: 560px;
+}
+
+.score-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.score-chip {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  padding: 10px 8px;
+  text-align: center;
+}
+.score-chip b {
+  display: block;
+  font-size: 1.25em;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.score-chip span {
+  font-size: 0.62em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+}
+
+.panel-label {
+  font-size: 0.68em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.panel-label i { width: 14px; height: 14px; stroke: var(--accent-orange); }
+
+.level-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.level-btn {
+  text-align: left;
+  background: var(--bg-hover);
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  padding: 12px 12px 11px;
+  color: var(--text-main);
+  cursor: pointer;
+  font-family: inherit;
+  transition: 0.15s;
+}
+.level-btn:hover { border-color: var(--accent-orange); }
+.level-btn.active {
+  border-color: var(--accent-orange);
+  background: var(--glow-orange-soft);
+  box-shadow: 0 0 0 1px var(--accent-orange);
+}
+.level-btn strong {
+  display: block;
+  font-size: 0.84em;
+  margin-bottom: 3px;
+}
+.level-btn em {
+  font-style: normal;
+  font-size: 0.68em;
+  color: var(--text-secondary);
+  line-height: 1.35;
+  font-weight: 400;
+}
+
+.sound-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+.sound-btn {
+  background: var(--bg-hover);
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  padding: 12px 6px 10px;
+  color: var(--text-main);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: center;
+  transition: 0.15s;
+}
+.sound-btn:hover { border-color: var(--accent-orange); }
+.sound-btn.active {
+  border-color: var(--accent-orange);
+  background: var(--glow-orange-soft);
+}
+.sound-btn i {
+  width: 20px;
+  height: 20px;
+  stroke: var(--accent-orange);
+  display: block;
+  margin: 0 auto 6px;
+}
+.sound-btn strong { display: block; font-size: 0.72em; }
+.sound-btn span {
+  display: block;
+  margin-top: 2px;
+  font-size: 0.6em;
+  color: var(--text-secondary);
+  line-height: 1.3;
+}
+
+.upload-row {
+  display: none;
+  margin-top: 10px;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: var(--bg-hover);
+  border-radius: 10px;
+  font-size: 0.78em;
+}
+.upload-row.visible { display: flex; }
+.upload-row b {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+.ghost-btn {
+  background: transparent;
+  border: 1px solid var(--border-default);
+  color: var(--text-main);
+  border-radius: 8px;
+  padding: 4px 8px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 0.75em;
+}
+.ghost-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+.player {
+  padding: 20px 16px 16px;
+}
+.ab-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 12px;
+  align-items: stretch;
+}
+.ab-btn {
+  min-height: 92px;
+  border-radius: 16px;
+  border: 1px solid var(--border-default);
+  background: var(--bg-hover);
+  color: var(--text-main);
+  cursor: pointer;
+  font-family: inherit;
+  padding: 14px 12px;
+  transition: 0.15s;
+}
+.ab-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.ab-btn kbd {
+  display: inline-block;
+  margin-top: 8px;
+  font-size: 0.64em;
+  opacity: 0.5;
+  font-family: inherit;
+}
+.ab-btn strong {
+  display: block;
+  font-size: 1.35em;
+  letter-spacing: 0.04em;
+}
+.ab-btn span {
+  display: block;
+  margin-top: 4px;
+  font-size: 0.72em;
+  color: var(--text-secondary);
+}
+.ab-btn.before:hover:not(:disabled),
+.ab-btn.before.active {
+  border-color: var(--before);
+  background: color-mix(in srgb, var(--before) 16%, var(--bg-hover));
+  box-shadow: 0 0 0 1px var(--before);
+}
+.ab-btn.after:hover:not(:disabled),
+.ab-btn.after.active {
+  border-color: var(--after);
+  background: color-mix(in srgb, var(--after) 16%, var(--bg-hover));
+  box-shadow: 0 0 0 1px var(--after);
+}
+.ab-swap {
+  display: grid;
+  place-items: center;
+  color: var(--text-secondary);
+}
+.ab-swap i { width: 20px; height: 20px; stroke: var(--accent-orange); }
+
+.player-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.78em;
+  color: var(--text-secondary);
+}
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--text-secondary);
+}
+.status-dot.playing { background: var(--success); box-shadow: 0 0 8px var(--success); }
+.status-dot.ready { background: var(--accent-orange); }
+
+.vol {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.75em;
+  color: var(--text-secondary);
+}
+.vol i { width: 16px; height: 16px; stroke: var(--accent-orange); }
+.vol input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 120px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--bg-hover);
+  outline: none;
+}
+.vol input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--accent-orange);
+  cursor: pointer;
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 0.8em;
+  font-weight: 600;
+  cursor: pointer;
+}
+.btn i { width: 16px; height: 16px; stroke: currentColor; }
+.btn-primary { background: var(--accent-orange); color: #111; }
+.btn-primary:hover { background: var(--accent-orange-hover); }
+.btn-ghost-fill {
+  background: var(--bg-hover);
+  color: var(--text-main);
+  border: 1px solid var(--border-default);
+}
+.btn-ghost-fill.active {
+  border-color: var(--accent-orange);
+  color: var(--accent-orange);
+}
+.btn-success { background: var(--success); color: #111; }
+.btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+.wave-wrap {
+  display: none;
+  margin-top: 12px;
+  background: #0a1020;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+}
+[data-theme="light"] .wave-wrap { background: #1a1a14; }
+.wave-wrap.visible { display: block; }
+#waveCanvas { display: block; width: 100%; height: 64px; }
+
+.guess { display: none; }
+.guess.visible { display: block; }
+
+.band-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+  gap: 8px;
+}
+
+.band-btn {
+  background: var(--bg-hover);
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  padding: 12px 10px;
+  color: var(--text-main);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: 0.15s;
+}
+.band-btn:hover { border-color: var(--accent-orange); }
+.band-btn.active {
+  border-color: var(--accent-orange);
+  background: var(--glow-orange-soft);
+  box-shadow: 0 0 0 1px var(--accent-orange);
+}
+.band-btn strong { display: block; font-size: 0.82em; }
+.band-btn span {
+  display: block;
+  margin-top: 3px;
+  font-size: 0.66em;
+  color: var(--text-secondary);
+}
+
+.gain-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+.gain-btn {
+  flex: 1;
+  min-width: 72px;
+  background: var(--bg-hover);
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  padding: 10px 8px;
+  color: var(--text-main);
+  cursor: pointer;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.85em;
+}
+.gain-btn.cut { color: #ef9a9a; }
+.gain-btn.boost { color: #a5d6a7; }
+.gain-btn.active.cut {
+  border-color: var(--danger);
+  background: rgba(239, 83, 80, 0.12);
+}
+.gain-btn.active.boost {
+  border-color: var(--success);
+  background: rgba(102, 187, 106, 0.12);
+}
+
+.result {
+  display: none;
+  margin-top: 12px;
+  border-radius: 12px;
+  padding: 14px;
+  line-height: 1.55;
+  font-size: 0.86em;
+}
+.result.visible { display: block; }
+.result.ok { background: rgba(102, 187, 106, 0.12); border: 1px solid var(--success); }
+.result.bad { background: rgba(239, 83, 80, 0.12); border: 1px solid var(--danger); }
+
+.eq-panel { display: none; }
+.eq-panel.visible { display: block; }
+.canvas-wrap {
+  background: #0a1020;
+  border-radius: 10px;
+  overflow: hidden;
+}
+[data-theme="light"] .canvas-wrap { background: #1a1a14; }
+#eqCanvas { display: block; width: 100%; height: 160px; }
+.eq-caption {
+  margin-top: 8px;
+  font-size: 0.78em;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.howto {
+  font-size: 0.78em;
+  color: var(--text-secondary);
+  line-height: 1.65;
+}
+.howto b { color: var(--text-main); font-weight: 600; }
+
+@media (max-width: 680px) {
+  .sound-grid { grid-template-columns: repeat(2, 1fr); }
+  .sound-grid .sound-btn:last-child { grid-column: span 2; }
+  .level-grid { grid-template-columns: 1fr; }
+  .band-grid { grid-template-columns: 1fr; }
+  .ab-btn { min-height: 78px; }
+  .ab-btn strong { font-size: 1.1em; }
+  header h1 { font-size: 1.25em; }
+}
 </style>
 </head>
 <body>
-<div class="container">
-  <a href="../index.html" class="back-link">← К инструментам</a>
+<div class="page">
+  <div class="topbar">
+    <a href="../index.html" class="back-link"><i data-lucide="arrow-left"></i> К инструментам</a>
+    <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
+      <i data-lucide="moon" class="icon-moon"></i>
+      <i data-lucide="sun" class="icon-sun"></i>
+    </button>
+  </div>
+
   <header>
-     <h1><span class="emoji">🎚️</span> EQ-тренажёр</h1>
-    <p>Слушайте звук до и после эквализации, угадайте, какой диапазон частот был усилен и на сколько</p>
+    <h1><i data-lucide="sliders-horizontal"></i> EQ-тренажёр</h1>
+    <p>Слушайте один и тот же звук до обработки и после. Угадайте, какие частоты стали громче или тише — и на сколько децибел.</p>
   </header>
 
-  <div class="score-bar">
-    <div class="score-item">
-      <div class="score-value" id="scoreTotal">0</div>
-      <div class="score-label">Всего</div>
-    </div>
-    <div class="score-item">
-      <div class="score-value" style="color:var(--success)" id="scoreCorrect">0</div>
-      <div class="score-label">Верно</div>
-    </div>
-    <div class="score-item">
-      <div class="score-value" style="color:var(--accent)" id="scoreStreak">0</div>
-      <div class="score-label">Серия</div>
-    </div>
-    <div class="score-item">
-      <div class="score-value" style="color:var(--warning)" id="scorePercent">0%</div>
-      <div class="score-label">Точность</div>
+  <div class="score-row">
+    <div class="score-chip"><b id="scoreTotal">0</b><span>Раундов</span></div>
+    <div class="score-chip"><b id="scoreCorrect" style="color:var(--success)">0</b><span>Верно</span></div>
+    <div class="score-chip"><b id="scoreStreak" style="color:var(--accent-orange)">0</b><span>Серия</span></div>
+    <div class="score-chip"><b id="scorePercent">0%</b><span>Точность</span></div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-label"><i data-lucide="gauge"></i> Сложность</div>
+    <div class="level-grid">
+      <button class="level-btn active" data-level="easy">
+        <strong>Лёгкий</strong>
+        <em>Низ / середина / верх<br>±6 и ±9 дБ</em>
+      </button>
+      <button class="level-btn" data-level="medium">
+        <strong>Средний</strong>
+        <em>Пять диапазонов<br>±3 и ±6 дБ</em>
+      </button>
+      <button class="level-btn" data-level="hard">
+        <strong>Сложный</strong>
+        <em>Шесть частот<br>±2, ±4 и ±6 дБ</em>
+      </button>
     </div>
   </div>
 
   <div class="panel">
-    <div class="panel-title">Сэмпл</div>
-    <div class="sample-selector">
-      <button class="sample-btn active" data-sample="drums">🥁 Барабаны</button>
-      <button class="sample-btn" data-sample="guitar">🎸 Гитара</button>
-      <button class="sample-btn" data-sample="piano">🎹 Пианино</button>
-      <button class="sample-btn" data-sample="bass">🎵 Бас</button>
-      <button class="sample-btn" data-sample="vocal">🎤 Вокал</button>
+    <div class="panel-label"><i data-lucide="music"></i> Что слушаем</div>
+    <div class="sound-grid">
+      <button class="sound-btn active" data-sound="drums">
+        <i data-lucide="drum"></i>
+        <strong>Барабаны</strong>
+        <span>весь спектр</span>
+      </button>
+      <button class="sound-btn" data-sound="mix">
+        <i data-lucide="layers"></i>
+        <strong>Микс</strong>
+        <span>бас и грув</span>
+      </button>
+      <button class="sound-btn" data-sound="keys">
+        <i data-lucide="piano"></i>
+        <strong>Пианино</strong>
+        <span>середина и верх</span>
+      </button>
+      <button class="sound-btn" data-sound="noise">
+        <i data-lucide="audio-lines"></i>
+        <strong>Шум</strong>
+        <span>все частоты</span>
+      </button>
+      <button class="sound-btn" data-sound="upload" id="btnUpload">
+        <i data-lucide="upload"></i>
+        <strong>Свой трек</strong>
+        <span>MP3, WAV, OGG</span>
+      </button>
+    </div>
+    <input type="file" id="fileInput" accept="audio/*,.mp3,.ogg,.wav,.flac,.m4a,.webm" hidden>
+    <div class="upload-row" id="uploadRow">
+      <i data-lucide="file-audio" style="width:16px;height:16px;stroke:var(--accent-orange)"></i>
+      <b id="uploadName"></b>
+      <button class="ghost-btn" id="btnRemoveFile">Убрать</button>
+    </div>
+  </div>
+
+  <div class="panel player">
+    <div class="ab-row">
+      <button class="ab-btn before" id="btnBefore" disabled>
+        <strong>ДО</strong>
+        <span>без обработки</span>
+        <kbd>клавиша Z</kbd>
+      </button>
+      <div class="ab-swap"><i data-lucide="arrow-left-right"></i></div>
+      <button class="ab-btn after" id="btnAfter" disabled>
+        <strong>ПОСЛЕ</strong>
+        <span>с эквалайзером</span>
+        <kbd>клавиша X</kbd>
+      </button>
     </div>
 
-    <div class="upload-zone" id="uploadZone">
-      <input type="file" id="fileInput" accept="audio/*,.mp3,.ogg,.wav,.flac,.m4a,.webm">
-      <div class="upload-zone-label">
-        <span class="icon">📂</span>
-        Загрузите свой трек (MP3, OGG, WAV, FLAC…)
+    <div class="player-meta">
+      <div class="status">
+        <div class="status-dot" id="statusDot"></div>
+        <span id="statusText">Выберите сложность и нажмите «Начать раунд»</span>
       </div>
-    </div>
-    <div class="custom-file-info" id="customFileInfo">
-      <span>🎵</span>
-      <span class="file-name" id="customFileName"></span>
-      <button class="file-remove" id="btnRemoveFile">✕</button>
+      <label class="vol">
+        <i data-lucide="volume-2"></i>
+        <input type="range" id="volumeSlider" min="0" max="100" value="70">
+        <span id="volumeValue">70%</span>
+      </label>
     </div>
 
-    <div class="panel-title" style="margin-top:8px;">Сложность</div>
-    <div class="difficulty-selector">
-      <button class="diff-btn active" data-diff="easy">Лёгкая</button>
-      <button class="diff-btn" data-diff="hard">Средняя</button>
+    <div class="wave-wrap" id="waveWrap">
+      <canvas id="waveCanvas" height="64"></canvas>
+    </div>
+
+    <div class="actions">
+      <button class="btn btn-primary" id="btnNewRound"><i data-lucide="play"></i> Начать раунд</button>
+      <button class="btn btn-ghost-fill" id="btnLoop" disabled><i data-lucide="repeat"></i> Авто ДО ⇄ ПОСЛЕ</button>
+      <button class="btn btn-ghost-fill" id="btnStop" disabled><i data-lucide="circle-stop"></i> Стоп</button>
     </div>
   </div>
 
-  <div class="panel">
-    <div class="panel-title">Кривая эквалайзера</div>
+  <div class="panel guess" id="guessSection">
+    <div class="panel-label"><i data-lucide="ear"></i> Что изменилось?</div>
+    <div class="band-grid" id="bandGrid"></div>
+
+    <div class="panel-label" style="margin-top:14px;"><i data-lucide="volume-2"></i> Насколько?</div>
+    <div class="gain-row" id="gainRow"></div>
+
+    <div class="actions">
+      <button class="btn btn-success" id="btnSubmit" disabled><i data-lucide="check"></i> Проверить</button>
+    </div>
+    <div class="result" id="resultBox"></div>
+  </div>
+
+  <div class="panel eq-panel" id="eqPanel">
+    <div class="panel-label"><i data-lucide="audio-waveform"></i> Как звучал EQ</div>
     <div class="canvas-wrap">
-      <canvas id="eqCanvas" height="200"></canvas>
+      <canvas id="eqCanvas" height="160"></canvas>
     </div>
-    <div class="eq-info" id="eqInfo">Нажмите «Новый раунд» для начала</div>
+    <div class="eq-caption" id="eqCaption"></div>
   </div>
 
   <div class="panel">
-    <div class="panel-title">Волна — выберите точку воспроизведения</div>
-    <div class="canvas-wrap waveform-wrap">
-      <canvas id="waveCanvas" height="100"></canvas>
-    </div>
-    <div class="wave-info">
-      <span id="waveTimeLabel">0:00</span>
-      <span id="waveDurationLabel">—</span>
-    </div>
-  </div>
-
-  <div class="status-bar">
-    <div class="status-indicator" id="statusDot"></div>
-    <span id="statusText">Готов к работе</span>
-    <div style="flex:1"></div>
-    <span class="mode-label" id="modeLabel" style="display:none;"></span>
-  </div>
-
-  <div class="controls">
-    <button class="primary" id="btnNewRound">🎲 Новый раунд</button>
-    <button id="btnPreview">🔊 Предпрослушка</button>
-  </div>
-
-  <div class="volume-control">
-    <label for="volumeSlider">🔉 Громкость</label>
-    <input type="range" id="volumeSlider" min="0" max="100" value="70">
-    <span id="volumeValue">70%</span>
-  </div>
-
-  <div class="ab-controls">
-    <button class="ab-btn btn-before" id="btnBefore" disabled>ДО</button>
-    <span style="opacity:0.3; font-weight:700;">⇄</span>
-    <button class="ab-btn btn-after" id="btnAfter" disabled>ПОСЛЕ</button>
-  </div>
-  <div style="text-align:center; margin-top:8px;">
-    <button class="loop-btn" id="btnLoop" disabled>🔁 Авто-переключение</button>
-  </div>
-  <div class="key-hint">Или используйте клавиши [Z] — ДО / [X] — ПОСЛЕ</div>
-
-  <div class="guess-section" id="guessSection">
-    <div class="panel">
-      <div class="panel-title">Ваш ответ</div>
-      <div class="guess-grid">
-        <div class="guess-group">
-          <label>Какой диапазон был усилён?</label>
-          <select id="guessBand">
-            <option value="">— Выберите —</option>
-            <option value="subbass">Саб-бас (20–60 Гц)</option>
-            <option value="bass">Бас (60–250 Гц)</option>
-            <option value="lowmid">Низкие средние (250–500 Гц)</option>
-            <option value="mid">Средние (500–2000 Гц)</option>
-            <option value="highmid">Высокие средние (2–6 кГц)</option>
-            <option value="presence">Присутствие (6–12 кГц)</option>
-            <option value="air">Воздух (12–18 кГц)</option>
-          </select>
-        </div>
-        <div class="guess-group">
-          <label>На сколько дБ?</label>
-          <select id="guessDb">
-            <option value="">— Выберите —</option>
-          </select>
-        </div>
-      </div>
-      <div style="margin-top:12px; text-align:center;">
-        <button class="success" id="btnSubmit">✓ Проверить</button>
-      </div>
-      <div class="result-box" id="resultBox"></div>
-    </div>
-  </div>
-
-  <div class="panel" style="margin-top:12px;">
-    <div class="panel-title">Как это работает</div>
-    <div style="font-size:0.82em; opacity:0.6; line-height:1.7;">
-      <p>1. Выберите сэмпл и сложность, нажмите <b>«Новый раунд»</b></p>
-      <p>2. Послушайте звук в режимах <b>ДО</b> (без обработки) и <b>ПОСЛЕ</b> (с эквализацией)</p>
-      <p>3. Угадайте, какой частотный диапазон был усилен и на сколько дБ</p>
-      <p>4. На лёгкой сложности — 3 варианта дБ, на средней — 5</p>
+    <div class="panel-label"><i data-lucide="info"></i> Как тренироваться</div>
+    <div class="howto">
+      <p>1. На лёгком уровне слушайте только три зоны: <b>низ</b>, <b>середину</b> и <b>верх</b>.</p>
+      <p>2. <b>ДО</b> — исходный звук. <b>ПОСЛЕ</b> — одна полоса стала громче или тише.</p>
+      <p>3. Переключайте туда-сюда на одном и том же месте трека. Розовый шум прощает ошибки новичкам: изменение слышно сразу.</p>
+      <p>4. После ответа кривая EQ откроется — дослушайте разницу ещё раз, затем возьмите новый раунд.</p>
     </div>
   </div>
 </div>
 
 <script>
-(function() {
-  // ===== Audio Context =====
+(function () {
+  const LEVELS = {
+    easy: {
+      q: 0.75,
+      bands: [
+        { id: 'low', label: 'Низ', freq: 120, range: [60, 250], display: '60–250 Гц', hint: 'бочка, бас, гул' },
+        { id: 'mid', label: 'Середина', freq: 1000, range: [400, 2500], display: '0.4–2.5 кГц', hint: 'тело, голос' },
+        { id: 'high', label: 'Верх', freq: 6500, range: [4000, 12000], display: '4–12 кГц', hint: 'тарелки, воздух' }
+      ],
+      gains: [-9, -6, 6, 9]
+    },
+    medium: {
+      q: 1.15,
+      bands: [
+        { id: 'bass', label: 'Бас', freq: 80, range: [40, 160], display: '40–160 Гц', hint: 'фундамент' },
+        { id: 'lowmid', label: 'Низкая середина', freq: 350, range: [200, 500], display: '200–500 Гц', hint: 'тепло / муть' },
+        { id: 'mid', label: 'Середина', freq: 1000, range: [600, 2000], display: '0.6–2 кГц', hint: 'присутствует' },
+        { id: 'highmid', label: 'Высокая середина', freq: 3500, range: [2500, 5000], display: '2.5–5 кГц', hint: 'атака, речь' },
+        { id: 'air', label: 'Верх', freq: 9000, range: [7000, 14000], display: '7–14 кГц', hint: 'блеск' }
+      ],
+      gains: [-6, -3, 3, 6]
+    },
+    hard: {
+      q: 1.85,
+      bands: [
+        { id: 'f60', label: '60 Гц', freq: 60, range: [40, 90], display: '60 Гц', hint: 'саб' },
+        { id: 'f200', label: '200 Гц', freq: 200, range: [140, 280], display: '200 Гц', hint: 'тело баса' },
+        { id: 'f500', label: '500 Гц', freq: 500, range: [350, 700], display: '500 Гц', hint: 'коробка' },
+        { id: 'f1500', label: '1.5 кГц', freq: 1500, range: [1100, 2000], display: '1.5 кГц', hint: 'носовость' },
+        { id: 'f4000', label: '4 кГц', freq: 4000, range: [3000, 5500], display: '4 кГц', hint: 'атака' },
+        { id: 'f10000', label: '10 кГц', freq: 10000, range: [8000, 14000], display: '10 кГц', hint: 'воздух' }
+      ],
+      gains: [-6, -4, -2, 2, 4, 6]
+    }
+  };
+
+  const SAMPLE_FILES = {
+    mix: 'samples/mix-loop.ogg',
+    keys: 'piano.ogg',
+    guitar: 'guitar.ogg',
+    bass: 'bass.ogg'
+  };
+
+  const state = {
+    level: 'easy',
+    sound: 'drums',
+    roundActive: false,
+    revealed: false,
+    band: null,
+    db: 0,
+    guessBand: '',
+    guessDb: null,
+    buffer: null,
+    customBuffer: null,
+    customName: '',
+    volume: 0.7,
+    playOffset: 0,
+    scoreTotal: 0,
+    scoreCorrect: 0,
+    scoreStreak: 0
+  };
+
+  const $ = (id) => document.getElementById(id);
+  const btnBefore = $('btnBefore');
+  const btnAfter = $('btnAfter');
+  const btnNewRound = $('btnNewRound');
+  const btnLoop = $('btnLoop');
+  const btnStop = $('btnStop');
+  const btnSubmit = $('btnSubmit');
+  const guessSection = $('guessSection');
+  const resultBox = $('resultBox');
+  const eqPanel = $('eqPanel');
+  const eqCanvas = $('eqCanvas');
+  const eqCtx = eqCanvas.getContext('2d');
+  const waveCanvas = $('waveCanvas');
+  const waveCtx = waveCanvas.getContext('2d');
+  const bandGrid = $('bandGrid');
+  const gainRow = $('gainRow');
+
   let audioCtx = null;
-  function ensureAudioCtx() {
+  let eqFilter = null;
+  let masterGain = null;
+  let sourceNode = null;
+  let playing = false;
+  let mode = null;
+  let playStartTime = 0;
+  let loopTimer = null;
+  const sampleCache = {};
+
+  function ensureAudio() {
     if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     if (audioCtx.state === 'suspended') audioCtx.resume();
+    if (!eqFilter) {
+      eqFilter = audioCtx.createBiquadFilter();
+      eqFilter.type = 'peaking';
+      eqFilter.Q.value = 1;
+      eqFilter.gain.value = 0;
+      masterGain = audioCtx.createGain();
+      masterGain.gain.value = state.volume;
+      eqFilter.connect(masterGain);
+      masterGain.connect(audioCtx.destination);
+    }
     return audioCtx;
   }
 
-  // ===== EQ Bands =====
-  const EQ_BANDS = [
-    { id: 'subbass',  label: 'Саб-бас',       freq: 40,   min: 20,  max: 60,  range: [20, 60] },
-    { id: 'bass',     label: 'Бас',           freq: 120,  min: 60,  max: 250, range: [60, 250] },
-    { id: 'lowmid',   label: 'Низкие средние',freq: 350,  min: 250, max: 500, range: [250, 500] },
-    { id: 'mid',      label: 'Средние',       freq: 1000, min: 500, max: 2000, range: [500, 2000] },
-    { id: 'highmid',  label: 'Высокие средние',freq: 4000, min: 2000, max: 6000, range: [2000, 6000] },
-    { id: 'presence', label: 'Присутствие',   freq: 8000, min: 6000, max: 12000, range: [6000, 12000] },
-    { id: 'air',      label: 'Воздух',        freq: 15000, min: 12000, max: 18000, range: [12000, 18000] },
-  ];
+  function currentLevel() { return LEVELS[state.level]; }
 
-  const DB_OPTIONS = {
-    easy:   [-6, 6],
-    hard:   [2, 4, 6, 8, 10],
-  };
+  function formatDb(db) { return (db > 0 ? '+' : '') + db + ' дБ'; }
 
-  // ===== State =====
-  let state = {
-    sample: 'drums',
-    difficulty: 'easy',
-    roundActive: false,
-    currentBand: null,
-    currentDb: 0,
-    bufferOriginal: null,
-    bufferEQ: null,
-    scoreTotal: 0,
-    scoreCorrect: 0,
-    scoreStreak: 0,
-    bestStreak: 0,
-    customBuffer: null,
-    customFileName: '',
-    playPosition: 0,
-    volume: 0.7,
-  };
-
-  // ===== DOM =====
-  const $ = id => document.getElementById(id);
-  const btnNewRound = $('btnNewRound');
-  const btnPreview = $('btnPreview');
-  const btnBefore = $('btnBefore');
-  const btnAfter = $('btnAfter');
-  const btnSubmit = $('btnSubmit');
-  const guessSection = $('guessSection');
-  const guessBand = $('guessBand');
-  const guessDb = $('guessDb');
-  const resultBox = $('resultBox');
-  const statusDot = $('statusDot');
-  const statusText = $('statusText');
-  const modeLabel = $('modeLabel');
-  const eqCanvas = $('eqCanvas');
-  const eqCtx = eqCanvas.getContext('2d');
-  const eqInfo = $('eqInfo');
-  const waveCanvas = $('waveCanvas');
-  const waveCtx = waveCanvas.getContext('2d');
-  const waveTimeLabel = $('waveTimeLabel');
-  const waveDurationLabel = $('waveDurationLabel');
-  const uploadZone = $('uploadZone');
-  const fileInput = $('fileInput');
-  const customFileInfo = $('customFileInfo');
-  const customFileName = $('customFileName');
-  const btnRemoveFile = $('btnRemoveFile');
-
-  // ===== Score =====
   function updateScore() {
     $('scoreTotal').textContent = state.scoreTotal;
     $('scoreCorrect').textContent = state.scoreCorrect;
     $('scoreStreak').textContent = state.scoreStreak;
-    const pct = state.scoreTotal > 0 ? Math.round(state.scoreCorrect / state.scoreTotal * 100) : 0;
+    const pct = state.scoreTotal ? Math.round(state.scoreCorrect / state.scoreTotal * 100) : 0;
     $('scorePercent').textContent = pct + '%';
   }
 
-  // ===== Populate DB options =====
-  function populateDbOptions() {
-    guessDb.innerHTML = '<option value="">— Выберите —</option>';
-    const opts = DB_OPTIONS[state.difficulty];
-    opts.forEach(db => {
-      const o = document.createElement('option');
-      o.value = db;
-      o.textContent = (db >= 0 ? '+' : '') + db + ' дБ';
-      guessDb.appendChild(o);
+  function setStatus(text, kind) {
+    $('statusText').textContent = text;
+    $('statusDot').className = 'status-dot' + (kind ? ' ' + kind : '');
+  }
+
+  function renderGuessUI() {
+    const level = currentLevel();
+    bandGrid.className = 'band-grid';
+    bandGrid.innerHTML = '';
+    level.bands.forEach((band) => {
+      const btn = document.createElement('button');
+      btn.className = 'band-btn' + (state.guessBand === band.id ? ' active' : '');
+      btn.type = 'button';
+      btn.innerHTML = '<strong>' + band.label + '</strong><span>' + band.display + ' · ' + band.hint + '</span>';
+      btn.addEventListener('click', () => {
+        state.guessBand = band.id;
+        renderGuessUI();
+        syncSubmit();
+      });
+      bandGrid.appendChild(btn);
+    });
+
+    gainRow.innerHTML = '';
+    level.gains.forEach((db) => {
+      const btn = document.createElement('button');
+      btn.className = 'gain-btn ' + (db < 0 ? 'cut' : 'boost') + (state.guessDb === db ? ' active' : '');
+      btn.type = 'button';
+      btn.textContent = formatDb(db);
+      btn.addEventListener('click', () => {
+        state.guessDb = db;
+        renderGuessUI();
+        syncSubmit();
+      });
+      gainRow.appendChild(btn);
     });
   }
 
-  // ===== Sample Loading & Synthesis =====
-  const sampleCache = {};
-  const sampleFiles = { guitar: 'guitar.ogg', bass: 'bass.ogg', piano: 'piano.ogg' };
-  const sampleFallbacks = { guitar: synthesizeGuitar, bass: synthesizeBass, piano: synthesizePiano };
-
-  function loadFromFile(ctx, type) {
-    if (sampleCache[type]) return Promise.resolve(sampleCache[type]);
-    return fetch(sampleFiles[type])
-      .then(r => r.arrayBuffer())
-      .then(ab => ctx.decodeAudioData(ab))
-      .then(buf => { sampleCache[type] = buf; return buf; })
-      .catch(() => sampleFallbacks[type](ctx));
+  function syncSubmit() {
+    btnSubmit.disabled = !state.roundActive || state.revealed || !state.guessBand || state.guessDb === null;
   }
 
-  function createNoiseBuffer(ctx, duration) {
-    const sampleRate = ctx.sampleRate;
-    const length = sampleRate * duration;
-    const buffer = ctx.createBuffer(1, length, sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < length; i++) {
-      data[i] = Math.random() * 2 - 1;
+  function createPinkNoise(ctx, duration) {
+    const length = Math.floor(ctx.sampleRate * duration);
+    const buffer = ctx.createBuffer(2, length, ctx.sampleRate);
+    for (let ch = 0; ch < 2; ch++) {
+      const data = buffer.getChannelData(ch);
+      let b0 = 0, b1 = 0, b2 = 0, b3 = 0, b4 = 0, b5 = 0, b6 = 0;
+      for (let i = 0; i < length; i++) {
+        const white = Math.random() * 2 - 1;
+        b0 = 0.99886 * b0 + white * 0.0555179;
+        b1 = 0.99332 * b1 + white * 0.0750759;
+        b2 = 0.96900 * b2 + white * 0.1538520;
+        b3 = 0.86650 * b3 + white * 0.3104856;
+        b4 = 0.55000 * b4 + white * 0.5329522;
+        b5 = -0.7616 * b5 - white * 0.0168980;
+        data[i] = (b0 + b1 + b2 + b3 + b4 + b5 + b6 + white * 0.5362) * 0.11;
+        b6 = white * 0.115926;
+      }
+    }
+    return normalizeBuffer(buffer, 0.55);
+  }
+
+  function normalizeBuffer(buffer, target) {
+    let max = 0;
+    for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
+      const data = buffer.getChannelData(ch);
+      for (let i = 0; i < data.length; i++) max = Math.max(max, Math.abs(data[i]));
+    }
+    if (max > 0) {
+      const scale = target / max;
+      for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
+        const data = buffer.getChannelData(ch);
+        for (let i = 0; i < data.length; i++) data[i] *= scale;
+      }
     }
     return buffer;
+  }
+
+  function writeStereo(L, R, i, v, w) {
+    if (i < 0 || i >= L.length) return;
+    const width = w == null ? 1 : w;
+    L[i] += v;
+    R[i] += v * (0.92 + 0.16 * width);
   }
 
   function synthesizeDrums(ctx) {
-    const duration = 3;
-    const sampleRate = ctx.sampleRate;
-    const length = sampleRate * duration;
-    const buffer = ctx.createBuffer(2, length, sampleRate);
+    const duration = 8;
+    const sr = ctx.sampleRate;
+    const length = Math.floor(sr * duration);
+    const buffer = ctx.createBuffer(2, length, sr);
     const L = buffer.getChannelData(0);
     const R = buffer.getChannelData(1);
-
-    const bpm = 120;
-    const beatDur = 60 / bpm;
-    const eighthDur = beatDur / 2;
-
-    for (let t = 0; t < duration; t += eighthDur) {
-      const beatInBar = Math.floor(t / beatDur) % 8;
-
-      // Kick on 0, 4
-      if (beatInBar === 0 || beatInBar === 4) {
-        const kickLen = sampleRate * 0.15;
-        const start = Math.floor(t * sampleRate);
-        for (let i = 0; i < kickLen && start + i < length; i++) {
-          const env = Math.exp(-i / (sampleRate * 0.06));
-          const freq = 150 * Math.exp(-i / (sampleRate * 0.03)) + 40;
-          const phase = 2 * Math.PI * freq * i / sampleRate;
-          const val = env * Math.sin(phase) * 0.7;
-          L[start + i] += val;
-          R[start + i] += val;
+    const beat = 60 / 112;
+    for (let t = 0; t < duration; t += beat / 2) {
+      const eighth = Math.round(t / (beat / 2));
+      const start = Math.floor(t * sr);
+      if (eighth % 8 === 0 || eighth % 8 === 6) {
+        const n = Math.floor(sr * 0.18);
+        for (let i = 0; i < n; i++) {
+          const env = Math.exp(-i / (sr * 0.055));
+          const freq = 140 * Math.exp(-i / (sr * 0.028)) + 38;
+          writeStereo(L, R, start + i, Math.sin(2 * Math.PI * freq * i / sr) * env * 0.85, 0.2);
         }
       }
-
-      // Snare on 2, 6
-      if (beatInBar === 2 || beatInBar === 6) {
-        const snareLen = sampleRate * 0.12;
-        const start = Math.floor(t * sampleRate);
-        for (let i = 0; i < snareLen && start + i < length; i++) {
-          const env = Math.exp(-i / (sampleRate * 0.04));
-          const noise = (Math.random() * 2 - 1) * env * 0.4;
-          const tone = Math.sin(2 * Math.PI * 200 * i / sampleRate) * env * 0.3;
-          L[start + i] += noise + tone;
-          R[start + i] += noise + tone;
+      if (eighth % 8 === 4) {
+        const n = Math.floor(sr * 0.14);
+        for (let i = 0; i < n; i++) {
+          const env = Math.exp(-i / (sr * 0.038));
+          const noise = (Math.random() * 2 - 1) * env * 0.42;
+          const tone = Math.sin(2 * Math.PI * 190 * i / sr) * env * 0.28;
+          writeStereo(L, R, start + i, noise + tone, 0.7);
         }
       }
-
-      // Hi-hat on every eighth
-      const hhLen = sampleRate * 0.04;
-      const start = Math.floor(t * sampleRate);
-      const vol = (beatInBar % 2 === 0) ? 0.15 : 0.08;
-      for (let i = 0; i < hhLen && start + i < length; i++) {
-        const env = Math.exp(-i / (sampleRate * 0.012));
-        const noise = (Math.random() * 2 - 1) * env * vol;
-        L[start + i] += noise;
-        R[start + i] += noise;
+      const hatN = Math.floor(sr * (eighth % 2 === 0 ? 0.05 : 0.03));
+      const hatV = eighth % 2 === 0 ? 0.16 : 0.08;
+      for (let i = 0; i < hatN; i++) {
+        const env = Math.exp(-i / (sr * 0.01));
+        writeStereo(L, R, start + i, (Math.random() * 2 - 1) * env * hatV, 1);
       }
     }
-
-    // Normalize
-    let max = 0;
-    for (let i = 0; i < length; i++) {
-      max = Math.max(max, Math.abs(L[i]), Math.abs(R[i]));
-    }
-    if (max > 0) {
-      const scale = 0.85 / max;
-      for (let i = 0; i < length; i++) {
-        L[i] *= scale;
-        R[i] *= scale;
-      }
-    }
-
-    return buffer;
+    return normalizeBuffer(buffer, 0.82);
   }
 
-  function synthesizeGuitar(ctx) {
-    const duration = 3;
-    const sampleRate = ctx.sampleRate;
-    const length = sampleRate * duration;
-    const buffer = ctx.createBuffer(2, length, sampleRate);
+  function synthesizeMix(ctx) {
+    const drums = synthesizeDrums(ctx);
+    const sr = ctx.sampleRate;
+    const L = drums.getChannelData(0);
+    const R = drums.getChannelData(1);
+    const bass = [49, 49, 55, 61.74, 49, 49, 73.42, 55];
+    const step = 60 / 112;
+    bass.forEach((freq, idx) => {
+      const t0 = idx * step;
+      for (let i = 0; i < Math.floor(sr * step); i++) {
+        const t = t0 + i / sr;
+        const age = i / sr;
+        const env = Math.min(1, age * 80) * Math.min(1, (step - age) * 8);
+        const val = Math.sin(2 * Math.PI * freq * t) * 0.55
+          + Math.sin(2 * Math.PI * freq * 2 * t) * 0.18
+          + Math.sin(2 * Math.PI * freq * 3 * t) * 0.06;
+        writeStereo(L, R, Math.floor(t * sr), val * env * 0.45, 0.15);
+      }
+    });
+    for (let i = 0; i < L.length; i++) {
+      const t = i / sr;
+      const pad = (Math.sin(2 * Math.PI * 196 * t) + Math.sin(2 * Math.PI * 246.94 * t) * 0.6 + Math.sin(2 * Math.PI * 293.66 * t) * 0.4) * 0.07;
+      L[i] += pad;
+      R[i] += pad * 0.9;
+    }
+    return normalizeBuffer(drums, 0.8);
+  }
+
+  function synthesizeKeys(ctx) {
+    const duration = 8;
+    const sr = ctx.sampleRate;
+    const length = Math.floor(sr * duration);
+    const buffer = ctx.createBuffer(2, length, sr);
     const L = buffer.getChannelData(0);
     const R = buffer.getChannelData(1);
-
-    // Chord: E major (E2, B2, E3, G#3, B3, E4)
-    const chordFreqs = [82.41, 123.47, 164.81, 207.65, 246.94, 329.63];
-    const strumOffset = 0.02;
-
     const notes = [
-      { start: 0, dur: 1.2 },
-      { start: 1.3, dur: 1.2 },
+      [261.63, 0, 1.1], [329.63, 0.15, 1.1], [392, 0.3, 1.2], [523.25, 0.5, 1.4],
+      [349.23, 2.0, 1.0], [440, 2.2, 1.1], [523.25, 2.4, 1.3],
+      [293.66, 4.0, 1.1], [369.99, 4.2, 1.1], [440, 4.4, 1.4],
+      [246.94, 6.0, 1.6], [329.63, 6.15, 1.6], [392, 6.3, 1.8]
     ];
-
-    notes.forEach(note => {
-      chordFreqs.forEach((freq, fi) => {
-        const t0 = note.start + fi * strumOffset;
-        const t1 = note.start + note.dur + fi * strumOffset;
-        for (let t = t0; t < t1 && t < duration; t += 1/sampleRate) {
-          const i = Math.floor(t * sampleRate);
-          const age = t - t0;
-          const env = Math.exp(-age * 3) * (1 - Math.exp(-age * 100));
-          // Fundamental + harmonics
-          let val = 0;
-          val += Math.sin(2 * Math.PI * freq * t) * 0.5;
-          val += Math.sin(2 * Math.PI * freq * 2 * t) * 0.2;
-          val += Math.sin(2 * Math.PI * freq * 3 * t) * 0.1;
-          val += Math.sin(2 * Math.PI * freq * 4 * t) * 0.05;
-          L[i] += val * env * 0.3;
-          R[i] += val * env * 0.3;
-        }
-      });
-    });
-
-    let max = 0;
-    for (let i = 0; i < length; i++) max = Math.max(max, Math.abs(L[i]));
-    if (max > 0) {
-      const scale = 0.85 / max;
-      for (let i = 0; i < length; i++) { L[i] *= scale; R[i] *= scale; }
-    }
-    return buffer;
-  }
-
-  function synthesizePiano(ctx) {
-    const duration = 3;
-    const sampleRate = ctx.sampleRate;
-    const length = sampleRate * duration;
-    const buffer = ctx.createBuffer(2, length, sampleRate);
-    const L = buffer.getChannelData(0);
-    const R = buffer.getChannelData(1);
-
-    // C major arpeggio pattern
-    const notes = [
-      { freq: 261.63, start: 0, dur: 0.8 },
-      { freq: 329.63, start: 0.2, dur: 0.8 },
-      { freq: 392.00, start: 0.4, dur: 0.8 },
-      { freq: 523.25, start: 0.6, dur: 1.0 },
-      { freq: 392.00, start: 1.0, dur: 0.6 },
-      { freq: 329.63, start: 1.2, dur: 0.6 },
-      { freq: 261.63, start: 1.5, dur: 1.2 },
-      // Second phrase
-      { freq: 293.66, start: 1.8, dur: 0.8 },
-      { freq: 349.23, start: 2.0, dur: 0.8 },
-      { freq: 440.00, start: 2.2, dur: 0.8 },
-      { freq: 587.33, start: 2.4, dur: 0.8 },
-    ];
-
-    notes.forEach(note => {
-      for (let t = note.start; t < note.start + note.dur && t < duration; t += 1/sampleRate) {
-        const i = Math.floor(t * sampleRate);
-        const age = t - note.start;
-        const attack = Math.min(1, age * 80);
-        const decay = Math.exp(-age * 1.5);
-        const env = attack * decay;
+    notes.forEach(([freq, start, dur]) => {
+      const n = Math.floor(sr * dur);
+      const i0 = Math.floor(start * sr);
+      for (let i = 0; i < n && i0 + i < length; i++) {
+        const age = i / sr;
+        const env = Math.min(1, age * 90) * Math.exp(-age * 1.35);
         let val = 0;
-        val += Math.sin(2 * Math.PI * note.freq * t) * 0.6;
-        val += Math.sin(2 * Math.PI * note.freq * 2 * t) * 0.25;
-        val += Math.sin(2 * Math.PI * note.freq * 3 * t) * 0.12;
-        val += Math.sin(2 * Math.PI * note.freq * 4 * t) * 0.06;
-        val += Math.sin(2 * Math.PI * note.freq * 5 * t) * 0.03;
-        L[i] += val * env * 0.35;
-        R[i] += val * env * 0.35;
+        for (let h = 1; h <= 6; h++) val += Math.sin(2 * Math.PI * freq * h * (start + age)) / (h * 1.15);
+        writeStereo(L, R, i0 + i, val * env * 0.22, 0.4);
       }
     });
-
-    let max = 0;
-    for (let i = 0; i < length; i++) max = Math.max(max, Math.abs(L[i]));
-    if (max > 0) {
-      const scale = 0.85 / max;
-      for (let i = 0; i < length; i++) { L[i] *= scale; R[i] *= scale; }
-    }
-    return buffer;
-  }
-
-  function synthesizeBass(ctx) {
-    const duration = 3;
-    const sampleRate = ctx.sampleRate;
-    const length = sampleRate * duration;
-    const buffer = ctx.createBuffer(2, length, sampleRate);
-    const L = buffer.getChannelData(0);
-    const R = buffer.getChannelData(1);
-
-    const bassLine = [
-      { freq: 55.00, dur: 0.5 },  // A1
-      { freq: 55.00, dur: 0.5 },
-      { freq: 73.42, dur: 0.5 },  // D2
-      { freq: 82.41, dur: 0.5 },  // E2
-      { freq: 73.42, dur: 0.5 },  // D2
-      { freq: 65.41, dur: 0.5 },  // C2
-      { freq: 55.00, dur: 0.5 },  // A1
-      { freq: 55.00, dur: 0.5 },
-    ];
-
-    let t = 0;
-    bassLine.forEach(note => {
-      for (let dt = 0; dt < note.dur && t < duration; dt += 1/sampleRate) {
-        const i = Math.floor((t + dt) * sampleRate);
-        const age = dt;
-        const attack = Math.min(1, age * 200);
-        const release = Math.min(1, (note.dur - age) * 10);
-        const env = attack * release;
-        let val = 0;
-        val += Math.sin(2 * Math.PI * note.freq * (t + dt)) * 0.7;
-        val += Math.sin(2 * Math.PI * note.freq * 2 * (t + dt)) * 0.2;
-        val += Math.sin(2 * Math.PI * note.freq * 3 * (t + dt)) * 0.08;
-        L[i] += val * env * 0.6;
-        R[i] += val * env * 0.6;
-      }
-      t += note.dur;
-    });
-
-    let max = 0;
-    for (let i = 0; i < length; i++) max = Math.max(max, Math.abs(L[i]));
-    if (max > 0) {
-      const scale = 0.85 / max;
-      for (let i = 0; i < length; i++) { L[i] *= scale; R[i] *= scale; }
-    }
-    return buffer;
-  }
-
-  function synthesizeVocal(ctx) {
-    const duration = 3;
-    const sampleRate = ctx.sampleRate;
-    const length = sampleRate * duration;
-    const buffer = ctx.createBuffer(2, length, sampleRate);
-    const L = buffer.getChannelData(0);
-    const R = buffer.getChannelData(1);
-
-    // Simulated vocal: formant-like tones with vibrato
-    const melody = [
-      { freq: 220, start: 0, dur: 0.6 },
-      { freq: 261.63, start: 0.6, dur: 0.6 },
-      { freq: 293.66, start: 1.2, dur: 0.8 },
-      { freq: 329.63, start: 2.0, dur: 0.8 },
-    ];
-
-    melody.forEach(note => {
-      for (let t = note.start; t < note.start + note.dur && t < duration; t += 1/sampleRate) {
-        const i = Math.floor(t * sampleRate);
-        const age = t - note.start;
-        const attack = Math.min(1, age * 30);
-        const release = Math.min(1, (note.start + note.dur - t) * 15);
-        const env = attack * release;
-        // Vibrato
-        const vibrato = 1 + 0.008 * Math.sin(2 * Math.PI * 5.5 * t);
-        const f = note.freq * vibrato;
-        let val = 0;
-        // Formant synthesis approximation
-        val += Math.sin(2 * Math.PI * f * t) * 0.4;
-        val += Math.sin(2 * Math.PI * f * 2 * t) * 0.2;
-        val += Math.sin(2 * Math.PI * f * 3 * t) * 0.1;
-        // Formant peaks
-        val += Math.sin(2 * Math.PI * 800 * t) * 0.08 * env;
-        val += Math.sin(2 * Math.PI * 2400 * t) * 0.06 * env;
-        // Subtle noise for air
-        val += (Math.random() * 2 - 1) * 0.015 * env;
-        L[i] += val * env * 0.4;
-        R[i] += val * env * 0.4;
-      }
-    });
-
-    let max = 0;
-    for (let i = 0; i < length; i++) max = Math.max(max, Math.abs(L[i]));
-    if (max > 0) {
-      const scale = 0.85 / max;
-      for (let i = 0; i < length; i++) { L[i] *= scale; R[i] *= scale; }
-    }
-    return buffer;
-  }
-
-  function getSample(ctx, type) {
-    if (state.customBuffer) return Promise.resolve(state.customBuffer);
-    if (sampleFiles[type]) return loadFromFile(ctx, type);
-    return Promise.resolve(synthesizeSample(ctx, type));
+    return normalizeBuffer(buffer, 0.78);
   }
 
   function synthesizeSample(ctx, type) {
-    switch (type) {
-      case 'drums': return synthesizeDrums(ctx);
-      case 'guitar': return synthesizeGuitar(ctx);
-      case 'piano': return synthesizePiano(ctx);
-      case 'bass': return synthesizeBass(ctx);
-      case 'vocal': return synthesizeVocal(ctx);
-      default: return synthesizeDrums(ctx);
+    if (type === 'noise') return createPinkNoise(ctx, 8);
+    if (type === 'mix') return synthesizeMix(ctx);
+    if (type === 'keys') return synthesizeKeys(ctx);
+    return synthesizeDrums(ctx);
+  }
+
+  function loadSample(type) {
+    if (type === 'upload') {
+      return state.customBuffer
+        ? Promise.resolve(state.customBuffer)
+        : Promise.reject(new Error('no-file'));
     }
-  }
-
-  // ===== Apply EQ to buffer =====
-  function applyEQToBuffer(ctx, sourceBuffer, band, dbGain) {
-    const offlineCtx = new OfflineAudioContext(
-      sourceBuffer.numberOfChannels,
-      sourceBuffer.length,
-      ctx.sampleRate
-    );
-
-    const source = offlineCtx.createBufferSource();
-    source.buffer = sourceBuffer;
-
-    const eq = offlineCtx.createBiquadFilter();
-    eq.type = 'peaking';
-    eq.frequency.value = band.freq;
-    eq.Q.value = 1.4;
-    eq.gain.value = dbGain;
-
-    source.connect(eq);
-    eq.connect(offlineCtx.destination);
-    source.start(0);
-
-    return offlineCtx.startRendering();
-  }
-
-  // ===== Play audio =====
-  let activeNodes = [];
-  let masterGain = null;
-  function getMasterGain() {
-    if (!masterGain) {
-      masterGain = ensureAudioCtx().createGain();
-      masterGain.gain.value = state.volume;
-      masterGain.connect(ensureAudioCtx().destination);
+    if (sampleCache[type]) return Promise.resolve(sampleCache[type]);
+    const ctx = ensureAudio();
+    const file = SAMPLE_FILES[type];
+    if (!file) {
+      sampleCache[type] = synthesizeSample(ctx, type);
+      return Promise.resolve(sampleCache[type]);
     }
-    return masterGain;
-  }
-  function stopCurrentAudio() {
-    activeNodes.forEach(node => {
-      try { if (node.stop) node.stop(); } catch(e) {}
-      try { node.disconnect(); } catch(e) {}
-    });
-    activeNodes = [];
-  }
-  function playBuffer(buffer, startTime) {
-    stopCurrentAudio();
-    startTime = startTime || 0;
-    const ctx = ensureAudioCtx();
-    const source = ctx.createBufferSource();
-    source.buffer = buffer;
-    source.connect(getMasterGain());
-    source.start(0, startTime);
-    activeNodes.push(source);
-    source.onended = () => {
-      const idx = activeNodes.indexOf(source);
-      if (idx > -1) activeNodes.splice(idx, 1);
-    };
-  }
-  function setVolume(val) {
-    state.volume = val;
-    if (masterGain) masterGain.gain.value = val;
+    return fetch(file)
+      .then((r) => { if (!r.ok) throw new Error('missing'); return r.arrayBuffer(); })
+      .then((ab) => ctx.decodeAudioData(ab))
+      .then((buf) => { sampleCache[type] = buf; return buf; })
+      .catch(() => {
+        sampleCache[type] = synthesizeSample(ctx, type);
+        return sampleCache[type];
+      });
   }
 
-  // ===== Waveform =====
+  function loopWindow(buffer) {
+    if (buffer.duration <= 12) return { start: 0, length: buffer.duration };
+    const start = Math.min(state.playOffset, Math.max(0, buffer.duration - 8));
+    return { start: start, length: 8 };
+  }
+
+  function currentOffset() {
+    if (!playing || !state.buffer) return state.playOffset;
+    const win = loopWindow(state.buffer);
+    const elapsed = audioCtx.currentTime - playStartTime;
+    return win.start + ((state.playOffset - win.start + elapsed) % win.length);
+  }
+
+  function stopSource() {
+    if (sourceNode) {
+      try { sourceNode.onended = null; sourceNode.stop(); } catch (e) {}
+      try { sourceNode.disconnect(); } catch (e) {}
+      sourceNode = null;
+    }
+    playing = false;
+  }
+
+  function stopAll() {
+    stopSource();
+    stopAuto();
+    mode = null;
+    btnBefore.classList.remove('active');
+    btnAfter.classList.remove('active');
+    btnStop.disabled = true;
+    if (state.roundActive) setStatus('Раунд готов — слушайте ДО и ПОСЛЕ', 'ready');
+  }
+
+  function applyMode(next, restart) {
+    mode = next;
+    btnBefore.classList.toggle('active', next === 'before');
+    btnAfter.classList.toggle('active', next === 'after');
+    if (eqFilter && state.band) {
+      const target = next === 'after' ? state.db : 0;
+      eqFilter.gain.cancelScheduledValues(audioCtx.currentTime);
+      eqFilter.gain.setTargetAtTime(target, audioCtx.currentTime, 0.012);
+    }
+    setStatus(next === 'after' ? 'ПОСЛЕ — эквалайзер включён' : 'ДО — без обработки', 'playing');
+    if (restart || !playing) startPlayback();
+  }
+
+  function startPlayback() {
+    if (!state.buffer) return;
+    const ctx = ensureAudio();
+    const offset = currentOffset();
+    stopSource();
+    const win = loopWindow(state.buffer);
+    const src = ctx.createBufferSource();
+    src.buffer = state.buffer;
+    src.loop = true;
+    src.loopStart = win.start;
+    src.loopEnd = win.start + win.length;
+    src.connect(eqFilter);
+    const startAt = Math.min(Math.max(offset, win.start), win.start + win.length - 0.01);
+    src.start(0, startAt);
+    sourceNode = src;
+    playing = true;
+    playStartTime = ctx.currentTime;
+    state.playOffset = startAt;
+    btnStop.disabled = false;
+  }
+
+  function armFilter() {
+    ensureAudio();
+    eqFilter.frequency.value = state.band.freq;
+    eqFilter.Q.value = currentLevel().q;
+    eqFilter.gain.value = mode === 'after' ? state.db : 0;
+  }
+
   function drawWaveform() {
     const canvas = waveCanvas;
+    const wrap = $('waveWrap');
+    if (!state.buffer || state.buffer.duration <= 12) {
+      wrap.classList.remove('visible');
+      return;
+    }
+    wrap.classList.add('visible');
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
     canvas.width = rect.width * dpr;
-    canvas.height = 100 * dpr;
+    canvas.height = 64 * dpr;
     waveCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
     const w = rect.width;
-    const h = 100;
-
+    const h = 64;
     waveCtx.clearRect(0, 0, w, h);
-    waveCtx.fillStyle = '#1a1a1a';
-    waveCtx.fillRect(0, 0, w, h);
-
-    if (!state.bufferOriginal) {
-      waveCtx.fillStyle = 'rgba(255,255,255,0.2)';
-      waveCtx.font = '13px Inter, sans-serif';
-      waveCtx.textAlign = 'center';
-      waveCtx.fillText('Загрузите раунд для отображения волны', w / 2, h / 2 + 4);
-      return;
-    }
-
-    const buffer = state.bufferOriginal;
-    const data = buffer.getChannelData(0);
-    const len = data.length;
-    const step = Math.max(1, Math.floor(len / w));
-
-    waveCtx.strokeStyle = 'rgba(0,188,212,0.6)';
-    waveCtx.lineWidth = 1;
+    const data = state.buffer.getChannelData(0);
+    const step = Math.max(1, Math.floor(data.length / w));
+    waveCtx.strokeStyle = 'rgba(242,153,74,0.7)';
     waveCtx.beginPath();
     for (let x = 0; x < w; x++) {
       let min = 1, max = -1;
-      const start = Math.floor(x * len / w);
+      const start = Math.floor(x * data.length / w);
       for (let j = 0; j < step; j++) {
-        const idx = start + j;
-        if (idx >= len) break;
-        if (data[idx] < min) min = data[idx];
-        if (data[idx] > max) max = data[idx];
+        const v = data[start + j] || 0;
+        if (v < min) min = v;
+        if (v > max) max = v;
       }
       waveCtx.moveTo(x, h / 2 + min * h / 2);
       waveCtx.lineTo(x, h / 2 + max * h / 2);
     }
     waveCtx.stroke();
-
-    // Center line
-    waveCtx.strokeStyle = 'rgba(255,255,255,0.08)';
+    const win = loopWindow(state.buffer);
+    const x1 = (win.start / state.buffer.duration) * w;
+    const x2 = ((win.start + win.length) / state.buffer.duration) * w;
+    waveCtx.fillStyle = 'rgba(242,153,74,0.12)';
+    waveCtx.fillRect(x1, 0, x2 - x1, h);
+    waveCtx.strokeStyle = '#F2994A';
     waveCtx.beginPath();
-    waveCtx.moveTo(0, h / 2);
-    waveCtx.lineTo(w, h / 2);
+    waveCtx.moveTo(x1, 0);
+    waveCtx.lineTo(x1, h);
     waveCtx.stroke();
-
-    // Playhead
-    const pos = state.playPosition;
-    const px = (pos / buffer.duration) * w;
-    waveCtx.strokeStyle = '#ff7043';
-    waveCtx.lineWidth = 2;
-    waveCtx.beginPath();
-    waveCtx.moveTo(px, 0);
-    waveCtx.lineTo(px, h);
-    waveCtx.stroke();
-
-    // Playhead dot
-    waveCtx.fillStyle = '#ff7043';
-    waveCtx.beginPath();
-    waveCtx.arc(px, h / 2, 5, 0, Math.PI * 2);
-    waveCtx.fill();
-
-    // Dim region after playhead
-    waveCtx.fillStyle = 'rgba(0,0,0,0.35)';
-    waveCtx.fillRect(px, 0, w - px, h);
-
-    // Update time labels
-    waveTimeLabel.textContent = formatTime(pos);
-    waveDurationLabel.textContent = formatTime(buffer.duration);
   }
 
-  function formatTime(s) {
-    const m = Math.floor(s / 60);
-    const sec = Math.floor(s % 60);
-    return m + ':' + (sec < 10 ? '0' : '') + sec;
-  }
-
-  function setPlayPosition(clientX) {
-    const rect = waveCanvas.getBoundingClientRect();
-    const x = clientX - rect.left;
-    const ratio = Math.max(0, Math.min(1, x / rect.width));
-    if (state.bufferOriginal) {
-      state.playPosition = ratio * state.bufferOriginal.duration;
-      drawWaveform();
-    }
-  }
-
-  let isDraggingWave = false;
-  waveCanvas.addEventListener('mousedown', (e) => {
-    isDraggingWave = true;
-    setPlayPosition(e.clientX);
-  });
-  window.addEventListener('mousemove', (e) => {
-    if (isDraggingWave) setPlayPosition(e.clientX);
-  });
-  window.addEventListener('mouseup', () => {
-    isDraggingWave = false;
-  });
-  waveCanvas.addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    setPlayPosition(e.touches[0].clientX);
-  }, { passive: false });
-  waveCanvas.addEventListener('touchmove', (e) => {
-    e.preventDefault();
-    setPlayPosition(e.touches[0].clientX);
-  }, { passive: false });
-
-  // ===== EQ Curve Drawing =====
   function drawEQCurve() {
     const canvas = eqCanvas;
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.getBoundingClientRect();
     canvas.width = rect.width * dpr;
-    canvas.height = 200 * dpr;
+    canvas.height = 160 * dpr;
     eqCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
-
     const w = rect.width;
-    const h = 200;
-
+    const h = 160;
     eqCtx.clearRect(0, 0, w, h);
-
-    // Background
-    eqCtx.fillStyle = '#1a1a1a';
-    eqCtx.fillRect(0, 0, w, h);
-
-    // Frequency axis (log scale)
     const freqMin = 20;
     const freqMax = 20000;
-
-    function freqToX(freq) {
-      const logMin = Math.log10(freqMin);
-      const logMax = Math.log10(freqMax);
-      const logFreq = Math.log10(freq);
-      return ((logFreq - logMin) / (logMax - logMin)) * (w - 40) + 40;
-    }
-
-    // Grid lines
-    const gridFreqs = [30, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 15000];
+    const freqToX = (freq) => {
+      const a = Math.log10(freqMin);
+      const b = Math.log10(freqMax);
+      return ((Math.log10(freq) - a) / (b - a)) * (w - 36) + 36;
+    };
     eqCtx.strokeStyle = 'rgba(255,255,255,0.06)';
-    eqCtx.lineWidth = 1;
-    gridFreqs.forEach(f => {
+    [50, 100, 200, 500, 1000, 2000, 5000, 10000].forEach((f) => {
       const x = freqToX(f);
       eqCtx.beginPath();
       eqCtx.moveTo(x, 0);
       eqCtx.lineTo(x, h);
       eqCtx.stroke();
     });
-
-    // Horizontal dB lines
-    const dbLines = [-12, -6, 0, 6, 12];
-    dbLines.forEach(db => {
-      const y = h / 2 - (db / 15) * (h / 2);
-      eqCtx.beginPath();
-      eqCtx.moveTo(0, y);
-      eqCtx.lineTo(w, y);
-      eqCtx.stroke();
-    });
-
-    // 0 dB line
-    eqCtx.strokeStyle = 'rgba(255,255,255,0.15)';
-    eqCtx.lineWidth = 1;
+    eqCtx.strokeStyle = 'rgba(255,255,255,0.16)';
     eqCtx.beginPath();
     eqCtx.moveTo(0, h / 2);
     eqCtx.lineTo(w, h / 2);
     eqCtx.stroke();
 
-    // Band regions
-    const bandColors = [
-      'rgba(255,100,100,0.08)',
-      'rgba(255,165,0,0.08)',
-      'rgba(255,255,0,0.08)',
-      'rgba(100,255,100,0.08)',
-      'rgba(0,150,255,0.08)',
-      'rgba(100,100,255,0.08)',
-      'rgba(200,100,255,0.08)',
-    ];
-
-    EQ_BANDS.forEach((band, i) => {
-      const x1 = freqToX(band.range[0]);
-      const x2 = freqToX(band.range[1]);
-      eqCtx.fillStyle = bandColors[i];
-      eqCtx.fillRect(x1, 0, x2 - x1, h);
-    });
-
-    // EQ curve
-    if (state.currentBand && state._showCurve) {
-      const band = state.currentBand;
-      const dbGain = state.currentDb;
-      const Q = 1.4;
-
-      eqCtx.strokeStyle = '#00bcd4';
-      eqCtx.lineWidth = 2.5;
-      eqCtx.beginPath();
-
-      for (let px = 0; px < w; px++) {
-        const logMin = Math.log10(freqMin);
-        const logMax = Math.log10(freqMax);
-        const logFreq = logMin + (px - 40) / (w - 40) * (logMax - logMin);
-        const freq = Math.pow(10, logFreq);
-
-        const ratio = freq / band.freq;
-        const db2A = Math.pow(10, dbGain / 20);
-
-        // Peaking EQ: H(s) = (s² + (A/Q)s + 1) / (s² + (1/(A*Q))s + 1)
-        const sq = 1 - ratio * ratio;
-        const num = sq * sq + (db2A * ratio / Q) * (db2A * ratio / Q);
-        const den = sq * sq + (ratio / (db2A * Q)) * (ratio / (db2A * Q));
-        const magDb = 10 * Math.log10(num / den);
-
-        const y = h / 2 - (magDb / 15) * (h / 2);
-        if (px === 0) eqCtx.moveTo(px, y);
-        else eqCtx.lineTo(px, y);
-      }
-      eqCtx.stroke();
-
-      // Fill under curve
-      eqCtx.lineTo(w, h / 2);
-      eqCtx.lineTo(0, h / 2);
-      eqCtx.closePath();
-      eqCtx.fillStyle = 'rgba(0,188,212,0.1)';
-      eqCtx.fill();
+    if (!state.band) return;
+    const Q = currentLevel().q;
+    const dbGain = state.db;
+    eqCtx.beginPath();
+    for (let px = 0; px < w; px++) {
+      const a = Math.log10(freqMin);
+      const b = Math.log10(freqMax);
+      const freq = Math.pow(10, a + (px - 36) / (w - 36) * (b - a));
+      const ratio = freq / state.band.freq;
+      const A = Math.pow(10, dbGain / 20);
+      const sq = 1 - ratio * ratio;
+      const num = sq * sq + (A * ratio / Q) * (A * ratio / Q);
+      const den = sq * sq + (ratio / (A * Q)) * (ratio / (A * Q));
+      const magDb = 10 * Math.log10(Math.max(1e-8, num / den));
+      const y = h / 2 - (magDb / 12) * (h / 2);
+      if (px === 0) eqCtx.moveTo(px, y);
+      else eqCtx.lineTo(px, y);
     }
+    eqCtx.strokeStyle = '#F2994A';
+    eqCtx.lineWidth = 2.4;
+    eqCtx.stroke();
+    eqCtx.lineTo(w, h / 2);
+    eqCtx.lineTo(0, h / 2);
+    eqCtx.closePath();
+    eqCtx.fillStyle = 'rgba(242,153,74,0.12)';
+    eqCtx.fill();
 
-    // Frequency labels
-    eqCtx.fillStyle = 'rgba(255,255,255,0.35)';
-    eqCtx.font = '10px Inter, sans-serif';
+    eqCtx.fillStyle = 'rgba(255,255,255,0.4)';
+    eqCtx.font = '10px Unbounded, sans-serif';
     eqCtx.textAlign = 'center';
-    const labels = [
-      [30, '30'], [60, '60'], [100, '100'], [200, '200'], [500, '500'],
-      [1000, '1k'], [2000, '2k'], [5000, '5k'], [10000, '10k'], [16000, '16k']
-    ];
-    labels.forEach(([f, label]) => {
-      const x = freqToX(f);
-      eqCtx.fillText(label, x, h - 6);
-    });
-
-    // dB labels
-    eqCtx.textAlign = 'left';
-    [-12, -6, 0, 6, 12].forEach(db => {
-      const y = h / 2 - (db / 15) * (h / 2);
-      eqCtx.fillText(db + 'dB', 4, y - 3);
+    [[60, '60'], [200, '200'], [500, '500'], [1000, '1k'], [4000, '4k'], [10000, '10k']].forEach(([f, label]) => {
+      eqCtx.fillText(label, freqToX(f), h - 8);
     });
   }
 
-  function ctxSampleRate() {
-    return ensureAudioCtx().sampleRate;
+  function pickChallenge() {
+    const level = currentLevel();
+    state.band = level.bands[Math.floor(Math.random() * level.bands.length)];
+    state.db = level.gains[Math.floor(Math.random() * level.gains.length)];
+    state.guessBand = '';
+    state.guessDb = null;
+    state.revealed = false;
   }
 
-  // ===== Round Logic =====
-  function startNewRound() {
-    stopPlayback();
+  function startRound() {
+    if (state.sound === 'upload' && !state.customBuffer) {
+      setStatus('Сначала загрузите свой трек', '');
+      $('fileInput').click();
+      return;
+    }
+    ensureAudio();
+    pickChallenge();
     state.roundActive = true;
-    state.currentBand = null;
-    state.currentDb = 0;
-
-    // Pick random band
-    state.currentBand = EQ_BANDS[Math.floor(Math.random() * EQ_BANDS.length)];
-
-    // Pick random dB from difficulty
-    const dbOptions = DB_OPTIONS[state.difficulty];
-    state.currentDb = dbOptions[Math.floor(Math.random() * dbOptions.length)];
-
-    // Load/synthesize sample
-    const ctx = ensureAudioCtx();
-    getSample(ctx, state.sample).then(originalBuffer => {
-      state.bufferOriginal = originalBuffer;
-      state.playPosition = 0;
-      drawWaveform();
-      // Apply EQ
-      return applyEQToBuffer(ctx, state.bufferOriginal, state.currentBand, state.currentDb);
-    }).then(eqBuffer => {
-      state.bufferEQ = eqBuffer;
-      onRoundReady();
-    });
-
-    // Update UI
-    statusDot.className = 'status-indicator waiting';
-    statusText.textContent = 'Генерация...';
+    resultBox.className = 'result';
+    eqPanel.classList.remove('visible');
+    guessSection.classList.add('visible');
+    renderGuessUI();
+    syncSubmit();
     btnBefore.disabled = true;
     btnAfter.disabled = true;
-    btnSubmit.disabled = true;
-    $('btnLoop').disabled = true;
-    guessSection.classList.remove('visible');
-    resultBox.classList.remove('visible');
-    resultBox.className = 'result-box';
-    guessBand.value = '';
-    guessDb.value = '';
-    modeLabel.style.display = 'none';
-
-    // Draw blank EQ curve (hidden)
-    state._showCurve = false;
-    drawEQCurve();
-    eqInfo.textContent = 'Слушайте и угадывайте!';
-  }
-
-  function onRoundReady() {
-    statusDot.className = 'status-indicator done';
-    statusText.textContent = 'Готово — слушайте ДО / ПОСЛЕ';
-    btnBefore.disabled = false;
-    btnAfter.disabled = false;
-    btnSubmit.disabled = false;
-    $('btnLoop').disabled = false;
-    guessSection.classList.add('visible');
-    btnNewRound.disabled = true;
-  }
-
-  function playBefore() {
-    if (!state.bufferOriginal) return;
-    stopPlayback();
-    playBuffer(state.bufferOriginal, state.playPosition);
-    statusDot.className = 'status-indicator playing';
-    statusText.textContent = 'Воспроизведение: ДО (без EQ)';
-    modeLabel.textContent = 'ДО';
-    modeLabel.className = 'mode-label before';
-    modeLabel.style.display = 'inline';
-    btnBefore.classList.add('active');
-    btnAfter.classList.remove('active');
-  }
-
-  function playAfter() {
-    if (!state.bufferEQ) return;
-    stopPlayback();
-    playBuffer(state.bufferEQ, state.playPosition);
-    statusDot.className = 'status-indicator playing';
-    statusText.textContent = 'Воспроизведение: ПОСЛЕ (с EQ)';
-    modeLabel.textContent = 'ПОСЛЕ';
-    modeLabel.className = 'mode-label after';
-    modeLabel.style.display = 'inline';
-    btnAfter.classList.add('active');
-    btnBefore.classList.remove('active');
-  }
-
-  function stopPlayback() {
-    stopCurrentAudio();
-    btnBefore.classList.remove('active');
-    btnAfter.classList.remove('active');
-    stopLoop();
-  }
-
-  // ===== Loop (auto-switch) =====
-  let loopInterval = null;
-  let loopPlayingBefore = true;
-
-  function toggleLoop() {
-    if (loopInterval) {
-      stopLoop();
-    } else {
-      startLoop();
-    }
-  }
-
-  function startLoop() {
-    if (!state.bufferOriginal || !state.bufferEQ) return;
-    loopPlayingBefore = true;
-    btnLoop.classList.add('active');
-    btnLoop.textContent = '⏹ Стоп';
-
-    function switchAndPlay() {
-      if (!state.roundActive) { stopLoop(); return; }
-      stopCurrentAudio();
-      if (loopPlayingBefore) {
-        playBuffer(state.bufferOriginal, state.playPosition);
-        statusText.textContent = 'Воспроизведение: ДО (без EQ)';
-        modeLabel.textContent = 'ДО';
-        modeLabel.className = 'mode-label before';
-        btnBefore.classList.add('active');
-        btnAfter.classList.remove('active');
-      } else {
-        playBuffer(state.bufferEQ, state.playPosition);
-        statusText.textContent = 'Воспроизведение: ПОСЛЕ (с EQ)';
-        modeLabel.textContent = 'ПОСЛЕ';
-        modeLabel.className = 'mode-label after';
-        btnAfter.classList.add('active');
-        btnBefore.classList.remove('active');
-      }
-      loopPlayingBefore = !loopPlayingBefore;
-    }
-
-    switchAndPlay();
-    loopInterval = setInterval(switchAndPlay, 3200);
-  }
-
-  function stopLoop() {
-    if (loopInterval) {
-      clearInterval(loopInterval);
-      loopInterval = null;
-    }
-    btnLoop.classList.remove('active');
-    btnLoop.textContent = '🔁 Авто-переключение';
-    btnBefore.classList.remove('active');
-    btnAfter.classList.remove('active');
-  }
-
-  function previewSample() {
-    stopPlayback();
-    const ctx = ensureAudioCtx();
-    getSample(ctx, state.sample).then(buffer => {
-      playBuffer(buffer, state.playPosition);
-      statusDot.className = 'status-indicator playing';
-      statusText.textContent = 'Предпрослушка ' + getSampleName(state.sample);
-    });
-  }
-
-  function getSampleName(type) {
-    if (state.customFileName) return '🎵 ' + state.customFileName;
-    const names = { drums: '🥁 Барабаны', guitar: '🎸 Гитара', piano: '🎹 Пианино', bass: '🎵 Бас', vocal: '🎤 Вокал' };
-    return names[type] || type;
-  }
-
-  function playSuccessSound() {
-    const ctx = ensureAudioCtx();
-    const now = ctx.currentTime;
-    const master = ctx.createGain();
-    master.gain.setValueAtTime(0.5, now);
-    master.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
-    master.connect(ctx.destination);
-
-    const notes = [523.25, 659.25, 783.99, 1046.50];
-    notes.forEach((freq, i) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.value = freq;
-      const t0 = now + i * 0.08;
-      gain.gain.setValueAtTime(0, t0);
-      gain.gain.linearRampToValueAtTime(0.6, t0 + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.4);
-      osc.connect(gain);
-      gain.connect(master);
-      osc.start(t0);
-      osc.stop(t0 + 0.45);
-    });
-
-    // Shimmer pad
-    [1046.50, 1318.51, 1567.98].forEach(freq => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'triangle';
-      osc.frequency.value = freq;
-      gain.gain.setValueAtTime(0, now);
-      gain.gain.linearRampToValueAtTime(0.12, now + 0.3);
-      gain.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
-      osc.connect(gain);
-      gain.connect(master);
-      osc.start(now);
-      osc.stop(now + 1.25);
-    });
+    btnLoop.disabled = true;
+    setStatus('Готовим звук…', '');
+    loadSample(state.sound).then((buf) => {
+      state.buffer = buf;
+      if (buf.duration <= 12) state.playOffset = 0;
+      armFilter();
+      btnBefore.disabled = false;
+      btnAfter.disabled = false;
+      btnLoop.disabled = false;
+      btnNewRound.innerHTML = '<i data-lucide="rotate-cw"></i> Новый раунд';
+      if (window.lucide) lucide.createIcons({ attrs: { 'stroke-width': 1.8 } });
+      setStatus('Раунд готов — сравнивайте ДО и ПОСЛЕ', 'ready');
+      drawWaveform();
+      applyMode('before', true);
+    }).catch(() => setStatus('Не удалось загрузить звук', ''));
   }
 
   function submitGuess() {
-    const guessedBand = guessBand.value;
-    const guessedDb = parseInt(guessDb.value);
-
-    if (!guessedBand || isNaN(guessedDb)) {
-      resultBox.textContent = '⚠️ Выберите диапазон и значение дБ';
-      resultBox.className = 'result-box visible wrong';
-      return;
-    }
-
-    state.scoreTotal++;
-    const bandCorrect = guessedBand === state.currentBand.id;
-    const dbCorrect = guessedDb === state.currentDb;
-    const allCorrect = bandCorrect && dbCorrect;
-
-    if (allCorrect) {
-      state.scoreCorrect++;
-      state.scoreStreak++;
-      if (state.scoreStreak > state.bestStreak) state.bestStreak = state.scoreStreak;
-      playSuccessSound();
+    if (!state.roundActive || state.guessDb === null || !state.guessBand) return;
+    const bandOk = state.guessBand === state.band.id;
+    const dbOk = state.guessDb === state.db;
+    const allOk = bandOk && dbOk;
+    state.scoreTotal += 1;
+    if (allOk) {
+      state.scoreCorrect += 1;
+      state.scoreStreak += 1;
     } else {
       state.scoreStreak = 0;
     }
-
+    state.revealed = true;
     updateScore();
+    syncSubmit();
 
-    // Show result
-    const bandName = state.currentBand.label + ' (' + state.currentBand.range[0] + '–' + formatFreq(state.currentBand.range[1]) + ')';
-    let msg = '';
-    if (allCorrect) {
-      msg = '✅ Отлично! Верно!';
-    } else {
-      msg = '❌ Не совсем...';
-    }
-
-    if (bandCorrect) msg += '<br>🎯 Диапазон: верно';
-    else msg += '<br>🎯 Диапазон: ' + bandName;
-
-    if (dbCorrect) msg += '<br>📊 Уровень: верно';
-    else msg += '<br>📊 Уровень: ' + (state.currentDb >= 0 ? '+' : '') + state.currentDb + ' дБ';
-
-    resultBox.innerHTML = msg;
-    resultBox.className = 'result-box visible ' + (allCorrect ? 'correct' : 'wrong');
-
-    // Show EQ curve
-    state._showCurve = true;
+    const bandName = state.band.label + ' · ' + state.band.display;
+    let html = allOk ? 'Верно: вы услышали изменение.' : 'Почти. Вот что было на самом деле.';
+    html += '<br>' + (bandOk ? 'Диапазон угадан.' : 'Менялся диапазон: <b>' + bandName + '</b>');
+    html += '<br>' + (dbOk ? 'Громкость угадана.' : 'Изменение: <b>' + formatDb(state.db) + '</b>');
+    resultBox.innerHTML = html;
+    resultBox.className = 'result visible ' + (allOk ? 'ok' : 'bad');
+    eqPanel.classList.add('visible');
+    $('eqCaption').textContent = state.band.label + '  ' + formatDb(state.db) + '  ·  ' + state.band.hint;
     drawEQCurve();
-    eqInfo.innerHTML = '<b>' + state.currentBand.label + '</b> на <b>' + (state.currentDb >= 0 ? '+' : '') + state.currentDb + ' дБ</b> (' + state.currentBand.range[0] + '–' + formatFreq(state.currentBand.range[1]) + ' Гц)';
-
-    // Disable guess buttons
-    btnSubmit.disabled = true;
-    btnBefore.disabled = true;
-    btnAfter.disabled = true;
-    $('btnLoop').disabled = true;
-    btnNewRound.disabled = false;
-
-    statusText.textContent = allCorrect ? 'Верно! +' + state.scoreStreak + ' серия' : 'Неверно — попробуйте ещё раз';
+    setStatus(allOk ? 'Верно. Дослушайте разницу и возьмите новый раунд' : 'Неверно. Дослушайте ДО / ПОСЛЕ с открытой кривой', 'ready');
   }
 
-  function formatFreq(f) {
-    return f >= 1000 ? (f / 1000) + 'k' : f.toString();
+  function startAuto() {
+    if (loopTimer) { stopAuto(); return; }
+    if (!state.roundActive) return;
+    btnLoop.classList.add('active');
+    if (!playing) applyMode('before', true);
+    loopTimer = setInterval(() => {
+      applyMode(mode === 'before' ? 'after' : 'before', false);
+    }, 2200);
   }
 
-  // ===== Custom File Upload =====
-  function handleFileUpload(file) {
+  function stopAuto() {
+    if (loopTimer) {
+      clearInterval(loopTimer);
+      loopTimer = null;
+    }
+    btnLoop.classList.remove('active');
+  }
+
+  function handleFile(file) {
     if (!file) return;
-    const ctx = ensureAudioCtx();
-    file.arrayBuffer().then(ab => ctx.decodeAudioData(ab)).then(buf => {
+    ensureAudio();
+    file.arrayBuffer().then((ab) => audioCtx.decodeAudioData(ab)).then((buf) => {
       state.customBuffer = buf;
-      state.customFileName = file.name;
-      state.bufferOriginal = buf;
-      state.playPosition = 0;
-      customFileName.textContent = file.name;
-      customFileInfo.classList.add('visible');
-      uploadZone.style.display = 'none';
-      statusDot.className = 'status-indicator done';
-      statusText.textContent = 'Файл загружен: ' + file.name;
+      state.customName = file.name;
+      state.sound = 'upload';
+      state.buffer = buf;
+      state.playOffset = 0;
+      document.querySelectorAll('.sound-btn').forEach((b) => b.classList.toggle('active', b.dataset.sound === 'upload'));
+      $('uploadName').textContent = file.name;
+      $('uploadRow').classList.add('visible');
+      if (window.lucide) lucide.createIcons({ attrs: { 'stroke-width': 1.8 } });
+      setStatus('Трек загружен. Нажмите «Начать раунд»', 'ready');
       drawWaveform();
-    }).catch(err => {
-      statusText.textContent = 'Ошибка: не удалось декодировать файл';
-      console.error(err);
-    });
+    }).catch(() => setStatus('Не удалось прочитать файл', ''));
   }
 
-  function removeCustomFile() {
+  document.querySelectorAll('.level-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.level-btn').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.level = btn.dataset.level;
+      if (state.roundActive && !state.revealed) startRound();
+      else if (!state.revealed) renderGuessUI();
+    });
+  });
+
+  document.querySelectorAll('.sound-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (btn.dataset.sound === 'upload') {
+        if (!state.customBuffer) {
+          $('fileInput').click();
+          return;
+        }
+      }
+      document.querySelectorAll('.sound-btn').forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      state.sound = btn.dataset.sound;
+      if (state.roundActive) {
+        loadSample(state.sound).then((buf) => {
+          state.buffer = buf;
+          if (buf.duration <= 12) state.playOffset = 0;
+          drawWaveform();
+          if (playing) startPlayback();
+        });
+      }
+    });
+  });
+
+  $('fileInput').addEventListener('change', (e) => {
+    if (e.target.files[0]) handleFile(e.target.files[0]);
+  });
+  $('btnRemoveFile').addEventListener('click', () => {
     state.customBuffer = null;
-    state.customFileName = '';
-    state.bufferOriginal = null;
-    state.bufferEQ = null;
-    state.playPosition = 0;
-    customFileInfo.classList.remove('visible');
-    uploadZone.style.display = '';
-    fileInput.value = '';
-    statusText.textContent = 'Файл удалён';
-    drawWaveform();
-  }
-
-  fileInput.addEventListener('change', (e) => {
-    if (e.target.files.length > 0) {
-      handleFileUpload(e.target.files[0]);
-    }
+    state.customName = '';
+    $('uploadRow').classList.remove('visible');
+    $('fileInput').value = '';
+    state.sound = 'drums';
+    document.querySelectorAll('.sound-btn').forEach((b) => b.classList.toggle('active', b.dataset.sound === 'drums'));
   });
 
-  btnRemoveFile.addEventListener('click', removeCustomFile);
-
-  // Drag and drop
-  uploadZone.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    uploadZone.classList.add('dragover');
-  });
-
-  uploadZone.addEventListener('dragleave', () => {
-    uploadZone.classList.remove('dragover');
-  });
-
-  uploadZone.addEventListener('drop', (e) => {
-    e.preventDefault();
-    uploadZone.classList.remove('dragover');
-    if (e.dataTransfer.files.length > 0) {
-      handleFileUpload(e.dataTransfer.files[0]);
-    }
-  });
-
-  // ===== Event Handlers =====
-  btnNewRound.addEventListener('click', startNewRound);
-  btnPreview.addEventListener('click', previewSample);
-  btnBefore.addEventListener('click', playBefore);
-  btnAfter.addEventListener('click', playAfter);
+  btnNewRound.addEventListener('click', startRound);
+  btnBefore.addEventListener('click', () => { if (!btnBefore.disabled) applyMode('before', !playing); });
+  btnAfter.addEventListener('click', () => { if (!btnAfter.disabled) applyMode('after', !playing); });
   btnSubmit.addEventListener('click', submitGuess);
-  $('btnLoop').addEventListener('click', toggleLoop);
+  btnLoop.addEventListener('click', startAuto);
+  btnStop.addEventListener('click', stopAll);
 
-  // Volume slider
-  const volumeSlider = $('volumeSlider');
-  const volumeValue = $('volumeValue');
-  volumeSlider.addEventListener('input', () => {
-    const val = parseInt(volumeSlider.value);
-    volumeValue.textContent = val + '%';
-    setVolume(val / 100);
+  $('volumeSlider').addEventListener('input', () => {
+    const val = parseInt($('volumeSlider').value, 10);
+    $('volumeValue').textContent = val + '%';
+    state.volume = val / 100;
+    if (masterGain) masterGain.gain.value = state.volume;
   });
 
-  // Keyboard shortcuts
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'z' || e.key === 'Z' || e.key === 'й' || e.key === 'Й') {
-      if (!btnBefore.disabled) playBefore();
-    }
-    if (e.key === 'x' || e.key === 'X' || e.key === 'ч' || e.key === 'Ч') {
-      if (!btnAfter.disabled) playAfter();
-    }
-  });
-
-  // Sample selector
-  document.querySelectorAll('.sample-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.sample-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      state.sample = btn.dataset.sample;
-    });
-  });
-
-  // Difficulty selector
-  document.querySelectorAll('.diff-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.diff-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      state.difficulty = btn.dataset.diff;
-      populateDbOptions();
-    });
-  });
-
-  // Init
-  populateDbOptions();
-  drawEQCurve();
-  drawWaveform();
-
-  // Redraw on resize
-  window.addEventListener('resize', () => {
-    drawEQCurve();
+  waveCanvas.addEventListener('click', (e) => {
+    if (!state.buffer) return;
+    const rect = waveCanvas.getBoundingClientRect();
+    state.playOffset = ((e.clientX - rect.left) / rect.width) * state.buffer.duration;
     drawWaveform();
+    if (playing) startPlayback();
   });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.target.matches('input, select, textarea')) return;
+    if (['z', 'Z', 'й', 'Й'].includes(e.key) && !btnBefore.disabled) applyMode('before', !playing);
+    if (['x', 'X', 'ч', 'Ч'].includes(e.key) && !btnAfter.disabled) applyMode('after', !playing);
+  });
+
+  window.addEventListener('resize', () => {
+    drawWaveform();
+    if (state.revealed) drawEQCurve();
+  });
+
+  const themeToggle = $('themeToggle');
+  const stored = localStorage.getItem('tools-theme');
+  if (stored) document.documentElement.setAttribute('data-theme', stored);
+  else if (window.matchMedia('(prefers-color-scheme: light)').matches) document.documentElement.setAttribute('data-theme', 'light');
+  else document.documentElement.setAttribute('data-theme', 'dark');
+  themeToggle.addEventListener('click', () => {
+    const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('tools-theme', next);
+  });
+
+  renderGuessUI();
+  if (window.lucide) lucide.createIcons({ attrs: { 'stroke-width': 1.8 } });
 })();
 </script>
 </body>
