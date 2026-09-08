@@ -108,6 +108,20 @@
   border-right: 1px solid var(--border-subtle);
 }
 
+/* Site-name block in the drawer — no solid plate over the gradient */
+.md-sidebar--primary .md-nav--primary > .md-nav__title,
+.md-nav--primary > .md-nav__title {
+  background: transparent !important;
+  background-color: transparent !important;
+  box-shadow: none !important;
+}
+
+@media screen and (min-width: 76.25em) {
+  .md-sidebar--primary .md-nav--primary > .md-nav__title {
+    display: none;
+  }
+}
+
 /* ========================================
    Logo
    ======================================== */
