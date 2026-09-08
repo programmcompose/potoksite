@@ -3,1035 +3,1466 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Wavetable-синтезатор — Интерактивный инструмент</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+<title>Аналоговый синтезатор — Интерактивный инструмент</title>
+<script src="https://unpkg.com/lucide@latest"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700;900&display=swap');
-  :root {
-    --bg: #0B1220;
-    --bg-light: #363636;
-    --bg-lighter: #404040;
-    --text: #FDFBDF;
-    --accent: #00bcd4;
-    --accent-dim: #00838f;
-    --danger: #ef5350;
-    --success: #66bb6a;
-    --warning: #ffa726;
-    --radius: 8px;
-    --shadow: 0 2px 8px rgba(0,0,0,0.4);
-  }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg-main: #0B1220;
+  --bg-sidebar: #0F172A;
+  --bg-card: #111827;
+  --bg-hover: #1F2937;
+  --text-main: #E5E7EB;
+  --text-secondary: #9CA3AF;
+  --text-heading: #F9FAFB;
+  --accent-orange: #F2994A;
+  --accent-orange-hover: #FFB26B;
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-default: rgba(255, 255, 255, 0.1);
+  --wood-dark: #3d2416;
+  --wood-mid: #6b4428;
+  --danger: #ef5350;
+  --success: #66bb6a;
+  --radius: 10px;
+}
 
-  body {
-    font-family: 'Unbounded', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-    padding: 16px;
-  }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-  .container {
-    max-width: 900px;
-    margin: 0 auto;
-  }
+body {
+  font-family: 'Unbounded', system-ui, sans-serif;
+  background: radial-gradient(ellipse at 20% 0%, #111827 0%, var(--bg-main) 60%);
+  color: var(--text-main);
+  min-height: 100vh;
+  padding: 16px;
+}
 
-  header {
-    text-align: center;
-    margin-bottom: 20px;
-  }
+.page { max-width: 1180px; margin: 0 auto; }
 
-  header h1 {
-    font-size: 1.6em;
-    font-weight: 800;
-    background: linear-gradient(135deg, var(--accent), #4dd0e1);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 4px;
-  }
+.back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 12px;
+  color: var(--accent-orange);
+  text-decoration: none;
+  font-size: 0.8em;
+}
+.back-link:hover { color: var(--accent-orange-hover); }
+.back-link i { width: 16px; height: 16px; stroke: var(--accent-orange); }
 
-  header h1 .emoji {
-    -webkit-text-fill-color: initial;
-  }
+header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+header h1 {
+  font-size: 1.45em;
+  font-weight: 800;
+  color: var(--text-heading);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+header h1 i { width: 28px; height: 28px; stroke: var(--accent-orange); }
+header p { font-size: 0.82em; color: var(--text-secondary); margin-top: 4px; max-width: 640px; line-height: 1.45; }
 
-  header p {
-    font-size: 0.9em;
-    opacity: 0.7;
-  }
+.header-actions { display: flex; gap: 8px; flex-wrap: wrap; }
 
-  .back-link {
-    display: inline-block;
-    margin-bottom: 12px;
-    color: var(--accent);
-    text-decoration: none;
-    font-size: 0.85em;
-  }
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+}
 
-  .back-link:hover { text-decoration: underline; }
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 8px;
+  font-size: 0.75em;
+  font-weight: 600;
+  transition: 0.15s;
+}
+.btn i { width: 15px; height: 15px; stroke: currentColor; }
+.btn-ghost {
+  background: var(--bg-hover);
+  color: var(--text-main);
+  border: 1px solid var(--border-default);
+}
+.btn-ghost:hover { border-color: var(--accent-orange); color: var(--accent-orange); }
+.btn-primary {
+  background: var(--accent-orange);
+  color: #111;
+}
+.btn-primary:hover { background: var(--accent-orange-hover); }
+.btn-primary:active { transform: scale(0.97); }
 
-  .panel {
-    background: var(--bg-light);
-    border-radius: var(--radius);
-    padding: 16px;
-    margin-bottom: 12px;
-    box-shadow: var(--shadow);
-  }
+/* Signal flow */
+.signal-flow {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  margin-bottom: 14px;
+  overflow-x: auto;
+  list-style: none;
+}
+.flow-step {
+  flex: 1;
+  min-width: 140px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: 0.15s;
+  position: relative;
+}
+.flow-step:first-child { border-radius: 8px 0 0 8px; }
+.flow-step:last-child { border-radius: 0 8px 8px 0; }
+.flow-step + .flow-step { border-left: none; }
+.flow-step:hover, .flow-step.active {
+  border-color: var(--accent-orange);
+  background: #1a2438;
+  z-index: 1;
+}
+.flow-num {
+  width: 24px; height: 24px;
+  border-radius: 50%;
+  background: rgba(242, 153, 74, 0.15);
+  color: var(--accent-orange);
+  font-size: 0.75em;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.flow-step.active .flow-num { background: var(--accent-orange); color: #111; }
+.flow-text { display: flex; flex-direction: column; gap: 1px; }
+.flow-text strong { font-size: 0.72em; letter-spacing: 0.04em; text-transform: uppercase; }
+.flow-text span { font-size: 0.62em; color: var(--text-secondary); font-weight: 400; }
+.flow-arrow {
+  position: absolute;
+  right: -7px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0; height: 0;
+  border-top: 7px solid transparent;
+  border-bottom: 7px solid transparent;
+  border-left: 7px solid var(--bg-card);
+  z-index: 2;
+  pointer-events: none;
+}
+.flow-step:last-child .flow-arrow { display: none; }
 
-  .panel-title {
-    font-size: 0.8em;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    opacity: 0.6;
-    margin-bottom: 12px;
-  }
+/* Chassis */
+.chassis {
+  display: flex;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 16px 48px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
+  margin-bottom: 14px;
+}
+.wood {
+  width: 22px;
+  flex-shrink: 0;
+  background:
+    repeating-linear-gradient(90deg,
+      #4a2e1a 0px, #6b4428 3px, #3d2416 7px, #7a5235 11px, #4a2e1a 14px);
+  box-shadow: inset 0 0 14px rgba(0,0,0,0.55);
+}
+.faceplate {
+  flex: 1;
+  background: linear-gradient(180deg, #1c2739 0%, #111827 42%, #0d1524 100%);
+  padding: 14px 12px 16px;
+  min-width: 0;
+}
 
-  .wave-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    gap: 12px;
-  }
+.mods {
+  display: grid;
+  grid-template-columns: 1.15fr 1.15fr 1fr 0.95fr;
+  gap: 10px;
+}
 
-  .wave-card {
-    background: var(--bg);
-    border-radius: var(--radius);
-    padding: 12px;
-    border: 1px solid var(--bg-lighter);
-  }
+.mod {
+  background: rgba(11, 18, 32, 0.55);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  padding: 12px 10px 14px;
+  position: relative;
+  transition: box-shadow 0.2s, border-color 0.2s, opacity 0.25s;
+}
+.mod::before {
+  content: '';
+  position: absolute;
+  top: 4px; left: 10px; right: 10px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.12), transparent);
+}
+.mod.spotlight,
+#keysBar.spotlight {
+  border-color: var(--accent-orange);
+  box-shadow: 0 0 0 1px var(--accent-orange), 0 0 28px rgba(242, 153, 74, 0.28);
+  z-index: 3;
+}
+body.tour-on .mod:not(.spotlight) { opacity: 0.38; pointer-events: none; }
+body.tour-on .chassis:has(.mod.spotlight) { position: relative; z-index: 4; }
 
-  .wave-card label {
-    display: block;
-    font-weight: 600;
-    font-size: 0.9em;
-    margin-bottom: 8px;
-  }
+.mod-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.mod-num {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: var(--accent-orange);
+  color: #111;
+  font-size: 0.68em;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+}
+.mod-title {
+  font-size: 0.68em;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent-orange);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.mod-title i { width: 14px; height: 14px; stroke: var(--accent-orange); }
+.led {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #3a1510;
+  margin-left: auto;
+  box-shadow: inset 0 0 2px #000;
+  transition: 0.08s;
+}
+.led.on {
+  background: var(--accent-orange);
+  box-shadow: 0 0 8px var(--accent-orange), 0 0 16px rgba(242,153,74,0.5);
+}
+.mod-why {
+  font-size: 0.62em;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin-bottom: 10px;
+  min-height: 2.8em;
+  font-weight: 400;
+}
 
-  .wave-card select {
-    width: 100%;
-    padding: 6px 8px;
-    border-radius: 4px;
-    border: 1px solid var(--bg-lighter);
-    background: var(--bg-light);
-    color: var(--text);
-    font-size: 0.85em;
-    margin-bottom: 8px;
-    cursor: pointer;
-  }
+.wave-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.wave-btn {
+  flex: 1;
+  height: 36px;
+  background: #0B1220;
+  border: 1px solid var(--border-default);
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  color: var(--text-secondary);
+  transition: 0.15s;
+}
+.wave-btn svg { width: 28px; height: 14px; stroke: currentColor; fill: none; stroke-width: 1.8; }
+.wave-btn:hover { border-color: var(--accent-orange); color: var(--accent-orange); }
+.wave-btn.active {
+  background: rgba(242, 153, 74, 0.12);
+  border-color: var(--accent-orange);
+  color: var(--accent-orange);
+  box-shadow: 0 0 10px rgba(242, 153, 74, 0.2);
+}
 
-  .wave-card select:focus {
-    outline: none;
-    border-color: var(--accent);
-  }
+.knob-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px 2px;
+  justify-items: center;
+}
+.knob-row.cols-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.knob-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 72px;
+  user-select: none;
+}
+.knob-wrap canvas {
+  width: 48px;
+  height: 48px;
+  touch-action: none;
+  cursor: ns-resize;
+}
+.knob-name {
+  font-size: 0.55em;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+.knob-val {
+  font-size: 0.58em;
+  color: var(--accent-orange);
+  font-variant-numeric: tabular-nums;
+}
 
-  .slider-row {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-  }
+.filter-viz {
+  display: block;
+  width: 100%;
+  height: 44px;
+  margin-top: 8px;
+  background: #070b14;
+  border-radius: 6px;
+  border: 1px solid var(--border-subtle);
+}
 
-  .slider-row input[type="range"] {
-    flex: 1;
-    accent-color: var(--accent);
-    height: 4px;
-  }
+.scope-wrap {
+  background: #050a08;
+  border: 1px solid #1a3320;
+  border-radius: 8px;
+  overflow: hidden;
+  position: relative;
+}
+#scopeCanvas { display: block; width: 100%; height: 92px; }
+.scope-label {
+  position: absolute;
+  top: 6px; left: 8px;
+  font-size: 0.55em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #3d7a4a;
+}
 
-  .slider-row .val {
-    font-size: 0.8em;
-    min-width: 36px;
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-  }
+.adsr-wrap {
+  background: #070b14;
+  border-radius: 6px;
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+  margin-top: 8px;
+  position: relative;
+}
+#adsrCanvas { display: block; width: 100%; height: 72px; }
+.adsr-legend {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.52em;
+  color: var(--text-secondary);
+  padding: 4px 6px 0;
+  letter-spacing: 0.04em;
+}
 
-  .tip {
-    font-size: 0.75em;
-    opacity: 0.5;
-    margin-top: 6px;
-    font-style: italic;
-    line-height: 1.3;
-  }
+.presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.presets-label {
+  font-size: 0.68em;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.presets-label i { width: 14px; height: 14px; stroke: var(--accent-orange); }
+.preset-btn {
+  padding: 6px 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-default);
+  color: var(--text-main);
+  border-radius: 6px;
+  font-size: 0.72em;
+  font-weight: 600;
+}
+.preset-btn:hover, .preset-btn.active {
+  border-color: var(--accent-orange);
+  color: var(--accent-orange);
+}
 
-  .adsr-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 12px;
-  }
+.keys-bar {
+  background: linear-gradient(180deg, #2a1a10 0%, #1a100a 100%);
+  border-radius: 10px;
+  padding: 12px 12px 8px;
+  border: 1px solid #4a2e1a;
+}
+.keys-meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+}
+.note-big {
+  font-size: 1.15em;
+  font-weight: 800;
+  color: var(--accent-orange);
+  min-width: 72px;
+}
+.oct-ctrl { display: flex; align-items: center; gap: 8px; }
+.oct-btn {
+  width: 36px; height: 36px;
+  background: #3d2a1c;
+  color: var(--text-main);
+  border-radius: 6px;
+  border: 1px solid #6b4428;
+  font-size: 1.1em;
+}
+.oct-btn:hover { border-color: var(--accent-orange); color: var(--accent-orange); }
+.hint {
+  font-size: 0.68em;
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+.hint kbd {
+  background: #3d2a1c;
+  border: 1px solid #6b4428;
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: var(--accent-orange);
+  font-size: 0.92em;
+}
 
-  .canvas-wrap {
-    background: #1a1a1a;
-    border-radius: var(--radius);
-    overflow: hidden;
-    position: relative;
-  }
-
-  canvas {
-    display: block;
-    width: 100%;
-    height: 180px;
-  }
-
-  .canvas-label {
-    position: absolute;
-    top: 8px;
-    left: 12px;
-    font-size: 0.7em;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    opacity: 0.4;
-  }
-
-  .controls-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    align-items: center;
-    justify-content: center;
-  }
-
-  button {
-    padding: 10px 20px;
-    border: none;
-    border-radius: var(--radius);
-    font-size: 0.9em;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.15s;
-    font-family: inherit;
-  }
-
-  button:active { transform: scale(0.97); }
-
-  .btn-play {
-    background: var(--accent);
-    color: #000;
-    min-width: 120px;
-  }
-
-  .btn-play:hover { background: #4dd0e1; }
-  .btn-play.playing { background: var(--danger); color: #fff; }
-
-  .btn-octave {
-    background: var(--bg-lighter);
-    color: var(--text);
-    width: 44px;
-    height: 44px;
-    padding: 0;
-    font-size: 1.1em;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .btn-octave:hover { background: #555; }
-
-  .octave-display {
-    font-size: 1em;
-    font-weight: 700;
-    min-width: 60px;
-    text-align: center;
-    font-variant-numeric: tabular-nums;
-  }
-
-  .btn-secondary {
-    background: var(--bg-lighter);
-    color: var(--text);
-  }
-
-  .btn-secondary:hover { background: #555; }
-
-  .note-display {
-    font-size: 1.8em;
-    font-weight: 800;
-    text-align: center;
-    margin: 8px 0;
-    font-variant-numeric: tabular-nums;
-    color: var(--accent);
-  }
-
-  .keyboard-hint {
-    text-align: center;
-    font-size: 0.8em;
-    opacity: 0.5;
-    margin-top: 8px;
-  }
-
-  .keyboard-hint kbd {
-    background: var(--bg-lighter);
-    padding: 2px 6px;
-    border-radius: 3px;
-    font-size: 0.9em;
-    margin: 0 1px;
-  }
+.keyboard {
+  display: flex;
+  position: relative;
+  height: 128px;
+  overflow-x: auto;
+  justify-content: center;
+  padding-bottom: 4px;
+}
+.white-key {
+  width: 32px;
+  height: 118px;
+  background: linear-gradient(180deg, #f7f4ea 0%, #e6e0d0 88%, #cfc8b4 100%);
+  border: 1px solid #9a9280;
+  border-radius: 0 0 5px 5px;
+  position: relative;
+  z-index: 1;
+  cursor: pointer;
+  box-shadow: inset 0 -6px 10px rgba(0,0,0,0.08), 0 3px 4px rgba(0,0,0,0.3);
+}
+.white-key:hover { background: #fffaf0; }
+.white-key.pressed {
+  background: linear-gradient(180deg, #e8c090 0%, var(--accent-orange) 100%);
+  height: 116px;
+  margin-top: 2px;
+}
+.black-key {
+  width: 20px;
+  height: 74px;
+  background: linear-gradient(180deg, #3a3a3a 0%, #111 92%, #000 100%);
+  border-radius: 0 0 3px 3px;
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  cursor: pointer;
+  box-shadow: inset 0 -3px 4px rgba(255,255,255,0.08), 0 3px 8px rgba(0,0,0,0.5);
+}
+.black-key:hover { background: #2a2a2a; }
+.black-key.pressed {
+  background: var(--accent-orange);
+  height: 72px;
+  margin-top: 2px;
+}
+.key-lab {
+  position: absolute;
+  bottom: 6px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.55em;
+  font-weight: 700;
+  color: #333;
+  pointer-events: none;
+}
+.black-key .key-lab { color: var(--accent-orange); bottom: 4px; }
 
 .course-link {
-    text-align: center;
-    margin-top: 12px;
-    font-size: 0.8em;
-  }
+  text-align: center;
+  margin-top: 14px;
+  font-size: 0.75em;
+  color: var(--text-secondary);
+}
+.course-link a { color: var(--accent-orange); text-decoration: none; }
+.course-link a:hover { text-decoration: underline; }
 
-  .course-link a {
-    color: var(--accent);
-    text-decoration: none;
-  }
+/* Tutorial */
+.tour {
+  position: fixed;
+  inset: 0;
+  background: rgba(5, 8, 16, 0.72);
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 20px;
+}
+.tour[hidden],
+.tour.hidden {
+  display: none !important;
+}
+.tour-card {
+  width: min(520px, 100%);
+  background: var(--bg-card);
+  border: 1px solid var(--accent-orange);
+  border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 40px rgba(242,153,74,0.15);
+  margin-bottom: 12vh;
+}
+.tour-kicker {
+  font-size: 0.65em;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-orange);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.tour-kicker i { width: 14px; height: 14px; stroke: var(--accent-orange); }
+.tour-card h2 { font-size: 1.15em; margin-bottom: 8px; color: var(--text-heading); }
+.tour-card p { font-size: 0.82em; line-height: 1.55; color: var(--text-secondary); margin-bottom: 8px; }
+.tour-dots { display: flex; gap: 6px; margin: 14px 0; }
+.tour-dots span {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--bg-hover);
+}
+.tour-dots span.on { background: var(--accent-orange); }
+.tour-nav { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.tour-skip { background: none; color: var(--text-secondary); font-size: 0.75em; }
+.tour-skip:hover { color: var(--text-main); }
 
-  .course-link a:hover { text-decoration: underline; }
-
-  @media (max-width: 600px) {
-    body { padding: 8px; }
-    .panel { padding: 12px; }
-    .wave-grid { grid-template-columns: 1fr 1fr; }
-    .adsr-grid { grid-template-columns: 1fr 1fr; }
-    header h1 { font-size: 1.3em; }
-  }
-
-  @media (max-width: 400px) {
-    .wave-grid { grid-template-columns: 1fr; }
-  }
+@media (max-width: 900px) {
+  .mods { grid-template-columns: 1fr 1fr; }
+  .wood { width: 10px; }
+}
+@media (max-width: 600px) {
+  body { padding: 8px; }
+  .mods { grid-template-columns: 1fr; }
+  header h1 { font-size: 1.15em; }
+  .white-key { width: 28px; height: 100px; }
+  .black-key { width: 18px; height: 62px; }
+  .keyboard { height: 110px; justify-content: flex-start; }
+  .flow-step { min-width: 120px; }
+}
 </style>
 </head>
 <body>
-<div class="container">
-  <a href="../index.html" class="back-link">← Все инструменты</a>
+<div class="page">
+  <a href="../index.html" class="back-link">
+    <i data-lucide="arrow-left"></i> Все инструменты
+  </a>
+
   <header>
-     <h1><span class="emoji">🎛️</span> Wavetable-синтезатор</h1>
-    <p>Смешивайте 4 волны, настраивайте ADSR, играйте клавиатурой</p>
+    <div>
+      <h1><i data-lucide="audio-lines"></i> Аналоговый синтезатор</h1>
+      <p>Субтрактивный синтез как у Minimoog: богатая волна, лестничный фильтр, ADSR. Крути блоки слева направо — так идёт звук.</p>
+    </div>
+    <div class="header-actions">
+      <button class="btn btn-ghost" id="tourReplay" type="button">
+        <i data-lucide="graduation-cap"></i> Туториал
+      </button>
+    </div>
   </header>
 
-  <div class="panel">
-    <div class="panel-title">Осцилляторы</div>
-    <div class="wave-grid" id="waveGrid"></div>
+  <ol class="signal-flow" id="signalFlow">
+    <li class="flow-step active" data-goto="mod-osc">
+      <span class="flow-num">1</span>
+      <span class="flow-text"><strong>Осциллятор</strong><span>сырой звук</span></span>
+      <span class="flow-arrow"></span>
+    </li>
+    <li class="flow-step" data-goto="mod-filter">
+      <span class="flow-num">2</span>
+      <span class="flow-text"><strong>Фильтр</strong><span>срезать верха</span></span>
+      <span class="flow-arrow"></span>
+    </li>
+    <li class="flow-step" data-goto="mod-amp">
+      <span class="flow-num">3</span>
+      <span class="flow-text"><strong>ADSR</strong><span>форма ноты</span></span>
+      <span class="flow-arrow"></span>
+    </li>
+    <li class="flow-step" data-goto="keysBar">
+      <span class="flow-num">4</span>
+      <span class="flow-text"><strong>Клавиатура</strong><span>играть</span></span>
+    </li>
+  </ol>
+
+  <div class="chassis">
+    <div class="wood" aria-hidden="true"></div>
+    <div class="faceplate">
+      <div class="mods">
+
+        <section class="mod" id="mod-osc">
+          <div class="mod-head">
+            <span class="mod-num">1</span>
+            <span class="mod-title"><i data-lucide="audio-waveform"></i> Осцилляторы</span>
+            <span class="led" id="ledOsc"></span>
+          </div>
+          <p class="mod-why" id="whyOsc">Сырой тембр. Пила — все гармоники (бас, лид). Квадрат — полые. Треугольник — мягко. Синус — чистый тон.</p>
+          <div class="wave-row" id="waveRow"></div>
+          <div class="knob-row">
+            <div class="knob-wrap" data-knob="osc2Mix" data-min="0" data-max="1" data-curve="lin"></div>
+            <div class="knob-wrap" data-knob="detune" data-min="-24" data-max="24" data-curve="lin"></div>
+            <div class="knob-wrap" data-knob="noise" data-min="0" data-max="0.4" data-curve="lin"></div>
+            <div class="knob-wrap" data-knob="glide" data-min="0" data-max="0.4" data-curve="lin"></div>
+          </div>
+        </section>
+
+        <section class="mod" id="mod-filter">
+          <div class="mod-head">
+            <span class="mod-num">2</span>
+            <span class="mod-title"><i data-lucide="blend"></i> Фильтр Moog</span>
+          </div>
+          <p class="mod-why" id="whyFilter">24 дБ/окт лестница. Cutoff срезает верха, Resonance ставит пик на срезе — тот самый «квак».</p>
+          <div class="knob-row">
+            <div class="knob-wrap" data-knob="cutoff" data-min="40" data-max="16000" data-curve="log"></div>
+            <div class="knob-wrap" data-knob="res" data-min="0" data-max="0.92" data-curve="lin"></div>
+            <div class="knob-wrap" data-knob="envAmt" data-min="0" data-max="1" data-curve="lin"></div>
+            <div class="knob-wrap" data-knob="drive" data-min="0" data-max="1" data-curve="lin"></div>
+          </div>
+          <canvas class="filter-viz" id="filterCanvas"></canvas>
+        </section>
+
+        <section class="mod" id="mod-amp">
+          <div class="mod-head">
+            <span class="mod-num">3</span>
+            <span class="mod-title"><i data-lucide="activity"></i> Огибающая</span>
+          </div>
+          <p class="mod-why" id="whyAmp">Жизнь ноты: Attack — появление, Decay — спад к Sustain, Release — хвост после клавиши.</p>
+          <div class="knob-row">
+            <div class="knob-wrap" data-knob="attack" data-min="0.001" data-max="2" data-curve="log"></div>
+            <div class="knob-wrap" data-knob="decay" data-min="0.02" data-max="2" data-curve="log"></div>
+            <div class="knob-wrap" data-knob="sustain" data-min="0" data-max="1" data-curve="lin"></div>
+            <div class="knob-wrap" data-knob="release" data-min="0.02" data-max="3" data-curve="log"></div>
+          </div>
+          <div class="adsr-wrap"><canvas id="adsrCanvas"></canvas></div>
+          <div class="adsr-legend"><span>A</span><span>D</span><span>S</span><span>R</span></div>
+        </section>
+
+        <section class="mod" id="mod-mod">
+          <div class="mod-head">
+            <span class="mod-title"><i data-lucide="waves"></i> LFO / Выход</span>
+          </div>
+          <p class="mod-why">Медленное качание фильтра (wah) или строя. Volume — общая громкость.</p>
+          <div class="scope-wrap">
+            <span class="scope-label">Scope</span>
+            <canvas id="scopeCanvas"></canvas>
+          </div>
+          <div class="knob-row cols-3" style="margin-top:10px;">
+            <div class="knob-wrap" data-knob="lfoRate" data-min="0.1" data-max="18" data-curve="log"></div>
+            <div class="knob-wrap" data-knob="lfoAmt" data-min="0" data-max="1" data-curve="lin"></div>
+            <div class="knob-wrap" data-knob="volume" data-min="0" data-max="1" data-curve="lin"></div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+    <div class="wood" aria-hidden="true"></div>
   </div>
 
-  <div class="panel">
-    <div class="panel-title">ADSR-огибающая</div>
-    <div class="adsr-grid" id="adsrGrid"></div>
-    <div class="canvas-wrap" style="margin-top:12px;">
-      <span class="canvas-label">Огибающая амплитуды</span>
-      <canvas id="adsrCanvas"></canvas>
-    </div>
+  <div class="presets">
+    <span class="presets-label"><i data-lucide="bookmark"></i> Пресеты</span>
+    <button class="preset-btn" data-preset="init" type="button">Init</button>
+    <button class="preset-btn" data-preset="bass" type="button">Bass</button>
+    <button class="preset-btn" data-preset="lead" type="button">Lead</button>
+    <button class="preset-btn" data-preset="pluck" type="button">Pluck</button>
+    <button class="preset-btn" data-preset="pad" type="button">Pad</button>
+    <button class="preset-btn" data-preset="acid" type="button">Acid</button>
   </div>
 
-  <div class="panel">
-    <div class="panel-title">Визуализация</div>
-    <div class="canvas-wrap">
-      <span class="canvas-label">Результирующая волна</span>
-      <canvas id="waveCanvas"></canvas>
+  <div class="keys-bar" id="keysBar">
+    <div class="keys-meta">
+      <div class="note-big" id="noteDisplay">C3</div>
+      <div class="oct-ctrl">
+        <button class="oct-btn" id="octDown" type="button" title="Октава вниз">−</button>
+        <span id="octLabel">Окт. 3</span>
+        <button class="oct-btn" id="octUp" type="button" title="Октава вверх">+</button>
+      </div>
+      <p class="hint">
+        Клавиши <kbd>A</kbd>–<kbd>K</kbd> белые · <kbd>W</kbd> <kbd>E</kbd> <kbd>T</kbd> <kbd>Y</kbd> <kbd>U</kbd> чёрные ·
+        <kbd>Z</kbd>/<kbd>X</kbd> октава · нужна английская раскладка
+      </p>
     </div>
+    <div class="keyboard" id="keyboard"></div>
   </div>
 
-  <div class="panel">
-    <div class="panel-title">Управление</div>
-    <div class="note-display" id="noteDisplay">C4</div>
-    <div class="controls-row">
-      <button class="btn-octave" id="octDown" title="Октава вниз">−</button>
-      <span class="octave-display" id="octaveDisplay">Окт. 4</span>
-      <button class="btn-octave" id="octUp" title="Октава вверх">+</button>
-      <button class="btn-play" id="playBtn">▶ Play</button>
-    </div>
-    <div class="keyboard-hint">
-      Играйте клавишами: <kbd>A</kbd>–<kbd>;</kbd> (белые) · <kbd>W</kbd><kbd>E</kbd><kbd>T</kbd><kbd>Y</kbd><kbd>U</kbd> (чёрные) · <kbd>Z</kbd> октава вниз · <kbd>X</kbd> октава вверх<br>
-      <span style="opacity:0.7;">⚠ Нужна английская раскладка клавиатуры, иначе не работает</span>
-    </div>
-  </div>
+  <p class="course-link">
+    Теория синтеза → <a href="../../etap5/sintez-zvuka.html">Этап 5: Синтез звука</a>
+    · фильтры в DAW → <a href="../../etap3/vst-sintezatory.html">VST синтезаторы</a>
+  </p>
+</div>
 
-  <div class="course-link">
-    Подробнее о формах волны → <a href="../../zvuk/osnovy-zvuka.html">Том I: Что такое звук</a>
+<div class="tour" id="tour" hidden>
+  <div class="tour-card">
+    <div class="tour-kicker"><i data-lucide="sparkles"></i> <span id="tourStepLabel">Шаг 1 из 5</span></div>
+    <h2 id="tourTitle"></h2>
+    <p id="tourBody"></p>
+    <div class="tour-dots" id="tourDots"></div>
+    <div class="tour-nav">
+      <button class="tour-skip" id="tourSkip" type="button">Пропустить</button>
+      <button class="btn btn-primary" id="tourNext" type="button">Далее</button>
+    </div>
   </div>
 </div>
 
 <script>
-(function() {
+(function () {
   'use strict';
 
-  const WAVE_TYPES = ['sine', 'square', 'sawtooth', 'triangle'];
-  const WAVE_LABELS = { sine: 'Синус', square: 'Квадрат', sawtooth: 'Пила', triangle: 'Треугольник' };
-  const WAVE_TIPS = {
-    sine: 'Чистый тон без обертонов — основа саб-баса',
-    square: 'Чётные гармоники — ретро-гейм синт, флейта',
-    sawtooth: 'Все гармоники — яркий бас, лид, струнные',
-    triangle: 'Мягкий, близок к синусу — орган, флейта'
+  const KNOB_META = {
+    osc2Mix: { label: 'Osc 2', format: v => Math.round(v * 100) + '%' },
+    detune: { label: 'Detune', format: v => (v >= 0 ? '+' : '') + Math.round(v) + ' ct' },
+    noise: { label: 'Noise', format: v => Math.round(v * 100) + '%' },
+    glide: { label: 'Glide', format: v => (v * 1000).toFixed(0) + ' мс' },
+    cutoff: { label: 'Cutoff', format: v => v >= 1000 ? (v / 1000).toFixed(1) + ' кГц' : Math.round(v) + ' Гц' },
+    res: { label: 'Reso', format: v => Math.round(v * 100) + '%' },
+    envAmt: { label: 'Env', format: v => Math.round(v * 100) + '%' },
+    drive: { label: 'Drive', format: v => Math.round(v * 100) + '%' },
+    attack: { label: 'Attack', format: v => v.toFixed(2) + ' с' },
+    decay: { label: 'Decay', format: v => v.toFixed(2) + ' с' },
+    sustain: { label: 'Sustain', format: v => Math.round(v * 100) + '%' },
+    release: { label: 'Release', format: v => v.toFixed(2) + ' с' },
+    lfoRate: { label: 'LFO', format: v => v.toFixed(1) + ' Гц' },
+    lfoAmt: { label: 'Amount', format: v => Math.round(v * 100) + '%' },
+    volume: { label: 'Volume', format: v => Math.round(v * 100) + '%' }
   };
 
+  const WAVE_SVG = {
+    sine: '<svg viewBox="0 0 28 14"><path d="M1 7 Q7 1 14 7 T27 7"/></svg>',
+    sawtooth: '<svg viewBox="0 0 28 14"><path d="M2 12 L22 2 V12"/></svg>',
+    square: '<svg viewBox="0 0 28 14"><path d="M2 12 V2 H14 V12 H26"/></svg>',
+    triangle: '<svg viewBox="0 0 28 14"><path d="M2 12 L14 2 L26 12"/></svg>'
+  };
+  const WAVE_WHY = {
+    sine: 'Синус — почти без обертонов. Саб, чистый тон, мало что резать фильтром.',
+    sawtooth: 'Пила — все гармоники. Классика Moog: яркий бас и лид, фильтр потом вырежет лишнее.',
+    square: 'Квадрат — только нечётные гармоники. Полый, ретро, кларнет, 8-bit.',
+    triangle: 'Треугольник — мало гармоник, мягче пилы. Орган, флейта, тёплый пэд.'
+  };
+
+  const PRESETS = {
+    init:  { wave: 'sawtooth', osc2Mix: 0.15, detune: 7, noise: 0, glide: 0.02, cutoff: 2200, res: 0.22, envAmt: 0.35, drive: 0.18, attack: 0.01, decay: 0.28, sustain: 0.7, release: 0.25, lfoRate: 0.4, lfoAmt: 0, volume: 0.55 },
+    bass:  { wave: 'sawtooth', osc2Mix: 0.35, detune: -8, noise: 0, glide: 0.06, cutoff: 380, res: 0.42, envAmt: 0.55, drive: 0.35, attack: 0.005, decay: 0.32, sustain: 0.45, release: 0.18, lfoRate: 0.2, lfoAmt: 0, volume: 0.62 },
+    lead:  { wave: 'sawtooth', osc2Mix: 0.45, detune: 12, noise: 0, glide: 0.04, cutoff: 1800, res: 0.28, envAmt: 0.4, drive: 0.22, attack: 0.02, decay: 0.22, sustain: 0.75, release: 0.3, lfoRate: 5.5, lfoAmt: 0.12, volume: 0.5 },
+    pluck: { wave: 'square', osc2Mix: 0.1, detune: 4, noise: 0.04, glide: 0, cutoff: 2600, res: 0.18, envAmt: 0.7, drive: 0.12, attack: 0.002, decay: 0.22, sustain: 0.05, release: 0.16, lfoRate: 0.3, lfoAmt: 0, volume: 0.55 },
+    pad:   { wave: 'triangle', osc2Mix: 0.5, detune: 9, noise: 0.06, glide: 0.12, cutoff: 1400, res: 0.12, envAmt: 0.25, drive: 0.08, attack: 0.85, decay: 0.7, sustain: 0.8, release: 1.4, lfoRate: 0.25, lfoAmt: 0.22, volume: 0.48 },
+    acid:  { wave: 'sawtooth', osc2Mix: 0, detune: 0, noise: 0, glide: 0.03, cutoff: 280, res: 0.78, envAmt: 0.85, drive: 0.4, attack: 0.004, decay: 0.45, sustain: 0.15, release: 0.2, lfoRate: 0.15, lfoAmt: 0, volume: 0.5 }
+  };
+
+  const KEY_MAP = { a: 0, w: 1, s: 2, e: 3, d: 4, f: 5, t: 6, g: 7, y: 8, h: 9, u: 10, j: 11, k: 12 };
   const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
-  const KEY_MAP = {
-    'a': 0, 'w': 1, 's': 2, 'e': 3, 'd': 4,
-    'f': 5, 't': 6, 'g': 7, 'y': 8, 'h': 9,
-    'u': 10, 'j': 11, 'k': 12, 'o': 13, 'l': 14,
-    'p': 15, ';': 16
-  };
+  const WHITE = [0, 2, 4, 5, 7, 9, 11];
+  const COMP_LABELS = { 0: 'A', 1: 'W', 2: 'S', 3: 'E', 4: 'D', 5: 'F', 6: 'T', 7: 'G', 8: 'Y', 9: 'H', 10: 'U', 11: 'J', 12: 'K' };
 
-  let state = {
-    waves: [
-      { type: 'sine', volume: 100 },
-      { type: 'square', volume: 0 },
-      { type: 'sawtooth', volume: 0 },
-      { type: 'triangle', volume: 0 }
-    ],
-    adsr: { attack: 0.05, decay: 0.2, sustain: 0.7, release: 0.3 },
-    octave: 4,
-    noteIndex: 0
-  };
-
-  let synthEngines = null;
-  let isPlaying = false;
-  let activeNotes = new Set();
-  let audioStarted = false;
-  let animFrame = null;
-
-  const ADSR_PARAMS = [
-    { key: 'attack', min: 0.001, max: 2, step: 0.001 },
-    { key: 'decay', min: 0.01, max: 2, step: 0.01 },
-    { key: 'sustain', min: 0, max: 1, step: 0.01 },
-    { key: 'release', min: 0.01, max: 3, step: 0.01 }
+  const TOUR = [
+    {
+      title: 'Звук идёт слева направо',
+      body: 'Это субтрактивный синтез, как у Minimoog. Осциллятор даёт богатую волну, фильтр вырезает лишние гармоники, ADSR рисует громкость во времени. Запомни цепочку: волна → фильтр → огибающая → клавиши.',
+      highlight: null
+    },
+    {
+      title: '1. Осциллятор — характер',
+      body: 'Нажми пилу, квадрат, треугольник или синус. Пила — самый «аналоговый» старт: много гармоник, фильтру есть что резать. Osc 2 и Detune чуть расстраивают второй осциллятор — звук становится жирнее.',
+      highlight: 'mod-osc'
+    },
+    {
+      title: '2. Фильтр — скульптура',
+      body: 'Cutoff опускает частоту среза: чем ниже, тем темнее и басовее. Resonance поднимает пик на срезе — фирменный квак Moog. Env открывает фильтр в момент нажатия клавиши, Drive добавляет тепло сатурации.',
+      highlight: 'mod-filter'
+    },
+    {
+      title: '3. ADSR — жизнь ноты',
+      body: 'Attack — как быстро звук появляется (пэд = долго, бас = почти сразу). Decay падает к Sustain — уровню, пока клавиша зажата. Release — хвост после отпускания. Пресет Pluck: короткий decay и почти нулевой sustain.',
+      highlight: 'mod-amp'
+    },
+    {
+      title: 'Играй',
+      body: 'Клавиатура внизу или клавиши A–K. Возьми пресет Bass или Acid и крути только Cutoff и Resonance — сразу услышишь, зачем фильтр. Туториал можно открыть снова кнопкой сверху.',
+      highlight: 'keysBar'
+    }
   ];
 
-  let adsrDrag = { active: false, pointIndex: -1, startX: 0, startY: 0, startADSR: null };
-  let adsrEnvPixelPoints = [];
+  const state = Object.assign({ octave: 3, wave: 'sawtooth' }, PRESETS.init);
+  const knobs = {};
+  const held = [];
+  const activeKeys = new Set();
 
-  function initAudio() {
-    if (audioStarted) return Promise.resolve();
-    audioStarted = true;
+  let ctx = null;
+  let nodes = null;
+  let currentMidi = 48;
+  let gateOn = false;
+  let tourIndex = 0;
+  let scopeRaf = 0;
 
-    return Tone.start().then(() => {
-      const masterGain = new Tone.Gain(0.5).toDestination();
+  const WORKLET_SRC = `
+class MoogLadderProcessor extends AudioWorkletProcessor {
+  static get parameterDescriptors() {
+    return [
+      { name: 'cutoff', defaultValue: 1000, minValue: 20, maxValue: 20000, automationRate: 'a-rate' },
+      { name: 'resonance', defaultValue: 0.3, minValue: 0, maxValue: 0.99, automationRate: 'k-rate' },
+      { name: 'drive', defaultValue: 0.2, minValue: 0, maxValue: 1, automationRate: 'k-rate' }
+    ];
+  }
+  constructor() {
+    super();
+    this.in1 = this.in2 = this.in3 = this.in4 = 0;
+    this.out1 = this.out2 = this.out3 = this.out4 = 0;
+  }
+  process(inputs, outputs, parameters) {
+    const input = inputs[0] && inputs[0][0];
+    const output = outputs[0] && outputs[0][0];
+    if (!output) return true;
+    const n = output.length;
+    const cutoff = parameters.cutoff;
+    const res = parameters.resonance[0];
+    const drive = parameters.drive[0];
+    const sr = sampleRate;
+    const driveGain = 1 + drive * 2.8;
+    for (let i = 0; i < n; i++) {
+      const x = input ? input[i] : 0;
+      const hz = cutoff.length > 1 ? cutoff[i] : cutoff[0];
+      let f = (2 * hz) / sr;
+      if (f > 0.8) f = 0.8;
+      if (f < 0.0002) f = 0.0002;
+      f *= 1.16;
+      const fb = res * (1.0 - 0.15 * f * f);
+      let s = Math.tanh(x * driveGain) - this.out4 * fb;
+      s *= 0.35013 * (f * f) * (f * f);
+      this.out1 = s + 0.3 * this.in1 + (1 - f) * this.out1;
+      this.in1 = s;
+      this.out2 = this.out1 + 0.3 * this.in2 + (1 - f) * this.out2;
+      this.in2 = this.out1;
+      this.out3 = this.out2 + 0.3 * this.in3 + (1 - f) * this.out3;
+      this.in3 = this.out2;
+      this.out4 = this.out3 + 0.3 * this.in4 + (1 - f) * this.out4;
+      this.in4 = this.out3;
+      const y = this.out4;
+      output[i] = y > 1.2 ? 1.2 : y < -1.2 ? -1.2 : y;
+    }
+    return true;
+  }
+}
+registerProcessor('moog-ladder', MoogLadderProcessor);
+`;
 
-      const engines = state.waves.map((w, i) => {
-        const synth = new Tone.PolySynth(Tone.Synth, {
-          oscillator: { type: w.type },
-          envelope: {
-            attack: state.adsr.attack,
-            decay: state.adsr.decay,
-            sustain: state.adsr.sustain,
-            release: state.adsr.release,
-            attackCurve: 'exponential'
-          }
-        });
+  function midiToHz(m) { return 440 * Math.pow(2, (m - 69) / 12); }
+  function midiName(m) { return NOTE_NAMES[m % 12] + Math.floor(m / 12 - 1); }
 
-        const volGain = new Tone.Gain(w.volume / 100);
-        synth.connect(volGain);
-        volGain.connect(masterGain);
+  function createKnob(el) {
+    const key = el.dataset.knob;
+    const min = parseFloat(el.dataset.min);
+    const max = parseFloat(el.dataset.max);
+    const curve = el.dataset.curve || 'lin';
+    const meta = KNOB_META[key];
+    const canvas = document.createElement('canvas');
+    const name = document.createElement('span');
+    const val = document.createElement('span');
+    name.className = 'knob-name';
+    val.className = 'knob-val';
+    name.textContent = meta.label;
+    el.appendChild(canvas);
+    el.appendChild(name);
+    el.appendChild(val);
 
-        return { synth, volGain };
-      });
+    const obj = {
+      key, min, max, curve, canvas, valEl: val,
+      paint() {
+        const css = 48;
+        const pr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = css * pr;
+        canvas.height = css * pr;
+        canvas.style.width = css + 'px';
+        canvas.style.height = css + 'px';
+        const c = canvas.getContext('2d');
+        c.setTransform(pr, 0, 0, pr, 0, 0);
+        c.clearRect(0, 0, css, css);
+        const xc = css / 2, yc = css / 2, r = 20;
+        const t = (toNorm(state[key], min, max, curve));
+        const start = Math.PI * 0.75;
+        const sweep = Math.PI * 1.5;
+        const ang = start + t * sweep;
+        const body = c.createRadialGradient(xc - 4, yc - 5, 2, xc, yc, r + 3);
+        body.addColorStop(0, '#4a5568');
+        body.addColorStop(0.55, '#1f2937');
+        body.addColorStop(1, '#0b1220');
+        c.beginPath(); c.arc(xc, yc, r + 3, 0, Math.PI * 2); c.fillStyle = body; c.fill();
+        c.strokeStyle = 'rgba(255,255,255,0.1)'; c.lineWidth = 1; c.stroke();
+        c.beginPath(); c.arc(xc, yc, r, start, start + sweep, false);
+        c.strokeStyle = 'rgba(255,255,255,0.1)'; c.lineWidth = 3; c.lineCap = 'round'; c.stroke();
+        c.beginPath(); c.arc(xc, yc, r, start, ang, false);
+        c.strokeStyle = '#F2994A'; c.lineWidth = 3; c.stroke();
+        c.beginPath();
+        c.moveTo(xc, yc);
+        c.lineTo(xc + Math.cos(ang) * (r - 4), yc + Math.sin(ang) * (r - 4));
+        c.strokeStyle = '#F9FAFB'; c.lineWidth = 2.2; c.stroke();
+        c.beginPath(); c.arc(xc, yc, 2.4, 0, Math.PI * 2); c.fillStyle = '#F2994A'; c.fill();
+        val.textContent = meta.format(state[key]);
+      }
+    };
 
-      synthEngines = {
-        masterGain,
-        engines,
-        setType: (index, type) => {
-          engines[index].synth.set({ oscillator: { type } });
-        },
-        setVolume: (index, vol) => {
-          engines[index].volGain.gain.value = vol / 100;
-        },
-        setADSR: () => {
-          engines.forEach(e => {
-            e.synth.set({
-              envelope: {
-                attack: state.adsr.attack,
-                decay: state.adsr.decay,
-                sustain: state.adsr.sustain,
-                release: state.adsr.release
-              }
-            });
-          });
-        },
-        triggerAttack: (note) => {
-          engines.forEach(e => {
-            if (e.volGain.gain.value > 0.001) {
-              e.synth.triggerAttack(note);
-            }
-          });
-        },
-        triggerRelease: (note) => {
-          engines.forEach(e => {
-            e.synth.triggerRelease(note);
-          });
-        },
-        releaseAll: () => {
-          engines.forEach(e => {
-            e.synth.releaseAll();
-          });
+    let dragging = false, startY = 0, startV = 0;
+    canvas.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      dragging = true;
+      startY = e.clientY;
+      startV = toNorm(state[key], min, max, curve);
+      canvas.setPointerCapture(e.pointerId);
+    });
+    canvas.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const dy = startY - e.clientY;
+      const next = Math.max(0, Math.min(1, startV + dy * 0.006));
+      state[key] = fromNorm(next, min, max, curve);
+      obj.paint();
+      applyParams();
+    });
+    canvas.addEventListener('pointerup', () => { dragging = false; });
+    canvas.addEventListener('wheel', (e) => {
+      e.preventDefault();
+      const n = toNorm(state[key], min, max, curve) + (-e.deltaY) * 0.0012;
+      state[key] = fromNorm(Math.max(0, Math.min(1, n)), min, max, curve);
+      obj.paint();
+      applyParams();
+    }, { passive: false });
+
+    knobs[key] = obj;
+    obj.paint();
+  }
+
+  function toNorm(v, min, max, curve) {
+    if (curve === 'log') {
+      const a = Math.log(Math.max(min, 0.0001));
+      const b = Math.log(Math.max(max, 0.0001));
+      return (Math.log(Math.max(v, 0.0001)) - a) / (b - a);
+    }
+    return (v - min) / (max - min);
+  }
+  function fromNorm(t, min, max, curve) {
+    if (curve === 'log') {
+      const a = Math.log(Math.max(min, 0.0001));
+      const b = Math.log(Math.max(max, 0.0001));
+      return Math.exp(a + t * (b - a));
+    }
+    return min + t * (max - min);
+  }
+
+  function buildWaves() {
+    const row = document.getElementById('waveRow');
+    ['sine', 'triangle', 'sawtooth', 'square'].forEach((w) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'wave-btn' + (state.wave === w ? ' active' : '');
+      b.dataset.wave = w;
+      b.innerHTML = WAVE_SVG[w];
+      b.title = w;
+      b.addEventListener('click', () => setWave(w));
+      row.appendChild(b);
+    });
+  }
+
+  function setWave(w) {
+    state.wave = w;
+    document.querySelectorAll('.wave-btn').forEach((b) => {
+      b.classList.toggle('active', b.dataset.wave === w);
+    });
+    document.getElementById('whyOsc').textContent = WAVE_WHY[w];
+    if (nodes) {
+      nodes.osc1.type = w;
+      nodes.osc2.type = w === 'sine' ? 'triangle' : w;
+    }
+  }
+
+  function buildKeyboard() {
+    const wrap = document.getElementById('keyboard');
+    wrap.innerHTML = '';
+    const start = 12 * (state.octave + 1);
+    const whites = [];
+    for (let oct = 0; oct < 2; oct++) {
+      WHITE.forEach((semi) => whites.push({ midi: start + oct * 12 + semi, semi }));
+    }
+    whites.forEach((w, i) => {
+      const el = document.createElement('div');
+      el.className = 'white-key';
+      el.dataset.midi = w.midi;
+      const local = w.midi - start;
+      if (COMP_LABELS[local] !== undefined) {
+        const lab = document.createElement('span');
+        lab.className = 'key-lab';
+        lab.textContent = COMP_LABELS[local];
+        el.appendChild(lab);
+      }
+      bindKeyEl(el, w.midi);
+      wrap.appendChild(el);
+    });
+    const whiteW = wrap.querySelector('.white-key').offsetWidth || 32;
+    const blacks = [1, 3, 6, 8, 10];
+    for (let oct = 0; oct < 2; oct++) {
+      blacks.forEach((semi) => {
+        const midi = start + oct * 12 + semi;
+        const idx = WHITE.findIndex((s) => s > semi);
+        const whitesBefore = oct * 7 + (idx === -1 ? 7 : idx);
+        const el = document.createElement('div');
+        el.className = 'black-key';
+        el.dataset.midi = midi;
+        el.style.left = (whitesBefore * whiteW - 10) + 'px';
+        const local = midi - start;
+        if (COMP_LABELS[local]) {
+          const lab = document.createElement('span');
+          lab.className = 'key-lab';
+          lab.textContent = COMP_LABELS[local];
+          el.appendChild(lab);
         }
-      };
-    });
-  }
-
-  function getNoteName(index) {
-    const baseOctave = state.octave;
-    const noteIdx = index % 12;
-    const octave = baseOctave + Math.floor(index / 12);
-    return NOTE_NAMES[noteIdx] + octave;
-  }
-
-  function noteToHz(noteName) {
-    const note = noteName.replace(/(\d+)$/, '');
-    const octave = parseInt(noteName.slice(-1));
-    const semitones = { 'C': -9, 'C#': -8, 'D': -7, 'D#': -6, 'E': -5, 'F': -4, 'F#': -3, 'G': -2, 'G#': -1, 'A': 0, 'A#': 1, 'B': 2 };
-    const semi = semitones[note] || 0;
-    return 440 * Math.pow(2, (semi + (octave - 4) * 12) / 12);
-  }
-
-  function buildWaveGrid() {
-    const grid = document.getElementById('waveGrid');
-    grid.innerHTML = '';
-    state.waves.forEach((w, i) => {
-      const card = document.createElement('div');
-      card.className = 'wave-card';
-      card.innerHTML = `
-        <label>Волна ${i + 1}</label>
-        <select data-wave="${i}">
-          ${WAVE_TYPES.map(t => `<option value="${t}" ${t === w.type ? 'selected' : ''}>${WAVE_LABELS[t]}</option>`).join('')}
-        </select>
-        <div class="slider-row">
-          <input type="range" min="0" max="100" value="${w.volume}" data-vol="${i}">
-          <span class="val" id="vol${i}">${w.volume}%</span>
-        </div>
-        <div class="tip">${WAVE_TIPS[w.type]}</div>
-      `;
-      grid.appendChild(card);
-    });
-
-    grid.querySelectorAll('select').forEach(sel => {
-      sel.addEventListener('change', (e) => {
-        const idx = parseInt(e.target.dataset.wave);
-        state.waves[idx].type = e.target.value;
-        e.target.parentElement.querySelector('.tip').textContent = WAVE_TIPS[e.target.value];
-        if (synthEngines) synthEngines.setType(idx, e.target.value);
-        drawWave();
+        bindKeyEl(el, midi);
+        wrap.appendChild(el);
       });
-    });
+    }
+    wrap.style.minWidth = (14 * whiteW) + 'px';
+  }
 
-    grid.querySelectorAll('input[type="range"]').forEach(inp => {
-      inp.addEventListener('input', (e) => {
-        const idx = parseInt(e.target.dataset.vol);
-        const val = parseInt(e.target.value);
-        state.waves[idx].volume = val;
-        document.getElementById('vol' + idx).textContent = val + '%';
-        if (synthEngines) synthEngines.setVolume(idx, val);
-        drawWave();
+  function bindKeyEl(el, midi) {
+    const down = (e) => { e.preventDefault(); noteOn(midi); el.classList.add('pressed'); };
+    const up = () => { noteOff(midi); el.classList.remove('pressed'); };
+    el.addEventListener('pointerdown', down);
+    el.addEventListener('pointerup', up);
+    el.addEventListener('pointerleave', up);
+  }
+
+  function keyEl(midi) {
+    return document.querySelector('[data-midi="' + midi + '"]');
+  }
+
+  async function ensureAudio() {
+    if (nodes) return;
+    ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (ctx.state === 'suspended') await ctx.resume();
+
+    let filterIn, filterOut, cutoffParam, resParam, driveParam;
+    try {
+      const blob = new Blob([WORKLET_SRC], { type: 'application/javascript' });
+      const url = URL.createObjectURL(blob);
+      await ctx.audioWorklet.addModule(url);
+      URL.revokeObjectURL(url);
+      const node = new AudioWorkletNode(ctx, 'moog-ladder', {
+        numberOfInputs: 1, numberOfOutputs: 1, outputChannelCount: [1]
       });
+      filterIn = filterOut = node;
+      cutoffParam = node.parameters.get('cutoff');
+      resParam = node.parameters.get('resonance');
+      driveParam = node.parameters.get('drive');
+      cutoffParam.value = 0;
+    } catch (err) {
+      const stages = [];
+      for (let i = 0; i < 4; i++) {
+        const f = ctx.createBiquadFilter();
+        f.type = 'lowpass';
+        f.Q.value = 0.5;
+        stages.push(f);
+      }
+      stages[0].connect(stages[1]); stages[1].connect(stages[2]); stages[2].connect(stages[3]);
+      stages.forEach((s) => { s.frequency.value = 0; });
+      filterIn = stages[0];
+      filterOut = stages[3];
+      cutoffParam = stages.map((s) => s.frequency);
+      resParam = stages[0].Q;
+      driveParam = null;
+    }
+
+    const osc1 = ctx.createOscillator();
+    const osc2 = ctx.createOscillator();
+    osc1.type = state.wave;
+    osc2.type = state.wave === 'sine' ? 'triangle' : state.wave;
+    osc1.frequency.value = midiToHz(48);
+    osc2.frequency.value = midiToHz(48);
+
+    const g1 = ctx.createGain(); g1.gain.value = 0.32;
+    const g2 = ctx.createGain(); g2.gain.value = 0.05;
+    const nGain = ctx.createGain(); nGain.gain.value = 0;
+
+    const noiseBuf = ctx.createBuffer(1, ctx.sampleRate * 2, ctx.sampleRate);
+    const nd = noiseBuf.getChannelData(0);
+    for (let i = 0; i < nd.length; i++) nd[i] = Math.random() * 2 - 1;
+    const noise = ctx.createBufferSource();
+    noise.buffer = noiseBuf;
+    noise.loop = true;
+
+    const mix = ctx.createGain(); mix.gain.value = 1;
+    osc1.connect(g1); g1.connect(mix);
+    osc2.connect(g2); g2.connect(mix);
+    noise.connect(nGain); nGain.connect(mix);
+    mix.connect(filterIn);
+
+    const cutoffBase = ctx.createConstantSource();
+    cutoffBase.offset.value = state.cutoff;
+    const envCv = ctx.createGain(); envCv.gain.value = 0;
+    const envSrc = ctx.createConstantSource(); envSrc.offset.value = 1;
+    envSrc.connect(envCv);
+    const lfo = ctx.createOscillator(); lfo.type = 'triangle'; lfo.frequency.value = state.lfoRate;
+    const lfoGain = ctx.createGain(); lfoGain.gain.value = 0;
+    lfo.connect(lfoGain);
+
+    const connectCutoff = (param) => {
+      cutoffBase.connect(param);
+      envCv.connect(param);
+      lfoGain.connect(param);
+    };
+    if (Array.isArray(cutoffParam)) cutoffParam.forEach(connectCutoff);
+    else connectCutoff(cutoffParam);
+
+    const vca = ctx.createGain(); vca.gain.value = 0.0001;
+    const master = ctx.createGain(); master.gain.value = state.volume;
+    const analyser = ctx.createAnalyser();
+    analyser.fftSize = 1024;
+    analyser.smoothingTimeConstant = 0.4;
+
+    filterOut.connect(vca);
+    vca.connect(master);
+    master.connect(analyser);
+    analyser.connect(ctx.destination);
+
+    osc1.start(); osc2.start(); noise.start(); cutoffBase.start(); envSrc.start(); lfo.start();
+
+    nodes = {
+      osc1, osc2, g1, g2, nGain, cutoffBase, envCv, lfo, lfoGain, vca, master, analyser,
+      resParam, driveParam, stagesCutoff: Array.isArray(cutoffParam) ? cutoffParam : null
+    };
+    applyParams();
+    startScope();
+  }
+
+  function applyParams() {
+    if (!nodes) {
+      drawFilter();
+      drawADSR();
+      return;
+    }
+    const now = ctx.currentTime;
+    nodes.g2.gain.setTargetAtTime(state.osc2Mix * 0.32, now, 0.03);
+    nodes.osc2.detune.setTargetAtTime(state.detune, now, 0.03);
+    nodes.nGain.gain.setTargetAtTime(state.noise * 0.25, now, 0.03);
+    nodes.cutoffBase.offset.setTargetAtTime(state.cutoff, now, 0.03);
+    if (nodes.resParam) {
+      if (nodes.stagesCutoff) nodes.resParam.setTargetAtTime(0.4 + state.res * 12, now, 0.03);
+      else nodes.resParam.setTargetAtTime(state.res, now, 0.03);
+    }
+    if (nodes.driveParam) nodes.driveParam.setTargetAtTime(state.drive, now, 0.03);
+    nodes.lfo.frequency.setTargetAtTime(state.lfoRate, now, 0.03);
+    nodes.lfoGain.gain.setTargetAtTime(state.lfoAmt * state.cutoff * 0.7, now, 0.04);
+    nodes.master.gain.setTargetAtTime(state.volume, now, 0.03);
+    drawFilter();
+    drawADSR();
+    Object.keys(knobs).forEach((k) => knobs[k].paint());
+  }
+
+  function triggerEnv() {
+    if (!nodes) return;
+    const now = ctx.currentTime;
+    const a = state.attack, d = state.decay, s = state.sustain, r = state.release;
+    const vca = nodes.vca.gain;
+    vca.cancelScheduledValues(now);
+    vca.setValueAtTime(Math.max(vca.value, 0.0001), now);
+    vca.linearRampToValueAtTime(1, now + a);
+    vca.linearRampToValueAtTime(Math.max(s, 0.0001), now + a + d);
+
+    const envHz = state.envAmt * Math.max(80, 9000 - state.cutoff);
+    const eg = nodes.envCv.gain;
+    eg.cancelScheduledValues(now);
+    eg.setValueAtTime(Math.max(eg.value, 0), now);
+    eg.linearRampToValueAtTime(envHz, now + a);
+    eg.linearRampToValueAtTime(envHz * s, now + a + d);
+  }
+
+  function releaseEnv() {
+    if (!nodes) return;
+    const now = ctx.currentTime;
+    const r = state.release;
+    const vca = nodes.vca.gain;
+    vca.cancelScheduledValues(now);
+    vca.setValueAtTime(Math.max(vca.value, 0.0001), now);
+    vca.exponentialRampToValueAtTime(0.0001, now + r);
+    const eg = nodes.envCv.gain;
+    eg.cancelScheduledValues(now);
+    eg.setValueAtTime(Math.max(eg.value, 0), now);
+    eg.linearRampToValueAtTime(0, now + r);
+  }
+
+  function setPitch(midi, glide) {
+    if (!nodes) return;
+    currentMidi = midi;
+    const hz = midiToHz(midi);
+    const now = ctx.currentTime;
+    const t = glide && state.glide > 0.001 ? state.glide : 0.008;
+    nodes.osc1.frequency.cancelScheduledValues(now);
+    nodes.osc2.frequency.cancelScheduledValues(now);
+    nodes.osc1.frequency.setValueAtTime(nodes.osc1.frequency.value, now);
+    nodes.osc2.frequency.setValueAtTime(nodes.osc2.frequency.value, now);
+    nodes.osc1.frequency.exponentialRampToValueAtTime(Math.max(hz, 20), now + t);
+    nodes.osc2.frequency.exponentialRampToValueAtTime(Math.max(hz, 20), now + t);
+    document.getElementById('noteDisplay').textContent = midiName(midi);
+  }
+
+  async function noteOn(midi) {
+    await ensureAudio();
+    if (held.indexOf(midi) === -1) held.push(midi);
+    setPitch(midi, gateOn);
+    triggerEnv();
+    gateOn = true;
+    document.getElementById('ledOsc').classList.add('on');
+    const el = keyEl(midi);
+    if (el) el.classList.add('pressed');
+  }
+
+  function noteOff(midi) {
+    const i = held.indexOf(midi);
+    if (i !== -1) held.splice(i, 1);
+    const el = keyEl(midi);
+    if (el) el.classList.remove('pressed');
+    if (held.length === 0) {
+      releaseEnv();
+      gateOn = false;
+      document.getElementById('ledOsc').classList.remove('on');
+    } else {
+      setPitch(held[held.length - 1], true);
+    }
+  }
+
+  function loadPreset(id) {
+    const p = PRESETS[id];
+    if (!p) return;
+    Object.keys(p).forEach((k) => { state[k] = p[k]; });
+    setWave(p.wave);
+    applyParams();
+    document.querySelectorAll('.preset-btn').forEach((b) => {
+      b.classList.toggle('active', b.dataset.preset === id);
     });
   }
 
-  function buildADSRGrid() {
-    const grid = document.getElementById('adsrGrid');
-    const params = [
-      { key: 'attack', label: 'Attack', min: 0.001, max: 2, step: 0.001, unit: 'с' },
-      { key: 'decay', label: 'Decay', min: 0.01, max: 2, step: 0.01, unit: 'с' },
-      { key: 'sustain', label: 'Sustain', min: 0, max: 1, step: 0.01, unit: '' },
-      { key: 'release', label: 'Release', min: 0.01, max: 3, step: 0.01, unit: 'с' }
-    ];
-
-    grid.innerHTML = '';
-    params.forEach(p => {
-      const div = document.createElement('div');
-      div.innerHTML = `
-        <div class="slider-row" style="flex-direction:column; align-items:stretch;">
-          <div style="display:flex;justify-content:space-between;font-size:0.8em;font-weight:600;">
-            <span>${p.label}</span><span id="adsr-${p.key}">${state.adsr[p.key]}${p.unit}</span>
-          </div>
-          <input type="range" min="${p.min}" max="${p.max}" step="${p.step}" value="${state.adsr[p.key]}" data-adsr="${p.key}" style="width:100%;">
-        </div>
-      `;
-      grid.appendChild(div);
-    });
-
-    grid.querySelectorAll('input[type="range"]').forEach(inp => {
-      inp.addEventListener('input', (e) => {
-        const key = e.target.dataset.adsr;
-        const val = parseFloat(e.target.value);
-        state.adsr[key] = val;
-        const unit = params.find(p => p.key === key).unit;
-        document.getElementById('adsr-' + key).textContent = val + unit;
-        if (synthEngines) synthEngines.setADSR();
-        drawADSR();
-      });
-    });
-  }
-
-  function syncADSRSliders() {
-    const params = [
-      { key: 'attack', unit: 'с' },
-      { key: 'decay', unit: 'с' },
-      { key: 'sustain', unit: '' },
-      { key: 'release', unit: 'с' }
-    ];
-    params.forEach(p => {
-      const inp = document.querySelector(`input[data-adsr="${p.key}"]`);
-      const lbl = document.getElementById('adsr-' + p.key);
-      if (inp) inp.value = state.adsr[p.key];
-      if (lbl) lbl.textContent = state.adsr[p.key] + p.unit;
-    });
-  }
-
-  function updateNoteDisplay() {
-    document.getElementById('noteDisplay').textContent = getNoteName(state.noteIndex);
-  }
-
-  function updateOctaveDisplay() {
-    document.getElementById('octaveDisplay').textContent = 'Окт. ' + state.octave;
-  }
-
-  const canvas = document.getElementById('waveCanvas');
-  const ctx = canvas.getContext('2d');
-
-  const adsrCanvas = document.getElementById('adsrCanvas');
-  const adsrCtx = adsrCanvas.getContext('2d');
-
-  function resizeCanvas() {
-    const rect = canvas.parentElement.getBoundingClientRect();
-    canvas.width = rect.width * window.devicePixelRatio;
-    canvas.height = 180 * window.devicePixelRatio;
-    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-  }
-
-  function resizeAdsCanvas() {
-    const rect = adsrCanvas.parentElement.getBoundingClientRect();
-    adsrCanvas.width = rect.width * window.devicePixelRatio;
-    adsrCanvas.height = 180 * window.devicePixelRatio;
-    adsrCtx.scale(window.devicePixelRatio, window.devicePixelRatio);
-  }
-
-  function drawWave() {
-    const w = canvas.width / window.devicePixelRatio;
-    const h = canvas.height / window.devicePixelRatio;
-
-    ctx.fillStyle = '#1a1a1a';
-    ctx.fillRect(0, 0, w, h);
-
-    ctx.strokeStyle = 'rgba(0, 188, 212, 0.15)';
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    ctx.moveTo(0, h / 2);
-    ctx.lineTo(w, h / 2);
-    ctx.stroke();
-
-    const activeWaves = state.waves.filter(wave => wave.volume > 0);
-    if (activeWaves.length === 0) return;
-
-    const freq = noteToHz(getNoteName(state.noteIndex));
-    const sampleRate = 44100;
-    const period = sampleRate / freq;
-
-    const samples = [];
+  function drawFilter() {
+    const cnv = document.getElementById('filterCanvas');
+    const pr = Math.min(devicePixelRatio || 1, 2);
+    const w = cnv.clientWidth || 220;
+    const h = 44;
+    cnv.width = w * pr; cnv.height = h * pr;
+    const c = cnv.getContext('2d');
+    c.setTransform(pr, 0, 0, pr, 0, 0);
+    c.fillStyle = '#070b14';
+    c.fillRect(0, 0, w, h);
+    const cutoffX = Math.log(state.cutoff / 40) / Math.log(16000 / 40);
+    c.beginPath();
     for (let x = 0; x < w; x++) {
-      const t = (x / w) * 3 / period;
-      let value = 0;
-      activeWaves.forEach(wave => {
-        value += sampleWaveform(wave.type, (t * freq) % 1) * (wave.volume / 100);
-      });
-      samples.push(value);
+      const t = x / w;
+      const dist = t - cutoffX;
+      let mag = dist < 0 ? 1 : Math.pow(0.08, dist * 3.2);
+      const peak = Math.exp(-Math.pow((t - cutoffX) * 18, 2)) * state.res * 1.4;
+      mag = Math.min(1.35, mag + peak);
+      const y = h - 6 - mag * (h - 12);
+      if (x === 0) c.moveTo(x, y); else c.lineTo(x, y);
     }
-
-    let minVal = Infinity, maxVal = -Infinity;
-    samples.forEach(v => {
-      if (v < minVal) minVal = v;
-      if (v > maxVal) maxVal = v;
-    });
-    const range = maxVal - minVal || 1;
-    const mid = (maxVal + minVal) / 2;
-
-    ctx.beginPath();
-    ctx.strokeStyle = '#00bcd4';
-    ctx.lineWidth = 2;
-    ctx.shadowColor = '#00bcd4';
-    ctx.shadowBlur = 8;
-
-    samples.forEach((v, x) => {
-      const normValue = (v - mid) / range;
-      const y = h / 2 - normValue * (h / 2 - 10);
-      if (x === 0) ctx.moveTo(x, y);
-      else ctx.lineTo(x, y);
-    });
-    ctx.stroke();
-    ctx.shadowBlur = 0;
-  }
-
-  function sampleWaveform(type, t) {
-    switch (type) {
-      case 'sine': return Math.sin(2 * Math.PI * t);
-      case 'square': return t < 0.5 ? 1 : -1;
-      case 'sawtooth': return 2 * (t - Math.floor(t + 0.5));
-      case 'triangle': return 2 * Math.abs(2 * (t - Math.floor(t + 0.5))) - 1;
-      default: return 0;
-    }
+    c.strokeStyle = '#F2994A';
+    c.lineWidth = 1.6;
+    c.stroke();
   }
 
   function drawADSR() {
-    const w = adsrCanvas.width / window.devicePixelRatio;
-    const h = adsrCanvas.height / window.devicePixelRatio;
-    const pad = { top: 28, right: 16, bottom: 32, left: 36 };
-    const gw = w - pad.left - pad.right;
-    const gh = h - pad.top - pad.bottom;
-
-    adsrCtx.fillStyle = '#1a1a1a';
-    adsrCtx.fillRect(0, 0, w, h);
-
-    const { attack: a, decay: d, sustain: s, release: r } = state.adsr;
-    const totalTime = a + d + Math.max(s * 2, 0.5) + r;
-
-    const phaseColors = {
-      attack: 'rgba(102, 187, 106, 0.12)',
-      decay: 'rgba(255, 167, 38, 0.12)',
-      sustain: 'rgba(0, 188, 212, 0.12)',
-      release: 'rgba(239, 83, 80, 0.12)'
-    };
-    const phaseBorderColors = {
-      attack: 'rgba(102, 187, 106, 0.5)',
-      decay: 'rgba(255, 167, 38, 0.5)',
-      sustain: 'rgba(0, 188, 212, 0.5)',
-      release: 'rgba(239, 83, 80, 0.5)'
-    };
-    const phaseLabels = { attack: 'A', decay: 'D', sustain: 'S', release: 'R' };
-
-    let timeCursor = 0;
-
-    const phases = [
-      { key: 'attack', duration: a },
-      { key: 'decay', duration: d },
-      { key: 'sustain', duration: Math.max(s * 2, 0.5) },
-      { key: 'release', duration: r }
+    const cnv = document.getElementById('adsrCanvas');
+    const pr = Math.min(devicePixelRatio || 1, 2);
+    const w = cnv.clientWidth || 220;
+    const h = 72;
+    cnv.width = w * pr; cnv.height = h * pr;
+    const c = cnv.getContext('2d');
+    c.setTransform(pr, 0, 0, pr, 0, 0);
+    c.fillStyle = '#070b14';
+    c.fillRect(0, 0, w, h);
+    const a = state.attack, d = state.decay, s = state.sustain, r = state.release;
+    const susT = 0.45;
+    const tot = a + d + susT + r;
+    const pad = 6;
+    const gw = w - pad * 2, gh = h - pad * 2;
+    const X = (t) => pad + (t / tot) * gw;
+    const Y = (v) => pad + gh - v * gh;
+    const pts = [
+      [0, 0], [a, 1], [a + d, s], [a + d + susT, s], [tot, 0]
     ];
+    c.beginPath();
+    pts.forEach((p, i) => { if (i === 0) c.moveTo(X(p[0]), Y(p[1])); else c.lineTo(X(p[0]), Y(p[1])); });
+    c.strokeStyle = '#F2994A';
+    c.lineWidth = 2;
+    c.stroke();
+    pts.forEach((p) => {
+      c.beginPath(); c.arc(X(p[0]), Y(p[1]), 3, 0, Math.PI * 2);
+      c.fillStyle = '#0B1220'; c.fill();
+      c.strokeStyle = '#F2994A'; c.stroke();
+    });
+  }
 
-    phases.forEach(phase => {
-      const x1 = pad.left + (timeCursor / totalTime) * gw;
-      const segW = (phase.duration / totalTime) * gw;
-      const x2 = x1 + segW;
-
-      adsrCtx.fillStyle = phaseColors[phase.key];
-      adsrCtx.fillRect(x1, pad.top, segW, gh);
-
-      adsrCtx.strokeStyle = phaseBorderColors[phase.key];
-      adsrCtx.lineWidth = 1;
-      adsrCtx.strokeRect(x1, pad.top, segW, gh);
-
-      const centerX = x1 + segW / 2;
-      if (segW > 24) {
-        adsrCtx.fillStyle = phaseBorderColors[phase.key];
-        adsrCtx.font = 'bold 11px Inter, sans-serif';
-        adsrCtx.textAlign = 'center';
-        adsrCtx.textBaseline = 'top';
-        adsrCtx.fillText(phaseLabels[phase.key], centerX, pad.top + 4);
+  function startScope() {
+    const cnv = document.getElementById('scopeCanvas');
+    const analyser = nodes.analyser;
+    const buf = new Uint8Array(analyser.fftSize);
+    const loop = () => {
+      scopeRaf = requestAnimationFrame(loop);
+      const pr = Math.min(devicePixelRatio || 1, 2);
+      const w = cnv.clientWidth || 200;
+      const h = 92;
+      cnv.width = w * pr; cnv.height = h * pr;
+      const c = cnv.getContext('2d');
+      c.setTransform(pr, 0, 0, pr, 0, 0);
+      c.fillStyle = 'rgba(5,10,8,0.35)';
+      c.fillRect(0, 0, w, h);
+      analyser.getByteTimeDomainData(buf);
+      c.beginPath();
+      c.strokeStyle = '#F2994A';
+      c.lineWidth = 1.5;
+      for (let i = 0; i < buf.length; i++) {
+        const x = (i / (buf.length - 1)) * w;
+        const y = (buf[i] / 255) * h;
+        if (i === 0) c.moveTo(x, y); else c.lineTo(x, y);
       }
-
-      timeCursor += phase.duration;
-    });
-
-    // Grid lines
-    adsrCtx.strokeStyle = 'rgba(255,255,255,0.06)';
-    adsrCtx.lineWidth = 1;
-    for (let i = 0; i <= 4; i++) {
-      const y = pad.top + (gh / 4) * i;
-      adsrCtx.beginPath();
-      adsrCtx.moveTo(pad.left, y);
-      adsrCtx.lineTo(pad.left + gw, y);
-      adsrCtx.stroke();
-    }
-
-    // Y axis labels
-    adsrCtx.fillStyle = 'rgba(255,255,255,0.35)';
-    adsrCtx.font = '10px Inter, sans-serif';
-    adsrCtx.textAlign = 'right';
-    adsrCtx.textBaseline = 'middle';
-    adsrCtx.fillText('1.0', pad.left - 6, pad.top);
-    adsrCtx.fillText('0.0', pad.left - 6, pad.top + gh);
-
-    // Envelope curve
-    const envPoints = [];
-    const sustainDur = Math.max(s * 2, 0.5);
-
-    envPoints.push({ t: 0, v: 0 });
-    envPoints.push({ t: a, v: 1 });
-    envPoints.push({ t: a + d, v: s });
-    envPoints.push({ t: a + d + sustainDur, v: s });
-    envPoints.push({ t: a + d + sustainDur + r, v: 0 });
-
-    adsrCtx.beginPath();
-    adsrCtx.strokeStyle = '#00bcd4';
-    adsrCtx.lineWidth = 2.5;
-    adsrCtx.lineJoin = 'round';
-    adsrCtx.lineCap = 'round';
-
-    envPoints.forEach((pt, i) => {
-      const x = pad.left + (pt.t / totalTime) * gw;
-      const y = pad.top + gh - pt.v * gh;
-      if (i === 0) adsrCtx.moveTo(x, y);
-      else adsrCtx.lineTo(x, y);
-    });
-    adsrCtx.stroke();
-
-    // Glow effect
-    adsrCtx.beginPath();
-    adsrCtx.strokeStyle = 'rgba(0, 188, 212, 0.25)';
-    adsrCtx.lineWidth = 8;
-    envPoints.forEach((pt, i) => {
-      const x = pad.left + (pt.t / totalTime) * gw;
-      const y = pad.top + gh - pt.v * gh;
-      if (i === 0) adsrCtx.moveTo(x, y);
-      else adsrCtx.lineTo(x, y);
-    });
-    adsrCtx.stroke();
-
-    // Dots at key points + store pixel positions for drag
-    adsrEnvPixelPoints = [];
-    envPoints.forEach((pt, i) => {
-      const x = pad.left + (pt.t / totalTime) * gw;
-      const y = pad.top + gh - pt.v * gh;
-      adsrEnvPixelPoints.push({ x, y });
-      adsrCtx.beginPath();
-      adsrCtx.arc(x, y, 6, 0, Math.PI * 2);
-      adsrCtx.fillStyle = '#1a1a1a';
-      adsrCtx.fill();
-      adsrCtx.strokeStyle = '#00bcd4';
-      adsrCtx.lineWidth = 2.5;
-      adsrCtx.stroke();
-    });
-
-    // Sustain level line
-    if (s > 0) {
-      const sustainY = pad.top + gh - s * gh;
-      adsrCtx.setLineDash([4, 4]);
-      adsrCtx.strokeStyle = 'rgba(0, 188, 212, 0.3)';
-      adsrCtx.lineWidth = 1;
-      adsrCtx.beginPath();
-      adsrCtx.moveTo(pad.left, sustainY);
-      adsrCtx.lineTo(pad.left + gw, sustainY);
-      adsrCtx.stroke();
-      adsrCtx.setLineDash([]);
-
-      adsrCtx.fillStyle = 'rgba(0, 188, 212, 0.6)';
-      adsrCtx.font = '10px Inter, sans-serif';
-      adsrCtx.textAlign = 'left';
-      adsrCtx.textBaseline = 'middle';
-      adsrCtx.fillText(s.toFixed(2), pad.left + gw + 4, sustainY);
-    }
-
-    // X axis label
-    adsrCtx.fillStyle = 'rgba(255,255,255,0.25)';
-    adsrCtx.font = '10px Inter, sans-serif';
-    adsrCtx.textAlign = 'center';
-    adsrCtx.textBaseline = 'top';
-    adsrCtx.fillText('время →', pad.left + gw / 2, h - 12);
-  }
-
-  function playNote(noteIndex) {
-    if (!synthEngines) return;
-    const note = getNoteName(noteIndex);
-    state.noteIndex = noteIndex;
-    updateNoteDisplay();
-    synthEngines.triggerAttack(note);
-    activeNotes.add(noteIndex);
-    drawWave();
-  }
-
-  function stopNote(noteIndex) {
-    if (!synthEngines) return;
-    if (noteIndex !== undefined) {
-      activeNotes.delete(noteIndex);
-      const note = getNoteName(noteIndex);
-      synthEngines.triggerRelease(note);
-    } else {
-      activeNotes.clear();
-      synthEngines.releaseAll();
-    }
-  }
-
-  function adsrPixelToEnv(mx, my) {
-    const w = adsrCanvas.width / window.devicePixelRatio;
-    const h = adsrCanvas.height / window.devicePixelRatio;
-    const pad = { top: 28, right: 16, bottom: 32, left: 36 };
-    const gw = w - pad.left - pad.right;
-    const gh = h - pad.top - pad.bottom;
-    const { attack: a, decay: d, sustain: s, release: r } = state.adsr;
-    const totalTime = a + d + Math.max(s * 2, 0.5) + r;
-    return {
-      attack: Math.max(0.001, ((mx - pad.left) / gw) * totalTime),
-      decay: Math.max(0.01, ((mx - pad.left) / gw) * totalTime - a),
-      sustain: Math.max(0, Math.min(1, 1 - (my - pad.top) / gh)),
-      release: Math.max(0.01, ((mx - pad.left) / gw) * totalTime - a - d - Math.max(s * 2, 0.5))
+      c.stroke();
     };
+    cancelAnimationFrame(scopeRaf);
+    loop();
   }
 
-  function adsrHandleStart(mx, my) {
-    const hitR = 18;
-    for (let i = 1; i <= 4; i++) {
-      const p = adsrEnvPixelPoints[i];
-      if (p && Math.hypot(mx - p.x, my - p.y) < hitR) {
-        adsrDrag = { active: true, pointIndex: i, startX: mx, startY: my, startADSR: { ...state.adsr } };
-        return true;
+  function showTour(i) {
+    tourIndex = i;
+    const step = TOUR[i];
+    const root = document.getElementById('tour');
+    root.hidden = false;
+    root.removeAttribute('hidden');
+    root.classList.remove('hidden');
+    document.body.classList.add('tour-on');
+    document.getElementById('tourStepLabel').textContent = 'Шаг ' + (i + 1) + ' из ' + TOUR.length;
+    document.getElementById('tourTitle').textContent = step.title;
+    document.getElementById('tourBody').textContent = step.body;
+    document.getElementById('tourNext').textContent = i === TOUR.length - 1 ? 'Играть' : 'Далее';
+    const dots = document.getElementById('tourDots');
+    dots.innerHTML = TOUR.map((_, n) => '<span class="' + (n === i ? 'on' : '') + '"></span>').join('');
+    document.querySelectorAll('.mod, #keysBar').forEach((el) => el.classList.remove('spotlight'));
+    if (step.highlight) {
+      const el = document.getElementById(step.highlight);
+      if (el) {
+        el.classList.add('spotlight');
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     }
-    return false;
+    if (typeof lucide !== 'undefined') lucide.createIcons({ attrs: { 'stroke-width': 1.8, width: 18, height: 18 } });
   }
 
-  function adsrHandleMove(mx, my) {
-    if (!adsrDrag.active) return;
-    const dx = mx - adsrDrag.startX;
-    const dy = my - adsrDrag.startY;
-    const w = adsrCanvas.width / window.devicePixelRatio;
-    const h = adsrCanvas.height / window.devicePixelRatio;
-    const pad = { top: 28, right: 16, bottom: 32, left: 36 };
-    const gw = w - pad.left - pad.right;
-    const gh = h - pad.top - pad.bottom;
-    const oldTotal = adsrDrag.startADSR.attack + adsrDrag.startADSR.decay + Math.max(adsrDrag.startADSR.sustain * 2, 0.5) + adsrDrag.startADSR.release;
-    const dt = (dx / gw) * oldTotal;
-    const dv = -(dy / gh);
-    const a0 = adsrDrag.startADSR;
-    let n = { ...a0 };
-    const pi = adsrDrag.pointIndex;
-    if (pi === 1) { n.attack = Math.max(0.001, Math.min(2, a0.attack + dt)); }
-    else if (pi === 2) { n.decay = Math.max(0.01, Math.min(2, a0.decay + dt)); n.sustain = Math.max(0, Math.min(1, a0.sustain + dv)); }
-    else if (pi === 3) { n.sustain = Math.max(0, Math.min(1, a0.sustain + dv)); if (dx > 0) n.sustain = Math.min(1, a0.sustain + dt * 0.01); else if (dx < 0) n.sustain = Math.max(0, a0.sustain + dt * 0.01); }
-    else if (pi === 4) { n.release = Math.max(0.01, Math.min(3, a0.release + dt)); }
-    state.adsr = n;
-    syncADSRSliders();
-    if (synthEngines) synthEngines.setADSR();
+  function closeTour() {
+    const root = document.getElementById('tour');
+    root.hidden = true;
+    root.classList.add('hidden');
+    document.body.classList.remove('tour-on');
+    document.querySelectorAll('.mod, #keysBar').forEach((el) => el.classList.remove('spotlight'));
+    noteOff(48);
+    try { localStorage.setItem('iy-analog-synth-tutorial', '1'); } catch (e) {}
+  }
+
+  function syncFlow(id) {
+    document.querySelectorAll('.flow-step').forEach((s) => {
+      s.classList.toggle('active', s.dataset.goto === id);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('[data-knob]').forEach(createKnob);
+    buildWaves();
+    buildKeyboard();
+    drawFilter();
     drawADSR();
-  }
+    loadPreset('init');
 
-  function adsrHandleEnd() {
-    if (adsrDrag.active) { adsrDrag = { active: false, pointIndex: -1, startX: 0, startY: 0, startADSR: null }; }
-  }
-
-  function adsrGetMousePos(e) {
-    const rect = adsrCanvas.getBoundingClientRect();
-    return { x: e.clientX - rect.left, y: e.clientY - rect.top };
-  }
-
- document.addEventListener('DOMContentLoaded', () => {
-    buildWaveGrid();
-    buildADSRGrid();
-    updateNoteDisplay();
-    updateOctaveDisplay();
-    resizeCanvas();
-    resizeAdsCanvas();
-    drawWave();
-    drawADSR();
-
-    window.addEventListener('resize', () => {
-      resizeCanvas();
-      resizeAdsCanvas();
-      drawWave();
-      drawADSR();
-    });
-
-    adsrCanvas.addEventListener('mousedown', (e) => {
-      const pos = adsrGetMousePos(e);
-      if (adsrHandleStart(pos.x, pos.y)) {
-        e.preventDefault();
-        adsrCanvas.style.cursor = 'grabbing';
-      }
-    });
-
-    adsrCanvas.addEventListener('mousemove', (e) => {
-      const pos = adsrGetMousePos(e);
-      if (adsrDrag.active) {
-        adsrHandleMove(pos.x, pos.y);
-      } else {
-        let over = false;
-        for (let i = 1; i <= 4; i++) {
-          const p = adsrEnvPixelPoints[i];
-          if (p && Math.hypot(pos.x - p.x, pos.y - p.y) < 18) { over = true; break; }
-        }
-        adsrCanvas.style.cursor = over ? 'grab' : 'default';
-      }
-    });
-
-    window.addEventListener('mouseup', () => {
-      adsrHandleEnd();
-      adsrCanvas.style.cursor = 'default';
-    });
-
-    adsrCanvas.addEventListener('touchstart', (e) => {
-      const t = e.touches[0];
-      const pos = adsrGetMousePos(t);
-      if (adsrHandleStart(pos.x, pos.y)) e.preventDefault();
-    }, { passive: false });
-
-    adsrCanvas.addEventListener('touchmove', (e) => {
-      if (adsrDrag.active) {
-        const t = e.touches[0];
-        const pos = adsrGetMousePos(t);
-        adsrHandleMove(pos.x, pos.y);
-        e.preventDefault();
-      }
-    }, { passive: false });
-
-    adsrCanvas.addEventListener('touchend', () => { adsrHandleEnd(); });
-
-    document.getElementById('playBtn').addEventListener('click', async () => {
-      await initAudio();
-      if (!isPlaying) {
-        playNote(state.noteIndex);
-        isPlaying = true;
-        document.getElementById('playBtn').textContent = '⏹ Stop';
-        document.getElementById('playBtn').classList.add('playing');
-      } else {
-        stopNote();
-        isPlaying = false;
-        document.getElementById('playBtn').textContent = '▶ Play';
-        document.getElementById('playBtn').classList.remove('playing');
-      }
+    document.querySelectorAll('.preset-btn').forEach((b) => {
+      b.addEventListener('click', () => loadPreset(b.dataset.preset));
     });
 
     document.getElementById('octDown').addEventListener('click', () => {
-      if (state.octave > 1) {
-        state.octave--;
-        updateOctaveDisplay();
-        updateNoteDisplay();
-        drawWave();
-      }
+      if (state.octave > 1) { state.octave--; document.getElementById('octLabel').textContent = 'Окт. ' + state.octave; buildKeyboard(); }
+    });
+    document.getElementById('octUp').addEventListener('click', () => {
+      if (state.octave < 6) { state.octave++; document.getElementById('octLabel').textContent = 'Окт. ' + state.octave; buildKeyboard(); }
     });
 
-    document.getElementById('octUp').addEventListener('click', () => {
-      if (state.octave < 7) {
-        state.octave++;
-        updateOctaveDisplay();
-        updateNoteDisplay();
-        drawWave();
-      }
+    document.getElementById('signalFlow').addEventListener('click', (e) => {
+      const step = e.target.closest('.flow-step');
+      if (!step) return;
+      const id = step.dataset.goto;
+      syncFlow(id);
+      const el = document.getElementById(id);
+      if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
 
     document.addEventListener('keydown', async (e) => {
-      if (e.target.tagName === 'TEXTAREA') return;
+      if (e.target.closest('input, textarea')) return;
       const key = e.key.toLowerCase();
       if (key === 'z' && !e.repeat) {
-        e.preventDefault();
-        if (state.octave > 1) {
-          state.octave--;
-          updateOctaveDisplay();
-          updateNoteDisplay();
-          drawWave();
-        }
+        if (state.octave > 1) { state.octave--; document.getElementById('octLabel').textContent = 'Окт. ' + state.octave; buildKeyboard(); }
         return;
       }
       if (key === 'x' && !e.repeat) {
-        e.preventDefault();
-        if (state.octave < 7) {
-          state.octave++;
-          updateOctaveDisplay();
-          updateNoteDisplay();
-          drawWave();
-        }
+        if (state.octave < 6) { state.octave++; document.getElementById('octLabel').textContent = 'Окт. ' + state.octave; buildKeyboard(); }
         return;
       }
       if (key in KEY_MAP && !e.repeat) {
         e.preventDefault();
-        await initAudio();
-        playNote(KEY_MAP[key]);
+        const midi = 12 * (state.octave + 1) + KEY_MAP[key];
+        activeKeys.add(key);
+        noteOn(midi);
       }
     });
-
     document.addEventListener('keyup', (e) => {
-      if (e.target.tagName === 'TEXTAREA') return;
       const key = e.key.toLowerCase();
       if (key in KEY_MAP) {
-        e.preventDefault();
-        stopNote(KEY_MAP[key]);
+        const midi = 12 * (state.octave + 1) + KEY_MAP[key];
+        activeKeys.delete(key);
+        noteOff(midi);
       }
     });
 
+    document.getElementById('tourNext').addEventListener('click', async () => {
+      try { await ensureAudio(); } catch (err) { console.warn(err); }
+      if (tourIndex >= TOUR.length - 1) {
+        closeTour();
+        return;
+      }
+      showTour(tourIndex + 1);
+      const hold = TOUR[tourIndex].highlight;
+      if (hold === 'mod-osc' || hold === 'mod-filter' || hold === 'mod-amp') {
+        try { await noteOn(48); } catch (err) { console.warn(err); }
+      } else {
+        noteOff(48);
+      }
+    });
+    document.getElementById('tourSkip').addEventListener('click', closeTour);
+    document.getElementById('tourReplay').addEventListener('click', () => showTour(0));
+
+    let seen = false;
+    try { seen = localStorage.getItem('iy-analog-synth-tutorial') === '1'; } catch (e) {}
+    if (!seen) showTour(0);
+
+    window.addEventListener('resize', () => { drawFilter(); drawADSR(); buildKeyboard(); });
+    if (typeof lucide !== 'undefined') {
+      lucide.createIcons({ attrs: { 'stroke-width': 1.8, width: 18, height: 18 } });
+    }
   });
 })();
 </script>
