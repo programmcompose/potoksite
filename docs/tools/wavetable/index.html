@@ -840,7 +840,9 @@ body.tour-on .chassis:has(.mod.spotlight) { position: relative; z-index: 4; }
   const knobs = {};
   const voices = new Map();
   const voiceAge = [];
-  const activeKeys = new Set();
+  const heldNotes = new Set();
+  const pointerNotes = new Map();
+  const keyMidi = new Map();
   const MAX_VOICES = 8;
 
   let ctx = null;
@@ -1121,11 +1123,24 @@ registerProcessor('moog-ladder', MoogLadderProcessor);
   }
 
   function bindKeyEl(el, midi) {
-    const down = (e) => { e.preventDefault(); noteOn(midi); el.classList.add('pressed'); };
-    const up = () => { noteOff(midi); el.classList.remove('pressed'); };
-    el.addEventListener('pointerdown', down);
+    el.addEventListener('pointerdown', (e) => {
+      if (typeof e.button === 'number' && e.button !== 0) return;
+      e.preventDefault();
+      try { el.setPointerCapture(e.pointerId); } catch (err) {}
+      pointerNotes.set(e.pointerId, midi);
+      noteOn(midi);
+    });
+    const up = (e) => {
+      const id = e && e.pointerId;
+      const held = id != null ? pointerNotes.get(id) : midi;
+      if (id != null) pointerNotes.delete(id);
+      noteOff(held != null ? held : midi);
+      if (e && e.pointerId != null) {
+        try { el.releasePointerCapture(e.pointerId); } catch (err) {}
+      }
+    };
     el.addEventListener('pointerup', up);
-    el.addEventListener('pointerleave', up);
+    el.addEventListener('pointercancel', up);
   }
 
   function keyEl(midi) {
@@ -1382,19 +1397,35 @@ registerProcessor('moog-ladder', MoogLadderProcessor);
   }
 
   async function noteOn(midi) {
-    await ensureAudio();
-    spawnVoice(midi);
-    document.getElementById('ledOsc').classList.add('on');
-    document.getElementById('noteDisplay').textContent = midiName(midi);
+    heldNotes.add(midi);
     const el = keyEl(midi);
     if (el) el.classList.add('pressed');
+    document.getElementById('noteDisplay').textContent = midiName(midi);
+    try {
+      await ensureAudio();
+    } catch (err) {
+      heldNotes.delete(midi);
+      return;
+    }
+    if (!heldNotes.has(midi)) return;
+    spawnVoice(midi);
+    document.getElementById('ledOsc').classList.add('on');
   }
 
   function noteOff(midi) {
+    heldNotes.delete(midi);
     const el = keyEl(midi);
     if (el) el.classList.remove('pressed');
     const voice = voices.get(midi);
     if (voice) releaseVoice(voice);
+  }
+
+  function releaseAllNotes() {
+    pointerNotes.clear();
+    keyMidi.clear();
+    const pending = Array.from(heldNotes);
+    pending.forEach(noteOff);
+    voices.forEach((v) => releaseVoice(v));
   }
 
   function loadPreset(id) {
@@ -1652,7 +1683,7 @@ registerProcessor('moog-ladder', MoogLadderProcessor);
       if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
 
-    document.addEventListener('keydown', async (e) => {
+    document.addEventListener('keydown', (e) => {
       if (e.target.closest('input, textarea')) return;
       const key = e.key.toLowerCase();
       if (key === 'z' && !e.repeat) {
@@ -1663,20 +1694,42 @@ registerProcessor('moog-ladder', MoogLadderProcessor);
         if (state.octave < 6) { state.octave++; document.getElementById('octLabel').textContent = 'Окт. ' + state.octave; buildKeyboard(); }
         return;
       }
-      if (key in KEY_MAP && !e.repeat) {
+      if (key in KEY_MAP && !e.repeat && !keyMidi.has(key)) {
         e.preventDefault();
         const midi = 12 * (state.octave + 1) + KEY_MAP[key];
-        activeKeys.add(key);
+        keyMidi.set(key, midi);
         noteOn(midi);
       }
     });
     document.addEventListener('keyup', (e) => {
       const key = e.key.toLowerCase();
-      if (key in KEY_MAP) {
-        const midi = 12 * (state.octave + 1) + KEY_MAP[key];
-        activeKeys.delete(key);
-        noteOff(midi);
-      }
+      if (!keyMidi.has(key)) return;
+      const midi = keyMidi.get(key);
+      keyMidi.delete(key);
+      noteOff(midi);
+    });
+
+    window.addEventListener('pointerup', (e) => {
+      if (!pointerNotes.has(e.pointerId)) return;
+      const midi = pointerNotes.get(e.pointerId);
+      pointerNotes.delete(e.pointerId);
+      noteOff(midi);
+    });
+    window.addEventListener('pointercancel', (e) => {
+      if (!pointerNotes.has(e.pointerId)) return;
+      const midi = pointerNotes.get(e.pointerId);
+      pointerNotes.delete(e.pointerId);
+      noteOff(midi);
+    });
+    window.addEventListener('lostpointercapture', (e) => {
+      if (!pointerNotes.has(e.pointerId)) return;
+      const midi = pointerNotes.get(e.pointerId);
+      pointerNotes.delete(e.pointerId);
+      noteOff(midi);
+    });
+    window.addEventListener('blur', releaseAllNotes);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) releaseAllNotes();
     });
 
     document.getElementById('tourNext').addEventListener('click', async () => {
