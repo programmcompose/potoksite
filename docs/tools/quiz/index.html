@@ -111,19 +111,33 @@ header p { font-size: 0.95em; color: var(--text-muted); max-width: 520px; margin
 .back-link { display: inline-block; margin-bottom: 16px; color: var(--accent); text-decoration: none; font-size: 0.9em; }
 .back-link:hover { text-decoration: underline; }
 
-/* ---- Stage selector ---- */
-.stage-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
-.stage-btn {
-  display: flex; align-items: center; gap: 10px; width: 100%;
-  padding: 13px 16px; background: var(--bg-card); border: 1px solid var(--bg-card-border);
-  border-radius: var(--radius); color: var(--text); font-family: inherit;
-  font-size: 0.9em; font-weight: 600; cursor: pointer; text-align: left; transition: all 0.2s;
+/* ---- Stage chips (bottom) ---- */
+.stages-footer { margin-top: 28px; }
+.stages-title { font-size: 0.8em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 12px; }
+.stage-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.stage-chip {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 9px 14px; background: var(--bg-card); border: 1px solid var(--bg-card-border);
+  border-radius: 20px; color: var(--text); font-family: inherit;
+  font-size: 0.75em; font-weight: 600; cursor: pointer; transition: all 0.2s;
 }
-.stage-btn:hover:not(:disabled) { border-color: var(--accent); background: rgba(0,188,212,0.08); }
-.stage-btn.active { border-color: var(--orange); box-shadow: 0 0 12px var(--orange-glow); color: var(--orange); }
-.stage-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-.stage-btn .stage-num { font-size: 0.75em; opacity: 0.6; margin-left: auto; white-space: nowrap; }
-.stage-btn .best-score { color: var(--gold); font-weight: 700; }
+.stage-chip:hover:not(:disabled) { border-color: var(--accent); background: rgba(0,188,212,0.08); }
+.stage-chip.active { border-color: var(--orange); color: var(--orange); box-shadow: 0 0 10px var(--orange-glow); }
+.stage-chip:disabled { opacity: 0.4; cursor: not-allowed; }
+.stage-chip .chip-note { font-size: 0.85em; opacity: 0.6; white-space: nowrap; }
+.stage-chip.active .chip-note { opacity: 0.9; }
+.stage-chip .best-score { color: var(--gold); font-weight: 700; }
+
+/* ---- Question visuals (image / audio) ---- */
+.q-visual { margin-bottom: 18px; }
+.q-visual svg {
+  width: 100%; height: auto; display: block; color: var(--text);
+  background: var(--bg-light); border: 1px solid var(--bg-card-border);
+  border-radius: var(--radius); padding: 12px;
+}
+.q-audio { margin-bottom: 18px; }
+.audio-hint { display: block; font-size: 0.75em; color: var(--accent); font-weight: 600; margin-bottom: 8px; }
+.q-audio audio { width: 100%; display: block; }
 
 /* ---- Progress bar ---- */
 .progress-wrap { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
@@ -235,9 +249,6 @@ header p { font-size: 0.95em; color: var(--text-muted); max-width: 520px; margin
     <p>Проверь, насколько хорошо усвоил материал этапа. После каждого ответа — мгновенный разбор: почему правильно или где ошибся.</p>
   </header>
 
-  <!-- Stage selector -->
-  <div class="stage-list" id="stageList"></div>
-
   <!-- START SCREEN -->
   <div class="screen active" id="startScreen">
     <div class="card">
@@ -247,7 +258,7 @@ header p { font-size: 0.95em; color: var(--text-muted); max-width: 520px; margin
       <div class="start-meta">
         <span class="meta-chip" id="metaCount"></span>
         <span class="meta-chip" id="metaBest"></span>
-        <span class="meta-chip">~5–10 минут</span>
+        <span class="meta-chip">≈ 10 минут</span>
       </div>
       <div class="btn-row">
         <button class="btn btn-primary" id="startBtn">Начать тест</button>
@@ -264,6 +275,7 @@ header p { font-size: 0.95em; color: var(--text-muted); max-width: 520px; margin
     <div class="card">
       <div class="q-category" id="qCategory"></div>
       <div class="q-text" id="qText"></div>
+      <div id="qVisual"></div>
       <div class="options" id="qOptions"></div>
       <div class="feedback" id="qFeedback"></div>
       <div class="btn-row">
@@ -291,16 +303,81 @@ header p { font-size: 0.95em; color: var(--text-muted); max-width: 520px; margin
     </div>
   </div>
 
+  <!-- Stage selector (bottom) -->
+  <div class="stages-footer">
+    <h3 class="stages-title">Этапы курса</h3>
+    <div class="stage-chips" id="stageList"></div>
+  </div>
+
   <p class="footer-note">Результаты сохраняются в вашем браузере · Все вопросы основаны на материалах курса «18 ПОТОК»</p>
 </div>
 
 <script>
+/* ============================================================
+   SVG-генераторы для визуальных вопросов
+   ============================================================ */
+function channelRackSVG() {
+  var rows = [
+    { name: "KICK", color: "#ff7043", on: [1, 10] },
+    { name: "SNARE", color: "#00bcd4", on: [5, 13] },
+    { name: "HAT", color: "#ffd740", on: [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16] },
+    { name: "808", color: "#ab47bc", on: [1, 11] }
+  ];
+  var cell = 32, gap = 4, labelW = 64, topPad = 24;
+  var W = labelW + 16 * (cell + gap) - gap;
+  var H = topPad + rows.length * (cell + gap);
+  var s = '<svg viewBox="0 0 ' + W + " " + H + '" xmlns="http://www.w3.org/2000/svg">';
+  for (var i = 1; i <= 16; i++) {
+    var x = labelW + (i - 1) * (cell + gap);
+    s += '<text x="' + (x + cell / 2) + '" y="13" font-size="9" text-anchor="middle" fill="currentColor" opacity="0.45">' + i + "</text>";
+  }
+  rows.forEach(function (r, ri) {
+    var y = topPad + ri * (cell + gap);
+    s += '<text x="2" y="' + (y + cell / 2 + 4) + '" font-size="10" font-weight="700" fill="currentColor">' + r.name + "</text>";
+    for (var i = 1; i <= 16; i++) {
+      var x = labelW + (i - 1) * (cell + gap);
+      var on = r.on.indexOf(i) !== -1;
+      s += '<rect x="' + x + '" y="' + y + '" width="' + cell + '" height="' + cell + '" rx="5" fill="' + (on ? r.color : "currentColor") + '" opacity="' + (on ? 0.95 : 0.1) + '"/>';
+    }
+  });
+  return s + "</svg>";
+}
+
+function wavePath(gen, W, mid, amp) {
+  var d = "";
+  for (var x = 0; x <= W; x += 2) {
+    var t = x / W;
+    var y = mid + gen(t) * amp;
+    d += (x === 0 ? "M" : " L") + x + " " + y.toFixed(1);
+  }
+  return d;
+}
+
+function waveformsSVG() {
+  var panels = [
+    { label: "A", color: "#ff7043", gen: function (t) { return Math.sin(t * Math.PI * 5) * Math.exp(-t * 2.0); } },
+    { label: "B", color: "#00bcd4", gen: function (t) { var env = t < 0.04 ? t / 0.04 : Math.exp(-(t - 0.04) * 5.5); return (Math.sin(t * Math.PI * 26) * 0.55 + Math.sin(t * 871) * 0.45) * env; } },
+    { label: "C", color: "#ffd740", gen: function (t) { var env = t < 0.09 ? 1 - t / 0.09 : 0; return Math.sin(t * Math.PI * 260) * env; } }
+  ];
+  var W = 560, H = 74, labelW = 44, gapY = 14;
+  var totalH = panels.length * H + (panels.length - 1) * gapY;
+  var s = '<svg viewBox="0 0 ' + (labelW + W) + " " + totalH + '" xmlns="http://www.w3.org/2000/svg">';
+  panels.forEach(function (p, i) {
+    var y0 = i * (H + gapY);
+    s += '<rect x="0" y="' + y0 + '" width="' + (labelW + W) + '" height="' + H + '" rx="10" fill="currentColor" opacity="0.06"/>';
+    s += '<text x="' + (labelW / 2) + '" y="' + (y0 + H / 2 + 8) + '" font-size="20" font-weight="900" text-anchor="middle" fill="currentColor">' + p.label + "</text>";
+    s += '<path d="' + wavePath(p.gen, W, y0 + H / 2, H / 2 - 8) + '" transform="translate(' + labelW + ',0)" stroke="' + p.color + '" stroke-width="1.6" fill="none"/>';
+  });
+  return s + "</svg>";
+}
+
 /* ============================================================
    DATA — этапы и вопросы
    ============================================================ */
 var STAGES = [
   {
     id: "etap1",
+    short: "№1 · Первые биты",
     title: "Этап №1: Первые Биты",
     desc: "Сэмплы, драмка, микшер, мелодия, бас, мастер-канал и рендер — всё, что вы прошли в первом этапе курса.",
     questions: [
@@ -578,18 +655,77 @@ var STAGES = [
         ],
         correct: 1,
         comment: "WAV 24-bit — архив и дальнейшая обработка. MP3 320 kbps — хороший вариант для обмена. Перед рендером проверяем: мастер не клиппит, кик и бас слышны на низкой громкости."
+      },
+      {
+        cat: "Аудио",
+        q: "Послушай луп. Какой у него темп?",
+        audio: "../../assets/audio/drum-loop-trap-140.ogg",
+        options: [
+          "~90 BPM (классический хип-хоп)",
+          "~128 BPM (хаус)",
+          "~140 BPM (трэп)"
+        ],
+        correct: 2,
+        comment: "Это трэп-луп на ~140 BPM. Хаус жил бы на 128, классический хип-хоп — на 80–100. Темп можно определить в Edison (FL Studio) или автоматически при импорте (Ableton)."
+      },
+      {
+        cat: "Аудио",
+        q: "Послушай аккорд. Он в мажоре или миноре?",
+        audio: "../../assets/audio/chord-c-minor.ogg",
+        options: [
+          "Мажор — звучит ярко и радостно",
+          "Минор — звучит мрачно и напряжённо"
+        ],
+        correct: 1,
+        comment: "Это C минор (C–Eb–G): тёмный, напряжённый цвет. Именно поэтому в хип-хопе и трэпе чаще используется минор — он создаёт нужное настроение."
+      },
+      {
+        cat: "Аудио",
+        q: "Какой интервал ты слышишь?",
+        audio: "../../assets/audio/interval-perfect-5th.ogg",
+        options: [
+          "Большая терция",
+          "Чистая квинта",
+          "Октава"
+        ],
+        correct: 1,
+        comment: "Это чистая квинта (например, C–G). Интервалы — база для баса и мелодии: корень + квинта звучат мощно и «по-басовому»."
+      },
+      {
+        cat: "Визуал",
+        q: "Перед тобой паттерн в Channel Rack (16 шагов). На каких шагах бьёт снейр?",
+        image: channelRackSVG(),
+        options: [
+          "Шаги 1 и 9",
+          "Шаги 5 и 13",
+          "Все нечётные шаги"
+        ],
+        correct: 1,
+        comment: "Снейр — на 2-м и 4-м счёте такта. На сетке из 16 шагов (счёт с 1) это шаги 5 и 13. Кик здесь — на 1 и 10, хэты заполняют все шаги."
+      },
+      {
+        cat: "Визуал",
+        q: "Какая осциллограмма — снейр?",
+        image: waveformsSVG(),
+        options: [
+          "A — плавная длинная синусоида",
+          "B — резкая атака со средним затуханием",
+          "C — короткий шумовой всплеск"
+        ],
+        correct: 1,
+        comment: "Снейр (B): резкая атака и среднее затухание. A — кик (гладкий длинный низ), C — хэт (короткий шумовой всплеск, который быстро обрывается)."
       }
     ]
   },
-  { id: "etap0", title: "Этап №0: Подготовка к продакшну", soon: true },
-  { id: "etap2", title: "Этап №2: Сведение и VST Плагины", soon: true },
-  { id: "etap3", title: "Этап №3: Усложненные биты", soon: true },
-  { id: "etap4", title: "Этап №4: Теория музыки и Аккорды", soon: true },
-  { id: "etap5", title: "Этап №5: EDM и Саунд-дизайн", soon: true },
-  { id: "etap6", title: "Этап №6: Живая Музыка", soon: true },
-  { id: "etap7", title: "Этап №7: Сведение Вокала", soon: true },
-  { id: "etap8", title: "Этап №8: Саундтреки и Эмбиент", soon: true },
-  { id: "etap9", title: "Этап №9: Продвижение и Заработок", soon: true }
+  { id: "etap0", short: "№0 · Подготовка", title: "Этап №0: Подготовка к продакшну", soon: true },
+  { id: "etap2", short: "№2 · Сведение и VST", title: "Этап №2: Сведение и VST Плагины", soon: true },
+  { id: "etap3", short: "№3 · Усложненные биты", title: "Этап №3: Усложненные биты", soon: true },
+  { id: "etap4", short: "№4 · Теория и аккорды", title: "Этап №4: Теория музыки и Аккорды", soon: true },
+  { id: "etap5", short: "№5 · EDM и саунд-дизайн", title: "Этап №5: EDM и Саунд-дизайн", soon: true },
+  { id: "etap6", short: "№6 · Живая музыка", title: "Этап №6: Живая Музыка", soon: true },
+  { id: "etap7", short: "№7 · Вокал", title: "Этап №7: Сведение Вокала", soon: true },
+  { id: "etap8", short: "№8 · Саундтреки", title: "Этап №8: Саундтреки и Эмбиент", soon: true },
+  { id: "etap9", short: "№9 · Продвижение", title: "Этап №9: Продвижение и Заработок", soon: true }
 ];
 
 var SITE_URL = "https://programmcompose.github.io/potoksite/tools/quiz/index.html";
@@ -623,20 +759,20 @@ function renderStages() {
   var list = document.getElementById("stageList");
   list.innerHTML = "";
   STAGES.forEach(function (st) {
-    var btn = document.createElement("button");
-    btn.className = "stage-btn" + (state.stageId === st.id ? " active" : "");
+    var chip = document.createElement("button");
+    chip.className = "stage-chip" + (state.stageId === st.id ? " active" : "");
     if (st.soon) {
-      btn.disabled = true;
-      btn.innerHTML = "<span>" + st.title + "</span><span class='stage-num'>скоро</span>";
+      chip.disabled = true;
+      chip.innerHTML = "<span>" + st.short + "</span><span class='chip-note'>скоро</span>";
     } else {
       var best = getBest(st.id);
-      var bestHtml = best ? " · <span class='best-score'>" + best.score + "/" + best.total + "</span>" : "";
-      btn.innerHTML = "<span>🎯 " + st.title + "</span><span class='stage-num'>" + st.questions.length + " вопросов" + bestHtml + "</span>";
+      var note = st.questions.length + " вопр." + (best ? " · <b class='best-score'>" + best.score + "/" + best.total + "</b>" : "");
+      chip.innerHTML = "<span>🎯 " + st.short + "</span><span class='chip-note'>" + note + "</span>";
     }
     if (!st.soon) {
-      btn.addEventListener("click", function () { selectStage(st.id); });
+      chip.addEventListener("click", function () { selectStage(st.id); });
     }
-    list.appendChild(btn);
+    list.appendChild(chip);
   });
 }
 
@@ -657,6 +793,14 @@ function renderQuestion() {
   var q = st.questions[state.idx];
   document.getElementById("qCategory").textContent = q.cat + " · Вопрос " + (state.idx + 1) + " из " + st.questions.length;
   document.getElementById("qText").textContent = q.q;
+
+  var visual = "";
+  if (q.image) visual += '<div class="q-visual">' + q.image + "</div>";
+  if (q.audio) {
+    visual += '<div class="q-audio"><span class="audio-hint">🎧 Внимательно послушай сэмпл перед ответом</span>'
+      + '<audio controls preload="none" src="' + q.audio + '"></audio></div>';
+  }
+  document.getElementById("qVisual").innerHTML = visual;
 
   var box = document.getElementById("qOptions");
   box.innerHTML = "";
