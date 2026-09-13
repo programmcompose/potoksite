@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тесты по курсу — 18 ПОТОК</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700;900&display=swap');
+
+/* === Dark theme (slate) — default === */
+:root,
+[data-theme="dark"] {
+  --bg: #0B1220;
+  --bg-light: #2e2e2e;
+  --bg-lighter: #363636;
+  --bg-card: #363636;
+  --bg-card-border: #404040;
+  --text: #FDFBDF;
+  --text-muted: rgba(253, 251, 223, 0.6);
+  --accent: #00bcd4;
+  --purple: #ab47bc;
+  --orange: #ff7043;
+  --green: #66bb6a;
+  --red: #ef5350;
+  --gold: #ffd740;
+  --orange-glow: rgba(255, 140, 0, 0.15);
+  --orange-border: rgba(255, 140, 0, 0.12);
+  --gradient-top: #0a0f1a;
+  --gradient-mid: #0B1220;
+  --gradient-bottom: #0c1222;
+  --header-bg: radial-gradient(ellipse at center, rgba(255, 140, 0, 0.06) 0%, transparent 70%);
+  --shadow: 0 4px 16px rgba(0,0,0,0.4);
+  --toggle-bg: #303030;
+  --toggle-hover: #3e3e3e;
+  --correct-bg: rgba(102, 187, 106, 0.12);
+  --wrong-bg: rgba(239, 83, 80, 0.12);
+}
+
+/* === Light theme === */
+[data-theme="light"] {
+  --bg: #FDFBDF;
+  --bg-light: #f5f2d0;
+  --bg-lighter: #efeacd;
+  --bg-card: #f5f2d0;
+  --bg-card-border: #efeacd;
+  --text: #282828;
+  --text-muted: rgba(40, 40, 40, 0.6);
+  --accent: #00bcd4;
+  --purple: #ab47bc;
+  --orange: #e65100;
+  --green: #2e7d32;
+  --red: #c62828;
+  --gold: #b8860b;
+  --orange-glow: rgba(230, 81, 0, 0.1);
+  --orange-border: rgba(230, 81, 0, 0.15);
+  --gradient-top: #f5e6b0;
+  --gradient-mid: #FDFBDF;
+  --gradient-bottom: #f0e8a8;
+  --header-bg: radial-gradient(ellipse at center, rgba(230, 81, 0, 0.06) 0%, transparent 70%);
+  --shadow: 0 4px 16px rgba(0,0,0,0.1);
+  --toggle-bg: #e8e5c8;
+  --toggle-hover: #ddd9b8;
+  --correct-bg: rgba(46, 125, 50, 0.10);
+  --wrong-bg: rgba(198, 40, 40, 0.08);
+}
+
+:root { --radius: 12px; }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Unbounded', sans-serif;
+  background:
+    radial-gradient(ellipse at 50% 0%, var(--orange-glow) 0%, transparent 60%),
+    linear-gradient(170deg, var(--gradient-top) 0%, var(--gradient-mid) 40%, var(--gradient-bottom) 100%);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 24px 16px;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.container { max-width: 760px; margin: 0 auto; }
+
+/* Theme toggle */
+.theme-toggle {
+  position: fixed; top: 16px; right: 16px; z-index: 100;
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid var(--bg-card-border);
+  background: var(--toggle-bg); color: var(--text);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; box-shadow: var(--shadow);
+}
+.theme-toggle:hover { background: var(--toggle-hover); transform: scale(1.05); }
+.theme-toggle svg { width: 20px; height: 20px; fill: currentColor; }
+.icon-sun, [data-theme="light"] .icon-moon { display: none; }
+[data-theme="light"] .icon-sun { display: block; }
+
+header {
+  text-align: center; margin-bottom: 28px; padding: 24px 16px;
+  border-radius: var(--radius); background: var(--header-bg);
+  border: 1px solid var(--orange-border); transition: all 0.3s ease;
+}
+header h1 {
+  font-size: 1.9em; font-weight: 900; margin-bottom: 8px;
+  background: linear-gradient(135deg, #FFB300, #FF7043);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+header p { font-size: 0.95em; color: var(--text-muted); max-width: 520px; margin: 0 auto; line-height: 1.5; }
+
+.back-link { display: inline-block; margin-bottom: 16px; color: var(--accent); text-decoration: none; font-size: 0.9em; }
+.back-link:hover { text-decoration: underline; }
+
+/* ---- Stage selector ---- */
+.stage-list { display: flex; flex-direction: column; gap: 8px; margin-bottom: 24px; }
+.stage-btn {
+  display: flex; align-items: center; gap: 10px; width: 100%;
+  padding: 13px 16px; background: var(--bg-card); border: 1px solid var(--bg-card-border);
+  border-radius: var(--radius); color: var(--text); font-family: inherit;
+  font-size: 0.9em; font-weight: 600; cursor: pointer; text-align: left; transition: all 0.2s;
+}
+.stage-btn:hover:not(:disabled) { border-color: var(--accent); background: rgba(0,188,212,0.08); }
+.stage-btn.active { border-color: var(--orange); box-shadow: 0 0 12px var(--orange-glow); color: var(--orange); }
+.stage-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.stage-btn .stage-num { font-size: 0.75em; opacity: 0.6; margin-left: auto; white-space: nowrap; }
+.stage-btn .best-score { color: var(--gold); font-weight: 700; }
+
+/* ---- Progress bar ---- */
+.progress-wrap { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; }
+.progress-bar { flex: 1; height: 8px; background: var(--bg-light); border-radius: 4px; overflow: hidden; }
+.progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #FFB300, #FF7043); transition: width 0.3s ease; }
+.progress-label { font-size: 0.8em; color: var(--text-muted); white-space: nowrap; }
+
+/* ---- Question card ---- */
+.card {
+  background: var(--bg-card); border-radius: var(--radius); padding: 24px;
+  box-shadow: var(--shadow); border: 1px solid var(--bg-card-border); margin-bottom: 16px;
+}
+.q-category { font-size: 0.7em; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); font-weight: 700; margin-bottom: 10px; }
+.q-text { font-size: 1.05em; font-weight: 700; line-height: 1.45; margin-bottom: 20px; }
+
+.options { display: flex; flex-direction: column; gap: 10px; }
+.option-btn {
+  display: flex; align-items: center; gap: 12px; width: 100%;
+  padding: 14px 16px; background: var(--bg-light); border: 1px solid var(--bg-card-border);
+  border-radius: var(--radius); color: var(--text); font-family: inherit;
+  font-size: 0.9em; line-height: 1.4; cursor: pointer; text-align: left; transition: all 0.15s;
+}
+.option-btn:hover:not(:disabled) { border-color: var(--accent); background: rgba(0,188,212,0.08); }
+.option-btn .opt-letter {
+  flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--bg-lighter); font-size: 0.8em; font-weight: 700;
+}
+.option-btn.correct { border-color: var(--green); background: var(--correct-bg); }
+.option-btn.correct .opt-letter { background: var(--green); color: #fff; }
+.option-btn.wrong { border-color: var(--red); background: var(--wrong-bg); }
+.option-btn.wrong .opt-letter { background: var(--red); color: #fff; }
+.option-btn:disabled { cursor: default; opacity: 0.85; }
+.option-btn.correct:disabled, .option-btn.wrong:disabled { opacity: 1; }
+
+/* ---- Feedback ---- */
+.feedback { margin-top: 16px; padding: 14px 16px; border-radius: var(--radius); font-size: 0.85em; line-height: 1.55; display: none; }
+.feedback.show { display: block; animation: fadeIn 0.25s ease; }
+.feedback.ok { background: var(--correct-bg); border: 1px solid var(--green); }
+.feedback.bad { background: var(--wrong-bg); border: 1px solid var(--red); }
+.feedback .fb-title { font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+.feedback.ok .fb-title { color: var(--green); }
+.feedback.bad .fb-title { color: var(--red); }
+
+@keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+/* ---- Buttons row ---- */
+.btn-row { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
+.btn {
+  padding: 13px 24px; border-radius: var(--radius); font-family: inherit;
+  font-size: 0.9em; font-weight: 700; cursor: pointer; transition: all 0.2s;
+  border: 1px solid transparent; display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-primary { background: linear-gradient(135deg, #FFB300, #FF7043); color: #1a1206; }
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 6px 18px var(--orange-glow); }
+.btn-ghost { background: transparent; border-color: var(--bg-card-border); color: var(--text); }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+.btn-tg { background: #229ED9; color: #fff; text-decoration: none; }
+.btn-tg:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(34,158,217,0.3); }
+
+/* ---- Start / result screens ---- */
+.screen { display: none; }
+.screen.active { display: block; animation: fadeIn 0.3s ease; }
+
+.start-icon { font-size: 3em; margin-bottom: 16px; text-align: center; }
+.start-desc { color: var(--text-muted); line-height: 1.6; font-size: 0.9em; margin-bottom: 20px; }
+.start-meta { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; }
+.meta-chip { background: var(--bg-light); border: 1px solid var(--bg-card-border); border-radius: 20px; padding: 6px 14px; font-size: 0.75em; color: var(--text-muted); }
+
+.score-circle {
+  width: 130px; height: 130px; margin: 0 auto 20px; border-radius: 50%;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: conic-gradient(var(--ring-color, #FF7043) calc(var(--pct, 0) * 1%), var(--bg-light) 0);
+}
+.score-inner {
+  width: 106px; height: 106px; border-radius: 50%; background: var(--bg-card);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+}
+.score-num { font-size: 1.7em; font-weight: 900; }
+.score-sub { font-size: 0.65em; color: var(--text-muted); }
+
+.result-title { text-align: center; font-size: 1.3em; font-weight: 900; margin-bottom: 6px; }
+.result-sub { text-align: center; color: var(--text-muted); font-size: 0.85em; margin-bottom: 24px; line-height: 1.5; }
+
+.mistakes-title { font-size: 0.95em; font-weight: 700; margin: 24px 0 12px; color: var(--red); display: flex; align-items: center; gap: 8px; }
+.mistake-item { background: var(--bg-light); border: 1px solid var(--bg-card-border); border-left: 3px solid var(--red); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 10px; font-size: 0.82em; line-height: 1.5; }
+.mistake-item .m-q { font-weight: 700; margin-bottom: 6px; }
+.mistake-item .m-a { color: var(--green); margin-bottom: 4px; }
+.mistake-item .m-c { color: var(--text-muted); }
+
+.footer-note { text-align: center; margin-top: 28px; font-size: 0.75em; color: var(--text-muted); line-height: 1.6; }
+
+@media (max-width: 600px) {
+  header h1 { font-size: 1.4em; }
+  .card { padding: 18px; }
+}
+</style>
+</head>
+<body>
+<button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
+  <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2"/><line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"/><line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2"/><line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2"/><line x1="4.22" y1="19.78" x2="5.64" y2="19.78" stroke="currentColor" stroke-width="2"/></svg>
+</button>
+
+<div class="container">
+  <a href="../index.html" class="back-link">← К интерактивным инструментам</a>
+  <header>
+    <h1>Тесты по курсу</h1>
+    <p>Проверь, насколько хорошо усвоил материал этапа. После каждого ответа — мгновенный разбор: почему правильно или где ошибся.</p>
+  </header>
+
+  <!-- Stage selector -->
+  <div class="stage-list" id="stageList"></div>
+
+  <!-- START SCREEN -->
+  <div class="screen active" id="startScreen">
+    <div class="card">
+      <div class="start-icon">🎯</div>
+      <h2 style="font-size:1.2em; font-weight:900; margin-bottom:12px;" id="startTitle"></h2>
+      <p class="start-desc" id="startDesc"></p>
+      <div class="start-meta">
+        <span class="meta-chip" id="metaCount"></span>
+        <span class="meta-chip" id="metaBest"></span>
+        <span class="meta-chip">~5–10 минут</span>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="startBtn">Начать тест</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div class="screen" id="quizScreen">
+    <div class="progress-wrap">
+      <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+      <span class="progress-label" id="progressLabel"></span>
+    </div>
+    <div class="card">
+      <div class="q-category" id="qCategory"></div>
+      <div class="q-text" id="qText"></div>
+      <div class="options" id="qOptions"></div>
+      <div class="feedback" id="qFeedback"></div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="nextBtn" style="display:none;">Далее →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div class="screen" id="resultScreen">
+    <div class="card">
+      <div class="score-circle" id="scoreCircle">
+        <div class="score-inner">
+          <span class="score-num" id="scoreNum"></span>
+          <span class="score-sub" id="scoreSub"></span>
+        </div>
+      </div>
+      <h2 class="result-title" id="resultTitle"></h2>
+      <p class="result-sub" id="resultSub"></p>
+      <div id="mistakesBlock"></div>
+      <div class="btn-row" style="justify-content:center;">
+        <button class="btn btn-primary" id="retryBtn">Пройти ещё раз</button>
+        <a class="btn btn-tg" id="shareTg" target="_blank" rel="noopener">Поделиться в Telegram</a>
+      </div>
+    </div>
+  </div>
+
+  <p class="footer-note">Результаты сохраняются в вашем браузере · Все вопросы основаны на материалах курса «18 ПОТОК»</p>
+</div>
+
+<script>
+/* ============================================================
+   DATA — этапы и вопросы
+   ============================================================ */
+var STAGES = [
+  {
+    id: "etap1",
+    title: "Этап №1: Первые Биты",
+    desc: "Сэмплы, драмка, микшер, мелодия, бас, мастер-канал и рендер — всё, что вы прошли в первом этапе курса.",
+    questions: [
+      {
+        cat: "Сэмплы",
+        q: "Что такое сэмпл?",
+        options: [
+          "Короткий фрагмент аудиозаписи, который используется как строительный блок для создания музыки",
+          "Вид синтезатора в DAW",
+          "Плагин для обработки звука"
+        ],
+        correct: 0,
+        comment: "Сэмпл — это любой короткий аудиофрагмент (удар, фраза, вокал), из которого собирают музыку. Он не является ни инструментом, ни плагином."
+      },
+      {
+        cat: "Сэмплы",
+        q: "Что такое ударка (драмка)?",
+        options: [
+          "Мелодия, сыгранная на барабанах",
+          "Ритмический фундамент трека из барабанных звуков без мелодии",
+          "Любой звук, взятый с чужого трека"
+        ],
+        correct: 1,
+        comment: "Драмка — это кик + снейр/клэп + хэты. Ритмический фундамент: без правильной драмки бит не будет «бить»."
+      },
+      {
+        cat: "Сэмплы",
+        q: "Что такое сэмпл-пак?",
+        options: [
+          "Набор сэмплов, объединённых по стилю, настроению или жанру",
+          "Драм-машина Roland TR-808",
+          "Формат сохранения аудиофайлов"
+        ],
+        correct: 0,
+        comment: "Пак — коллекция совместимых сэмплов (Splice, Cymatics и т.д.). Выбор правильного пака — половина успеха."
+      },
+      {
+        cat: "Драмка",
+        q: "Какие два звука самые важные в бите?",
+        options: [
+          "Хэт и перкуссия",
+          "Кик и снейр",
+          "Бас и мелодия"
+        ],
+        correct: 1,
+        comment: "Кик и снейр — каркас ритма. Если они звучат хорошо, бит уже на 70% готов."
+      },
+      {
+        cat: "Драмка",
+        q: "На какие доли такта обычно приходится снейр?",
+        options: [
+          "На 1-ю и 3-ю",
+          "На 2-ю и 4-ю",
+          "На все восьмые"
+        ],
+        correct: 1,
+        comment: "Снейр — акцентный удар на 2-м и 4-м счёте. Это стандарт построения драмки."
+      },
+      {
+        cat: "Драмка",
+        q: "Какова роль хэтов (hi-hat) в бите?",
+        options: [
+          "Задают тональность трека",
+          "Заполняют пространство между киком и снейром, создавая движение и энергию",
+          "Заменяют бас"
+        ],
+        correct: 1,
+        comment: "Хэты живут в верхнем диапазоне (2000–20000 Гц) и создают движение. Тональность они не задают — это задача мелодии и баса."
+      },
+      {
+        cat: "Драмка",
+        q: "В каком частотном диапазоне «живёт» кик?",
+        options: [
+          "Низ (20–200 Гц)",
+          "Середина (200–2000 Гц)",
+          "Верх (2000–20000 Гц)"
+        ],
+        correct: 0,
+        comment: "Кик — самый низкочастотный элемент бита. Снейр живёт в середине, хэты — наверху. Если звуки живут на одних частотах — они конфликтуют."
+      },
+      {
+        cat: "Драмка",
+        q: "Что такое Channel Rack в FL Studio?",
+        options: [
+          "Окно, где размещают звуки и программируют паттерны на шаг-секвенсоре",
+          "Мастеринговый плагин",
+          "Панель настройки аудиоинтерфейса"
+        ],
+        correct: 0,
+        comment: "Channel Rack — рабочее окно FL Studio: каждый канал = отдельный звук (кик, снейр, хэт), удары расставляются по сетке."
+      },
+      {
+        cat: "Драмка",
+        q: "Что такое «кач» (groove)?",
+        options: [
+          "Громкость бита",
+          "Ощущение движения, заставляющее хотеть двигаться под музыку; создаётся таймингом и свингом ударов",
+          "Скорость воспроизведения проекта"
+        ],
+        correct: 1,
+        comment: "Кач рождается не только расстановкой ударов, но и их таймингом: сдвиг на миллисекунды от сетки (swing) добавляет живости."
+      },
+      {
+        cat: "Подбор сэмплов",
+        q: "Почему рекомендуется брать сэмплы из одного пака?",
+        options: [
+          "Так дешевле",
+          "Они записаны в едином стиле и хорошо сочетаются между собой",
+          "DAW не позволяет смешивать разные паки"
+        ],
+        correct: 1,
+        comment: "Сэмплы из одного пака — единый тембр и стилистика. Плюс правило «один жанр»: если делаешь трэп — используй трэп-сэмплы."
+      },
+      {
+        cat: "Структура",
+        q: "В структуре бита «пирамиды» что является фундаментом?",
+        options: [
+          "Мелодия и вокал",
+          "Бас и кик",
+          "Перкуссия и FX"
+        ],
+        correct: 1,
+        comment: "Пирамида снизу вверх: фундамент — бас и кик; середина — снейр, хэты, перкуссия; верхушка — мелодия, вокал, эффекты."
+      },
+      {
+        cat: "Структура",
+        q: "«Лестница» в структуре трека — это когда…",
+        options: [
+          "Все элементы звучат с первой секунды",
+          "Каждый элемент добавляется постепенно: интро → куплет → припев → бридж → аутро",
+          "Темп постоянно растёт"
+        ],
+        correct: 1,
+        comment: "Не перегружайте бит с первых секунд — давайте слушателю привыкнуть к каждому элементу по отдельности."
+      },
+      {
+        cat: "Микшер",
+        q: "Зачем нужен микшер?",
+        options: [
+          "Для записи вокала",
+          "Для суммирования дорожек и контроля громкости, панорамы и эффектов каждого звука",
+          "Для определения BPM сэмпла"
+        ],
+        correct: 1,
+        comment: "Микшер — место, где каждый звук (кик, снейр, бас…) получает свою громкость, панораму и обработку до попадания на мастер."
+      },
+      {
+        cat: "Мелодия",
+        q: "Где искать мелодические сэмплы?",
+        options: [
+          "Только в платных сэмпл-паках",
+          "Только на YouTube",
+          "В паках, на YouTube и срезая фрагменты с треков (сэмплирование)"
+        ],
+        correct: 2,
+        comment: "Все три источника работают. Важно: для коммерческого использования чужих треков нужна лицензия."
+      },
+      {
+        cat: "Мелодия",
+        q: "Как определить BPM сэмпла в FL Studio?",
+        options: [
+          "Слушаем на ухо и угадываем",
+          "Перетаскиваем файл, открываем Edison (Ctrl+M) и используем Detect tempo",
+          "Открываем Piano Roll"
+        ],
+        correct: 1,
+        comment: "В FL Studio: файл в плейлист → Ctrl+M (Edison) → Detect tempo. В Ableton BPM определяется автоматически при импорте."
+      },
+      {
+        cat: "Мелодия",
+        q: "Что даёт стретч / Warp сэмпла?",
+        options: [
+          "Усиливает басовый спектр",
+          "Позволяет менять скорость/темп воспроизведения сэмпла под темп проекта",
+          "Автоматически настраивает эквалайзер"
+        ],
+        correct: 1,
+        comment: "Warp (FL) / Warp-маркеры (Ableton, Ctrl+J) — растягивают сэмпл по времени. Чрезмерное растяжение даёт артефакты — лучше подобрать другой сэмпл."
+      },
+      {
+        cat: "Бас",
+        q: "Что такое 808 бас?",
+        options: [
+          "Длинный низкочастотный бас из драм-машины Roland TR-808, основа трэпа и хип-хопа",
+          "Гитарный бас с дисторшном",
+          "Синтезаторный лид для EDM"
+        ],
+        correct: 0,
+        comment: "808 — длинный, низкий, с характерным искажением. Именно он задаёт «тяжесть» трэпа и хип-хопа."
+      },
+      {
+        cat: "Бас",
+        q: "Как устроен риз-бас (Reese bass)?",
+        options: [
+          "Один чистый синус на низкой частоте",
+          "Два синтезаторных осциллятора, слегка расстроенных друг относительно друга — глубокий «дрожащий» бас",
+          "Запись реального контрабаса"
+        ],
+        correct: 1,
+        comment: "Расстройка двух осцилляторов создаёт характерное дрожание. Популярен в дарк-трэпе и дрилле."
+      },
+      {
+        cat: "Бас",
+        q: "Зачем нужен SPAN (FL Studio)?",
+        options: [
+          "Для сведения вокала",
+          "Для определения нот и тональности, содержащихся в аудио-сэмпле; умеет Convert to MIDI",
+          "Для рендера проекта"
+        ],
+        correct: 1,
+        comment: "SPAN показывает, какие ноты есть в сэмпле → вы узнаёте тональность мелодии и пишете бас в тон. Convert to MIDI превращает аудио в MIDI-клип."
+      },
+      {
+        cat: "Бас",
+        q: "Как должна подбираться корневая нота баса?",
+        options: [
+          "Случайно — как звучит лучше",
+          "По тональности мелодии: если мелодия в Cm, бас начинается с ноты C",
+          "Всегда на октаву выше мелодии"
+        ],
+        correct: 1,
+        comment: "Бас должен быть в той же тональности, что и мелодия. «Бас не в тон» — самая частая ошибка написания баса."
+      },
+      {
+        cat: "Бас",
+        q: "Зачем включать Cut Self для 808-баса в FL Studio?",
+        options: [
+          "Чтобы бас звучал громче",
+          "Функция автоматически обрезает предыдущую ноту при начале новой — без наложения и грязи",
+          "Чтобы удалить все лишние дорожки"
+        ],
+        correct: 1,
+        comment: "Без Cut Self длинные 808-ноты наслаиваются друг на друга и мутят низ. Cut Self обрезает старую ноту в момент старта новой."
+      },
+      {
+        cat: "Бас",
+        q: "«Я не слышу бас» — самая частая причина?",
+        options: [
+          "Бас написан не в тон",
+          "Обычные наушники и колонки физически не воспроизводят частоты ниже 40–50 Гц — проверяй на больших системах",
+          "Нужно поднять громкость мастера"
+        ],
+        correct: 1,
+        comment: "Маленькие динамики просто не способны отработать суб-низ. Проверяйте бас на наушниках с сабвуфером или в машине."
+      },
+      {
+        cat: "Мастер",
+        q: "Что такое мастер-канал?",
+        options: [
+          "Первая дорожка проекта",
+          "Финальная шина, на которую сводятся все дорожки; всё, что вы слышите, проходит через него",
+          "Плагин для мастеринга"
+        ],
+        correct: 1,
+        comment: "Кик + снейр + хэты + бас + мелодия → мастер → наушники/колонки. Главный принцип на этапе микша: не перегружать мастер (лимитер — да, агрессивная обработка — нет)."
+      },
+      {
+        cat: "Мастер",
+        q: "Какой целевой пик мастер-канала держать при микшировании?",
+        options: [
+          "0 dBFS — максимально громко",
+          "-3…-1 dB (headroom), без клиппинга",
+          "-40 dB, чтобы ничего не слышно было"
+        ],
+        correct: 1,
+        comment: "Оставляем headroom -3…-1 dB. Если мастер уходит в красную — уменьшайте громкость отдельных дорожек, а не мастер целиком."
+      },
+      {
+        cat: "Рендер",
+        q: "В каком формате рендерить финальную версию трека?",
+        options: [
+          "MP3 128 kbps — быстрее",
+          "WAV 24-bit; MP3 только для обмена и презентации",
+          "OGG — самый качественный"
+        ],
+        correct: 1,
+        comment: "WAV 24-bit — архив и дальнейшая обработка. MP3 320 kbps — хороший вариант для обмена. Перед рендером проверяем: мастер не клиппит, кик и бас слышны на низкой громкости."
+      }
+    ]
+  },
+  { id: "etap0", title: "Этап №0: Подготовка к продакшну", soon: true },
+  { id: "etap2", title: "Этап №2: Сведение и VST Плагины", soon: true },
+  { id: "etap3", title: "Этап №3: Усложненные биты", soon: true },
+  { id: "etap4", title: "Этап №4: Теория музыки и Аккорды", soon: true },
+  { id: "etap5", title: "Этап №5: EDM и Саунд-дизайн", soon: true },
+  { id: "etap6", title: "Этап №6: Живая Музыка", soon: true },
+  { id: "etap7", title: "Этап №7: Сведение Вокала", soon: true },
+  { id: "etap8", title: "Этап №8: Саундтреки и Эмбиент", soon: true },
+  { id: "etap9", title: "Этап №9: Продвижение и Заработок", soon: true }
+];
+
+var SITE_URL = "https://programmcompose.github.io/potoksite/tools/quiz/index.html";
+var LETTERS = ["A", "B", "C", "D"];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+var state = { stageId: null, idx: 0, answers: [] };
+
+function bestKey(id) { return "potok-quiz-best-" + id; }
+function getBest(id) {
+  try { var v = localStorage.getItem(bestKey(id)); return v ? JSON.parse(v) : null; } catch (e) { return null; }
+}
+function setBest(id, score, total) {
+  var prev = getBest(id);
+  if (!prev || score > prev.score) {
+    try { localStorage.setItem(bestKey(id), JSON.stringify({ score: score, total: total, date: new Date().toISOString() })); } catch (e) {}
+  }
+}
+
+/* ============================================================
+   RENDER
+   ============================================================ */
+function showScreen(name) {
+  document.querySelectorAll(".screen").forEach(function (s) { s.classList.remove("active"); });
+  document.getElementById(name).classList.add("active");
+}
+
+function renderStages() {
+  var list = document.getElementById("stageList");
+  list.innerHTML = "";
+  STAGES.forEach(function (st) {
+    var btn = document.createElement("button");
+    btn.className = "stage-btn" + (state.stageId === st.id ? " active" : "");
+    if (st.soon) {
+      btn.disabled = true;
+      btn.innerHTML = "<span>" + st.title + "</span><span class='stage-num'>скоро</span>";
+    } else {
+      var best = getBest(st.id);
+      var bestHtml = best ? " · <span class='best-score'>" + best.score + "/" + best.total + "</span>" : "";
+      btn.innerHTML = "<span>🎯 " + st.title + "</span><span class='stage-num'>" + st.questions.length + " вопросов" + bestHtml + "</span>";
+    }
+    if (!st.soon) {
+      btn.addEventListener("click", function () { selectStage(st.id); });
+    }
+    list.appendChild(btn);
+  });
+}
+
+function selectStage(id) {
+  state.stageId = id;
+  var st = STAGES.filter(function (s) { return s.id === id; })[0];
+  renderStages();
+  document.getElementById("startTitle").textContent = st.title;
+  document.getElementById("startDesc").textContent = st.desc;
+  document.getElementById("metaCount").textContent = "Вопросов: " + st.questions.length;
+  var best = getBest(id);
+  document.getElementById("metaBest").textContent = best ? ("Лучший результат: " + best.score + "/" + best.total) : "Ещё не проходил";
+  showScreen("startScreen");
+}
+
+function renderQuestion() {
+  var st = STAGES.filter(function (s) { return s.id === state.stageId; })[0];
+  var q = st.questions[state.idx];
+  document.getElementById("qCategory").textContent = q.cat + " · Вопрос " + (state.idx + 1) + " из " + st.questions.length;
+  document.getElementById("qText").textContent = q.q;
+
+  var box = document.getElementById("qOptions");
+  box.innerHTML = "";
+  q.options.forEach(function (opt, i) {
+    var b = document.createElement("button");
+    b.className = "option-btn";
+    b.innerHTML = "<span class='opt-letter'>" + LETTERS[i] + "</span><span>" + opt + "</span>";
+    b.addEventListener("click", function () { answer(i, b); });
+    box.appendChild(b);
+  });
+
+  var fb = document.getElementById("qFeedback");
+  fb.className = "feedback";
+  fb.innerHTML = "";
+  document.getElementById("nextBtn").style.display = "none";
+
+  var total = st.questions.length;
+  document.getElementById("progressFill").style.width = (state.idx / total * 100) + "%";
+  document.getElementById("progressLabel").textContent = (state.idx + 1) + " / " + total;
+}
+
+function answer(i, btnEl) {
+  var st = STAGES.filter(function (s) { return s.id === state.stageId; })[0];
+  var q = st.questions[state.idx];
+  var buttons = document.querySelectorAll("#qOptions .option-btn");
+  buttons.forEach(function (b) { b.disabled = true; });
+
+  var ok = i === q.correct;
+  if (ok) btnEl.classList.add("correct");
+  else {
+    btnEl.classList.add("wrong");
+    buttons[q.correct].classList.add("correct");
+  }
+  state.answers.push({ idx: state.idx, chosen: i, ok: ok });
+
+  var fb = document.getElementById("qFeedback");
+  fb.className = "feedback show " + (ok ? "ok" : "bad");
+  fb.innerHTML = "<div class='fb-title'>" + (ok ? "✓ Верно!" : "✗ Неверно") + "</div><div>" + q.comment + "</div>";
+
+  var isLast = state.idx === st.questions.length - 1;
+  var nextBtn = document.getElementById("nextBtn");
+  nextBtn.style.display = "inline-flex";
+  nextBtn.textContent = isLast ? "Показать результат" : "Далее →";
+}
+
+function next() {
+  var st = STAGES.filter(function (s) { return s.id === state.stageId; })[0];
+  if (state.idx < st.questions.length - 1) {
+    state.idx++;
+    renderQuestion();
+  } else {
+    finish(st);
+  }
+}
+
+function finish(st) {
+  var total = st.questions.length;
+  var score = state.answers.filter(function (a) { return a.ok; }).length;
+  setBest(state.stageId, score, total);
+  renderStages();
+
+  var pct = Math.round(score / total * 100);
+  var circle = document.getElementById("scoreCircle");
+  circle.style.setProperty("--pct", pct);
+  circle.style.setProperty("--ring-color", pct >= 80 ? "var(--green)" : (pct >= 50 ? "#FFB300" : "var(--red)"));
+
+  document.getElementById("scoreNum").textContent = score + "/" + total;
+  document.getElementById("scoreSub").textContent = pct + "%";
+
+  var title, sub;
+  if (pct === 100) { title = "Идеально! 🔥"; sub = "Все вопросы без ошибок — этап усвоен полностью."; }
+  else if (pct >= 80) { title = "Отличный результат!"; sub = "Материал усвоен. Разбери ошибки ниже и закрепи слабые места."; }
+  else if (pct >= 50) { title = "Неплохо, но есть пробелы"; sub = "Перечитай темы из разбора ошибок — они прямо указаны в комментариях."; }
+  else { title = "Стоит повторить этап"; sub = "Вернись к урокам этапа и пройди тест ещё раз. Разбор ошибок ниже подскажет, что именно подзабылось."; }
+  document.getElementById("resultTitle").textContent = title;
+  document.getElementById("resultSub").textContent = sub;
+
+  var wrong = state.answers.filter(function (a) { return !a.ok; });
+  var block = document.getElementById("mistakesBlock");
+  if (wrong.length === 0) {
+    block.innerHTML = "";
+  } else {
+    var html = "<div class='mistakes-title'>✗ Разбор ошибок (" + wrong.length + ")</div>";
+    wrong.forEach(function (a) {
+      var q = st.questions[a.idx];
+      html += "<div class='mistake-item'>" +
+        "<div class='m-q'>" + (state.answers.indexOf(a) + 1) + ". " + q.q + "</div>" +
+        "<div class='m-a'>Правильный ответ: " + q.options[q.correct] + "</div>" +
+        "<div class='m-c'>" + q.comment + "</div></div>";
+    });
+    block.innerHTML = html;
+  }
+
+  var shareText = "18 ПОТОК — тест «" + st.title + "»: " + score + "/" + total + " (" + pct + "%)";
+  document.getElementById("shareTg").href =
+    "https://t.me/share/url?url=" + encodeURIComponent(SITE_URL) + "&text=" + encodeURIComponent(shareText);
+
+  showScreen("resultScreen");
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+document.getElementById("startBtn").addEventListener("click", function () {
+  state.idx = 0;
+  state.answers = [];
+  showScreen("quizScreen");
+  renderQuestion();
+});
+document.getElementById("nextBtn").addEventListener("click", next);
+document.getElementById("retryBtn").addEventListener("click", function () { selectStage(state.stageId); });
+
+/* Theme */
+(function () {
+  var toggle = document.getElementById("themeToggle");
+  var stored = null;
+  try { stored = localStorage.getItem("tools-theme"); } catch (e) {}
+  if (stored) document.documentElement.setAttribute("data-theme", stored);
+  else if (window.matchMedia("(prefers-color-scheme: light)").matches) document.documentElement.setAttribute("data-theme", "light");
+  toggle.addEventListener("click", function () {
+    var cur = document.documentElement.getAttribute("data-theme");
+    var nextTheme = cur === "light" ? "dark" : "light";
+    document.documentElement.setAttribute("data-theme", nextTheme);
+    try { localStorage.setItem("tools-theme", nextTheme); } catch (e) {}
+  });
+})();
+
+selectStage("etap1");
+</script>
+</body>
+</html>
