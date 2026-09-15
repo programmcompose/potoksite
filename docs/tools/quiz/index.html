@@ -5779,7 +5779,11 @@ document.getElementById("retryBtn").addEventListener("click", function () { sele
   });
 })();
 
-selectStage("etap1");
+(function () {
+  var m = new URLSearchParams(location.search).get("stage");
+  var ok = STAGES.some(function (s) { return s.id === m && !s.soon; });
+  selectStage(ok ? m : "etap1");
+})();
 </script>
 </body>
 </html>
