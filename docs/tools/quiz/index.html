@@ -11,11 +11,11 @@
 :root,
 [data-theme="dark"],
 [data-theme="light"] {
-  --bg: #0A0A10;
-  --bg-light: #191924;
-  --bg-lighter: #23232F;
-  --bg-card: #12121A;
-  --bg-card-border: #23232F;
+  --bg: #14141F;
+  --bg-light: #28283C;
+  --bg-lighter: #32324A;
+  --bg-card: #20202E;
+  --bg-card-border: #35354B;
   --text: #F5F5FA;
   --text-muted: #9C9CB0;
   --accent: #3DE8FF;
@@ -27,8 +27,8 @@
   --orange-glow: rgba(255, 107, 26, 0.35);
   --orange-border: rgba(255, 107, 26, 0.45);
   --shadow: 0 4px 16px rgba(0, 0, 0, 0.5);
-  --toggle-bg: #191924;
-  --toggle-hover: #23232F;
+  --toggle-bg: #28283C;
+  --toggle-hover: #32324A;
   --correct-bg: rgba(74, 222, 128, 0.10);
   --wrong-bg: rgba(255, 77, 109, 0.10);
 }
@@ -40,9 +40,10 @@ html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; 
 
 body {
   font-family: 'Inter', system-ui, sans-serif;
+  font-size: 17px;
   background-color: var(--bg);
   background-image:
-    radial-gradient(ellipse at 50% -12%, rgba(255, 107, 26, 0.14) 0%, transparent 55%),
+    radial-gradient(ellipse at 50% -12%, rgba(255, 190, 84, 0.13) 0%, transparent 55%),
     radial-gradient(circle, rgba(255, 255, 255, 0.035) 1px, transparent 1.4px);
   background-size: auto, 28px 28px;
   color: var(--text);
@@ -77,7 +78,7 @@ header h1 {
   font-weight: 800; letter-spacing: -0.025em; line-height: 1.1;
   color: var(--text); margin-bottom: 12px;
 }
-header p { font-size: 16px; color: var(--text-muted); max-width: 540px; margin: 0 auto; line-height: 1.6; }
+header p { font-size: 17px; color: var(--text-muted); max-width: 540px; margin: 0 auto; line-height: 1.6; }
 
 .back-link { display: inline-block; margin-bottom: 18px; color: var(--accent); text-decoration: none; font-size: 14px; transition: opacity .15s ease; }
 .back-link:hover { opacity: 0.75; }

@@ -5,13 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Карта частот — Инструменты курса</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
   :root {
-    --bg: #0B1220;
-    --bg-light: #363636;
-    --bg-lighter: #404040;
-    --text: #FDFBDF;
-    --accent: #00bcd4;
+    --bg: #14141F;
+    --bg-light: #20202E;
+    --bg-lighter: #28283C;
+    --line: #35354B;
+    --text: #F5F5FA;
+    --muted: #9C9CB0;
+    --accent: #3DE8FF;
     --purple: #ab47bc;
     --orange: #ff7043;
     --radius: 12px;
@@ -21,11 +23,16 @@
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    font-family: 'Unbounded', sans-serif;
-    background: var(--bg);
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 50% -12%, rgba(255, 190, 84, .13) 0%, transparent 55%),
+      radial-gradient(circle, rgba(255, 255, 255, .035) 1px, transparent 1.4px);
+    background-size: auto, 28px 28px;
     color: var(--text);
     min-height: 100vh;
     padding: 24px 16px;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
   }
 
   .container { max-width: 1100px; margin: 0 auto; }
@@ -41,15 +48,19 @@
   .back-link:hover { opacity: 0.8; }
 
   h1 {
-    font-size: 28px;
-    margin-bottom: 8px;
+    font-size: clamp(30px, 5vw, 42px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 10px;
   }
 
   .subtitle {
-    color: #aaa;
-    font-size: 14px;
+    color: var(--muted);
+    font-size: 17px;
+    max-width: 720px;
     margin-bottom: 24px;
-    line-height: 1.5;
+    line-height: 1.65;
   }
 
   .controls {
@@ -64,7 +75,7 @@
     border: none;
     border-radius: 8px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 600;
     transition: all 0.2s;
     color: #fff;
@@ -75,6 +86,7 @@
 
   .chart-area {
     background: var(--bg-light);
+    border: 1px solid var(--line);
     border-radius: var(--radius);
     padding: 20px;
     box-shadow: var(--shadow);
@@ -85,38 +97,42 @@
 
   .freq-label {
     text-align: center;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 12px;
-    color: #888;
-    margin-top: 8px;
+    letter-spacing: .06em;
+    color: var(--muted);
+    margin-top: 10px;
   }
 
   .info-panel {
     margin-top: 20px;
     background: var(--bg-light);
+    border: 1px solid var(--line);
     border-radius: var(--radius);
     padding: 20px;
     box-shadow: var(--shadow);
   }
 
   .info-panel h3 {
-    font-size: 16px;
+    font-size: 17px;
+    font-weight: 700;
     margin-bottom: 12px;
     color: var(--accent);
   }
 
   .info-panel p {
-    font-size: 14px;
+    font-size: 16px;
     line-height: 1.7;
-    color: #ccc;
+    color: var(--muted);
   }
 
   .tooltip {
     position: absolute;
-    background: #1e1e1e;
+    background: #28283C;
     border: 1px solid var(--accent);
     border-radius: 8px;
     padding: 10px 14px;
-    font-size: 13px;
+    font-size: 14px;
     pointer-events: none;
     display: none;
     z-index: 10;
@@ -126,7 +142,7 @@
 
   .tooltip .tt-name { font-weight: 700; margin-bottom: 4px; }
   .tooltip .tt-range { color: var(--accent); }
-  .tooltip .tt-desc { color: #aaa; font-size: 12px; margin-top: 4px; }
+  .tooltip .tt-desc { color: var(--muted); font-size: 13px; margin-top: 4px; }
 
   .legend-section {
     margin-top: 20px;
@@ -140,6 +156,7 @@
     align-items: center;
     gap: 10px;
     background: var(--bg-light);
+    border: 1px solid var(--line);
     border-radius: 8px;
     padding: 10px 14px;
     cursor: pointer;
@@ -157,8 +174,8 @@
     flex-shrink: 0;
   }
 
-  .legend-text { font-size: 13px; display: flex; align-items: center; gap: 6px; }
-  .legend-range { font-size: 11px; color: #888; }
+  .legend-text { font-size: 15px; display: flex; align-items: center; gap: 6px; }
+  .legend-range { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); }
   .play-icon { font-size: 11px; opacity: 0; transition: opacity 0.2s; }
   .legend-item:hover .play-icon { opacity: 0.7; }
   .legend-item.playing .play-icon { opacity: 1; }
@@ -306,10 +323,6 @@ function buildLegend() {
         <div class="legend-text">${inst.name}</div>
         <div class="legend-range">${inst.low} – ${inst.high} Гц</div>
       </div>`;
-    item.addEventListener("click", () => {
-      item.classList.toggle("disabled");
-      draw();
-    });
     el.appendChild(item);
   });
 }
@@ -335,7 +348,7 @@ function draw() {
   const dpr = window.devicePixelRatio || 1;
   const rect = canvas.parentElement.getBoundingClientRect();
   const w = rect.width - 40;
-  const h = Math.max(400, instruments.length * 28 + 60);
+  const h = Math.max(400, instruments.length * 30 + 60);
   canvas.width = w * dpr;
   canvas.height = h * dpr;
   canvas.style.height = h + "px";
@@ -349,13 +362,13 @@ function draw() {
 
   // Frequency grid lines and labels
   const freqMarks = [20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000];
-  ctx.font = "11px Inter, sans-serif";
+  ctx.font = "12px 'Inter', sans-serif";
   ctx.textAlign = "center";
   freqMarks.forEach(f => {
     const x = padL + freqToX(f) * chartW;
     ctx.strokeStyle = "rgba(255,255,255,0.07)";
     ctx.beginPath(); ctx.moveTo(x, padT); ctx.lineTo(x, h - padB); ctx.stroke();
-    ctx.fillStyle = "#666";
+    ctx.fillStyle = "#8A8AA0";
     ctx.fillText(f >= 1000 ? (f/1000)+"k" : f, x, h - 8);
   });
 
@@ -389,7 +402,7 @@ function draw() {
 
     // Label
     ctx.fillStyle = "#fff";
-    ctx.font = `${isHovered ? "bold " : ""}12px Inter, sans-serif`;
+    ctx.font = `${isHovered ? "bold " : ""}13px 'Inter', sans-serif`;
     ctx.textAlign = "left";
     const labelX = x1 + 8;
     if (x2 - x1 > 60) {
@@ -472,47 +485,20 @@ buildControls();
 buildLegend();
 draw();
 
-// === Audio Playback System ===
-let audioCtx = null;
-let activeNodes = [];
-const sampleCache = {};
+// === Audio Playback System (обычный <audio> — работает и на сайте, и через file://) ===
+let currentAudio = null;
 const playingIndicator = document.getElementById("playingIndicator");
 const playingName = document.getElementById("playingName");
 
-function initAudio() {
-  if (!audioCtx) {
-    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  }
-  if (audioCtx.state === "suspended") {
-    audioCtx.resume();
-  }
-}
-
 function stopCurrentAudio() {
-  activeNodes.forEach(node => {
-    try { if (node.stop) node.stop(); } catch(e) {}
-    try { node.disconnect(); } catch(e) {}
-  });
-  activeNodes = [];
-}
-
-async function loadSample(url) {
-  if (sampleCache[url]) return sampleCache[url];
-  initAudio();
-  try {
-    const resp = await fetch(url);
-    const buf = await resp.arrayBuffer();
-    const decoded = await audioCtx.decodeAudioData(buf);
-    sampleCache[url] = decoded;
-    return decoded;
-  } catch(e) {
-    console.warn("Failed to load sample:", url, e);
-    return null;
+  if (currentAudio) {
+    currentAudio.pause();
+    currentAudio.currentTime = 0;
+    currentAudio = null;
   }
 }
 
 async function playSample(index) {
-  initAudio();
   const inst = instruments[index];
   if (!inst || !inst.sample) return;
 
@@ -523,26 +509,23 @@ async function playSample(index) {
   hoveredInstrument = null;
   draw();
 
-  const buffer = await loadSample(inst.sample);
-  if (!buffer) return;
-
-  const source = audioCtx.createBufferSource();
-  const gain = audioCtx.createGain();
-  gain.gain.value = 0.5;
-  source.buffer = buffer;
-  source.connect(gain);
-  gain.connect(audioCtx.destination);
-  source.start();
-  activeNodes.push(source);
+  const audio = new Audio(inst.sample);
+  audio.volume = 0.8;
+  currentAudio = audio;
+  try {
+    await audio.play();
+  } catch (e) {
+    console.warn("Playback failed:", inst.sample, e);
+    return;
+  }
 
   // Visual feedback
   playingName.textContent = inst.name;
   playingIndicator.style.display = "block";
   highlightInstrument(index);
 
-  source.onended = () => {
-    const idx = activeNodes.indexOf(source);
-    if (idx > -1) activeNodes.splice(idx, 1);
+  audio.onended = () => {
+    if (currentAudio === audio) currentAudio = null;
     playingIndicator.style.display = "none";
     unhighlightInstrument(index);
   };
@@ -604,18 +587,6 @@ canvas.addEventListener("click", async (e) => {
   }
 });
 
-// Preload all samples on first interaction
-let preloading = false;
-async function preloadAll() {
-  if (preloading) return;
-  preloading = true;
-  for (const inst of instruments) {
-    if (inst.sample) {
-      await loadSample(inst.sample);
-    }
-  }
-}
-document.body.addEventListener("click", () => { initAudio(); preloadAll(); }, { once: true });
 </script>
 
 </body>
