@@ -447,13 +447,10 @@ canvas.addEventListener("mousemove", (e) => {
     const inst = instruments[i];
     if (hiddenGroups.has(inst.group)) continue;
     const y = padT + i * rowH;
+    // Вся строка кликабельна/подсветывается — не нужно попадать точно в полосу
     if (my >= y && my < y + rowH) {
-      const x1 = padL + freqToX(inst.low) * (canvas.width / dpr - 20);
-      const x2 = padL + freqToX(inst.high) * (canvas.width / dpr - 20);
-      if (mx >= x1 && mx <= x2) {
-        found = i;
-        break;
-      }
+      found = i;
+      break;
     }
   }
 
@@ -576,13 +573,10 @@ canvas.addEventListener("click", async (e) => {
     const inst = instruments[i];
     if (hiddenGroups.has(inst.group)) continue;
     const y = padT + i * rowH;
+    // Клик по любой точке строки запускает звук этого инструмента
     if (my >= y && my < y + rowH) {
-      const x1 = padL + freqToX(inst.low) * (canvas.width / dpr - 20);
-      const x2 = padL + freqToX(inst.high) * (canvas.width / dpr - 20);
-      if (mx >= x1 && mx <= x2) {
-        await playSample(i);
-        break;
-      }
+      await playSample(i);
+      break;
     }
   }
 });
