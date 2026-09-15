@@ -4,411 +4,261 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Интерактивные инструменты — Курс по музыкальному продакшену</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700;900&display=swap');
-   /* === Dark theme (slate) — default === */
-   :root,
-   [data-theme="dark"] {
-     --bg: #0B1220;
-    --bg-light: #2e2e2e;
-    --bg-lighter: #363636;
-    --bg-card: #363636;
-    --bg-card-border: #404040;
-    --text: #FDFBDF;
-    --text-muted: rgba(253, 251, 223, 0.6);
-    --accent: #00bcd4;
-    --purple: #ab47bc;
-    --orange: #ff7043;
-    --orange-glow: rgba(255, 140, 0, 0.15);
-    --orange-border: rgba(255, 140, 0, 0.12);
-    --orange-hover-shadow: rgba(255, 143, 0, 0.15);
-     --gradient-top: #0a0f1a;
-     --gradient-mid: #0B1220;
-     --gradient-bottom: #0c1222;
-     --header-bg: radial-gradient(ellipse at center, rgba(255, 140, 0, 0.06) 0%, transparent 70%);
-    --shadow: 0 4px 16px rgba(0,0,0,0.4);
-    --toggle-bg: #303030;
-    --toggle-hover: #3e3e3e;
-    --coming-soon-border: #404040;
-    --tag-bg-opacity: 0.2;
-  }
-
-  /* === Light theme === */
-  [data-theme="light"] {
-    --bg: #FDFBDF;
-    --bg-light: #f5f2d0;
-    --bg-lighter: #efeacd;
-    --bg-card: #f5f2d0;
-    --bg-card-border: #efeacd;
-    --text: #282828;
-    --text-muted: rgba(40, 40, 40, 0.6);
-    --accent: #00bcd4;
-    --purple: #ab47bc;
-    --orange: #e65100;
-    --orange-glow: rgba(230, 81, 0, 0.1);
-    --orange-border: rgba(230, 81, 0, 0.15);
-    --orange-hover-shadow: rgba(230, 81, 0, 0.12);
-    --gradient-top: #f5e6b0;
-    --gradient-mid: #FDFBDF;
-    --gradient-bottom: #f0e8a8;
-    --header-bg: radial-gradient(ellipse at center, rgba(230, 81, 0, 0.06) 0%, transparent 70%);
-    --shadow: 0 4px 16px rgba(0,0,0,0.1);
-    --toggle-bg: #e8e5c8;
-    --toggle-hover: #ddd9b8;
-    --coming-soon-border: #efeacd;
-    --tag-bg-opacity: 0.15;
-  }
-
   :root {
-    --radius: 12px;
+    --bg: #0A0A10;
+    --panel: #12121A;
+    --line: #23232F;
+    --ink: #F5F5FA;
+    --muted: #9C9CB0;
+    --orange: #FF6B1A;
+    --cyan: #3DE8FF;
+    --pink: #FF4D8D;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
-
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
   body {
-    font-family: 'Unbounded', sans-serif;
-    background:
-      radial-gradient(ellipse at 50% 0%, var(--orange-glow) 0%, transparent 60%),
-      linear-gradient(170deg, var(--gradient-top) 0%, var(--gradient-mid) 40%, var(--gradient-bottom) 100%);
-    color: var(--text);
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 50% -12%, rgba(255, 107, 26, .14) 0%, transparent 55%),
+      radial-gradient(circle, rgba(255, 255, 255, .035) 1px, transparent 1.4px);
+    background-size: auto, 28px 28px;
+    color: var(--ink);
     min-height: 100vh;
-    padding: 24px 16px;
-    transition: background 0.3s ease, color 0.3s ease;
-  }
-
-  .container { max-width: 800px; margin: 0 auto; }
-
-  /* Theme toggle */
-  .theme-toggle {
-    position: fixed;
-    top: 16px;
-    right: 16px;
-    z-index: 100;
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 1px solid var(--bg-card-border);
-    background: var(--toggle-bg);
-    color: var(--text);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.2s;
-    box-shadow: var(--shadow);
-  }
-
-  .theme-toggle:hover {
-    background: var(--toggle-hover);
-    transform: scale(1.05);
-  }
-
-  .theme-toggle svg {
-    width: 20px;
-    height: 20px;
-    fill: currentColor;
-  }
-
-  .icon-sun,
-  [data-theme="light"] .icon-moon { display: none; }
-  [data-theme="light"] .icon-sun { display: block; }
-  [data-theme="light"] .icon-moon { display: none; }
-  [data-theme="dark"] .icon-moon { display: block; }
-
-  header {
-    text-align: center;
-    margin-bottom: 32px;
-    padding: 24px 16px;
-    border-radius: var(--radius);
-    background: var(--header-bg);
-    border: 1px solid var(--orange-border);
-    transition: all 0.3s ease;
-  }
-
-  header h1 {
-    font-size: 2em;
-    font-weight: 900;
-    background: linear-gradient(135deg, #FFB300, #FF7043);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 8px;
-  }
-
-  /* Restore emoji rendering broken by -webkit-text-fill-color: transparent */
-  header h1 .emoji {
-    -webkit-text-fill-color: initial;
-  }
-
-  header p {
-    font-size: 1em;
-    color: var(--text-muted);
-    max-width: 500px;
-    margin: 0 auto;
     line-height: 1.5;
   }
+  ::selection { background: rgba(61, 232, 255, .3); }
 
-  .back-link {
-    display: inline-block;
-    margin-bottom: 16px;
-    color: var(--accent);
-    text-decoration: none;
-    font-size: 0.9em;
+  /* === Top bar === */
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; justify-content: space-between; align-items: center;
+    height: 58px; padding: 0 28px;
+    background: rgba(10, 10, 16, .78);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .brand-dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--orange), var(--cyan));
+    box-shadow: 0 0 12px rgba(61, 232, 255, .7);
+  }
+  .back-link { font-size: 14px; color: var(--muted); text-decoration: none; transition: color .15s ease; }
+  .back-link:hover { color: var(--cyan); }
+
+  .container { max-width: 1040px; margin: 0 auto; padding: 56px 28px 80px; }
+
+  /* === Header === */
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--cyan); margin-bottom: 16px;
+  }
+  h1 {
+    font-weight: 800; font-size: clamp(38px, 5.5vw, 54px);
+    letter-spacing: -.025em; line-height: 1.08;
+    margin-bottom: 18px;
+  }
+  .lede {
+    font-size: 17.5px; color: var(--muted);
+    max-width: 620px; line-height: 1.65; margin-bottom: 48px;
   }
 
-  .back-link:hover { text-decoration: underline; }
-
-  /* === Hero card — главный топик (Тесты по курсу) === */
+  /* === Hero card === */
   .hero-card {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    background:
-      radial-gradient(ellipse at 15% 50%, rgba(255,143,0,0.18) 0%, transparent 60%),
-      var(--bg-card);
-    border-radius: calc(var(--radius) + 4px);
-    padding: 28px;
-    box-shadow: 0 6px 24px rgba(255,143,0,0.15), var(--shadow);
-    border: 1px solid rgba(255,143,0,0.45);
-    transition: all 0.2s;
-    text-decoration: none;
-    color: var(--text);
-    margin-bottom: 28px;
+    position: relative; display: block; overflow: hidden;
+    background: linear-gradient(135deg, #1A1207 0%, var(--panel) 45%);
+    border: 1px solid rgba(255, 107, 26, .45);
+    border-radius: 14px;
+    padding: 40px 36px 56px;
+    text-decoration: none; color: inherit;
+    transition: border-color .2s ease, transform .2s ease, box-shadow .25s ease;
   }
-
   .hero-card:hover {
-    transform: translateY(-3px);
-    border-color: #FF8F00;
-    box-shadow: 0 10px 32px rgba(255,143,0,0.28), var(--shadow);
+    border-color: var(--orange);
+    transform: translateY(-2px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, .55), 0 0 0 1px rgba(255, 107, 26, .2), 0 0 64px rgba(255, 107, 26, .18);
   }
-
+  .hero-wave {
+    position: absolute; left: 0; right: 0; bottom: -6px; height: 80px;
+    width: 100%; pointer-events: none; opacity: .6;
+  }
+  .hero-top { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; position: relative; z-index: 1; }
   .hero-icon {
-    font-size: 3.2em;
-    line-height: 1;
-    flex-shrink: 0;
+    width: 52px; height: 52px; border-radius: 10px;
+    background: rgba(255, 107, 26, .14);
+    border: 1px solid rgba(255, 107, 26, .5);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; flex-shrink: 0;
   }
-
-  .hero-body { flex: 1; min-width: 0; }
-
-  .hero-card h2 {
-    font-size: 1.6em;
-    font-weight: 900;
-    margin-bottom: 8px;
-  }
-
+  .hero-card h2 { font-weight: 700; font-size: 30px; letter-spacing: -.015em; }
   .hero-card p {
-    font-size: 0.95em;
-    color: var(--text-muted);
-    line-height: 1.55;
-    margin-bottom: 12px;
+    color: var(--muted); font-size: 16px; line-height: 1.65;
+    max-width: 680px; margin-bottom: 28px; position: relative; z-index: 1;
   }
-
+  .cta-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; position: relative; z-index: 1; }
   .hero-cta {
     display: inline-block;
-    background: linear-gradient(135deg, #FFB300, #FF7043);
-    color: #1a1206;
-    font-weight: 700;
-    font-size: 0.9em;
-    padding: 10px 22px;
-    border-radius: 999px;
-    white-space: nowrap;
-    flex-shrink: 0;
-    transition: transform 0.2s, box-shadow 0.2s;
+    background: linear-gradient(90deg, var(--orange), #FFA24D);
+    color: #170B03; font-weight: 700; font-size: 15px;
+    padding: 14px 30px; border-radius: 9px;
+    box-shadow: 0 0 24px rgba(255, 107, 26, .35);
+    transition: filter .15s ease, transform .15s ease, box-shadow .2s ease;
   }
+  .hero-card:hover .hero-cta { filter: brightness(1.08); transform: translateY(-1px); box-shadow: 0 0 36px rgba(255, 107, 26, .55); }
 
-  .hero-card:hover .hero-cta {
-    transform: scale(1.05);
-    box-shadow: 0 4px 16px rgba(255,143,0,0.4);
-  }
-
-  /* === Сетка небольших карточек остальных инструментов === */
-  .section-title {
-    font-size: 0.9em;
-    font-weight: 700;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 14px;
-  }
-
-  .tool-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-    gap: 14px;
-  }
-
-  .tool-card {
-    background: var(--bg-card);
-    border-radius: var(--radius);
-    padding: 18px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--bg-card-border);
-    transition: all 0.2s;
-    text-decoration: none;
-    color: var(--text);
-    display: block;
-  }
-
-  .tool-card:hover {
-    border-color: #FF8F00;
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px var(--orange-hover-shadow), var(--shadow);
-  }
-
-  .tool-icon {
-    font-size: 2em;
-    margin-bottom: 10px;
-  }
-
-  .tool-card h2 {
-    font-size: 1.05em;
-    font-weight: 700;
-    margin-bottom: 6px;
-  }
-
-  .tool-card p {
-    font-size: 0.85em;
-    color: var(--text-muted);
-    line-height: 1.45;
-    margin-bottom: 10px;
-  }
-
-  .tool-tag {
+  /* === Tags (неоновые) === */
+  .tag {
     display: inline-block;
-    padding: 3px 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase;
+    padding: 5px 12px; border-radius: 7px;
+    margin-right: 6px; margin-bottom: 4px;
+  }
+  .tag-orange { color: #FFA24D; background: rgba(255, 107, 26, .10); border: 1px solid rgba(255, 107, 26, .5); }
+  .tag-cyan   { color: var(--cyan); background: rgba(61, 232, 255, .08); border: 1px solid rgba(61, 232, 255, .45); }
+  .tag-pink   { color: #FF7FAC; background: rgba(255, 77, 141, .10); border: 1px solid rgba(255, 77, 141, .5); }
+  .tag-yellow { color: #FFE14D; background: rgba(255, 225, 77, .08); border: 1px solid rgba(255, 225, 77, .42); }
+
+  /* === Section === */
+  .section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--muted);
+    margin: 52px 0 20px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .section-title::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+  /* === Grid === */
+  .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px; }
+  .tool-card {
+    position: relative; overflow: hidden;
+    background: var(--panel);
+    border: 1px solid var(--line);
     border-radius: 12px;
-    font-size: 0.7em;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-right: 4px;
-    margin-bottom: 4px;
+    padding: 26px;
+    text-decoration: none; color: inherit;
+    display: block;
+    transition: border-color .2s ease, transform .2s ease, box-shadow .25s ease;
   }
-
-  .tag-synthesis { background: rgba(0,188,212,var(--tag-bg-opacity)); color: var(--accent); }
-  .tag-theory { background: rgba(171,71,188,var(--tag-bg-opacity)); color: var(--purple); }
-  .tag-game { background: rgba(255,112,67,var(--tag-bg-opacity)); color: var(--orange); }
-  .tag-audio { background: rgba(102,187,106,var(--tag-bg-opacity)); color: #66bb6a; }
-  .tag-freq { background: rgba(255,215,0,var(--tag-bg-opacity)); color: #ffd700; }
-  .tag-checklist { background: rgba(102,187,106,var(--tag-bg-opacity)); color: #66bb6a; }
-  .tag-quiz { background: rgba(255,140,0,var(--tag-bg-opacity)); color: var(--orange); }
-
-  .coming-soon {
-    opacity: 0.4;
-    border-style: dashed;
+  .tool-card:hover {
+    border-color: rgba(61, 232, 255, .6);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, .5), 0 0 0 1px rgba(61, 232, 255, .18), 0 0 44px rgba(61, 232, 255, .10);
   }
-
-  .coming-soon:hover {
-    transform: none;
-    border-color: var(--coming-soon-border);
+  .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .tool-icon { font-size: 26px; }
+  .card-index {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: #3D3D50; letter-spacing: .1em;
   }
+  .tool-card h3 { font-weight: 600; font-size: 17.5px; letter-spacing: -.01em; margin-bottom: 9px; }
+  .tool-card p { font-size: 14.5px; color: var(--muted); line-height: 1.62; margin-bottom: 16px; }
 
+  /* === Footer === */
   .footer-note {
-    text-align: center;
-    margin-top: 32px;
-    font-size: 0.8em;
-    color: var(--text-muted);
+    margin-top: 56px; padding-top: 22px;
+    border-top: 1px solid var(--line);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
+    color: #4A4A5E;
   }
 
-  @media (max-width: 700px) {
-    header h1 { font-size: 1.5em; }
-    .hero-card {
-      flex-direction: column;
-      text-align: center;
-      padding: 24px 20px;
-    }
-    .hero-cta { width: 100%; text-align: center; }
+  @media (max-width: 640px) {
+    .topbar { padding: 0 18px; }
+    .container { padding: 36px 18px 60px; }
+    .hero-card { padding: 28px 24px 52px; }
   }
 </style>
 </head>
 <body>
-<button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
-  <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-  <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2"/><line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"/><line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2"/><line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="currentColor" stroke-width="2"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="currentColor" stroke-width="2"/></svg>
-</button>
+
+<div class="topbar">
+  <div class="brand"><span class="brand-dot"></span>Potok / Tools</div>
+  <a href="https://programmcompose.github.io/potoksite/" class="back-link">Главная курса →</a>
+</div>
+
 <div class="container">
-  <a href="https://programmcompose.github.io/potoksite/" class="back-link">← На главную курса</a>
+
   <header>
-    <h1><span class="emoji">🎛️</span> Интерактивные инструменты</h1>
-    <p>Практикуйте теорию музыки с помощью интерактивных инструментов прямо в браузере</p>
+    <div class="eyebrow">// Курс по музыкальному продакшену</div>
+    <h1>Интерактивные инструменты</h1>
+    <p class="lede">Практикуйте теорию музыки с помощью интерактивных инструментов прямо в браузере — без установки и регистрации.</p>
   </header>
 
   <a href="quiz/index.html" class="hero-card">
-    <div class="hero-icon">🎯</div>
-    <div class="hero-body">
+    <div class="hero-top">
+      <div class="hero-icon">🎯</div>
       <h2>Тесты по курсу</h2>
-      <p>Проверь знания после каждого этапа: вопросы с мгновенным разбором — почему верно и где ошибся. Лучший результат сохраняется в браузере, итог можно отправить в Telegram.</p>
-      <span class="tool-tag tag-quiz">Тесты</span>
-      <span class="tool-tag tag-checklist">Прогресс</span>
     </div>
-    <span class="hero-cta">Пройти тесты →</span>
+    <p>Проверьте знания после каждого этапа: вопросы с мгновенным разбором — почему верно и где ошиблись. Лучший результат сохраняется в браузере, итог можно отправить в Telegram.</p>
+    <div class="cta-row">
+      <span class="hero-cta">Пройти тесты →</span>
+      <span>
+        <span class="tag tag-orange">Тесты</span>
+        <span class="tag tag-cyan">Прогресс</span>
+      </span>
+    </div>
+    <svg class="hero-wave" viewBox="0 0 1040 80" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 46 Q32.5 14 65 46 T130 46 T195 46 T260 46 T325 46 T390 46 T455 46 T520 46 T585 46 T650 46 T715 46 T780 46 T845 46 T910 46 T975 46 T1040 46"
+            fill="none" stroke="#FF6B1A" stroke-width="1.5" opacity=".6"/>
+      <path d="M0 54 Q32.5 32 65 54 T130 54 T195 54 T260 54 T325 54 T390 54 T455 54 T520 54 T585 54 T650 54 T715 54 T780 54 T845 54 T910 54 T975 54 T1040 54"
+            fill="none" stroke="#3DE8FF" stroke-width="1.2" opacity=".4"/>
+    </svg>
   </a>
 
   <h2 class="section-title">Другие инструменты</h2>
 
   <div class="tool-grid">
     <a href="wavetable/index.html" class="tool-card">
-      <div class="tool-icon">🌊</div>
-      <h2>Аналоговый синтезатор</h2>
+      <div class="card-head"><span class="tool-icon">🌊</span><span class="card-index">01</span></div>
+      <h3>Аналоговый синтезатор</h3>
       <p>Субтрактивный синтез в стиле Moog: волны, лестничный фильтр, ADSR, LFO. Короткий туториал и пресеты Bass / Lead / Acid — крути слева направо и сразу слышишь, зачем каждая ручка.</p>
-      <span class="tool-tag tag-synthesis">Синтез</span>
-      <span class="tool-tag tag-audio">Аудио</span>
+      <span class="tag tag-cyan">Синтез</span><span class="tag tag-yellow">Аудио</span>
     </a>
 
     <a href="harmony-map/index.html" class="tool-card">
-      <div class="tool-icon">🎹</div>
-      <h2>Карта гармоний</h2>
-      <p>Исследуйте круг интервалов, играйте в игру на знание аккордов и стройте собственные аккордовые прогрессии. 3 режима: исследование, игра, конструктор.</p>
-      <span class="tool-tag tag-theory">Теория</span>
-      <span class="tool-tag tag-game">Игра</span>
+      <div class="card-head"><span class="tool-icon">🎹</span><span class="card-index">02</span></div>
+      <h3>Карта гармоний</h3>
+      <p>Исследуйте круг интервалов, играйте в игру на знание аккордов и стройте собственные аккордовые прогрессии. Три режима: исследование, игра, конструктор.</p>
+      <span class="tag tag-orange">Теория</span><span class="tag tag-pink">Игра</span>
     </a>
 
     <a href="frequency-map/index.html" class="tool-card">
-      <div class="tool-icon">📊</div>
-      <h2>Карта частот</h2>
+      <div class="card-head"><span class="tool-icon">📊</span><span class="card-index">03</span></div>
+      <h3>Карта частот</h3>
       <p>Интерактивная карта частотных диапазонов инструментов: барабаны, бас, гитары, синтезаторы, вокал, живые инструменты. Фильтрация по группам и подсказки при наведении.</p>
-      <span class="tool-tag tag-theory">Теория</span>
-      <span class="tool-tag tag-freq">Частоты</span>
+      <span class="tag tag-orange">Теория</span><span class="tag tag-cyan">Частоты</span>
     </a>
 
     <a href="eq-trainer/index.html" class="tool-card">
-      <div class="tool-icon">🎚️</div>
-      <h2>EQ-тренажёр</h2>
+      <div class="card-head"><span class="tool-icon">🎚️</span><span class="card-index">04</span></div>
+      <h3>EQ-тренажёр</h3>
       <p>Сравнивайте звук до и после эквализации. Три уровня: от низ/середина/верх до точных частот и децибел. Встроенные сэмплы или свой трек.</p>
-      <span class="tool-tag tag-theory">Теория</span>
-      <span class="tool-tag tag-audio">Аудио</span>
+      <span class="tag tag-orange">Теория</span><span class="tag tag-yellow">Аудио</span>
     </a>
-
 
     <a href="https://programmcompose.github.io/potoksite/tools/iy-quest/index.html" class="tool-card">
-      <div class="tool-icon">🎮</div>
-      <h2>Прохождение Потока — IY Quest</h2>
+      <div class="card-head"><span class="tool-icon">🎮</span><span class="card-index">05</span></div>
+      <h3>Прохождение Потока — IY Quest</h3>
       <p>Геймифицированный трекер прогресса по курсу. 100 заданий, 10 этапов, XP, ранги и достижения. Данные сохраняются в браузере.</p>
-      <span class="tool-tag tag-game">Геймификация</span>
-      <span class="tool-tag tag-checklist">Прогресс</span>
+      <span class="tag tag-pink">Геймификация</span><span class="tag tag-cyan">Прогресс</span>
     </a>
   </div>
 
-  <div class="footer-note">
-    Все инструменты работают локально в вашем браузере · Звук запускается по жести пользователя
-  </div>
+  <div class="footer-note">Все инструменты работают локально в вашем браузере · Звук запускается по жесту пользователя</div>
 </div>
-<script>
-(function() {
-  var toggle = document.getElementById('themeToggle');
-  var stored = localStorage.getItem('tools-theme');
-  if (stored) {
-    document.documentElement.setAttribute('data-theme', stored);
-  } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
-    document.documentElement.setAttribute('data-theme', 'light');
-  }
-  toggle.addEventListener('click', function() {
-    var current = document.documentElement.getAttribute('data-theme');
-    var next = current === 'light' ? 'dark' : 'light';
-    document.documentElement.setAttribute('data-theme', next);
-    localStorage.setItem('tools-theme', next);
-  });
-})();
-</script>
 </body>
 </html>
