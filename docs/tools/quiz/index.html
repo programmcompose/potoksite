@@ -147,6 +147,7 @@ header p { font-size: 0.95em; color: var(--text-muted); max-width: 520px; margin
 
 /* ---- Question card ---- */
 .card {
+  position: relative;
   background: var(--bg-card); border-radius: var(--radius); padding: 24px;
   box-shadow: var(--shadow); border: 1px solid var(--bg-card-border); margin-bottom: 16px;
 }
@@ -184,6 +185,58 @@ header p { font-size: 0.95em; color: var(--text-muted); max-width: 520px; margin
 
 @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 
+/* ---- Sound toggle ---- */
+.sound-toggle {
+  position: fixed; top: 64px; right: 16px; z-index: 100;
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid var(--bg-card-border);
+  background: var(--toggle-bg); color: var(--text);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; box-shadow: var(--shadow);
+}
+.sound-toggle:hover { background: var(--toggle-hover); transform: scale(1.05); }
+.sound-toggle svg { width: 20px; height: 20px; fill: currentColor; }
+.sound-toggle .icon-muted { display: none; }
+.sound-toggle.muted .icon-on { display: none; }
+.sound-toggle.muted .icon-muted { display: block; }
+
+/* ---- Answer feedback animations ---- */
+@keyframes popCorrect {
+  0% { transform: scale(1); }
+  45% { transform: scale(1.045); }
+  100% { transform: scale(1); }
+}
+@keyframes shakeWrong {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-7px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(3px); }
+}
+.option-btn.correct { animation: popCorrect 0.45s ease; box-shadow: 0 0 14px rgba(102, 187, 106, 0.35); }
+.option-btn.wrong { animation: shakeWrong 0.4s ease; }
+
+/* ---- Combo badge ---- */
+.combo-badge {
+  position: absolute; top: -14px; right: 18px; z-index: 5;
+  display: none; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: 20px;
+  background: var(--bg-card); border: 1.5px solid var(--gold);
+  color: var(--gold); font-size: 0.8em; font-weight: 900;
+  box-shadow: 0 0 12px rgba(255, 215, 64, 0.25);
+}
+.combo-badge.show { display: inline-flex; animation: comboPop 0.3s ease; }
+.combo-badge.hot {
+  border-color: transparent; color: #1a1206;
+  background: linear-gradient(135deg, #FFB300, #FF7043);
+  box-shadow: 0 0 18px rgba(255, 140, 0, 0.45);
+  animation: comboPulse 1s ease infinite;
+}
+.combo-badge.breaking { display: inline-flex; animation: comboBreak 0.5s ease forwards; }
+@keyframes comboPop { from { opacity: 0; transform: scale(0.6) translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes comboPulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.07); } }
+@keyframes comboBreak { from { opacity: 1; transform: scale(1) rotate(0deg); } to { opacity: 0; transform: scale(0.5) rotate(-8deg); } }
+
 /* ---- Buttons row ---- */
 .btn-row { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; }
 .btn {
@@ -206,6 +259,16 @@ header p { font-size: 0.95em; color: var(--text-muted); max-width: 520px; margin
 .start-desc { color: var(--text-muted); line-height: 1.6; font-size: 0.9em; margin-bottom: 20px; }
 .start-meta { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 8px; }
 .meta-chip { background: var(--bg-light); border: 1px solid var(--bg-card-border); border-radius: 20px; padding: 6px 14px; font-size: 0.75em; color: var(--text-muted); }
+
+/* ---- Record badge (result screen) ---- */
+.record-badge {
+  display: none; margin: 0 auto 14px; width: fit-content;
+  padding: 8px 18px; border-radius: 20px;
+  background: linear-gradient(135deg, #FFD740, #FFB300); color: #1a1206;
+  font-size: 0.85em; font-weight: 900; letter-spacing: 0.03em;
+  box-shadow: 0 0 18px rgba(255, 215, 64, 0.4);
+}
+.record-badge.show { display: inline-block; animation: comboPop 0.4s ease; }
 
 .score-circle {
   width: 130px; height: 130px; margin: 0 auto 20px; border-radius: 50%;
@@ -241,6 +304,10 @@ header p { font-size: 0.95em; color: var(--text-muted); max-width: 520px; margin
   <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
   <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3" stroke="currentColor" stroke-width="2"/><line x1="12" y1="21" x2="12" y2="23" stroke="currentColor" stroke-width="2"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="currentColor" stroke-width="2"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="currentColor" stroke-width="2"/><line x1="1" y1="12" x2="3" y2="12" stroke="currentColor" stroke-width="2"/><line x1="21" y1="12" x2="23" y2="12" stroke="currentColor" stroke-width="2"/><line x1="4.22" y1="19.78" x2="5.64" y2="19.78" stroke="currentColor" stroke-width="2"/></svg>
 </button>
+<button class="sound-toggle" id="soundToggle" aria-label="Звук вкл/выкл">
+  <svg class="icon-on" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3a4.5 4.5 0 0 0-2.5-4v8a4.5 4.5 0 0 0 2.5-4zM14 3.2v2.1c2.9.9 5 3.6 5 6.7s-2.1 5.8-5 6.7v2.1c4-.9 7-4.5 7-8.8s-3-7.9-7-8.8z"/></svg>
+  <svg class="icon-muted" viewBox="0 0 24 24"><path d="M3 9v6h4l5 5V4L7 9H3zm13.6 3 2.7-2.7 1.4 1.4-2.7 2.7 2.7 2.7-1.4 1.4-2.7-2.7-2.7 2.7-1.4-1.4 2.7-2.7-2.7-2.7 1.4-1.4 2.7 2.7z"/></svg>
+</button>
 
 <div class="container">
   <a href="../index.html" class="back-link">← К интерактивным инструментам</a>
@@ -273,6 +340,7 @@ header p { font-size: 0.95em; color: var(--text-muted); max-width: 520px; margin
       <span class="progress-label" id="progressLabel"></span>
     </div>
     <div class="card">
+      <div class="combo-badge" id="comboBadge">🔥 ×<span id="comboNum">0</span></div>
       <div class="q-category" id="qCategory"></div>
       <div class="q-text" id="qText"></div>
       <div id="qVisual"></div>
@@ -287,6 +355,7 @@ header p { font-size: 0.95em; color: var(--text-muted); max-width: 520px; margin
   <!-- RESULT SCREEN -->
   <div class="screen" id="resultScreen">
     <div class="card">
+      <div class="record-badge" id="recordBadge">🏆 Новый рекорд!</div>
       <div class="score-circle" id="scoreCircle">
         <div class="score-inner">
           <span class="score-num" id="scoreNum"></span>
@@ -312,6 +381,7 @@ header p { font-size: 0.95em; color: var(--text-muted); max-width: 520px; margin
   <p class="footer-note">Результаты сохраняются в вашем браузере · Все вопросы основаны на материалах курса «18 ПОТОК»</p>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <script>
 /* ============================================================
    SVG-генераторы для визуальных вопросов
@@ -5317,7 +5387,120 @@ var LETTERS = ["A", "B", "C", "D"];
 /* ============================================================
    STATE
    ============================================================ */
-var state = { stageId: null, idx: 0, answers: [] };
+var state = { stageId: null, idx: 0, answers: [], combo: 0 };
+
+/* ============================================================
+   SFX — процедурные звуки через Web Audio API (без файлов)
+   ============================================================ */
+var SFX = {
+  ctx: null,
+  muted: false,
+  ensure: function () {
+    if (!this.ctx) {
+      try { this.ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (e) {}
+    }
+    if (this.ctx && this.ctx.state === "suspended") this.ctx.resume();
+    return this.ctx;
+  },
+  tone: function (freq, start, dur, type, vol) {
+    var ctx = this.ensure();
+    if (!ctx || this.muted) return;
+    var o = ctx.createOscillator(), g = ctx.createGain();
+    o.type = type;
+    o.frequency.setValueAtTime(freq, start);
+    g.gain.setValueAtTime(0.0001, start);
+    g.gain.exponentialRampToValueAtTime(vol, start + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, start + dur);
+    o.connect(g).connect(ctx.destination);
+    o.start(start);
+    o.stop(start + dur + 0.05);
+  },
+  correct: function () {
+    var ctx = this.ensure(); if (!ctx || this.muted) return;
+    var now = ctx.currentTime;
+    // Арпеджио C5-E5-G5 — «синт-плук» + искра на C6
+    [523.25, 659.25, 783.99].forEach(function (f, i) { SFX.tone(f, now + i * 0.055, 0.16, "triangle", 0.14); });
+    SFX.tone(1567.98, now + 0.17, 0.2, "sine", 0.05);
+  },
+  wrong: function () {
+    var ctx = this.ensure(); if (!ctx || this.muted) return;
+    var now = ctx.currentTime;
+    // Два расстроенных saw с падением тона через lowpass — мягкое «вау-вау», без агрессии
+    [146.83, 152.0].forEach(function (f) {
+      var o = ctx.createOscillator(), g = ctx.createGain(), flt = ctx.createBiquadFilter();
+      o.type = "sawtooth";
+      o.frequency.setValueAtTime(f * 1.3, now);
+      o.frequency.exponentialRampToValueAtTime(f * 0.72, now + 0.26);
+      flt.type = "lowpass"; flt.frequency.value = 520;
+      g.gain.setValueAtTime(0.0001, now);
+      g.gain.exponentialRampToValueAtTime(0.09, now + 0.02);
+      g.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+      o.connect(flt).connect(g).connect(ctx.destination);
+      o.start(now); o.stop(now + 0.35);
+    });
+  },
+  combo: function () {
+    var ctx = this.ensure(); if (!ctx || this.muted) return;
+    var now = ctx.currentTime;
+    // Восходящее арпеджио C5-E5-G5-C6 на милекамп комбо
+    [523.25, 659.25, 783.99, 1046.5].forEach(function (f, i) { SFX.tone(f, now + i * 0.05, 0.14, "triangle", 0.12); });
+  },
+  result: function (good) {
+    var ctx = this.ensure(); if (!ctx || this.muted) return;
+    var now = ctx.currentTime;
+    if (good) {
+      // Арпеджио C-E-G + финальный аккорд
+      [523.25, 659.25, 783.99].forEach(function (f, i) { SFX.tone(f, now + i * 0.09, 0.22, "triangle", 0.13); });
+      [523.25, 659.25, 783.99].forEach(function (f) { SFX.tone(f, now + 0.3, 0.5, "sine", 0.06); });
+    } else {
+      // Мягкое нисходящее E4-C4 — без драмы
+      [329.63, 261.63].forEach(function (f, i) { SFX.tone(f, now + i * 0.15, 0.3, "sine", 0.08); });
+    }
+  }
+};
+
+/* ============================================================
+   Combo badge — серия правильных ответов
+   ============================================================ */
+var comboHideTimer = null;
+function updateCombo(ok) {
+  var badge = document.getElementById("comboBadge");
+  var num = document.getElementById("comboNum");
+  if (ok) {
+    state.combo++;
+    clearTimeout(comboHideTimer);
+    if (state.combo >= 2) {
+      num.textContent = state.combo;
+      badge.classList.remove("show", "breaking");
+      void badge.offsetWidth; // reflow — перезапуск pop-анимации
+      badge.classList.add("show");
+      if (state.combo >= 3) badge.classList.add("hot"); else badge.classList.remove("hot");
+      if (state.combo % 5 === 0 && window.confetti) {
+        SFX.combo();
+        confetti({ particleCount: 60, spread: 80, startVelocity: 32, origin: { y: 0.25 }, colors: ["#FFB300", "#FF7043", "#ffd740"] });
+      }
+    } else {
+      badge.className = "combo-badge";
+    }
+  } else {
+    var wasShown = state.combo >= 2;
+    state.combo = 0;
+    if (wasShown) {
+      clearTimeout(comboHideTimer);
+      badge.classList.remove("show", "hot");
+      void badge.offsetWidth;
+      badge.classList.add("breaking");
+      comboHideTimer = setTimeout(function () { badge.className = "combo-badge"; }, 520);
+    } else {
+      badge.className = "combo-badge";
+    }
+  }
+}
+function resetComboBadge() {
+  clearTimeout(comboHideTimer);
+  var b = document.getElementById("comboBadge");
+  if (b) b.className = "combo-badge";
+}
 
 function bestKey(id) { return "potok-quiz-best-" + id; }
 function getBest(id) {
@@ -5326,8 +5509,9 @@ function getBest(id) {
 function setBest(id, score, total) {
   var prev = getBest(id);
   if (!prev || score > prev.score) {
-    try { localStorage.setItem(bestKey(id), JSON.stringify({ score: score, total: total, date: new Date().toISOString() })); } catch (e) {}
+    try { localStorage.setItem(bestKey(id), JSON.stringify({ score: score, total: total, date: new Date().toISOString() })); return true; } catch (e) {}
   }
+  return false;
 }
 
 /* ============================================================
@@ -5361,6 +5545,8 @@ function renderStages() {
 
 function selectStage(id) {
   state.stageId = id;
+  state.combo = 0;
+  resetComboBadge();
   var st = STAGES.filter(function (s) { return s.id === id; })[0];
   renderStages();
   document.getElementById("startTitle").textContent = st.title;
@@ -5420,11 +5606,23 @@ function answer(i, btnEl) {
   buttons.forEach(function (b) { b.disabled = true; });
 
   var ok = i === q.correct;
-  if (ok) btnEl.classList.add("correct");
-  else {
+  if (ok) {
+    btnEl.classList.add("correct");
+    SFX.correct();
+    if (navigator.vibrate) navigator.vibrate(40);
+    if (window.confetti) {
+      var r = btnEl.getBoundingClientRect();
+      confetti({ particleCount: 26, spread: 55, startVelocity: 28, scalar: 0.75, ticks: 55,
+        origin: { x: (r.left + r.width / 2) / window.innerWidth, y: (r.top + r.height / 2) / window.innerHeight },
+        colors: ["#FFB300", "#FF7043", "#00bcd4", "#66bb6a"] });
+    }
+  } else {
     btnEl.classList.add("wrong");
     buttons[q.correct].classList.add("correct");
+    SFX.wrong();
+    if (navigator.vibrate) navigator.vibrate([70, 40, 70]);
   }
+  updateCombo(ok);
   state.answers.push({ idx: state.idx, chosen: i, ok: ok });
 
   var fb = document.getElementById("qFeedback");
@@ -5447,19 +5645,56 @@ function next() {
   }
 }
 
+function animateScore(score, total, pct) {
+  var circle = document.getElementById("scoreCircle");
+  var numEl = document.getElementById("scoreNum");
+  var subEl = document.getElementById("scoreSub");
+  var dur = 1000, t0 = null;
+  function frame(ts) {
+    if (t0 === null) t0 = ts;
+    var p = Math.min(1, (ts - t0) / dur);
+    var eased = 1 - Math.pow(1 - p, 3); // easeOutCubic
+    circle.style.setProperty("--pct", Math.round(pct * eased));
+    numEl.textContent = Math.round(score * eased) + "/" + total;
+    subEl.textContent = Math.round(pct * eased) + "%";
+    if (p < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+
+function resultConfetti(pct) {
+  if (!window.confetti || pct < 80) return;
+  if (pct === 100) {
+    // Золотой дождь с двух сторон при идеале
+    var end = Date.now() + 900;
+    (function frame() {
+      confetti({ particleCount: 4, angle: 60, spread: 55, origin: { x: 0, y: 0.7 }, colors: ["#ffd740", "#FFB300"] });
+      confetti({ particleCount: 4, angle: 120, spread: 55, origin: { x: 1, y: 0.7 }, colors: ["#ffd740", "#FFB300"] });
+      if (Date.now() < end) requestAnimationFrame(frame);
+    })();
+  } else {
+    confetti({ particleCount: 90, spread: 100, startVelocity: 40, origin: { y: 0.35 }, colors: ["#FFB300", "#FF7043", "#00bcd4", "#66bb6a"] });
+    setTimeout(function () { confetti({ particleCount: 50, spread: 120, startVelocity: 30, origin: { y: 0.4 } }); }, 350);
+  }
+}
+
 function finish(st) {
   var total = st.questions.length;
   var score = state.answers.filter(function (a) { return a.ok; }).length;
-  setBest(state.stageId, score, total);
+  var isRecord = setBest(state.stageId, score, total);
   renderStages();
 
   var pct = Math.round(score / total * 100);
   var circle = document.getElementById("scoreCircle");
-  circle.style.setProperty("--pct", pct);
+  circle.style.setProperty("--pct", 0);
   circle.style.setProperty("--ring-color", pct >= 80 ? "var(--green)" : (pct >= 50 ? "#FFB300" : "var(--red)"));
 
-  document.getElementById("scoreNum").textContent = score + "/" + total;
-  document.getElementById("scoreSub").textContent = pct + "%";
+  var recEl = document.getElementById("recordBadge");
+  if (isRecord && score > 0) recEl.classList.add("show"); else recEl.className = "record-badge";
+
+  animateScore(score, total, pct);
+  SFX.result(pct >= 80);
+  resultConfetti(pct);
 
   var title, sub;
   if (pct === 100) { title = "Идеально! 🔥"; sub = "Все вопросы без ошибок — этап усвоен полностью."; }
@@ -5516,6 +5751,20 @@ document.getElementById("retryBtn").addEventListener("click", function () { sele
     var nextTheme = cur === "light" ? "dark" : "light";
     document.documentElement.setAttribute("data-theme", nextTheme);
     try { localStorage.setItem("tools-theme", nextTheme); } catch (e) {}
+  });
+})();
+
+/* Sound toggle */
+(function () {
+  var btn = document.getElementById("soundToggle");
+  try { SFX.muted = localStorage.getItem("potok-quiz-sound") === "off"; } catch (e) {}
+  function paint() { btn.classList.toggle("muted", SFX.muted); }
+  paint();
+  btn.addEventListener("click", function () {
+    SFX.muted = !SFX.muted;
+    try { localStorage.setItem("potok-quiz-sound", SFX.muted ? "off" : "on"); } catch (e) {}
+    paint();
+    if (!SFX.muted) SFX.correct(); // подтверждение включения
   });
 })();
 
