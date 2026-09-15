@@ -83,11 +83,6 @@
 3. Переходите к следующему этапу для углубления знаний
 4. Продолжайте практику — **каждый день по 30 минут**
 
-<div class="potok-lesson-wrapper">
-  <input type="checkbox" class="potok-lesson" data-lesson="etap3-done">
-  <label class="potok-lesson-label">✅ Этап №3 пройден</label>
-</div>
-
 ## Проверь себя — тест по этапу
 
 !!! success "Тест Этапа №3"

@@ -77,11 +77,6 @@ Xmind — ментальные карты. Obsidian — заметки со св
 - Дополнительные материалы после каждого этапа
 - Эвенты и лекции от приглашённых спикеров
 
-<div class="potok-lesson-wrapper">
-  <input type="checkbox" class="potok-lesson" data-lesson="etap0-done">
-  <label class="potok-lesson-label">✅ Этап №0 пройден</label>
-</div>
-
 ## Проверь себя — тест по этапу
 
 !!! success "Тест Этапа №0"

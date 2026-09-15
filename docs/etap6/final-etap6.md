@@ -90,11 +90,6 @@
 3. Экспериментируйте с гибридами жанров (рок + электроника, джаз + хип-хоп)
 4. Продолжайте практику — **каждый день по 30 минут**
 
-<div class="potok-lesson-wrapper">
-  <input type="checkbox" class="potok-lesson" data-lesson="etap6-done">
-  <label class="potok-lesson-label">✅ Этап №6 пройден</label>
-</div>
-
 ---
 
 **← [Назад: Работа с реальными инструментами](real-instruments-zapish.md)** | **[На главную →](../index.md)**

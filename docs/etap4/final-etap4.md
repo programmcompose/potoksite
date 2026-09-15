@@ -70,11 +70,6 @@
 3. Переходите к следующему этапу для углубления знаний
 4. Продолжайте практику — **теория закрепляется только на практике**
 
-<div class="potok-lesson-wrapper">
-  <input type="checkbox" class="potok-lesson" data-lesson="etap4-done">
-  <label class="potok-lesson-label">✅ Этап №4 пройден</label>
-</div>
-
 ## Проверь себя — тест по этапу
 
 !!! success "Тест Этапа №4"

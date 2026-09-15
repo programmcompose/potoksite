@@ -339,9 +339,4 @@
 
 ---
 
-<div class="potok-lesson-wrapper">
-  <input type="checkbox" class="potok-lesson" data-lesson="etap8-done">
-  <label class="potok-lesson-label">✅ Этап №8 пройден</label>
-</div>
-
 **← [Назад: Этап №7 →](../etap7/fl-ableton-vokal.md)** | **[Далее: Библиотеки Kontakt →](kontakt-biblioteki.md)**

@@ -81,11 +81,4 @@
 
 ---
 
-<div class="potok-lesson-wrapper">
-  <input type="checkbox" class="potok-lesson" data-lesson="etap9-done">
-  <label class="potok-lesson-label">✅ Этап №9 пройден</label>
-</div>
-
----
-
 **← [Назад: Договора и права →](dogovory-pravo.md)** | **[На главную →](../index.md)**
