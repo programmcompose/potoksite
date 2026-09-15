@@ -1,0 +1,628 @@
+/* ========================================
+   Gamification — Стили геймификации
+   Design tokens, blue accents, card system
+   ======================================== */
+
+/* ---------- Level panel ---------- */
+.potok-level-panel {
+  margin: 0 0 1rem;
+  padding: 1rem;
+  border-radius: 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  animation: potok-gam-fade-in 0.5s ease both;
+}
+
+.potok-level-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.potok-level-panel__level {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.potok-level-panel__level-icon {
+  font-size: 1.4rem;
+}
+
+.potok-level-panel__level-num {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--accent-blue);
+  line-height: 1;
+}
+
+.potok-level-panel__level-label {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.potok-level-panel__xp {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+}
+
+.potok-level-panel__xp-val {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  font-variant-numeric: tabular-nums;
+}
+
+.potok-level-panel__xp-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Level progress track — blue gradient */
+.potok-level-panel__track {
+  position: relative;
+  width: 100%;
+  height: 10px;
+  border-radius: 5px;
+  background-color: var(--bg-hover);
+  overflow: hidden;
+  margin-bottom: 0.4rem;
+}
+
+.potok-level-panel__fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #3B82F6, #60A5FA);
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+}
+
+.potok-level-panel__progress-text {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.potok-level-panel__badges-count {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-top: 0.3rem;
+}
+
+/* ---------- Badge toast notification ---------- */
+.potok-badge-toast {
+  position: fixed;
+  top: 1.5rem;
+  right: 1.5rem;
+  max-width: 320px;
+  padding: 1.2rem;
+  border-radius: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--accent-blue);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 20px rgba(59, 130, 246, 0.15);
+  z-index: 1000;
+  opacity: 0;
+  transform: translateX(40px) scale(0.95);
+  transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  pointer-events: none;
+}
+
+.potok-badge-toast.show {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  pointer-events: auto;
+}
+
+.potok-badge-toast__icon {
+  font-size: 2.5rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
+  animation: potok-badge-bounce 0.6s ease;
+}
+
+.potok-badge-toast__title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--accent-blue);
+  text-align: center;
+  margin-bottom: 0.25rem;
+}
+
+.potok-badge-toast__name {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--text-heading);
+  text-align: center;
+  margin-bottom: 0.2rem;
+}
+
+.potok-badge-toast__desc {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-bottom: 0.4rem;
+}
+
+.potok-badge-toast__xp {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--accent-blue);
+  text-align: center;
+  background: rgba(59, 130, 246, 0.12);
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 6px;
+}
+
+.potok-badge-toast__rarity {
+  display: block;
+  text-align: center;
+  margin-top: 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+/* ---------- Badge rarity colors ---------- */
+.potok-badge-card__rarity--common,
+.potok-badge-toast__rarity--common {
+  color: #9e9e9e;
+  background-color: rgba(158, 158, 158, 0.12);
+}
+
+.potok-badge-card__rarity--uncommon,
+.potok-badge-toast__rarity--uncommon {
+  color: #4caf50;
+  background-color: rgba(76, 175, 80, 0.12);
+}
+
+.potok-badge-card__rarity--rare,
+.potok-badge-toast__rarity--rare {
+  color: #3B82F6;
+  background-color: rgba(59, 130, 246, 0.12);
+}
+
+.potok-badge-card__rarity--epic,
+.potok-badge-toast__rarity--epic {
+  color: #a855f7;
+  background-color: rgba(168, 85, 247, 0.12);
+}
+
+.potok-badge-card__rarity--legendary,
+.potok-badge-toast__rarity--legendary {
+  color: var(--accent-orange);
+  background-color: rgba(242, 153, 74, 0.12);
+  animation: potok-legendary-glow 2s ease-in-out infinite;
+}
+
+/* ---------- Badge tabs ---------- */
+.potok-badges-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+  flex-wrap: wrap;
+}
+
+.potok-badges-tab {
+  padding: 0.4rem 0.8rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.potok-badges-tab:hover {
+  background-color: var(--bg-hover);
+  border-color: var(--accent-blue);
+  color: var(--text-main);
+}
+
+.potok-badges-tab.active {
+  background-color: var(--accent-blue);
+  color: #fff;
+  border-color: var(--accent-blue);
+}
+
+.potok-badges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
+}
+
+/* ---------- Badge cards ---------- */
+.potok-badge-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.2rem 0.8rem;
+  border-radius: 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  transition: all 0.3s ease;
+  animation: potok-gam-fade-in 0.4s ease both;
+}
+
+.potok-badge-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+  border-color: var(--accent-blue);
+}
+
+/* Rarity borders */
+.potok-badge-card--common {
+  border-color: rgba(158, 158, 158, 0.25);
+}
+
+.potok-badge-card--uncommon {
+  border-color: rgba(76, 175, 80, 0.3);
+}
+
+.potok-badge-card--rare {
+  border-color: rgba(59, 130, 246, 0.35);
+}
+
+.potok-badge-card--epic {
+  border-color: rgba(168, 85, 247, 0.3);
+}
+
+.potok-badge-card--legendary {
+  border-color: rgba(242, 153, 74, 0.4);
+  box-shadow: 0 0 12px rgba(242, 153, 74, 0.15);
+}
+
+.potok-badge-card__icon {
+  font-size: 2.8rem;
+  margin-bottom: 0.6rem;
+  transition: transform 0.3s ease;
+}
+
+.potok-badge-card:hover .potok-badge-card__icon {
+  transform: scale(1.15);
+}
+
+.potok-badge-card__icon--locked {
+  filter: grayscale(1) opacity(0.4);
+}
+
+.potok-badge-card__name {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  text-align: center;
+  margin-bottom: 0.25rem;
+}
+
+.potok-badge-card__desc {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-bottom: 0.5rem;
+  line-height: 1.4;
+}
+
+.potok-badge-card__rarity {
+  font-size: 0.65rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.15rem 0.5rem;
+  border-radius: 4px;
+}
+
+.potok-badge-card__lock {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  font-size: 0.9rem;
+  opacity: 0.5;
+}
+
+/* ---------- Stats cards ---------- */
+.potok-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.potok-stats-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.2rem;
+  border-radius: 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  transition: all 0.3s ease;
+  animation: potok-gam-fade-in 0.4s ease both;
+}
+
+.potok-stats-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.potok-stats-card__icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.potok-stats-card__value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--accent-blue);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 0.2rem;
+}
+
+.potok-stats-card__label {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.potok-stats-card__track {
+  width: 80%;
+  height: 6px;
+  border-radius: 3px;
+  background-color: var(--bg-hover);
+  overflow: hidden;
+  margin-bottom: 0.3rem;
+}
+
+.potok-stats-card__fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #3B82F6, #60A5FA);
+  transition: width 0.6s ease;
+}
+
+.potok-stats-card__sub {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+/* ---------- Action history ---------- */
+.potok-stats-history {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-radius: 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+}
+
+.potok-stats-history h3 {
+  font-size: 1rem;
+  margin-bottom: 0.8rem;
+  color: var(--text-heading);
+}
+
+.potok-stats-history__list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.potok-stats-history__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.82rem;
+  gap: 0.5rem;
+}
+
+.potok-stats-history__item:last-child {
+  border-bottom: none;
+}
+
+.potok-stats-history__xp {
+  font-weight: 700;
+  color: var(--accent-blue);
+  white-space: nowrap;
+}
+
+.potok-stats-history__reason {
+  color: var(--text-main);
+  flex: 1;
+  text-align: center;
+}
+
+.potok-stats-history__time {
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.potok-stats-empty {
+  color: var(--text-secondary);
+  font-style: italic;
+  text-align: center;
+  padding: 1rem;
+}
+
+/* ---------- Info panel ---------- */
+.potok-stats-info {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-radius: 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.potok-stats-info strong {
+  color: var(--text-heading);
+}
+
+/* ---------- Action buttons ---------- */
+.potok-stats-actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.potok-stats-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-main);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.potok-stats-btn:hover {
+  background-color: var(--bg-hover);
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+}
+
+.potok-stats-btn--reset {
+  color: #ef5350;
+  border-color: rgba(239, 83, 80, 0.25);
+}
+
+.potok-stats-btn--reset:hover {
+  background-color: rgba(239, 83, 80, 0.1);
+  border-color: #ef5350;
+}
+
+/* ---------- Level-up toast ---------- */
+.potok-levelup-toast {
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-hover));
+  font-size: 1rem;
+  padding: 0.8rem 1.5rem;
+  color: #fff;
+  animation: potok-levelup-pulse 0.5s ease;
+}
+
+/* ---------- Animations ---------- */
+@keyframes potok-gam-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes potok-badge-bounce {
+  0% { transform: scale(0.5); }
+  50% { transform: scale(1.2); }
+  70% { transform: scale(0.9); }
+  100% { transform: scale(1); }
+}
+
+@keyframes potok-legendary-glow {
+  0%, 100% {
+    box-shadow: 0 0 4px rgba(242, 153, 74, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 14px rgba(242, 153, 74, 0.35);
+  }
+}
+
+@keyframes potok-levelup-pulse {
+  0% { transform: translateX(-50%) scale(0.8); }
+  50% { transform: translateX(-50%) scale(1.05); }
+  100% { transform: translateX(-50%) scale(1); }
+}
+
+/* ---------- Responsive ---------- */
+@media screen and (max-width: 59.9375em) {
+  .potok-level-panel {
+    margin: 0 0 0.8rem;
+    padding: 0.8rem;
+  }
+
+  .potok-level-panel__level-num {
+    font-size: 1.3rem;
+  }
+
+  .potok-level-panel__xp-val {
+    font-size: 1.1rem;
+  }
+
+  .potok-badges-grid {
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.7rem;
+  }
+
+  .potok-badge-card {
+    padding: 1rem 0.6rem;
+  }
+
+  .potok-badge-card__icon {
+    font-size: 2.2rem;
+  }
+
+  .potok-stats-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.7rem;
+  }
+
+  .potok-stats-card__value {
+    font-size: 1.3rem;
+  }
+
+  .potok-badge-toast {
+    top: auto;
+    bottom: 1.5rem;
+    right: 1rem;
+    left: 1rem;
+    max-width: none;
+  }
+
+  .potok-stats-actions {
+    flex-direction: column;
+  }
+
+  .potok-stats-btn {
+    width: 100%;
+    text-align: center;
+  }
+}
+
+@media screen and (max-width: 30em) {
+  .potok-badges-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .potok-stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

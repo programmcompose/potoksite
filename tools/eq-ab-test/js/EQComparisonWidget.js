@@ -1,0 +1,792 @@
+import { queryEl, formatTime } from "./utils/dom.js";
+import { EventEmitter } from "./utils/events.js";
+import { freqToT, tToFreq } from "./utils/math.js";
+import { AudioEngine } from "./audio/AudioEngine.js";
+import { buildDemoBuffer } from "./audio/demoBuffer.js";
+import { EQVisualizer } from "./ui/EQVisualizer.js";
+import { RotaryKnob } from "./ui/RotaryKnob.js";
+import { BAND_PALETTE } from "./utils/palette.js";
+import { generateRandomTargetBands } from "./audio/targetGenerator.js";
+import { compareEqCurves } from "./audio/guessCompare.js";
+
+/** @typedef {'peaking' | 'lowshelf' | 'highshelf' | 'lowpass' | 'highpass'} EqFilterType */
+
+/**
+ * @typedef {{
+ *   frequency: number,
+ *   gain: number,
+ *   q: number,
+ *   type: EqFilterType,
+ * }} EQParamsBand
+ */
+
+/**
+ * @typedef {{
+ *   bands: EQParamsBand[],
+ *   wet: number,
+ * }} ExportedEQSettings
+ */
+
+/**
+ * @typedef {{
+ *   container: string | HTMLElement,
+ *   audioSrc?: string | null,
+ *   eqBands?: number,
+ *   loop?: boolean,
+ *   onReady?: () => void,
+ *   onEQChange?: (params: ExportedEQSettings) => void,
+ *   onA_BToggle?: (isBWetSide: boolean) => void,
+ * }} WidgetOptions
+ */
+
+const FREQ_RANGE = { min: 20, max: 20000 };
+
+export class EQComparisonWidget {
+  /**
+   * @param {WidgetOptions} options
+   */
+  constructor(options) {
+    /** @private */ this._opts = options;
+    /** @readonly */ this.containerEl = queryEl(options.container);
+
+    /** @private @type {AudioContext | null} */ this._ctx = null;
+    /** @readonly */ this.engine = new AudioEngine();
+    /** @private */ this._emitter = new EventEmitter();
+    /** @private @type {EQVisualizer | null} */ this._viz = null;
+
+    /** @private */ this._elements = {};
+    /** @private */ this._keydown = this._onKeyDown.bind(this);
+    /** @private */ this._tick = () => this._updateTimeUi();
+    /** @private */ this._tickId = 0;
+
+    /** @private */ this._initialized = false;
+    /** @private */ this._building = false;
+    /** @private */ this._mobile = !!options.mobile;
+
+    /** @private @type {{ freq: RotaryKnob, gain: RotaryKnob, q: RotaryKnob }[]} */
+    this._bandKnobs = [];
+
+    this.containerEl.innerHTML = "";
+    this.containerEl.classList.add("eq-ab-widget-root");
+    if (this._mobile) this.containerEl.classList.add("eq-ab-mobile");
+    this._buildSkeleton();
+    options.loop ??= true;
+    this._eqBands = Math.min(16, Math.max(1, options.eqBands ?? 5));
+
+    document.addEventListener("keydown", this._keydown);
+
+    // Мобильная обработка видимости страницы
+    if (this._mobile) {
+      this._visibilityHandler = () => this._onVisibilityChange();
+      document.addEventListener("visibilitychange", this._visibilityHandler);
+      window.addEventListener("pagehide", () => this._onPageHide());
+    }
+
+    queueMicrotask(() => this._wireUi());
+    this.engine.eqBands = this._eqBands;
+  }
+
+  /** Обработка смены видимости вкладки — пауза при уходе */
+  _onVisibilityChange() {
+    if (document.hidden && this._initialized && this.engine.isPlaying()) {
+      this.pause();
+      this._updatePlayButton();
+    }
+  }
+
+  /** Сохранение состояния при закрытии вкладки */
+  _onPageHide() {
+    if (this._initialized && this.engine.isPlaying()) {
+      this.pause();
+    }
+  }
+
+  /**
+   * Create AudioContext and buffer (requires user gesture for playback).
+   * @private
+   */
+  async _ensureAudio() {
+    if (this._initialized) return;
+    const AudioContextCtor =
+      window.AudioContext || /** @type {typeof AudioContext | undefined} */ (window.webkitAudioContext);
+    if (!AudioContextCtor) throw new Error("Web Audio unsupported");
+    this._ctx = new AudioContextCtor();
+
+    // Критично для iOS/Android: явный resume после создания
+    if (this._ctx.state === "suspended") {
+      await this._ctx.resume();
+    }
+
+    this.engine.attachContext(this._ctx, { eqBands: this._eqBands, events: this._emitter });
+
+    const src = this._opts.audioSrc;
+    try {
+      if (src && String(src).trim()) {
+        await this.engine.loadBuffer(String(src));
+      } else {
+        const demo = buildDemoBuffer(this._ctx);
+        this.engine.setExternalBuffer(demo);
+      }
+    } catch (err) {
+      console.warn("[EQComparisonWidget] load failed, using demo buffer", err);
+      const demo = buildDemoBuffer(this._ctx);
+      this.engine.setExternalBuffer(demo);
+    }
+
+    this.engine.setLoop(this._opts.loop !== false);
+
+    const canvas /** @type {HTMLCanvasElement} */ = /** @type {any} */ (this._elements.canvas);
+    this._viz = new EQVisualizer(
+      canvas,
+      () => this.engine.eq,
+      () => this.engine.spectrum,
+      {
+        palette: BAND_PALETTE,
+        freqRange: FREQ_RANGE,
+        onBandAdjust: (bandIndex, hz, secondary, secondaryIsQ) => {
+          if (!this.engine.eq) return;
+          if (secondaryIsQ) {
+            this.engine.eq.setBandParams(bandIndex, { frequency: hz, q: secondary });
+          } else {
+            this.engine.eq.setBandParams(bandIndex, { frequency: hz, gain: secondary });
+          }
+          this._syncKnobsForBand(bandIndex);
+        },
+      },
+    );
+    this._viz.start();
+
+    this._emitter.on("eqchange", () => this._scheduleEqHook());
+    this._initialized = true;
+    this._rollTargetBands();
+    /* Слушать сначала цель (A): чистый сигнал только с скрытым EQ цели */
+    this.engine.setDryWet(0);
+    /** @type {HTMLInputElement} */ (this._elements.dryWet).value = "0";
+    this._syncUIFromEngine();
+    if (typeof this._opts.onReady === "function") this._opts.onReady();
+    this.engine.refreshAutoGain();
+  }
+
+  /** @private */
+  _rollTargetBands() {
+    const et = this.engine.eqTarget;
+    if (!et) return;
+    const rnd = generateRandomTargetBands(this._eqBands);
+    for (let i = 0; i < et.numBands; i++) {
+      const b = rnd[i] ?? { frequency: 500, gain: 0, q: 1, type: /** @type {EqFilterType} */ ("peaking") };
+      et.setBandParams(i, {
+        frequency: b.frequency,
+        gain: b.gain,
+        q: b.q,
+        type: /** @type {EqFilterType} */ (b.type),
+      });
+    }
+    this.engine.eq?.resetFlat();
+    this._syncUIFromEngine();
+    this.engine.refreshAutoGain();
+    this._updateGameResultNeutral();
+    // Скрываем целевую кривую при новом раунде
+    if (this._viz) {
+      this._viz.hideTarget();
+    }
+  }
+
+  /** @private */
+  _updateGameResultNeutral() {
+    const el /** @type {HTMLElement|null} */ = /** @type {any} */ (this._elements.gameResult);
+    if (!el) return;
+    el.classList.remove("eq-ab-game-result--ok", "eq-ab-game-result--bad");
+    if (!this._initialized) {
+      el.textContent = "";
+      return;
+    }
+    const wet = this.engine.getDryWet();
+    if (wet <= 0.02) el.textContent = "Слышите сейчас: цель A (скрытый эквалайзер). Переключитесь на B — настраивайте полосы под слух.";
+    else if (wet >= 0.98) el.textContent = "Слышите сейчас: ваш режим B. Подстройте крутилки и граф, затем CHECK.";
+    else el.textContent = "Микс A↔B. Для точной проверки лучше CHECK на сугубо B против эталона.";
+  }
+
+  /** @private */
+  _runCheckGuess() {
+    /** @type {HTMLElement|null} */ const el /** @type {any} */ = this._elements.gameResult;
+    const et = this.engine.eqTarget;
+    const ue = this.engine.eq;
+    if (!el || !et || !ue) return;
+    const wet = this.engine.getDryWet();
+    const mixNote =
+      wet >= 0.97 ? "" : " <em>(режим смеси A+B: для честной оценки сдвиньте ползунок на B).</em>";
+    const r = compareEqCurves(et, ue);
+    if (r.pass) {
+      el.classList.add("eq-ab-game-result--ok");
+      el.classList.remove("eq-ab-game-result--bad");
+      // Раскрываем целевую кривую на графике
+      if (this._viz) {
+        this._viz.setShowTarget(() => this.engine.eqTarget);
+      }
+      // Показываем скрытые настройки EQ цели
+      const targetBands = et.exportAllBands();
+      let bandsHtml = "<div class='eq-ab-target-reveal'><strong>Скрытый EQ (цель):</strong><div class='eq-ab-target-bands'>";
+      for (let i = 0; i < targetBands.length; i++) {
+        const b = targetBands[i];
+        const col = BAND_PALETTE[i % BAND_PALETTE.length];
+        const freqLabel = b.frequency >= 1000 ? `${(b.frequency / 1000).toFixed(1)} k` : `${Math.round(b.frequency)}`;
+        const gainLabel = `${b.gain >= 0 ? "+" : ""}${b.gain.toFixed(1)} dB`;
+        bandsHtml += `<div class='eq-ab-target-band' style='--band-color: ${col}'>
+          <span class='eq-ab-target-band-num'>Полоса ${i + 1}</span>
+          <span class='eq-ab-target-band-type'>${b.type}</span>
+          <span class='eq-ab-target-band-val'>${freqLabel}</span>
+          <span class='eq-ab-target-band-val'>${gainLabel}</span>
+          <span class='eq-ab-target-band-val'>Q ${b.q.toFixed(2)}</span>
+        </div>`;
+      }
+      bandsHtml += "</div></div>";
+      el.innerHTML = `<strong>Угадал.</strong> Сходство формы фильтров ≈ ${r.scorePct} %, ошибка по АЧХ в среднем ${r.rmseDb.toFixed(2)} dB.${mixNote} Можно взять «Новую цель».${bandsHtml}`;
+      return;
+    }
+    el.classList.add("eq-ab-game-result--bad");
+    el.classList.remove("eq-ab-game-result--ok");
+    el.innerHTML = `<strong>Пока мимо.</strong> Сходство ≈ ${r.scorePct} %, средняя ошибка по кривой ${r.rmseDb.toFixed(2)} dB (пик ${r.maxDb.toFixed(1)} dB).${mixNote} Переключайте A⇄B и докручивайте полосы.`;
+  }
+
+  /** @private */ _scheduleEqHook() {
+    this.engine.refreshAutoGain();
+    if (typeof this._opts.onEQChange === "function") this._opts.onEQChange(this.exportSettings());
+  }
+
+  /** @private */
+  _buildSkeleton() {
+    const root = this.containerEl;
+    root.innerHTML = `
+<section class="eq-ab-panel eq-ab-intro" aria-label="Игра EQ">
+  <p class="eq-ab-hint">
+    Режим <strong>A</strong> — сигнал с <em>скрытым эквалайзером</em> (этот звук нужно повторить).
+    Переключитесь на <strong>B</strong> и подстройте полосы. <strong>CHECK</strong> сравнивает вашу форму фильтров с целью.
+    График — только ваш режим <strong>B</strong>.
+  </p>
+</section>
+
+<section class="eq-ab-panel" aria-label="Плеер">
+  <div class="eq-ab-player-row">
+    <button type="button" class="eq-ab-btn" data-act="togglePlay" aria-pressed="false">Play</button>
+    <button type="button" class="eq-ab-btn eq-ab-secondary" data-act="stop">Stop</button>
+    <label class="eq-ab-loop"><input type="checkbox" data-field="loop" checked /> Цикл</label>
+    <input type="file" data-field="file" accept="audio/mpeg,audio/wav,.mp3,.wav,.ogg,.oga,audio/ogg,audio/mp3" class="eq-ab-file" />
+  </div>
+  <div class="eq-ab-seek-row">
+    <input type="range" data-field="seek" min="0" max="1000" value="0" step="any" aria-label="Позиция" />
+    <span data-field="time" class="eq-ab-time" aria-live="polite">0:00 / 0:00</span>
+  </div>
+</section>
+
+<section class="eq-ab-panel" aria-label="A цель или B ваш EQ">
+  <div class="eq-ab-crossfade-wrap">
+    <span class="eq-ab-ab-label"><span>A</span> <abbr title="скрытая цель угадайки">Цель</abbr></span>
+    <input type="range" data-field="dryWet" min="0" max="100" value="0" aria-label="A цель или B ваш микшер" />
+    <span class="eq-ab-ab-label"><span>B</span> <abbr title="ваш эквалайзер">Вы</abbr></span>
+  </div>
+  <div class="eq-ab-quick-row">
+    <button type="button" class="eq-ab-btn" data-act="toggleAB">A ⇄ B</button>
+    <button type="button" class="eq-ab-btn eq-ab-check" data-act="checkGuess">CHECK</button>
+    <button type="button" class="eq-ab-btn eq-ab-secondary" data-act="newRound">Новая цель</button>
+    <button type="button" class="eq-ab-btn eq-ab-secondary" data-act="reset">Сброс B</button>
+  </div>
+  <div class="eq-ab-game-result" data-field="gameResult" aria-live="polite"></div>
+</section>
+
+<section class="eq-ab-panel eq-ab-viz-panel" aria-label="Кривая эквалайзера">
+  <canvas data-field="canvas" class="eq-ab-canvas" width="860" height="220" role="img" aria-label="Амплитудно-частотная характеристика"></canvas>
+</section>
+
+<section class="eq-ab-panel eq-ab-bands-root" aria-label="Полосы EQ">
+  <!-- bands injected -->
+</section>
+
+<section class="eq-ab-panel eq-ab-presets-panel">
+  <button type="button" class="eq-ab-btn eq-ab-secondary" data-act="export">Экспорт JSON</button>
+  <button type="button" class="eq-ab-btn eq-ab-secondary" data-act="importPrompt">Импорт…</button>
+</section>`;
+
+    this._gatherRefs(root);
+  }
+
+  /** @private @param {HTMLElement} root */
+  _gatherRefs(root) {
+    const q = (s) => root.querySelector(s);
+    this._elements = {
+      canvas: q('[data-field="canvas"]'),
+      dryWet: q('[data-field="dryWet"]'),
+      seek: q('[data-field="seek"]'),
+      time: q('[data-field="time"]'),
+      loop: q('[data-field="loop"]'),
+      file: q('[data-field="file"]'),
+      bandsRoot: q(".eq-ab-bands-root"),
+      gameResult: q('[data-field="gameResult"]'),
+    };
+    this._buttons = root.querySelectorAll("[data-act]");
+  }
+
+  /** @private */
+  _wireUi() {
+    /** @type {HTMLElement} */
+    const bandsRoot /** @type {any} */ = this._elements.bandsRoot;
+    bandsRoot.innerHTML = "";
+    this._bandKnobs = [];
+
+    for (let b = 0; b < this._eqBands; b++) {
+      const col = BAND_PALETTE[b % BAND_PALETTE.length];
+      const card = document.createElement("div");
+      card.className = "eq-ab-band-strip";
+      card.dataset.bandIndex = String(b);
+      card.style.setProperty("--band-accent", col);
+      card.innerHTML = `
+<div class="eq-ab-band-head">
+  <span class="eq-ab-band-dot" aria-hidden="true"></span>
+  <span class="eq-ab-band-title">Полоса ${b + 1}</span>
+  <select data-band="${b}" data-param="type" class="eq-ab-type-mini" title="Тип фильтра">
+    <option value="peaking">Peak</option>
+    <option value="lowshelf">LoSh</option>
+    <option value="highshelf">HiSh</option>
+    <option value="lowpass">LP</option>
+    <option value="highpass">HP</option>
+  </select>
+</div>
+<div class="eq-ab-knob-row" data-knob-row="${b}"></div>`;
+      bandsRoot.appendChild(card);
+      const row = /** @type {HTMLElement} */ (card.querySelector(`[data-knob-row="${b}"]`));
+      const sel = /** @type {HTMLSelectElement} */ (card.querySelector(`select[data-param="type"]`));
+      sel.addEventListener("change", () => {
+        if (!this.engine.eq) return;
+        this.engine.eq.setBandParams(b, { type: /** @type {EqFilterType} */ (sel.value) });
+        this._syncKnobsForBand(b);
+        this._scheduleEqHook();
+      });
+
+      const wrapF = document.createElement("div");
+      wrapF.className = "eq-ab-knob-slot";
+      const wrapG = document.createElement("div");
+      wrapG.className = "eq-ab-knob-slot";
+      const wrapQ = document.createElement("div");
+      wrapQ.className = "eq-ab-knob-slot";
+      row.appendChild(wrapF);
+      row.appendChild(wrapG);
+      row.appendChild(wrapQ);
+
+      const bi = b;
+      const freqKnob = new RotaryKnob({
+        label: `F${bi}`,
+        min: 0,
+        max: 1,
+        value: 0.5,
+        sensitivity: 0.0022,
+        format: (t) => `${Math.round(tToFreq(t, FREQ_RANGE))} Hz`,
+        onChange: (t) => {
+          if (!this.engine.eq) return;
+          this.engine.eq.setBandParams(bi, { frequency: tToFreq(t, FREQ_RANGE) });
+          this._scheduleEqHook();
+        },
+      });
+      const gainKnob = new RotaryKnob({
+        label: `G${bi}`,
+        min: -24,
+        max: 24,
+        value: 0,
+        step: 0.1,
+        sensitivity: 0.0035,
+        format: (g) => `${g >= 0 ? "+" : ""}${g.toFixed(1)} dB`,
+        onChange: (g) => {
+          if (!this.engine.eq) return;
+          this.engine.eq.setBandParams(bi, { gain: g });
+          this._scheduleEqHook();
+        },
+      });
+      const qKnob = new RotaryKnob({
+        label: `Q${bi}`,
+        min: 0.1,
+        max: 10,
+        value: 1,
+        step: 0.05,
+        sensitivity: 0.0032,
+        format: (q) => q.toFixed(2),
+        onChange: (q) => {
+          if (!this.engine.eq) return;
+          this.engine.eq.setBandParams(bi, { q });
+          this._scheduleEqHook();
+        },
+      });
+      freqKnob.attach(wrapF);
+      gainKnob.attach(wrapG);
+      qKnob.attach(wrapQ);
+      this._bandKnobs[b] = { freq: freqKnob, gain: gainKnob, q: qKnob };
+    }
+
+    /** @type {HTMLInputElement} */ const dw /** @type {any} */ = this._elements.dryWet;
+    dw.addEventListener("input", () => {
+      if (!this._initialized) return;
+      const ratio = dw.valueAsNumber / 100;
+      this.engine.setDryWet(ratio);
+      this._updateGameResultNeutral();
+      this._scheduleEqHook();
+    });
+
+    /** @type {HTMLInputElement} */ const seekEl /** @type {any} */ = this._elements.seek;
+    seekEl.addEventListener("input", () => {
+      if (!this._initialized) return;
+      const d = this.engine.getDuration();
+      if (d <= 0) return;
+      const t = (seekEl.valueAsNumber / 1000) * d;
+      this.engine.seek(t);
+    });
+
+    /** @type {HTMLInputElement} */ const loopEl /** @type {any} */ = this._elements.loop;
+    loopEl.addEventListener("change", () => {
+      if (!this._initialized) return;
+      this.engine.setLoop(loopEl.checked);
+    });
+
+    /** @type {HTMLInputElement} */ const fileEl /** @type {any} */ = this._elements.file;
+    fileEl.addEventListener("change", async () => {
+      const f = fileEl.files?.[0];
+      if (!f) return;
+      await this._ensureAudio();
+      const ab = await f.arrayBuffer();
+      if (!this._ctx) return;
+      const buf = await this._ctx.decodeAudioData(ab.slice(0));
+      this.engine.setExternalBuffer(buf);
+      this._updateTimeUi();
+    });
+
+    this._buttons.forEach((btn) => {
+      btn.addEventListener("click", () => this._onButton(/** @type {HTMLElement} */ (btn).dataset.act));
+    });
+
+    this._startTimeUi();
+  }
+
+  /** @private @param {number} band */
+  _syncKnobsForBand(band) {
+    if (!this.engine.eq) return;
+    const kb = this._bandKnobs[band];
+    if (!kb) return;
+    const p = this.engine.eq.getBandParams(band);
+    kb.freq.setValue(freqToT(p.frequency, FREQ_RANGE), true);
+    kb.gain.setValue(p.gain, true);
+    kb.q.setValue(p.q, true);
+    /** @type {HTMLSelectElement|null} */
+    const ty = this.containerEl.querySelector(`select[data-band="${band}"][data-param="type"]`);
+    if (ty) ty.value = p.type;
+  }
+
+  /** @private */
+  _syncUIFromEngine() {
+    if (!this.engine.eq) return;
+    for (let b = 0; b < this._eqBands; b++) {
+      this._syncKnobsForBand(b);
+    }
+  }
+
+  /**
+   * Переключение между A (цель) и B (ваш EQ) по краям ползунка.
+   * @private
+   * @returns {boolean} true если слышится B
+   */
+  _flipDryWetExtreme() {
+    const wetNow = this.engine.getDryWet();
+    const next = wetNow < 0.5 ? 1 : 0;
+    this.engine.setDryWet(next);
+    /** @type {HTMLInputElement} */ (this._elements.dryWet).value = String(next * 100);
+    this._updateGameResultNeutral();
+    if (typeof this._opts.onA_BToggle === "function") this._opts.onA_BToggle(next >= 0.5);
+    return next >= 0.5;
+  }
+
+  /** @private @param {string|undefined} act */
+  async _onButton(act) {
+    switch (act) {
+      case "togglePlay": {
+        await this._ensureAudio();
+        if (this.engine.isPlaying()) {
+          this.pause();
+        } else {
+          this.play();
+        }
+        this._updatePlayButton();
+        return;
+      }
+      case "stop": {
+        await this._ensureAudio();
+        this.stop();
+        this._updatePlayButton();
+        return;
+      }
+      case "toggleAB": {
+        await this._ensureAudio();
+        this._flipDryWetExtreme();
+        return;
+      }
+      case "reset": {
+        await this._ensureAudio();
+        this.engine.eq?.resetFlat();
+        this._syncUIFromEngine();
+        this._updateGameResultNeutral();
+        this._scheduleEqHook();
+        return;
+      }
+      case "checkGuess": {
+        await this._ensureAudio();
+        this._runCheckGuess();
+        return;
+      }
+      case "newRound": {
+        await this._ensureAudio();
+        this._rollTargetBands();
+        return;
+      }
+      case "export": {
+        const j = JSON.stringify(this.exportSettings(), null, 2);
+        if (navigator.clipboard?.writeText) {
+          void navigator.clipboard.writeText(j).catch(() => {
+            window.prompt("Скопируйте JSON", j);
+          });
+        } else {
+          window.prompt("Скопируйте JSON", j);
+        }
+        return;
+      }
+      case "importPrompt": {
+        const raw = window.prompt("Вставьте JSON настроек");
+        if (raw) {
+          try {
+            this.importSettings(JSON.parse(raw));
+          } catch {
+            alert("Некорректный JSON");
+          }
+        }
+        return;
+      }
+      default:
+        return;
+    }
+  }
+
+  /** @private */
+  _updatePlayButton() {
+    const btn = this.containerEl.querySelector('[data-act="togglePlay"]');
+    if (!btn) return;
+    const playing = this._initialized && this.engine.isPlaying();
+    btn.textContent = playing ? "Pause" : "Play";
+    btn.setAttribute("aria-pressed", playing ? "true" : "false");
+  }
+
+  /** @private @param {KeyboardEvent} e */
+  _onKeyDown(e) {
+    if (
+      e.target &&
+      /** @type {HTMLElement} */ (e.target).closest(
+        'input,textarea,select,.eq-ab-knob-ring,.eq-ab-canvas[role="img"]',
+      )
+    ) {
+      if (e.code === "Space") return;
+    }
+    if (e.code === "Space") {
+      e.preventDefault();
+      void this._ensureAudio().then(() => {
+        if (this.engine.isPlaying()) this.pause();
+        else this.play();
+        this._updatePlayButton();
+      });
+      return;
+    }
+    if (e.key === "a" || e.key === "A") {
+      e.preventDefault();
+      void this._ensureAudio().then(() => {
+        this.engine.setDryWet(0);
+        /** @type {HTMLInputElement} */ (this._elements.dryWet).value = "0";
+        this._updateGameResultNeutral();
+        if (typeof this._opts.onA_BToggle === "function") this._opts.onA_BToggle(false);
+      });
+      return;
+    }
+    if (e.key === "b" || e.key === "B") {
+      e.preventDefault();
+      void this._ensureAudio().then(() => {
+        this.engine.setDryWet(1);
+        /** @type {HTMLInputElement} */ (this._elements.dryWet).value = "100";
+        this._updateGameResultNeutral();
+        if (typeof this._opts.onA_BToggle === "function") this._opts.onA_BToggle(true);
+      });
+      return;
+    }
+    if (e.key === "Tab") {
+      e.preventDefault();
+      void this._ensureAudio().then(() => {
+        const cur = this.engine.getDryWet();
+        const next = cur < 0.5 ? 1 : 0;
+        this.engine.setDryWet(next);
+        /** @type {HTMLInputElement} */ (this._elements.dryWet).value = String(next * 100);
+        this._updateGameResultNeutral();
+        if (typeof this._opts.onA_BToggle === "function") this._opts.onA_BToggle(next >= 0.5);
+      });
+      return;
+    }
+    if (e.key === "r" || e.key === "R") {
+      void this._ensureAudio().then(() => {
+        this.engine.eq?.resetFlat();
+        this._syncUIFromEngine();
+        this._scheduleEqHook();
+      });
+    }
+  }
+
+  /** @private */
+  _startTimeUi() {
+    if (this._tickId) return;
+    const run = () => {
+      this._tick();
+      this._tickId = requestAnimationFrame(run);
+    };
+    this._tickId = requestAnimationFrame(run);
+  }
+
+  /** @private */
+  _updateTimeUi() {
+    /** @type {HTMLElement|null} */
+    const tEl /** @type {any} */ = this._elements.time;
+    if (!tEl) return;
+    const d = this._initialized ? this.engine.getDuration() : 0;
+    const cu = this._initialized ? this.engine.getCurrentTime() : 0;
+    tEl.textContent = `${formatTime(cu)} / ${formatTime(d)}`;
+    /** @type {HTMLInputElement} */
+    const sk /** @type {any} */ = this._elements.seek;
+    if (d > 0) sk.valueAsNumber = (cu / d) * 1000;
+    this.engine.reduceHeadroomIfClipping();
+  }
+
+  async play() {
+    await this._ensureAudio();
+    this.engine.play();
+    this._updatePlayButton();
+  }
+
+  pause() {
+    this.engine.pause();
+    this._updatePlayButton();
+  }
+
+  stop() {
+    this.engine.stop();
+    this._updatePlayButton();
+  }
+
+  /** @param {number} time */
+  seek(time) {
+    this.engine.seek(time);
+  }
+
+  /** @param {number} ratio 0..1 */
+  setDryWet(ratio) {
+    void this._ensureAudio().then(() => {
+      this.engine.setDryWet(ratio);
+      /** @type {HTMLInputElement} */ (this._elements.dryWet).value = String(ratio * 100);
+      this._updateGameResultNeutral();
+    });
+  }
+
+  /**
+   * Переключение только A ⇄ только B.
+   * @returns {boolean} после переключения true если слышится B (пользователь)
+   */
+  toggleAB() {
+    if (!this._initialized) {
+      void this._ensureAudio().then(() => this._flipDryWetExtreme());
+      return false;
+    }
+    return this._flipDryWetExtreme();
+  }
+
+  /**
+   * @param {number} bandIndex
+   * @param {Partial<{ frequency: number, gain: number, q: number, type: EqFilterType }>} params
+   */
+  setBandParams(bandIndex, params) {
+    void this._ensureAudio().then(() => {
+      this.engine.eq?.setBandParams(bandIndex, params);
+      this._syncUIFromEngine();
+      this._scheduleEqHook();
+    });
+  }
+
+  /** @returns {ExportedEQSettings} */
+  exportSettings() {
+    const bands =
+      this.engine.eq?.exportAllBands() ??
+      Array.from({ length: this._eqBands }, (_, i) => ({
+        frequency: [120, 400, 1000, 3500, 10000][i % 5] ?? 440,
+        gain: 0,
+        q: 1,
+        type: /** @type {EqFilterType} */ ("peaking"),
+      }));
+    return {
+      bands,
+      wet: this._initialized ? this.engine.getDryWet() : 0.5,
+    };
+  }
+
+  /** @param {ExportedEQSettings} json */
+  importSettings(json) {
+    void this._ensureAudio().then(() => {
+      if (!json || !Array.isArray(json.bands) || !this.engine.eq) return;
+      json.bands.forEach((bp, i) => {
+        if (i >= this.engine.eq.numBands) return;
+        /** @typedef {ExportedEQSettings['bands'][0]} BP */
+        this.engine.eq.setBandParams(i, {
+          frequency: bp.frequency,
+          gain: bp.gain,
+          q: bp.q,
+          type: bp.type,
+        });
+      });
+      if (typeof json.wet === "number") this.setDryWet(json.wet);
+      this._syncUIFromEngine();
+      this._updateGameResultNeutral();
+      this._scheduleEqHook();
+    });
+  }
+
+  destroy() {
+    document.removeEventListener("keydown", this._keydown);
+    if (this._mobile) {
+      document.removeEventListener("visibilitychange", this._visibilityHandler);
+    }
+    if (this._tickId) cancelAnimationFrame(this._tickId);
+    this._tickId = 0;
+    for (const kb of this._bandKnobs) {
+      if (kb) {
+        kb.freq.dispose();
+        kb.gain.dispose();
+        kb.q.dispose();
+      }
+    }
+    this._bandKnobs = [];
+    try {
+      this._viz?.dispose();
+    } catch {
+      /* noop */
+    }
+    this._viz = null;
+    this._emitter.dispose();
+    try {
+      this.engine.stopImmediate();
+      this.engine.dispose(true);
+    } catch {
+      /* noop */
+    }
+    try {
+      this._ctx?.close();
+    } catch {
+      /* noop */
+    }
+    this._ctx = null;
+    this.containerEl.innerHTML = "";
+    this.containerEl.classList.remove("eq-ab-widget-root", "eq-ab-mobile");
+  }
+}
