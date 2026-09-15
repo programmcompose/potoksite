@@ -158,16 +158,89 @@
 
   .back-link:hover { text-decoration: underline; }
 
-  .tool-cards {
+  /* === Hero card — главный топик (Тесты по курсу) === */
+  .hero-card {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    background:
+      radial-gradient(ellipse at 15% 50%, rgba(255,143,0,0.18) 0%, transparent 60%),
+      var(--bg-card);
+    border-radius: calc(var(--radius) + 4px);
+    padding: 28px;
+    box-shadow: 0 6px 24px rgba(255,143,0,0.15), var(--shadow);
+    border: 1px solid rgba(255,143,0,0.45);
+    transition: all 0.2s;
+    text-decoration: none;
+    color: var(--text);
+    margin-bottom: 28px;
+  }
+
+  .hero-card:hover {
+    transform: translateY(-3px);
+    border-color: #FF8F00;
+    box-shadow: 0 10px 32px rgba(255,143,0,0.28), var(--shadow);
+  }
+
+  .hero-icon {
+    font-size: 3.2em;
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .hero-body { flex: 1; min-width: 0; }
+
+  .hero-card h2 {
+    font-size: 1.6em;
+    font-weight: 900;
+    margin-bottom: 8px;
+  }
+
+  .hero-card p {
+    font-size: 0.95em;
+    color: var(--text-muted);
+    line-height: 1.55;
+    margin-bottom: 12px;
+  }
+
+  .hero-cta {
+    display: inline-block;
+    background: linear-gradient(135deg, #FFB300, #FF7043);
+    color: #1a1206;
+    font-weight: 700;
+    font-size: 0.9em;
+    padding: 10px 22px;
+    border-radius: 999px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .hero-card:hover .hero-cta {
+    transform: scale(1.05);
+    box-shadow: 0 4px 16px rgba(255,143,0,0.4);
+  }
+
+  /* === Сетка небольших карточек остальных инструментов === */
+  .section-title {
+    font-size: 0.9em;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 14px;
+  }
+
+  .tool-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-    gap: 16px;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 14px;
   }
 
   .tool-card {
     background: var(--bg-card);
     border-radius: var(--radius);
-    padding: 24px;
+    padding: 18px;
     box-shadow: var(--shadow);
     border: 1px solid var(--bg-card-border);
     transition: all 0.2s;
@@ -183,21 +256,21 @@
   }
 
   .tool-icon {
-    font-size: 2.5em;
-    margin-bottom: 12px;
+    font-size: 2em;
+    margin-bottom: 10px;
   }
 
   .tool-card h2 {
-    font-size: 1.2em;
+    font-size: 1.05em;
     font-weight: 700;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
   }
 
   .tool-card p {
-    font-size: 0.9em;
+    font-size: 0.85em;
     color: var(--text-muted);
-    line-height: 1.5;
-    margin-bottom: 12px;
+    line-height: 1.45;
+    margin-bottom: 10px;
   }
 
   .tool-tag {
@@ -237,9 +310,14 @@
     color: var(--text-muted);
   }
 
-  @media (max-width: 600px) {
+  @media (max-width: 700px) {
     header h1 { font-size: 1.5em; }
-    .tool-cards { grid-template-columns: 1fr; }
+    .hero-card {
+      flex-direction: column;
+      text-align: center;
+      padding: 24px 20px;
+    }
+    .hero-cta { width: 100%; text-align: center; }
   }
 </style>
 </head>
@@ -255,7 +333,20 @@
     <p>Практикуйте теорию музыки с помощью интерактивных инструментов прямо в браузере</p>
   </header>
 
-  <div class="tool-cards">
+  <a href="quiz/index.html" class="hero-card">
+    <div class="hero-icon">🎯</div>
+    <div class="hero-body">
+      <h2>Тесты по курсу</h2>
+      <p>Проверь знания после каждого этапа: вопросы с мгновенным разбором — почему верно и где ошибся. Лучший результат сохраняется в браузере, итог можно отправить в Telegram.</p>
+      <span class="tool-tag tag-quiz">Тесты</span>
+      <span class="tool-tag tag-checklist">Прогресс</span>
+    </div>
+    <span class="hero-cta">Пройти тесты →</span>
+  </a>
+
+  <h2 class="section-title">Другие инструменты</h2>
+
+  <div class="tool-grid">
     <a href="wavetable/index.html" class="tool-card">
       <div class="tool-icon">🌊</div>
       <h2>Аналоговый синтезатор</h2>
@@ -288,14 +379,6 @@
       <span class="tool-tag tag-audio">Аудио</span>
     </a>
 
-
-    <a href="quiz/index.html" class="tool-card">
-      <div class="tool-icon">🎯</div>
-      <h2>Тесты по курсу</h2>
-      <p>Проверь знания после каждого этапа: вопросы с мгновенным разбором — почему верно и где ошибся. Лучший результат сохраняется в браузере, итог можно отправить в Telegram.</p>
-      <span class="tool-tag tag-quiz">Тесты</span>
-      <span class="tool-tag tag-checklist">Прогресс</span>
-    </a>
 
     <a href="https://programmcompose.github.io/potoksite/tools/iy-quest/index.html" class="tool-card">
       <div class="tool-icon">🎮</div>
