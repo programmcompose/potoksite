@@ -319,7 +319,7 @@ header p { font-size: 0.95em; color: var(--text-muted); max-width: 520px; margin
   <!-- START SCREEN -->
   <div class="screen active" id="startScreen">
     <div class="card">
-      <div class="start-icon">🎯</div>
+      <div class="start-icon" id="startIcon">🎯</div>
       <h2 style="font-size:1.2em; font-weight:900; margin-bottom:12px;" id="startTitle"></h2>
       <p class="start-desc" id="startDesc"></p>
       <div class="start-meta">
@@ -525,6 +525,7 @@ function swingRollSVG() {
 var STAGES = [
   {
     id: "etap0",
+    emoji: "🛠️",
     short: "№0 · Подготовка",
     title: "Этап №0: Подготовка к продакшну",
     desc: "Выбор DAW, оборудование, рабочее место, аудио-драйверы, плагины и оптимизация компа — всё, что нужно настроить до первого бита.",
@@ -698,6 +699,7 @@ var STAGES = [
   },
   {
     id: "etap1",
+    emoji: "🥁",
     short: "№1 · Первые биты",
     title: "Этап №1: Первые Биты",
     desc: "Сэмплы, драмка, микшер, мелодия, бас, мастер-канал и рендер — всё, что вы прошли в первом этапе курса.",
@@ -1017,6 +1019,7 @@ var STAGES = [
   },
   {
     id: "etap2",
+    emoji: "🎚️",
     short: "№2 · Сведение и VST",
     title: "Этап №2: Сведение и VST Плагины",
     desc: "EQ, сатурация, реверб, делэй, хорус, компрессия, лимитер, стилизация сэмплов, автоматизация, порядок обработки, мастер-канал и тренировка слуха.",
@@ -1619,6 +1622,7 @@ var STAGES = [
   },
   {
     id: "etap3",
+    emoji: "⚡",
     short: "№3 · Усложненные биты",
     title: "Этап №3: Усложненные биты",
     desc: "Мелодии и синты (ADSR, пресеты), one-shots, pitch/warp, чопы, рендер/консолидация, усложнение драм-партии, бум-бэп, рок/NFS, жёсткие bass-boosted биты, FX-манипуляции, структура трека, спидран и мастеринг.",
@@ -2071,6 +2075,7 @@ var STAGES = [
   },
   {
     id: "etap4",
+    emoji: "🎼",
     short: "№4 · Теория и аккорды",
     title: "Этап №4: Теория музыки и Аккорды",
     desc: "Ноты, интервалы, тональности и лады, построение аккордов и инверсии, прогрессии и расширения (7-я/9-я), мелодия к аккордам, ритмика и кач, тембры и читаемость, применение в битах, импровизация, референсы и нейросети.",
@@ -2555,6 +2560,7 @@ var STAGES = [
   },
   {
     id: "etap5",
+    emoji: "🎛️",
     short: "№5 · EDM и саунд-дизайн",
     title: "Этап №5: EDM и Саунд-дизайн",
     desc: "Wavetable-синтез в Serum, ADSR и LFO, фильтры и FX внутри синта, лееринг, slice/chop, жанры EDM (house / DnB / dubstep), стили Crystal Castles, 2hollis и DeathStep, философия саунд-дизайна и фишки сведения.",
@@ -2984,6 +2990,7 @@ var STAGES = [
   },
   {
     id: "etap6",
+    emoji: "🎸",
     short: "№6 · Живая музыка",
     title: "Этап №6: Живая Музыка",
     desc: "Рок, пост-панк, гранж, метал и джаз через VST + запись реальных инструментов: подбор библиотек, humanize, сведение по жанрам, шум и маршрутизация.",
@@ -3568,6 +3575,7 @@ var STAGES = [
   },
 {
   id: "etap7",
+  emoji: "🎤",
   short: "№7 · Вокал",
   title: "Этап №7: Сведение Вокала",
   desc: "Полный пайплайн вокала: запись и gain staging, редакция (ритмика, тюн, RX), EQ/компрессия/сатурация, реверб/делэй/хорус/de-esser, бэки, сведение с битом, финальный чек по LUFS и работа с референсами.",
@@ -4188,6 +4196,7 @@ var STAGES = [
 },
   {
   id: "etap8",
+  emoji: "🎬",
   short: "№8 · Саундтреки",
   title: "Этап №8: Саундтреки и Эмбиент",
   desc: "Полный пайплайн композитора: библиотеки Kontakt, оркестровка (струнные/духовые/пиано/арфа/перкуссия), написание с нуля (настроение, гармония, аранжировка), минутный трек и трейлер, оркестровая тема, аккорды и ритм, работа под картинку и фильм, сведение оркестра, эмбиент и техническая часть.",
@@ -5012,6 +5021,7 @@ var STAGES = [
 
 {
   id: "etap9",
+  emoji: "🚀",
   short: "№9 · Продвижение",
   title: "Этап №9: Продвижение и Заработок",
   desc: "Переход от продюсера за компьютером к профессионалу индустрии: цель пиара и баланс коммерции с творчеством, соцсети (VK, TikTok, YouTube, Telegram, SoundCloud), продажа битов и сведения, стоки (BeatStars, Pond5, AudioJungle), прогресс в продвижении, дистрибуция на стриминги, борьба с выгоранием, монетизация, отношения с артистами и договоры.",
@@ -5534,7 +5544,7 @@ function renderStages() {
     } else {
       var best = getBest(st.id);
       var note = st.questions.length + " вопр." + (best ? " · <b class='best-score'>" + best.score + "/" + best.total + "</b>" : "");
-      chip.innerHTML = "<span>🎯 " + st.short + "</span><span class='chip-note'>" + note + "</span>";
+      chip.innerHTML = "<span>" + (st.emoji || "🎯") + " " + st.short + "</span><span class='chip-note'>" + note + "</span>";
     }
     if (!st.soon) {
       chip.addEventListener("click", function () { selectStage(st.id); });
@@ -5549,6 +5559,7 @@ function selectStage(id) {
   resetComboBadge();
   var st = STAGES.filter(function (s) { return s.id === id; })[0];
   renderStages();
+  document.getElementById("startIcon").textContent = st.emoji || "🎯";
   document.getElementById("startTitle").textContent = st.title;
   document.getElementById("startDesc").textContent = st.desc;
   document.getElementById("metaCount").textContent = "Вопросов: " + st.questions.length;
