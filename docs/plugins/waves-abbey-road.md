@@ -3,6 +3,8 @@
 
 ## Waves Abbey Road Reel ADT
 
+![Waves Abbey Road Reel ADT](../assets/waves-reel-adt-ui.png)
+
 - **Что это:** Эмуляция эффекта Artificial Double Tracking (искусственного удвоения дорожки), изобретенного в Abbey Road в 1966 году для The Beatles.
     
 - **Суть:** Создает эффект «удвоенного» голоса или инструмента без реальной второй записи. Сигнал немного сдвигается по времени и модулируется, имитируя естественные колебания ленты.
@@ -12,6 +14,8 @@
 - **Как настраивать:** Включай плагин, выбери источник для оригинального сигнала и для ADT-копии. Крути **Delay** (задержка) и **Wobble** (качание скорости), чтобы найти нужную степень «сдвига» и фленжера.
 
 ## Waves Abbey Road Reverb Plates
+
+![Waves Abbey Road Reverb Plates](../assets/waves-reverb-plates-ui.png)
 
 - **Что это:** Эмуляция четырех легендарных пластинчатых ревербераторов (EMT 140), установленных в Abbey Road Studios.
     
@@ -23,6 +27,8 @@
 
 ## Waves Abbey Road Chambers
 
+![Waves Abbey Road Chambers](../assets/waves-chambers-ui.png)
+
 - **Что это:** Эмуляция акустических эхо-камер Abbey Road и Olympic Studios, включая всю цепочку обработки: микрофоны, динамики, ленточные задержки и фильтры.
     
 - **Суть:** Полностью аутентичный реверберационный эффект. Тот самый звук вокала Леннона.
@@ -32,6 +38,8 @@
 - **Как настраивать:** Выбери камеру (Studio Two, Mirror Room или Stone Room). Подбирай микрофоны, динамики и их положение. Используй секцию **S.T.E.E.D.** для создания уникальных задержек и свипов.
 
 ## Waves Abbey Road RS124
+
+![Waves Abbey Road RS124](../assets/waves-rs124-ui.png)
 
 - **Что это:** Эмуляция редкой ламповой модификации компрессора Altec 436B, сделанной инженерами Abbey Road для собственных нужд. 
     
@@ -43,6 +51,8 @@
 
 ### Waves Abbey Road TG Mastering Chain
 
+![Waves Abbey Road TG Mastering Chain](../assets/waves-tg-mastering-chain-ui.png)
+
 - **Что это:** Эмуляция мастерингового канала EMI TG12410, использовавшегося в Abbey Road с 1970-х годов.
     
 - **Суть:** Полноценная цепочка мастеринга в одном плагине: эквалайзер, фильтры, компрессор (Zener diode), лимитер и стерео-расширитель.
@@ -52,6 +62,8 @@
 - **Как настраивать:** Включай модули в порядке: Input > Tone > Filter > Limiter. Цвет и насыщение дает секция **Limiter** — грузи сигнал до 0VU. **Compressor** выбирай в режиме Modern для агрессии или Original для классики.
 
 ## Waves Abbey Road Saturator (любимчик многих)
+
+![Waves Abbey Road Saturator](../assets/waves-saturator-ui.png)
 
 - **Что это:** Эмуляция двух типов насыщения: лампового (Valve) и транзисторного (Solid State) с консолей Abbey Road.
     
@@ -63,6 +75,8 @@
 
 ## Waves Abbey Road J37 Tape
 
+![Waves Abbey Road J37 Tape](../assets/waves-j37-tape-ui.png)
+
 - **Что это:** Эмуляция легендарной ленточной машины Studer J37, на которой записывались The Beatles и Pink Floyd.
     
 - **Суть:** Дарит звуку теплоту, компрессию и приятные гармонические искажения, свойственные аналоговой ленте. Также содержит ленточную задержку.
@@ -72,6 +86,8 @@
 - **Как настраивать:** Выбери тип ленты (EMI Tape Formulas) и скорость. **Saturation Level** добавляет гармоник в верхах, **Input Level** вызывает приятное искажение низа. Меняй **Modeled Tracks** для разной стерео-ширины.
 
 ## Waves Abbey Road REDD
+
+![Waves Abbey Road REDD](../assets/waves-redd-ui.png)
 
 - **Что это:** Эмуляция легендарных ламповых консолей REDD.17, REDD.37 и REDD.51, на которых записывались The Beatles.
     
@@ -83,6 +99,8 @@
 
 ## Waves Abbey Road EMI TG12345
 
+![Waves Abbey Road EMI TG12345](../assets/waves-tg12345-ui.png)
+
 - **Что это:** Эмуляция канальной полосы транзисторной консоли EMI TG12345 (использовалась на Dark Side of the Moon Pink Floyd).
     
 - **Суть:** Более чистый и прозрачный винтажный звук, чем у REDD. Мощный компрессор и уникальный Presence-EQ для «воздуха».
@@ -93,6 +111,8 @@
 
 ## Waves Abbey Road RS56 Passive EQ
 
+![Waves Abbey Road RS56 Passive EQ](../assets/waves-rs56-eq-ui.png)
+
 - **Что это:** Эмуляция пассивного эквалайзера RS56 «Curve Bender» — одного из первых в мире параметрических EQ, разработанного для мастеринга в Abbey Road.
     
 - **Суть:** Очень музыкальный, плавный эквалайзер с «дорогим» аналоговым характером. Не режет резко, а «лепит» тон.
@@ -102,6 +122,8 @@
 - **Как настраивать:** Включай нужные полосы (Low, Mid, High). Крути частоту и усиление — подъемы и спады очень мягкие. Доверяй уху!
 
 ## Waves Abbey Road The King's Microphones
+
+![Waves Abbey Road The King's Microphones](../assets/waves-kings-mics-ui.png)
 
 - **Что это:** Эмуляция трех редких микрофонов британской королевской семьи 1920–30-х годов: George V, George VI, Queen Elizabeth.
     
