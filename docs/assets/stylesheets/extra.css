@@ -436,6 +436,8 @@
   border-radius: 16px;
   position: relative;
   overflow: hidden;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   background:
     radial-gradient(ellipse at center, rgba(255, 215, 0, 0.2) 0%, transparent 70%),
     linear-gradient(135deg, #FFD54F 0%, #FFC107 50%, #FFB300 100%) !important;
@@ -489,8 +491,8 @@
    ======================================== */
 .hero-section.etap0 {
   background:
-    radial-gradient(ellipse at center, rgba(180, 180, 180, 0.2) 0%, transparent 70%),
-    linear-gradient(135deg, #90A4AE 0%, #78909C 50%, #546E7A 100%) !important;
+    radial-gradient(ellipse at center, rgba(180, 180, 180, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(188, 200, 206, 0.6) 0%, rgba(174, 190, 196, 0.6) 50%, rgba(152, 168, 175, 0.6) 100%) !important;
   border-color: rgba(120, 144, 156, 0.3) !important;
   box-shadow:
     0 4px 24px rgba(84, 110, 122, 0.12),
@@ -513,8 +515,8 @@
 
 .hero-section.etap1 {
   background:
-    radial-gradient(ellipse at center, rgba(106, 27, 154, 0.2) 0%, transparent 70%),
-    linear-gradient(135deg, #9C27B0 0%, #7B1FA2 50%, #4A148C 100%) !important;
+    radial-gradient(ellipse at center, rgba(106, 27, 154, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(196, 125, 208, 0.6) 0%, rgba(176, 121, 199, 0.6) 50%, rgba(150, 118, 188, 0.6) 100%) !important;
   border-color: rgba(106, 27, 154, 0.3) !important;
   box-shadow:
     0 4px 24px rgba(106, 27, 154, 0.12),
@@ -537,8 +539,8 @@
 
 .hero-section.etap2 {
   background:
-    radial-gradient(ellipse at center, rgba(33, 150, 243, 0.2) 0%, transparent 70%),
-    linear-gradient(135deg, #64B5F6 0%, #42A5F5 50%, #1E88E5 100%) !important;
+    radial-gradient(ellipse at center, rgba(33, 150, 243, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(162, 211, 250, 0.6) 0%, rgba(142, 201, 249, 0.6) 50%, rgba(122, 186, 239, 0.6) 100%) !important;
   border-color: rgba(33, 150, 243, 0.3) !important;
   box-shadow:
     0 4px 24px rgba(33, 150, 243, 0.12),
@@ -561,8 +563,8 @@
 
 .hero-section.etap3 {
   background:
-    radial-gradient(ellipse at center, rgba(156, 39, 176, 0.2) 0%, transparent 70%),
-    linear-gradient(135deg, #CE93D8 0%, #AB47BC 50%, #8E24AA 100%) !important;
+    radial-gradient(ellipse at center, rgba(156, 39, 176, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(226, 190, 232, 0.6) 0%, rgba(205, 149, 215, 0.6) 50%, rgba(187, 124, 204, 0.6) 100%) !important;
   border-color: rgba(156, 39, 176, 0.3) !important;
   box-shadow:
     0 4px 24px rgba(156, 39, 176, 0.12),
@@ -585,8 +587,8 @@
 
 .hero-section.etap4 {
   background:
-    radial-gradient(ellipse at center, rgba(76, 175, 80, 0.2) 0%, transparent 70%),
-    linear-gradient(135deg, #81C784 0%, #66BB6A 50%, #43A047 100%) !important;
+    radial-gradient(ellipse at center, rgba(76, 175, 80, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(181, 221, 183, 0.6) 0%, rgba(167, 214, 172, 0.6) 50%, rgba(141, 198, 145, 0.6) 100%) !important;
   border-color: rgba(76, 175, 80, 0.3) !important;
   box-shadow:
     0 4px 24px rgba(76, 175, 80, 0.12),
@@ -609,8 +611,8 @@
 
 .hero-section.etap5 {
   background:
-    radial-gradient(ellipse at center, rgba(233, 30, 99, 0.2) 0%, transparent 70%),
-    linear-gradient(135deg, #F06292 0%, #EC407A 50%, #D81B60 100%) !important;
+    radial-gradient(ellipse at center, rgba(233, 30, 99, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(246, 161, 190, 0.6) 0%, rgba(244, 140, 174, 0.6) 50%, rgba(232, 119, 158, 0.6) 100%) !important;
   border-color: rgba(233, 30, 99, 0.3) !important;
   box-shadow:
     0 4px 24px rgba(233, 30, 99, 0.12),
@@ -633,8 +635,8 @@
 
 .hero-section.etap6 {
   background:
-    radial-gradient(ellipse at center, rgba(255, 87, 34, 0.2) 0%, transparent 70%),
-    linear-gradient(135deg, #FFAB91 0%, #FF7043 50%, #F4511E 100%) !important;
+    radial-gradient(ellipse at center, rgba(255, 87, 34, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(255, 205, 193, 0.6) 0%, rgba(255, 169, 143, 0.6) 50%, rgba(248, 151, 124, 0.6) 100%) !important;
   border-color: rgba(255, 87, 34, 0.3) !important;
   box-shadow:
     0 4px 24px rgba(255, 87, 34, 0.12),
@@ -657,8 +659,8 @@
 
 .hero-section.etap7 {
   background:
-    radial-gradient(ellipse at center, rgba(103, 58, 183, 0.2) 0%, transparent 70%),
-    linear-gradient(135deg, #B39DDB 0%, #9575CD 50%, #7E57C2 100%) !important;
+    radial-gradient(ellipse at center, rgba(103, 58, 183, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(209, 196, 233, 0.6) 0%, rgba(191, 172, 227, 0.6) 50%, rgba(182, 155, 218, 0.6) 100%) !important;
   border-color: rgba(103, 58, 183, 0.3) !important;
   box-shadow:
     0 4px 24px rgba(103, 58, 183, 0.12),
@@ -681,8 +683,8 @@
 
 .hero-section.etap8 {
   background:
-    radial-gradient(ellipse at center, rgba(0, 150, 136, 0.2) 0%, transparent 70%),
-    linear-gradient(135deg, #4DB6AC 0%, #26A69A 50%, #00897B 100%) !important;
+    radial-gradient(ellipse at center, rgba(0, 150, 136, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(156, 211, 205, 0.6) 0%, rgba(125, 202, 194, 0.6) 50%, rgba(62, 186, 176, 0.6) 100%) !important;
   border-color: rgba(0, 150, 136, 0.3) !important;
   box-shadow:
     0 4px 24px rgba(0, 150, 136, 0.12),
@@ -705,8 +707,8 @@
 
 .hero-section.etap9 {
   background:
-    radial-gradient(ellipse at center, rgba(255, 215, 0, 0.2) 0%, transparent 70%),
-    linear-gradient(135deg, #FFF176 0%, #FFEE58 50%, #FFD600 100%) !important;
+    radial-gradient(ellipse at center, rgba(255, 215, 0, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(255, 247, 173, 0.6) 0%, rgba(255, 245, 157, 0.6) 50%, rgba(255, 230, 92, 0.6) 100%) !important;
   border-color: rgba(255, 215, 0, 0.3) !important;
   box-shadow:
     0 4px 24px rgba(255, 215, 0, 0.12),
@@ -1299,8 +1301,8 @@ html {
 
 [data-md-color-scheme="slate"] .hero-section.etap0 {
   background:
-    radial-gradient(ellipse at center, rgba(144, 164, 174, 0.15) 0%, transparent 70%),
-    linear-gradient(135deg, #37474F 0%, #263238 50%, #1C2A30 100%) !important;
+    radial-gradient(ellipse at center, rgba(144, 164, 174, 0.12) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(50, 63, 70, 0.65) 0%, rgba(37, 47, 53, 0.65) 50%, rgba(30, 41, 47, 0.65) 100%) !important;
   border-color: rgba(90, 120, 130, 0.25) !important;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
 }
@@ -1313,8 +1315,8 @@ html {
 
 [data-md-color-scheme="slate"] .hero-section.etap1 {
   background:
-    radial-gradient(ellipse at center, rgba(106, 27, 154, 0.15) 0%, transparent 70%),
-    linear-gradient(135deg, #4A148C 0%, #311B92 50%, #1A0B2E 100%) !important;
+    radial-gradient(ellipse at center, rgba(106, 27, 154, 0.12) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(64, 25, 116, 0.65) 0%, rgba(46, 30, 120, 0.65) 50%, rgba(28, 18, 45, 0.65) 100%) !important;
   border-color: rgba(106, 27, 154, 0.25) !important;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
 }
@@ -1327,8 +1329,8 @@ html {
 
 [data-md-color-scheme="slate"] .hero-section.etap2 {
   background:
-    radial-gradient(ellipse at center, rgba(33, 150, 243, 0.15) 0%, transparent 70%),
-    linear-gradient(135deg, #1565C0 0%, #0D47A1 50%, #0A3570 100%) !important;
+    radial-gradient(ellipse at center, rgba(33, 150, 243, 0.12) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(25, 86, 155, 0.65) 0%, rgba(19, 63, 131, 0.65) 50%, rgba(16, 50, 95, 0.65) 100%) !important;
   border-color: rgba(66, 165, 245, 0.25) !important;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
 }
@@ -1341,8 +1343,8 @@ html {
 
 [data-md-color-scheme="slate"] .hero-section.etap3 {
   background:
-    radial-gradient(ellipse at center, rgba(156, 39, 176, 0.15) 0%, transparent 70%),
-    linear-gradient(135deg, #6A1B9A 0%, #4A148C 50%, #380D6E 100%) !important;
+    radial-gradient(ellipse at center, rgba(156, 39, 176, 0.12) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(88, 30, 126, 0.65) 0%, rgba(64, 25, 116, 0.65) 50%, rgba(51, 20, 93, 0.65) 100%) !important;
   border-color: rgba(186, 104, 200, 0.25) !important;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
 }
@@ -1355,8 +1357,8 @@ html {
 
 [data-md-color-scheme="slate"] .hero-section.etap4 {
   background:
-    radial-gradient(ellipse at center, rgba(76, 175, 80, 0.15) 0%, transparent 70%),
-    linear-gradient(135deg, #2E7D32 0%, #1B5E20 50%, #134715 100%) !important;
+    radial-gradient(ellipse at center, rgba(76, 175, 80, 0.12) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(43, 104, 47, 0.65) 0%, rgba(29, 80, 35, 0.65) 50%, rgba(23, 63, 26, 0.65) 100%) !important;
   border-color: rgba(129, 199, 132, 0.25) !important;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
 }
@@ -1369,8 +1371,8 @@ html {
 
 [data-md-color-scheme="slate"] .hero-section.etap5 {
   background:
-    radial-gradient(ellipse at center, rgba(233, 30, 99, 0.15) 0%, transparent 70%),
-    linear-gradient(135deg, #880E4F 0%, #6A0035 50%, #500028 100%) !important;
+    radial-gradient(ellipse at center, rgba(233, 30, 99, 0.12) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(111, 20, 69, 0.65) 0%, rgba(88, 10, 48, 0.65) 50%, rgba(69, 10, 41, 0.65) 100%) !important;
   border-color: rgba(240, 98, 146, 0.25) !important;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
 }
@@ -1383,8 +1385,8 @@ html {
 
 [data-md-color-scheme="slate"] .hero-section.etap6 {
   background:
-    radial-gradient(ellipse at center, rgba(255, 87, 34, 0.15) 0%, transparent 70%),
-    linear-gradient(135deg, #BF360C 0%, #9E2A0B 50%, #802008 100%) !important;
+    radial-gradient(ellipse at center, rgba(255, 87, 34, 0.12) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(153, 50, 19, 0.65) 0%, rgba(130, 41, 19, 0.65) 50%, rgba(107, 34, 17, 0.65) 100%) !important;
   border-color: rgba(255, 138, 101, 0.25) !important;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
 }
@@ -1397,8 +1399,8 @@ html {
 
 [data-md-color-scheme="slate"] .hero-section.etap7 {
   background:
-    radial-gradient(ellipse at center, rgba(103, 58, 183, 0.15) 0%, transparent 70%),
-    linear-gradient(135deg, #4527A0 0%, #311B92 50%, #241270 100%) !important;
+    radial-gradient(ellipse at center, rgba(103, 58, 183, 0.12) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(61, 39, 131, 0.65) 0%, rgba(46, 30, 120, 0.65) 50%, rgba(36, 23, 95, 0.65) 100%) !important;
   border-color: rgba(149, 117, 205, 0.25) !important;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
 }
@@ -1411,8 +1413,8 @@ html {
 
 [data-md-color-scheme="slate"] .hero-section.etap8 {
   background:
-    radial-gradient(ellipse at center, rgba(0, 150, 136, 0.15) 0%, transparent 70%),
-    linear-gradient(135deg, #00695C 0%, #004D40 50%, #00362E 100%) !important;
+    radial-gradient(ellipse at center, rgba(0, 150, 136, 0.12) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(9, 89, 79, 0.65) 0%, rgba(9, 68, 61, 0.65) 50%, rgba(9, 51, 44, 0.65) 100%) !important;
   border-color: rgba(77, 182, 172, 0.25) !important;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
 }
@@ -1425,8 +1427,8 @@ html {
 
 [data-md-color-scheme="slate"] .hero-section.etap9 {
   background:
-    radial-gradient(ellipse at center, rgba(255, 215, 0, 0.15) 0%, transparent 70%),
-    linear-gradient(135deg, #F57F17 0%, #E65100 50%, #CC4300 100%) !important;
+    radial-gradient(ellipse at center, rgba(255, 215, 0, 0.12) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(206, 105, 28, 0.65) 0%, rgba(196, 71, 11, 0.65) 50%, rgba(175, 60, 11, 0.65) 100%) !important;
   border-color: rgba(255, 238, 88, 0.25) !important;
   box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
 }
