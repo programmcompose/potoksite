@@ -29,6 +29,8 @@
     
     [<i data-lucide="crosshair"></i> **Пройти тест**](../tools/quiz/index.html?stage=etap6)
 
+
+<div class="potok-inline-quiz" data-stage="etap6"></div>
 ## Итог этапа
 
 За этот этап вы освоили:

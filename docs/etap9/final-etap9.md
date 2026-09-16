@@ -79,6 +79,8 @@
     
     [<i data-lucide="crosshair"></i> **Пройти тест**](../tools/quiz/index.html?stage=etap9)
 
+
+<div class="potok-inline-quiz" data-stage="etap9"></div>
 ---
 
 **← [Назад: Договора и права →](dogovory-pravo.md)** | **[На главную →](../index.md)**

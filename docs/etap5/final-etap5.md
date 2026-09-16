@@ -24,6 +24,8 @@
 
     [<i data-lucide="crosshair"></i> **Пройти тест**](../tools/quiz/index.html?stage=etap5)
 
+
+<div class="potok-inline-quiz" data-stage="etap5"></div>
 ---
 
 **← [Назад: Ремиксы треков →](remiksy.md)** | **[Далее: Этап №6 →](../etap6/index.md)**

@@ -90,6 +90,8 @@
 
     [<i data-lucide="crosshair"></i> **Пройти тест**](../tools/quiz/index.html?stage=etap3)
 
+
+<div class="potok-inline-quiz" data-stage="etap3"></div>
 ---
 
 **← [Назад: Мастеринг](mastering-etap3.md)** | **[Далее: Этап №4 →](../etap4/index.md)**

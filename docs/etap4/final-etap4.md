@@ -77,6 +77,8 @@
 
     [<i data-lucide="crosshair"></i> **Пройти тест**](../tools/quiz/index.html?stage=etap4)
 
+
+<div class="potok-inline-quiz" data-stage="etap4"></div>
 ---
 
 **← [Назад: Нейросети для музыки](neyrosieti.md)** | **[Далее: Этап №6 →](../etap6/index.md)**

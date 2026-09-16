@@ -23,6 +23,8 @@
     
     [<i data-lucide="crosshair"></i> **Пройти тест**](../tools/quiz/index.html?stage=etap1)
 
+
+<div class="potok-inline-quiz" data-stage="etap1"></div>
 ## Не забывайте про сообщество
 
 !!! important

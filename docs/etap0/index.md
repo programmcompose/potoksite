@@ -84,6 +84,8 @@ Xmind — ментальные карты. Obsidian — заметки со св
 
     [<i data-lucide="crosshair"></i> **Пройти тест**](../tools/quiz/index.html?stage=etap0)
 
+
+<div class="potok-inline-quiz" data-stage="etap0"></div>
 ---
 
 [**Частые вопросы по организационным вопросам курса**](../faq.md)
