@@ -1,0 +1,159 @@
+/* ========================================
+   Micro-challenges — задания в конце статьи
+   18 ПОТОК
+   ======================================== */
+
+.potok-challenge {
+  --ch-bg: color-mix(in srgb, var(--md-primary-fg-color, #00bcd4) 8%, transparent);
+  --ch-border: color-mix(in srgb, var(--md-accent-fg-color, #ff9800) 45%, transparent);
+  --ch-accent: var(--md-accent-fg-color, #ff9800);
+  --ch-text: var(--md-typeset-color, inherit);
+
+  margin: 2.5rem 0 1.5rem;
+  padding: 1.25rem 1.35rem 1.1rem;
+  border: 1px solid var(--ch-border);
+  border-radius: 12px;
+  background: var(--ch-bg);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--ch-accent) 12%, transparent);
+}
+
+.potok-challenge__header {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.75rem;
+}
+
+.potok-challenge__badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ch-accent);
+  background: color-mix(in srgb, var(--ch-accent) 15%, transparent);
+  padding: 0.2rem 0.55rem;
+  border-radius: 999px;
+}
+
+.potok-challenge__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--ch-text);
+  line-height: 1.3;
+}
+
+.potok-challenge__body {
+  margin: 0 0 1rem;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  opacity: 0.92;
+}
+
+.potok-challenge__body p {
+  margin: 0 0 0.5rem;
+}
+
+.potok-challenge__body p:last-child {
+  margin-bottom: 0;
+}
+
+.potok-challenge__steps {
+  margin: 0 0 1rem;
+  padding-left: 1.15rem;
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.potok-challenge__steps li {
+  margin-bottom: 0.35rem;
+}
+
+.potok-challenge__hint {
+  margin: 0 0 1rem;
+  padding: 0.65rem 0.85rem;
+  font-size: 0.85rem;
+  border-left: 3px solid var(--ch-accent);
+  background: color-mix(in srgb, var(--ch-accent) 8%, transparent);
+  border-radius: 0 8px 8px 0;
+  opacity: 0.95;
+}
+
+.potok-challenge__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.potok-challenge__btn {
+  appearance: none;
+  border: 1px solid color-mix(in srgb, var(--ch-accent) 50%, transparent);
+  background: color-mix(in srgb, var(--ch-accent) 18%, transparent);
+  color: var(--ch-text);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+}
+
+.potok-challenge__btn:hover {
+  background: color-mix(in srgb, var(--ch-accent) 28%, transparent);
+  border-color: var(--ch-accent);
+}
+
+.potok-challenge__btn:active {
+  transform: scale(0.98);
+}
+
+.potok-challenge__btn--done {
+  background: color-mix(in srgb, #4caf50 22%, transparent);
+  border-color: color-mix(in srgb, #4caf50 55%, transparent);
+  color: var(--ch-text);
+}
+
+.potok-challenge__btn--done::before {
+  content: "✓ ";
+}
+
+.potok-challenge__meta {
+  font-size: 0.78rem;
+  opacity: 0.65;
+}
+
+.potok-challenge.is-done {
+  border-color: color-mix(in srgb, #4caf50 40%, transparent);
+}
+
+.potok-challenge.is-done .potok-challenge__badge {
+  color: #4caf50;
+  background: color-mix(in srgb, #4caf50 15%, transparent);
+}
+
+/* Компактный вариант */
+.potok-challenge--compact {
+  padding: 1rem 1.1rem;
+}
+
+.potok-challenge--compact .potok-challenge__title {
+  font-size: 0.98rem;
+}
+
+@media (max-width: 600px) {
+  .potok-challenge {
+    padding: 1rem;
+  }
+  .potok-challenge__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .potok-challenge__btn {
+    text-align: center;
+  }
+}

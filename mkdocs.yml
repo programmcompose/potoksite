@@ -80,6 +80,8 @@ extra_css:
   - assets/stylesheets/gamification.css
   - assets/stylesheets/lucide-icons.css
   - assets/stylesheets/glossary-tooltip.css
+  - assets/stylesheets/challenge.css
+  - assets/stylesheets/eq-mini.css
   - css/neoteroi-mkdocs.css
   - assets/stylesheets/compressor.css
   # - assets/stylesheets/graph-override.css
@@ -90,6 +92,8 @@ extra_javascript:
   - assets/javascripts/stage-unlock.js
   - assets/javascripts/scroll-cards.js
   - assets/javascripts/article-reveal.js
+  - assets/javascripts/challenge.js
+  - assets/javascripts/eq-mini.js
 
   - assets/javascripts/etap0-bg.js
   - assets/javascripts/etap1-bg.js

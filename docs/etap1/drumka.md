@@ -69,4 +69,32 @@
 
 ---
 
+## Задание
+
+<div class="potok-challenge" data-challenge-id="etap1-drum-4bar" data-xp="15" markdown="0">
+  <div class="potok-challenge__header">
+    <span class="potok-challenge__badge">Практика</span>
+    <h3 class="potok-challenge__title">Паттерн на 4 бара</h3>
+  </div>
+  <div class="potok-challenge__body">
+    <p>Собери короткий драм-паттерн и сохрани проект — без мелодии и баса.</p>
+  </div>
+  <ol class="potok-challenge__steps">
+    <li>Kick на 1 и 3 (или свой groove).</li>
+    <li>Snare / clap на 2 и 4.</li>
+    <li>Hi-hat: восьмые или шестнадцатые, можно velocity.</li>
+    <li>Длина — ровно 4 бара. Сохрани как <code>etap1-drum-4bar</code>.</li>
+  </ol>
+  <p class="potok-challenge__hint">Не гонись за сложностью. Цель — устойчивый groove, который можно зациклить.</p>
+  <div class="potok-challenge__actions">
+    <button type="button" class="potok-challenge__btn"
+      data-challenge-toggle
+      data-todo-label="Отметить выполненным"
+      data-done-label="Сделано">Отметить выполненным</button>
+    <span class="potok-challenge__meta" data-challenge-meta></span>
+  </div>
+</div>
+
+---
+
 **← [Назад: Что такое сэмпл](che-takoe-sampl.md)** | **[Далее: Подбор сэмплов и структура бита →**](podbor-samplow.md)
