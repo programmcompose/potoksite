@@ -1,4 +1,4 @@
-// Анимированный фон: волны + эквалайзер (только для etap0)
+// Фоновая сетка частот (только для etap0)
 (function () {
   var canvas, ctx, w, h, animId, running = false;
   var isEtap0 = location.pathname.includes('etap0');
@@ -6,14 +6,9 @@
   function getColors() {
     var isDark = document.documentElement.getAttribute('data-md-color-scheme') === 'slate';
     return {
-      grid: isDark ? '255, 255, 255' : '50, 50, 50',
-      eq: isDark ? '200, 110, 30' : '180, 100, 20'
+      grid: isDark ? '255, 255, 255' : '50, 50, 50'
     };
   }
-
-  var eqBars = 64;
-  var eqHeight = 140;
-  var t = 0;
 
   function initCanvas() {
     if (canvas) return;
@@ -94,32 +89,6 @@
       ctx.fillText(freqs[fi], fi * freqSpacing, gridTop + 16);
     }
 
-    // --- Низ: эквалайзер (тёмно-оранжевый) ---
-    var barW = w / eqBars;
-    for (var j = 0; j < eqBars; j++) {
-      var val = (Math.sin(t * 0.002 + j * 0.25) * 0.5 + 0.5)
-                * (Math.sin(t * 0.003 + j * 0.12) * 0.3 + 0.7);
-      var barH = val * eqHeight;
-      var bx = j * barW;
-      var by = h - barH;
-
-      var eqGrad = ctx.createLinearGradient(bx, by, bx, h);
-      eqGrad.addColorStop(0, 'rgba(' + colors.eq + ', 0.5)');
-      eqGrad.addColorStop(1, 'rgba(' + colors.eq + ', 0.08)');
-      ctx.fillStyle = eqGrad;
-
-      var r = Math.min(barW / 2 - 1, 3);
-      ctx.beginPath();
-      ctx.moveTo(bx + 1, h);
-      ctx.lineTo(bx + 1, by + r);
-      ctx.quadraticCurveTo(bx + 1, by, bx + 1 + r, by);
-      ctx.lineTo(bx + barW - 1 - r, by);
-      ctx.quadraticCurveTo(bx + barW - 1, by, bx + barW - 1, by + r);
-      ctx.lineTo(bx + barW - 1, h);
-      ctx.fill();
-    }
-
-    t++;
     animId = requestAnimationFrame(draw);
   }
 
