@@ -198,111 +198,6 @@
   }
 
   // ========================
-  // Quest Progress Widget в сайдбаре
-  // ========================
-  var questWidgetEl = null;
-
-  function createQuestWidget(questState) {
-    var existing = document.querySelector('.potok-quest-widget');
-    if (existing) existing.remove();
-
-    var sidebar = document.querySelector('.md-sidebar--primary');
-    if (!sidebar) return;
-
-    var nav = sidebar.querySelector('.md-nav--primary');
-    if (!nav) return;
-
-    var widget = document.createElement('div');
-    widget.className = 'potok-quest-widget';
-    widget.setAttribute('role', 'complementary');
-    widget.setAttribute('aria-label', 'IY Quest прогресс');
-
-    var progress = questState.completedTasks;
-    var xp = questState.xp;
-
-    // Определяем ранг
-    var ranks = [
-      { name: '\uD83C\uDF31 Novice', min: 0 },
-      { name: '\uD83D\uDCD6 Student', min: 100 },
-      { name: '\uD83E\uDD41 Beatmaker', min: 300 },
-      { name: '\uD83C\uDFE7 Producer', min: 600 },
-      { name: '\u26A1 Sound Designer', min: 1000 },
-      { name: '\uD83D\uDC51 Master', min: 1500 },
-      { name: '\uD83C\uDFCB\uFE0F Legend', min: 2200 }
-    ];
-    var rank = ranks[0];
-    for (var i = ranks.length - 1; i >= 0; i--) {
-      if (xp >= ranks[i].min) { rank = ranks[i]; break; }
-    }
-
-    var nextRankIdx = ranks.findIndex(function (r) { return r.min > xp; });
-    var currentMin = nextRankIdx > 0 ? ranks[nextRankIdx - 1].min : 0;
-    var nextMin = nextRankIdx >= 0 ? ranks[nextRankIdx].min : ranks[ranks.length - 1].min;
-    var rankProgress = nextMin > currentMin ? Math.min(((xp - currentMin) / (nextMin - currentMin)) * 100, 100) : 100;
-
-    widget.innerHTML =
-      '<div class="potok-quest-widget__header">' +
-        '<i data-lucide="sword" class="quest-widget-icon"></i>' +
-        '<span class="potok-quest-widget__title">IY Quest</span>' +
-      '</div>' +
-      '<div class="potok-quest-widget__stats">' +
-        '<span class="potok-quest-widget__tasks">' + progress + ' / ' + TOTAL_TASKS + '</span>' +
-        '<span class="potok-quest-widget__xp">' + xp + ' XP</span>' +
-      '</div>' +
-      '<div class="potok-quest-widget__track">' +
-        '<div class="potok-quest-widget__fill" style="width:' + rankProgress + '%"></div>' +
-      '</div>' +
-      '<div class="potok-quest-widget__rank">' + rank.name + '</div>' +
-      '<a class="potok-quest-widget__link" href="https://programmcompose.github.io/potoksite/tools/iy-quest/index.html">' +
-        '<i data-lucide="external-link" class="quest-widget-icon-sm"></i>' +
-        ' Открыть квест' +
-      '</a>';
-
-    if (nav) {
-      nav.parentNode.insertBefore(widget, nav.nextSibling);
-    } else {
-      sidebar.appendChild(widget);
-    }
-
-    questWidgetEl = widget;
-
-    // Re-init lucide icons
-    if (typeof lucide !== 'undefined') {
-      lucide.createIcons();
-    }
-  }
-
-  function updateQuestWidget(questState) {
-    if (!questWidgetEl) return;
-
-    var progress = questState.completedTasks;
-    var xp = questState.xp;
-
-    var tasksEl = questWidgetEl.querySelector('.potok-quest-widget__tasks');
-    if (tasksEl) tasksEl.textContent = progress + ' / ' + TOTAL_TASKS;
-
-    var xpEl = questWidgetEl.querySelector('.potok-quest-widget__xp');
-    if (xpEl) xpEl.textContent = xp + ' XP';
-
-    // Rank
-    var ranks = [
-      { name: '\uD83C\uDF31 Novice', min: 0 },
-      { name: '\uD83D\uDCD6 Student', min: 100 },
-      { name: '\uD83E\uDD41 Beatmaker', min: 300 },
-      { name: '\uD83C\uDFE7 Producer', min: 600 },
-      { name: '\u26A1 Sound Designer', min: 1000 },
-      { name: '\uD83D\uDC51 Master', min: 1500 },
-      { name: '\uD83C\uDFCB\uFE0F Legend', min: 2200 }
-    ];
-    var rank = ranks[0];
-    for (var i = ranks.length - 1; i >= 0; i--) {
-      if (xp >= ranks[i].min) rank = ranks[i];
-    }
-    var rankEl = questWidgetEl.querySelector('.potok-quest-widget__rank');
-    if (rankEl) rankEl.textContent = rank.name;
-  }
-
-  // ========================
   // Show completion notification
   // ========================
   function showEtapCompleteNotification(etap, questState) {
@@ -352,9 +247,6 @@
         }
       }
     }
-
-    // Создаём/обновляем виджет
-    createQuestWidget(questState);
   }
 
   // ========================
@@ -363,7 +255,6 @@
   function onNavigate() {
     var questState = loadQuestState();
     initBridge(questState);
-    updateQuestWidget(questState);
   }
 
   // MkDocs Material SPA-навигация
