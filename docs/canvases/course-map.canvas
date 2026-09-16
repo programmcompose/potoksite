@@ -1,0 +1,158 @@
+{
+  "nodes": [
+    {
+      "id": "g-learn",
+      "type": "group",
+      "x": -40,
+      "y": -40,
+      "width": 920,
+      "height": 520,
+      "label": "18 ПОТОК — карта курса",
+      "color": "5"
+    },
+    {
+      "id": "e0",
+      "type": "file",
+      "file": "etap0/index.md",
+      "x": 20,
+      "y": 40,
+      "width": 160,
+      "height": 70,
+      "color": "5"
+    },
+    {
+      "id": "e1",
+      "type": "file",
+      "file": "etap1/index.md",
+      "x": 220,
+      "y": 40,
+      "width": 160,
+      "height": 70,
+      "color": "2"
+    },
+    {
+      "id": "e2",
+      "type": "file",
+      "file": "etap2/index.md",
+      "x": 420,
+      "y": 40,
+      "width": 160,
+      "height": 70,
+      "color": "2"
+    },
+    {
+      "id": "e3",
+      "type": "file",
+      "file": "etap3/index.md",
+      "x": 620,
+      "y": 40,
+      "width": 160,
+      "height": 70,
+      "color": "2"
+    },
+    {
+      "id": "t-eq",
+      "type": "text",
+      "text": "### EQ\nСрезай, не бусти\n[Открыть урок](etap2/eq-ekvalizatsiya.md)",
+      "x": 380,
+      "y": 160,
+      "width": 200,
+      "height": 110,
+      "color": "3"
+    },
+    {
+      "id": "t-comp",
+      "type": "text",
+      "text": "### Компрессия\nДинамика и панч\n[Урок](etap2/compression-kompressiya.md)",
+      "x": 600,
+      "y": 160,
+      "width": 200,
+      "height": 110,
+      "color": "1"
+    },
+    {
+      "id": "t-theory",
+      "type": "text",
+      "text": "### Теория\nНоты, аккорды, ритм\n[Этап 4](etap4/index.md)",
+      "x": 200,
+      "y": 160,
+      "width": 160,
+      "height": 110,
+      "color": "6"
+    },
+    {
+      "id": "t-practice",
+      "type": "text",
+      "text": "**Практика**\nСразу в DAW → сдай ДЗ",
+      "x": 300,
+      "y": 320,
+      "width": 220,
+      "height": 90,
+      "color": "4"
+    },
+    {
+      "id": "tools",
+      "type": "link",
+      "url": "https://programmcompose.github.io/potoksite/tools/",
+      "x": 560,
+      "y": 320,
+      "width": 240,
+      "height": 70,
+      "color": "5"
+    }
+  ],
+  "edges": [
+    {
+      "id": "a01",
+      "fromNode": "e0",
+      "toNode": "e1",
+      "fromSide": "right",
+      "toSide": "left",
+      "toEnd": "arrow",
+      "label": "старт"
+    },
+    {
+      "id": "a12",
+      "fromNode": "e1",
+      "toNode": "e2",
+      "fromSide": "right",
+      "toSide": "left",
+      "toEnd": "arrow"
+    },
+    {
+      "id": "a23",
+      "fromNode": "e2",
+      "toNode": "e3",
+      "fromSide": "right",
+      "toSide": "left",
+      "toEnd": "arrow"
+    },
+    {
+      "id": "a2eq",
+      "fromNode": "e2",
+      "toNode": "t-eq",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "toEnd": "arrow",
+      "color": "3"
+    },
+    {
+      "id": "aeqc",
+      "fromNode": "t-eq",
+      "toNode": "t-comp",
+      "fromSide": "right",
+      "toSide": "left",
+      "toEnd": "arrow",
+      "label": "потом"
+    },
+    {
+      "id": "apr",
+      "fromNode": "t-eq",
+      "toNode": "t-practice",
+      "fromSide": "bottom",
+      "toSide": "top",
+      "toEnd": "arrow",
+      "color": "4"
+    }
+  ]
+}

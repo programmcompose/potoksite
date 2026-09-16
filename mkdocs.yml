@@ -86,6 +86,7 @@ extra_css:
   - assets/stylesheets/compressor.css
   - assets/stylesheets/inline-quiz.css
   - assets/stylesheets/link-features.css
+  - assets/stylesheets/canvas-viewer.css
   # - assets/stylesheets/graph-override.css
 
 extra_javascript:
@@ -111,6 +112,7 @@ extra_javascript:
   - assets/javascripts/quiz-svg.js
   - assets/javascripts/inline-quiz-widget.js
   - assets/javascripts/link-features.js
+  - assets/javascripts/canvas-viewer.js
   # - assets/javascripts/graph-override.js
 
 hooks:
