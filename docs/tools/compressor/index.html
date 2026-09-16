@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Компрессор — Интерактивный инструмент</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #14141F;
+    --panel: #20202E;
+    --line: #35354B;
+    --ink: #F5F5FA;
+    --muted: #9C9CB0;
+    --orange: #FF6B1A;
+
+    /* Токены для compressor.css (виджет) */
+    --bg-card: #20202E;
+    --border-default: #35354B;
+    --text-main: #F5F5FA;
+    --text-secondary: #9C9CB0;
+    --accent-orange: #FF6B1A;
+    --accent-orange-hover: #FF8A47;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 50% -12%, rgba(255, 190, 84, .13) 0%, transparent 55%),
+      radial-gradient(circle, rgba(255, 255, 255, .035) 1px, transparent 1.4px);
+    background-size: auto, 28px 28px;
+    color: var(--ink);
+    min-height: 100vh;
+    line-height: 1.5;
+    padding-bottom: 60px;
+  }
+
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; justify-content: space-between; align-items: center;
+    height: 58px; padding: 0 28px;
+    background: rgba(20, 20, 31, .78);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .brand-dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--orange), #3DE8FF);
+    box-shadow: 0 0 12px rgba(61, 232, 255, .7);
+  }
+  .back-link { font-size: 14px; color: var(--muted); text-decoration: none; transition: color .15s ease; }
+  .back-link:hover { color: #FF8A47; }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 40px 20px 0; }
+
+  h1 {
+    font-weight: 800; font-size: clamp(30px, 5vw, 44px);
+    letter-spacing: -.02em; line-height: 1.1; margin-bottom: 12px;
+  }
+  .subtitle { color: var(--muted); font-size: 16.5px; max-width: 720px; line-height: 1.65; margin-bottom: 28px; }
+
+  .hint {
+    margin-top: 24px; padding: 14px 16px;
+    background: rgba(255, 107, 26, .07);
+    border: 1px solid rgba(255, 107, 26, .3);
+    border-radius: 10px;
+    font-size: 14px; color: var(--muted); line-height: 1.6;
+  }
+  .hint b { color: var(--ink); }
+
+  @media (max-width: 640px) {
+    .topbar { padding: 0 18px; }
+    .container { padding: 28px 14px 0; }
+  }
+</style>
+<link rel="stylesheet" href="../../assets/stylesheets/compressor.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span class="brand-dot"></span>Potok / Tools</div>
+  <a href="../index.html" class="back-link">← Все инструменты</a>
+</div>
+
+<div class="container">
+  <h1>Компрессор</h1>
+  <p class="subtitle">Слышимая компрессия: синтезированный бит, реальный DSP (soft knee), GR-метр и кривая передачи. Нажми Play, переключай BYPASS и крути параметры — следи, как меняется звук и картинка.</p>
+
+  <div class="potok-compressor" data-standalone></div>
+
+  <div class="hint">
+    <b>Как слушать:</b> включи звук, нажми <b>Play</b>. Переключай <b>BYPASS</b>, чтобы сравнивать «до» и «после». Опусти Threshold — GR-метр начнёт «дышать» в такт биту, а точка на кривой передачи покажет, где компрессор работает. Пресеты — из таблицы «Применение» в уроке Compression.
+  </div>
+</div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script src="../../assets/javascripts/compressor-widget.js"></script>
+</body>
+</html>
