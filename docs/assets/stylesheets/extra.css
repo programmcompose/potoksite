@@ -459,7 +459,9 @@
   line-height: 1.2;
 }
 
-.hero-subtitle {
+/* .md-typeset — иначе ambient.css `.md-typeset p { margin: ... 0 }` (специфичнее)
+   затирает margin-left/right: auto и блок прижимается к левому краю */
+.md-typeset .hero-subtitle {
   font-size: 1.15em;
   line-height: 1.6;
   max-width: 640px;
