@@ -1,7 +1,5 @@
 /* ========================================
-   Potok Compressor Widget — стили
-   Токены берутся из extra.css (Material, обе темы)
-   или из :root standalone-страницы инструментов.
+   Potok Compressor Widget v2 — стили
    ======================================== */
 
 .pcp {
@@ -11,6 +9,10 @@
   --pcp-muted: var(--text-secondary, #9CA3AF);
   --pcp-accent: var(--accent-orange, #F2994A);
   --pcp-accent-hover: var(--accent-orange-hover, #FFB26B);
+  --pcp-cyan: #3DE8FF;
+  --pcp-ok: #34d399;
+  --pcp-warn: #fbbf24;
+  --pcp-hot: #f87171;
 
   background: var(--pcp-bg);
   border: 1px solid var(--pcp-border);
@@ -23,18 +25,20 @@
 
 .pcp * { box-sizing: border-box; }
 
-/* ---------- Шапка: Play / Bypass / Пресеты ---------- */
+/* ---------- Head ---------- */
 .pcp-head {
   display: flex;
   align-items: center;
   gap: 10px;
   flex-wrap: wrap;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
 }
 
 .pcp-btn,
 .pcp-bypass,
-.pcp-preset {
+.pcp-preset,
+.pcp-src,
+.pcp-toggle {
   font-family: inherit;
   cursor: pointer;
   border-radius: 8px;
@@ -45,9 +49,9 @@
   display: inline-flex;
   align-items: center;
   gap: 7px;
-  padding: 9px 18px;
+  padding: 10px 20px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   color: #170B03;
   background: var(--pcp-accent);
   border: none;
@@ -64,10 +68,8 @@
 
 @media (prefers-reduced-motion: reduce) {
   .pcp-play.is-playing { animation: none; }
-  .pcp-btn, .pcp-bypass, .pcp-preset { transition: none; }
 }
 
-/* Большая A/B bypass-кнопка */
 .pcp-bypass {
   display: inline-flex;
   flex-direction: column;
@@ -83,13 +85,12 @@
 .pcp-bypass-s { font-size: 10.5px; opacity: .75; margin-top: 1px; }
 .pcp-bypass:hover { border-color: var(--pcp-accent); color: var(--pcp-text); }
 .pcp-bypass.is-on {
-  background: var(--pcp-accent);
-  border-color: var(--pcp-accent);
-  color: #170B03;
-  box-shadow: 0 0 18px rgba(242, 153, 74, .35);
+  background: var(--pcp-hot);
+  border-color: var(--pcp-hot);
+  color: #1a0505;
+  box-shadow: 0 0 18px rgba(248, 113, 113, .35);
 }
 
-/* Пресеты */
 .pcp-presets { display: flex; gap: 6px; flex-wrap: wrap; margin-left: auto; }
 .pcp-preset {
   padding: 7px 12px;
@@ -103,11 +104,71 @@
   color: var(--pcp-accent);
   border-color: var(--pcp-accent);
 }
+.pcp-preset.is-active {
+  color: #170B03;
+  background: var(--pcp-accent);
+  border-color: var(--pcp-accent);
+  font-weight: 600;
+}
 
-/* ---------- Визуализация ---------- */
+/* ---------- Source + toggles row ---------- */
+.pcp-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.pcp-row-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--pcp-muted);
+  margin-right: 4px;
+}
+
+.pcp-src {
+  padding: 5px 11px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--pcp-muted);
+  background: transparent;
+  border: 1px solid var(--pcp-border);
+}
+.pcp-src:hover { border-color: var(--pcp-cyan); color: var(--pcp-text); }
+.pcp-src.is-active {
+  border-color: var(--pcp-cyan);
+  color: var(--pcp-cyan);
+  background: rgba(61, 232, 255, 0.08);
+}
+
+.pcp-toggle {
+  padding: 5px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--pcp-muted);
+  background: transparent;
+  border: 1px solid var(--pcp-border);
+  margin-left: auto;
+}
+.pcp-toggle.is-on {
+  color: #0a1a12;
+  background: var(--pcp-ok);
+  border-color: var(--pcp-ok);
+}
+
+.pcp-hotkey {
+  font-size: 11px;
+  color: var(--pcp-muted);
+  opacity: 0.7;
+}
+
+/* ---------- Viz ---------- */
 .pcp-viz {
   display: grid;
-  grid-template-columns: 1fr 52px;
+  grid-template-columns: 1fr 64px;
   gap: 10px;
   margin-bottom: 10px;
 }
@@ -125,7 +186,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
+  gap: 4px;
   min-width: 0;
 }
 .pcp-gr {
@@ -137,13 +198,24 @@
   border-radius: 8px;
 }
 .pcp-grval {
-  font-size: 11.5px;
-  color: var(--pcp-muted);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--pcp-accent);
   font-variant-numeric: tabular-nums;
   white-space: nowrap;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+}
+.pcp-grpeak {
+  font-size: 10px;
+  color: var(--pcp-muted);
+  font-variant-numeric: tabular-nums;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
 }
 
-.pcp-curve-wrap { margin-bottom: 14px; }
+.pcp-curve-wrap {
+  position: relative;
+  margin-bottom: 12px;
+}
 .pcp-curve {
   width: 100%;
   height: 200px;
@@ -152,17 +224,32 @@
   border: 1px solid var(--pcp-border);
   border-radius: 8px;
 }
+.pcp-curve-tip {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  font-size: 11px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  color: var(--pcp-muted);
+  background: rgba(20, 20, 31, 0.75);
+  padding: 4px 8px;
+  border-radius: 6px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity .15s;
+}
+.pcp-curve-tip.is-on { opacity: 1; color: var(--pcp-accent); }
 
-/* ---------- Параметры (слайдеры) ---------- */
+/* ---------- Params ---------- */
 .pcp-params {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   gap: 12px;
 }
 
 .pcp-param { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .pcp-plabel {
-  font-size: 11.5px;
+  font-size: 11px;
   font-weight: 600;
   letter-spacing: .04em;
   text-transform: uppercase;
@@ -172,6 +259,7 @@
   font-size: 12.5px;
   color: var(--pcp-accent);
   font-variant-numeric: tabular-nums;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
 }
 
 .pcp-param input[type="range"] {
@@ -185,7 +273,6 @@
 }
 .pcp-param input[type="range"]:focus { outline: none; }
 
-/* Track */
 .pcp-param input[type="range"]::-webkit-slider-runnable-track {
   height: 4px;
   border-radius: 2px;
@@ -197,7 +284,6 @@
   background: rgba(128, 128, 128, .3);
 }
 
-/* Thumb */
 .pcp-param input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
@@ -217,29 +303,27 @@
   border: 2px solid var(--pcp-bg);
   box-shadow: 0 0 8px rgba(242, 153, 74, .4);
 }
-.pcp-param input[type="range"]:focus-visible::-webkit-slider-thumb {
-  outline: 2px solid var(--pcp-accent);
-  outline-offset: 2px;
-}
 
-/* ---------- Standalone (полный размер) ---------- */
+.pcp-param[data-key="knee"] .pcp-pval { color: var(--pcp-cyan); }
+.pcp-param[data-key="mix"] .pcp-pval { color: var(--pcp-ok); }
+
 .pcp--full { margin: 0; }
 .pcp--full .pcp-wave,
 .pcp--full .pcp-gr { height: 210px; }
 .pcp--full .pcp-curve { height: 240px; }
 
-/* ---------- Мобильная раскладка ---------- */
+@media (max-width: 900px) {
+  .pcp-params { grid-template-columns: repeat(3, 1fr); }
+}
+
 @media (max-width: 640px) {
   .pcp { padding: 12px; }
   .pcp-presets { margin-left: 0; width: 100%; }
   .pcp-preset { flex: 1; text-align: center; }
-
-  /* GR-метр — горизонтальная дорожка под волной */
+  .pcp-toggle { margin-left: 0; }
   .pcp-viz { grid-template-columns: 1fr; }
-  .pcp-grwrap { width: 100%; }
-  .pcp-gr { height: 44px; }
-  .pcp-grval { align-self: flex-end; }
-
+  .pcp-grwrap { width: 100%; flex-direction: row; justify-content: space-between; }
+  .pcp-gr { height: 48px; flex: 1; }
   .pcp-curve { height: 170px; }
   .pcp-params { grid-template-columns: repeat(2, 1fr); gap: 10px; }
 }
