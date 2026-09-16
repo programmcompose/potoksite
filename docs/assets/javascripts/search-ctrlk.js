@@ -21,23 +21,27 @@
   // Тема: клик по toggle Material, fallback — ручная смена схемы
   // ============================================================
   function currentScheme() {
-    return document.documentElement.getAttribute('data-md-color-scheme') || 'slate';
+    // Material 9.6+ держит схему на <body>, старые версии — на <html>
+    return document.body.getAttribute('data-md-color-scheme') ||
+      document.documentElement.getAttribute('data-md-color-scheme') || 'slate';
   }
 
   function setTheme(scheme) {
-    var btn = null;
-    var buttons = document.querySelectorAll('.md-header__options .md-header__button');
-    for (var i = 0; i < buttons.length; i++) {
-      if (/md-icon--(light|dark)/.test(buttons[i].className)) { btn = buttons[i]; break; }
+    // Material 9.6+: палитра = radio-инпуты в form[data-md-component="palette"].
+    // Клик по нужному инпуту запускает штатный конвейер Material: схема
+    // применяется к <body>, выбор сохраняется в localStorage ("__palette").
+    var inputs = document.querySelectorAll('form[data-md-component="palette"] input[type=radio]');
+    for (var i = 0; i < inputs.length; i++) {
+      if (inputs[i].getAttribute('data-md-color-scheme') === scheme) {
+        if (!inputs[i].checked) inputs[i].click();
+        // Страховка: применяем схему напрямую, если конвейер Material не сработал
+        document.body.setAttribute('data-md-color-scheme', scheme);
+        return;
+      }
     }
-    var wantLight = scheme === 'default';
-    if (btn) {
-      // Кнопка переключает на свою цель: md-icon--light → светлая, --dark → тёмная
-      var btnTargetLight = /md-icon--light/.test(btn.className);
-      if (btnTargetLight === wantLight) { btn.click(); return; }
-    }
-    // Fallback: ручная смена + сохранение в localStorage Material (ключ "md")
+    // Fallback (старые версии Material): ручная смена на html+body + localStorage "md"
     document.documentElement.setAttribute('data-md-color-scheme', scheme);
+    if (document.body) document.body.setAttribute('data-md-color-scheme', scheme);
     try {
       var raw = localStorage.getItem('md');
       var data = raw ? JSON.parse(raw) : {};

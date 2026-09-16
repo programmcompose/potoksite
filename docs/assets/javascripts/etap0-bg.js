@@ -4,7 +4,9 @@
   var isEtap0 = location.pathname.includes('etap0');
 
   function getColors() {
-    var isDark = document.documentElement.getAttribute('data-md-color-scheme') === 'slate';
+    var scheme = (document.body && document.body.getAttribute('data-md-color-scheme')) ||
+      document.documentElement.getAttribute('data-md-color-scheme');
+    var isDark = scheme === 'slate';
     return {
       grid: isDark ? '255, 255, 255' : '50, 50, 50'
     };
