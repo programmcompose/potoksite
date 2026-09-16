@@ -2053,9 +2053,41 @@ html {
 }
 
 @media (max-width: 860px) {
-  .home-path,
-  .home-chats,
-  .stage-grid {
-    grid-template-columns: 1fr;
-  }
-}
+   .home-path,
+   .home-chats,
+   .stage-grid {
+     grid-template-columns: 1fr;
+   }
+ }
+
+ /* ========================================
+    Neoteroi Timeline — Custom Styling
+    ======================================== */
+
+ .nt-timeline-dot {
+   background-color: var(--accent-orange) !important;
+   border-color: var(--bg-card);
+ }
+
+ .nt-timeline-before,
+ .nt-timeline-after {
+   background-color: var(--accent-orange) !important;
+ }
+
+ .nt-timeline-sub-title {
+   color: var(--accent-orange) !important;
+ }
+
+ .nt-timeline-title {
+   color: var(--text-heading) !important;
+ }
+
+ .nt-timeline-content {
+   color: var(--text-main) !important;
+ }
+
+ @media (prefers-reduced-motion: reduce) {
+   .nt-timeline-dot {
+     box-shadow: none !important;
+   }
+ }

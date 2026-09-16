@@ -75,12 +75,12 @@ extra_css:
   - assets/stylesheets/extra.css
   - assets/stylesheets/ambient.css
   - assets/stylesheets/stage-lock.css
-
   - assets/stylesheets/etap0-bg.css
   - assets/stylesheets/etap1-bg.css
   - assets/stylesheets/gamification.css
   - assets/stylesheets/lucide-icons.css
   - assets/stylesheets/glossary-tooltip.css
+  - css/neoteroi-mkdocs.css
   - assets/stylesheets/compressor.css
   # - assets/stylesheets/graph-override.css
 
@@ -109,6 +109,7 @@ hooks:
   - hooks/glossary_json.py
 
 markdown_extensions:
+  - neoteroi.timeline
   - admonition:
   - attr_list
   - def_list

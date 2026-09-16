@@ -144,7 +144,52 @@
   </a>
 </div>
 
-## <i data-lucide="calendar-clock" class="heading-icon"></i> Когда что выходит
+## <i data-lucide="timeline" class="heading-icon"></i> Хронология выхода
+
+::timeline:: center alternate
+- title: Этап 0 — Подготовка
+  content: DAW, оборудование, рабочее место и организация.
+  icon: ':material-target:'
+  sub_title: 15 мар 2026
+- title: Этап 1 — Первые биты
+  content: Сэмплы, драмка, мелодия, 808, микс и рендер.
+  icon: ':material-fire:'
+  sub_title: 22 мар 2026
+- title: Этап 2 — Сведение и VST
+  content: EQ, компрессия, пространство, мастеринг.
+  icon: ':material-tune:'
+  sub_title: 29 мар 2026
+- title: Этап 3 — Усложнённые биты
+  content: Синтез, chop, жанры, структура трека.
+  icon: ':material-layers:'
+  sub_title: 5 апр 2026
+- title: Этап 4 — Теория и аккорды
+  content: Ноты, тональности, прогрессии, ритмика.
+  icon: ':material-piano:'
+  sub_title: 12 апр 2026
+- title: Этап 5 — EDM и саунд-дизайн
+  content: Синтез, сэмплирование, жанры, ремиксы.
+  icon: ':material-headphones:'
+  sub_title: 19 апр 2026
+- title: Этап 6 — Живая музыка
+  content: Рок, пост-панк, гранж, метал, джаз.
+  icon: ':material-music-note:'
+  sub_title: 26 апр 2026
+- title: Этап 7 — Вокал и мастеринг
+  content: Запись, тюнинг, бэки, финальный чек.
+  icon: ':material-microphone:'
+  sub_title: 3 май 2026
+- title: Этап 8 — Саундтреки
+  content: Оркестр, эмбиент, музыка под картинку.
+  icon: ':material-film:'
+  sub_title: 10 май 2026
+- title: Этап 9 — Продвижение
+  content: Соцсети, продажи, стоки, договоры.
+  icon: ':material-rocket-launch:'
+  sub_title: 17 май 2026
+::/timeline::
+
+## <i data-lucide="calendar-clock" class="heading-icon"></i> Расписание
 
 - **Этапы** — около **12:00 МСК**. Иногда 14:00–16:00 в тот же день.
 - **Ивенты** — обычно **19:00 или 20:00 МСК в будни**.
