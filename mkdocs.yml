@@ -85,6 +85,7 @@ extra_css:
   - css/neoteroi-mkdocs.css
   - assets/stylesheets/compressor.css
   - assets/stylesheets/delay-widget.css
+  - assets/stylesheets/reverb-widget.css
   - assets/stylesheets/inline-quiz.css
   - assets/stylesheets/link-features.css
   - assets/stylesheets/canvas-viewer.css
@@ -111,6 +112,7 @@ extra_javascript:
   - assets/javascripts/glossary-tooltip.js
   - assets/javascripts/compressor-widget.js
   - assets/javascripts/delay-widget.js
+  - assets/javascripts/reverb-widget.js
   - assets/javascripts/quiz-svg.js
   - assets/javascripts/inline-quiz-widget.js
   - assets/javascripts/link-features.js
