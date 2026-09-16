@@ -85,6 +85,7 @@ extra_css:
   - css/neoteroi-mkdocs.css
   - assets/stylesheets/compressor.css
   - assets/stylesheets/inline-quiz.css
+  - assets/stylesheets/link-features.css
   # - assets/stylesheets/graph-override.css
 
 extra_javascript:
@@ -109,11 +110,13 @@ extra_javascript:
   - assets/javascripts/compressor-widget.js
   - assets/javascripts/quiz-svg.js
   - assets/javascripts/inline-quiz-widget.js
+  - assets/javascripts/link-features.js
   # - assets/javascripts/graph-override.js
 
 hooks:
   # - hooks/clean_graph_names.py
   - hooks/glossary_json.py
+  - hooks/link_graph.py
 
 markdown_extensions:
   - neoteroi.timeline
