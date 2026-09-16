@@ -5,6 +5,8 @@
 
 ## Maserati VX1 (Vocal Enhancer)
 
+![Waves Maserati VX1](../assets/waves-maserati-vx1-ui.png)
+
 - **Что это:** Канальный стрип для вокала с тремя режимами (контурами), EQ, компрессором, дилеем и ревербом. 
     
 - **Суть:** Быстрый способ получить «радио-вокал». Контур 1 — маленькая комната, Контур 2 — большая камера для баллад, Контур 3 — короткие дилеи для быстрых песен. 
@@ -14,6 +16,8 @@
 - **Как настраивать:** Выбери контур (Contour 1/2/3). Sensitivity управляет входом (от теплого до искаженного). Bass/Treble формируют тон. Compress добавляет сжатие (в контуре 3 становится Air — «воздухом»). FX/Delay/Reverb подмешивают пространство. 
 
 ## Maserati B72 (Bass Phattener)
+
+![Waves Maserati B72](../assets/waves-maserati-b72-ui.png)
 
 - **Что это:** «Утолщитель» баса с двумя режимами: DI (живой бас) и Synth (синтезатор). 
     
@@ -25,6 +29,8 @@
 
 ## Maserati DRM (Drum Slammer)
 
+![Waves Maserati DRM](../assets/waves-maserati-drm-ui.png)
+
 - **Что это:** Обработка для ударных с режимами под каждый элемент установки: Kick, Snare Top/Bottom, Hat, Toms, Overheads, Room. 
     
 - **Суть:** «Оживляет» мертвые барабаны. Делает их громкими, атачными и яркими. 
@@ -34,6 +40,8 @@
 - **Как настраивать:** Выбери режим под трек (например, Snare Top). Sensitivity регулирует чувствительность. Thump — низы (гул), Snap — атака (транзиент), Treble — яркость/жесткость. Output — общая громкость. 
 
 ## Maserati GTi (Guitar Toner)
+
+![Waves Maserati GTi](../assets/waves-maserati-gti-ui.png)
 
 - **Что это:** Стрип для электрогитар с пятью режимами: Clean, Clean Chorus, Heavy, Thick Rhythm, Soft Flange. 
     
@@ -45,6 +53,8 @@
 
 ## Maserati ACG (Acoustic Guitar Designer)
 
+![Waves Maserati ACG](../assets/waves-maserati-acg-ui.png)
+
 - **Что это:** Дизайнер акустической гитары с двумя режимами: ACG1 и ACG2.
     
 - **Суть:** Убирает «коробочность» в низах, сохраняя глубину. Добавляет гармоники, компрессию.
@@ -55,6 +65,8 @@
 
 ## Maserati HMX (Harmonics Generator)
 
+![Waves Maserati HMX](../assets/waves-maserati-hmx-ui.png)
+
 - **Что это:** Генератор гармоник и стерео-расширения для клавиш и синтов. Два режима: MODAL и BOUNCE.
     
 - **Суть:** «Растягивает» узкие моно-синты, добавляет хорус/фленжер, оживляет звук.
@@ -64,6 +76,8 @@
 - **Как настраивать:** Выбери MODAL (ширина, гармоники, атака) или BOUNCE (энергия через реверб и дилей). Регулируй Spread (ширина) и Decay (затухание). Можно синхронизировать задержку с темпом.
 
 ## Maserati GRP (Group Processor)
+
+![Waves Maserati GRP](../assets/waves-maserati-grp-ui.png)
 
 - **Что это:** Универсальный процессор для подгрупп (bus) и мастер-канала.
     
