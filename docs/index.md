@@ -117,11 +117,13 @@
   </a>
 </div>
 
+<!--
 ## <i data-lucide="map" class="heading-icon"></i> Карта курса
 
 Интерактивная карта: перетаскивание и зум. Узлы — этапы и ключевые темы.
 
 <div class="potok-canvas" data-src="canvases/course-map.canvas" data-height="520" markdown="0"></div>
+-->
 
 <div class="stage-grid stage-grid--aux">
   <a class="stage-card" href="plugins/">
