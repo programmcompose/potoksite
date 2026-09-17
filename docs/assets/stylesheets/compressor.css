@@ -167,6 +167,31 @@
   opacity: 0.7;
 }
 
+/* ---------- Свой трек (загрузка файла) ---------- */
+.pcp-src--file { display: inline-flex; align-items: center; gap: 6px; }
+.pcp-src--file svg,
+.pcp-src--file i { width: 13px; height: 13px; display: inline-block; vertical-align: -2px; flex-shrink: 0; }
+
+.pcp-trackname,
+.cbt-trackname {
+  font-size: 12px;
+  color: var(--pcp-muted);
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.pcp-trackname:hover,
+.cbt-trackname:hover { color: var(--pcp-accent); }
+.pcp-trackname.is-error,
+.cbt-trackname.is-error { color: var(--pcp-hot); cursor: default; }
+
+.pcp-file,
+.cbt-file { display: none; }
+
+.cbt-srcrow { margin-bottom: 16px; }
+
 /* ---------- Viz ---------- */
 .pcp-viz {
   display: grid;

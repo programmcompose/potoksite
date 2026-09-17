@@ -19,6 +19,8 @@
   var RERENDER_DEBOUNCE_MS = 150;
   var DRY_PEAK_DBFS = -6;
   var PEAK_HOLD_MS = 900;
+  var MAX_TRACK_SEC = 120;
+  var MAX_FILE_BYTES = 30 * 1024 * 1024;
 
   var DEFAULTS = {
     threshold: -24, ratio: 4, attack: 10, release: 200,
@@ -203,6 +205,54 @@
     return { buffer: buf, gr: grArr, envDb: envDbArr, avgGr: avgGr };
   }
 
+  // Загрузка пользовательского трека: decode → mono → trim → normalize peak
+  function prepareTrack(ctx, file, maxSec) {
+    var P = window.Promise;
+    if (!P) return null;
+    if (!file || !file.size) return P.reject(new Error('empty'));
+    if (file.size > MAX_FILE_BYTES) return P.reject(new Error('too big'));
+    return new P(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onerror = function () { reject(reader.error || new Error('read error')); };
+      reader.onload = function () {
+        try { ctx.decodeAudioData(reader.result, resolve, reject); }
+        catch (e) { reject(e); }
+      };
+      reader.readAsArrayBuffer(file);
+    }).then(function (buf) {
+      var sr = buf.sampleRate;
+      var n = Math.min(buf.length, Math.floor((maxSec || MAX_TRACK_SEC) * sr));
+      var chs = buf.numberOfChannels;
+      var out = new Float32Array(n);
+      for (var c = 0; c < chs; c++) {
+        var d = buf.getChannelData(c);
+        for (var i = 0; i < n; i++) out[i] += d[i];
+      }
+      if (chs > 1) for (var j = 0; j < n; j++) out[j] /= chs;
+      var peak = 0;
+      for (var k = 0; k < n; k++) { var a = Math.abs(out[k]); if (a > peak) peak = a; }
+      if (peak > 1e-9) {
+        var g = dbToLin(DRY_PEAK_DBFS) / peak;
+        for (var m = 0; m < n; m++) out[m] *= g;
+      }
+      var mono = ctx.createBuffer(1, n, sr);
+      if (mono.copyToChannel) mono.copyToChannel(out, 0); else mono.getChannelData(0).set(out);
+      return mono;
+    });
+  }
+
+  function trackErrorMessage(e) {
+    var m = e && e.message || '';
+    if (m === 'too big') return 'Файл больше 30 МБ — выбери покороче';
+    return 'Не удалось прочитать файл. Подойдут WAV, MP3, OGG, FLAC.';
+  }
+
+  function fmtDur(sec) {
+    sec = Math.max(0, Math.round(sec));
+    var m = Math.floor(sec / 60), s = sec % 60;
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+
   function setupCanvas(canvas) {
     var dpr = window.devicePixelRatio || 1;
     var w = canvas.clientWidth, h = canvas.clientHeight;
@@ -241,6 +291,9 @@
     this.bypass = false;
     this.autoMakeup = false;
     this.source = 'beat';
+    this.loopSec = LOOP_SEC;
+    this.customBuf = null;
+    this.trackName = null;
     this.activePreset = null;
     this.dryBuf = null;
     this.wet = null;
@@ -285,8 +338,11 @@
     for (var s = 0; s < SOURCES.length; s++) {
       html += '<button type="button" class="pcp-src' + (SOURCES[s].id === 'beat' ? ' is-active' : '') + '" data-src="' + SOURCES[s].id + '">' + SOURCES[s].label + '</button>';
     }
+    html += '<button type="button" class="pcp-src pcp-src--file" data-src="custom"><i data-lucide="upload"></i>Свой трек</button>';
+    html += '<span class="pcp-trackname" title="Загрузить свой луп (WAV, MP3, OGG) — до 2 минут"></span>';
     html += '<button type="button" class="pcp-toggle" data-auto="1" title="Компенсировать среднюю громкость">Auto makeup</button>';
     html += '</div>';
+    html += '<input type="file" accept="audio/*,.wav,.mp3,.ogg,.oga,.m4a,.flac,.aiff,.aif" class="pcp-file" hidden>';
 
     html += '<div class="pcp-viz">';
     html += '<canvas class="pcp-wave"></canvas>';
@@ -335,6 +391,19 @@
       (function (btn) {
         btn.addEventListener('click', function () { self.setSource(btn.getAttribute('data-src')); });
       })(srcBtns[q]);
+    }
+
+    this.elFile = root.querySelector('.pcp-file');
+    this.elTrackName = root.querySelector('.pcp-trackname');
+    if (this.elFile) {
+      this.elFile.addEventListener('change', function () {
+        var f = this.files && this.files[0];
+        if (f) self.loadCustomTrack(f);
+        this.value = '';
+      });
+    }
+    if (this.elTrackName) {
+      this.elTrackName.addEventListener('click', function () { self.openFilePicker(); });
     }
 
     this.elPlay = root.querySelector('.pcp-play');
@@ -425,13 +494,15 @@
 
   Widget.prototype.setSource = function (id) {
     if (this.source === id) return;
+    if (id === 'custom' && !this.customBuf) { this.openFilePicker(); return; }
     this.source = id;
     var btns = this.root.querySelectorAll('.pcp-src');
     for (var i = 0; i < btns.length; i++) {
       btns[i].classList.toggle('is-active', btns[i].getAttribute('data-src') === id);
     }
     if (!this.ctx) return;
-    this.dryBuf = synthLoop(this.ctx, this.source);
+    this.dryBuf = (id === 'custom' && this.customBuf) ? this.customBuf : synthLoop(this.ctx, this.source);
+    this.loopSec = this.dryBuf.duration;
     this.wet = processLoop(this.ctx, this.dryBuf, this.params);
     this.maybeAutoMakeup();
     if (this.playing) {
@@ -440,6 +511,46 @@
     } else {
       this.onResize();
     }
+  };
+
+  Widget.prototype.openFilePicker = function () {
+    if (this.elFile) this.elFile.click();
+  };
+
+  Widget.prototype.loadCustomTrack = function (file) {
+    var self = this;
+    if (!this.ensureAudio()) return;
+    prepareTrack(this.ctx, file).then(function (buf) {
+      self.customBuf = buf;
+      self.trackName = file.name;
+      self.source = 'custom';
+      var btns = self.root.querySelectorAll('.pcp-src');
+      for (var i = 0; i < btns.length; i++) {
+        btns[i].classList.toggle('is-active', btns[i].getAttribute('data-src') === 'custom');
+      }
+      self.dryBuf = buf;
+      self.loopSec = buf.duration;
+      self.wet = processLoop(self.ctx, self.dryBuf, self.params);
+      self.maybeAutoMakeup(true);
+      self.setTrackNameUi();
+      if (self.playing) { self.stop(); self.play(); } else { self.onResize(); }
+    }).catch(function (err) {
+      self.showTrackError(err);
+    });
+  };
+
+  Widget.prototype.setTrackNameUi = function () {
+    if (!this.elTrackName || !this.customBuf) return;
+    this.elTrackName.classList.remove('is-error');
+    this.elTrackName.textContent = (this.trackName || 'Свой трек') + ' · ' + fmtDur(this.customBuf.duration);
+    this.elTrackName.title = (this.trackName || '') + ' — нажми, чтобы заменить';
+  };
+
+  Widget.prototype.showTrackError = function (err) {
+    if (!this.elTrackName) return;
+    this.elTrackName.classList.add('is-error');
+    this.elTrackName.textContent = trackErrorMessage(err);
+    this.elTrackName.title = '';
   };
 
   Widget.prototype.toggleAutoMakeup = function () {
@@ -486,7 +597,8 @@
       this.wetGain = this.ctx.createGain();
       this.dryGain.connect(this.master);
       this.wetGain.connect(this.master);
-      this.dryBuf = synthLoop(this.ctx, this.source);
+      this.dryBuf = (this.source === 'custom' && this.customBuf) ? this.customBuf : synthLoop(this.ctx, this.source);
+      this.loopSec = this.dryBuf.duration;
       this.wet = processLoop(this.ctx, this.dryBuf, this.params);
       this.maybeAutoMakeup(true);
     }
@@ -527,7 +639,7 @@
     s.buffer = buf;
     s.loop = true;
     s.connect(this._gainFor(buf));
-    s.start(when, offset % LOOP_SEC);
+    s.start(when, offset % (this.loopSec || LOOP_SEC));
     return s;
   };
 
@@ -586,7 +698,7 @@
 
     if (this.playing) {
       var ctx = this.ctx;
-      var pos = ((ctx.currentTime - this.t0) % LOOP_SEC + LOOP_SEC) % LOOP_SEC;
+      var pos = ((ctx.currentTime - this.t0) % this.loopSec + this.loopSec) % this.loopSec;
       var oldSrc = this.wetSrc;
       var tNow = ctx.currentTime;
       var newSrc = ctx.createBufferSource();
@@ -598,7 +710,7 @@
       var target = this.bypass ? 0 : mix;
       this.wetGain.gain.setValueAtTime(0, tNow);
       this.wetGain.gain.linearRampToValueAtTime(target, tNow + CROSSFADE_SEC);
-      newSrc.start(tNow, pos % LOOP_SEC);
+      newSrc.start(tNow, pos % this.loopSec);
       if (oldSrc) {
         var og = ctx.createGain();
         try { oldSrc.disconnect(); } catch (e) {}
@@ -698,7 +810,7 @@
     var g = s.ctx, w = s.w, h = s.h;
     g.clearRect(0, 0, w, h);
     g.drawImage(this._waveOff, 0, 0, w, h);
-    var x = Math.round(posSec / LOOP_SEC * w) + 0.5;
+    var x = Math.round(posSec / (this.loopSec || LOOP_SEC) * w) + 0.5;
     g.strokeStyle = cssVar('--accent-orange', '#F2994A');
     g.lineWidth = 1.5;
     g.beginPath();
@@ -829,9 +941,10 @@
     var self = this;
     if (!this.playing || !this.ctx) return;
     var ctx = this.ctx;
-    var pos = ((ctx.currentTime - this.t0) % LOOP_SEC + LOOP_SEC) % LOOP_SEC;
+    var loopSec = this.loopSec || LOOP_SEC;
+    var pos = ((ctx.currentTime - this.t0) % loopSec + loopSec) % loopSec;
     var n = this.dryBuf.length;
-    var idx = Math.min(n - 1, Math.floor(pos / LOOP_SEC * n));
+    var idx = Math.min(n - 1, Math.floor(pos / loopSec * n));
     var win = Math.max(1, Math.floor(ctx.sampleRate * 0.003));
     var gr = 0;
     for (var i = idx - win; i <= idx + win; i++) {
@@ -873,6 +986,9 @@
   window.PotokCompressor = {
     synthLoop: synthLoop,
     processLoop: processLoop,
+    prepareTrack: prepareTrack,
+    fmtDur: fmtDur,
+    MAX_TRACK_SEC: MAX_TRACK_SEC,
     LOOP_SEC: LOOP_SEC,
     dbToLin: dbToLin,
     stopAll: function () {

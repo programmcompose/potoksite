@@ -35,6 +35,9 @@
     this.master = null;
     this.dryBuf = null;
     this.wetBuf = null;
+    this.loopSec = null;
+    this.customBuf = null;
+    this.trackName = null;
     this.src = null;
     this.gainNode = null;
     this.playingSlot = -1;
@@ -60,6 +63,13 @@
         '<span class="cbt-score"><i data-lucide="target" class="cbt-ic"></i><span class="cbt-score-val">0 / 0</span></span>' +
       '</div>' +
       '<p class="cbt-task">Один из звуков — <b>без компрессии</b>, второй сжат. Послушай оба и выбери, какой звучит без эффекта.</p>' +
+      '<div class="pcp-row cbt-srcrow">' +
+        '<span class="pcp-row-label">Сигнал</span>' +
+        '<button type="button" class="pcp-src is-active" data-cbt-src="beat">Бит</button>' +
+        '<button type="button" class="pcp-src pcp-src--file" data-cbt-src="custom"><i data-lucide="upload"></i>Свой трек</button>' +
+        '<span class="cbt-trackname" title="Загрузить свой луп (WAV, MP3, OGG) — до 2 минут"></span>' +
+      '</div>' +
+      '<input type="file" accept="audio/*,.wav,.mp3,.ogg,.oga,.m4a,.flac,.aiff,.aif" class="cbt-file" hidden>' +
       '<div class="cbt-pads">' +
         padHtml(0) +
         padHtml(1) +
@@ -106,14 +116,35 @@
     }
     this.elNext.addEventListener('click', function () { self.newRound(); });
 
+    this.srcBtns = Array.prototype.slice.call(root.querySelectorAll('.pcp-src'));
+    for (var k = 0; k < this.srcBtns.length; k++) {
+      (function (btn) {
+        btn.addEventListener('click', function () {
+          if (btn.getAttribute('data-cbt-src') === 'custom') self.openFilePicker();
+          else self.useBeat();
+        });
+      })(this.srcBtns[k]);
+    }
+    this.elFile = root.querySelector('.cbt-file');
+    this.elTrackName = root.querySelector('.cbt-trackname');
+    if (this.elFile) {
+      this.elFile.addEventListener('change', function () {
+        var f = this.files && this.files[0];
+        if (f) self.loadCustomTrack(f);
+        this.value = '';
+      });
+    }
+    if (this.elTrackName) {
+      this.elTrackName.addEventListener('click', function () { self.openFilePicker(); });
+    }
+
     refreshIcons();
   };
 
-  BlindTest.prototype.ensureAudio = function () {
+  BlindTest.prototype.ensureCtx = function () {
     if (!this.ctx) {
-      var PC = window.PotokCompressor;
       var AC = window.AudioContext || window.webkitAudioContext;
-      if (!PC || !AC) {
+      if (!AC) {
         this.elResultMsg.textContent = 'Не удалось инициализировать звук (Web Audio API недоступен).';
         this.elResult.hidden = false;
         return false;
@@ -122,17 +153,89 @@
       this.master = this.ctx.createGain();
       this.master.gain.value = 0.9;
       this.master.connect(this.ctx.destination);
-      this.dryBuf = PC.synthLoop(this.ctx, 'beat');
-      // Auto makeup: первый проход без makeup → измеряем разницу RMS → второй проход с компенсацией
-      var p = {};
-      for (var k in RADICAL) p[k] = RADICAL[k];
-      p.makeup = 0;
-      var wet0 = PC.processLoop(this.ctx, this.dryBuf, p);
-      p.makeup = matchRmsMakeup(this.dryBuf, wet0.buffer);
-      this.wetBuf = PC.processLoop(this.ctx, this.dryBuf, p).buffer;
     }
     if (this.ctx.state === 'suspended') this.ctx.resume();
     return true;
+  };
+
+  // Auto makeup: первый проход без makeup → измеряем разницу RMS → второй проход с компенсацией
+  BlindTest.prototype.buildWet = function (dryBuf) {
+    var PC = window.PotokCompressor;
+    var p = {};
+    for (var k in RADICAL) p[k] = RADICAL[k];
+    p.makeup = 0;
+    var wet0 = PC.processLoop(this.ctx, dryBuf, p);
+    p.makeup = matchRmsMakeup(dryBuf, wet0.buffer);
+    this.wetBuf = PC.processLoop(this.ctx, dryBuf, p).buffer;
+  };
+
+  BlindTest.prototype.ensureAudio = function () {
+    if (!this.ensureCtx()) return false;
+    var PC = window.PotokCompressor;
+    if (!PC) {
+      this.elResultMsg.textContent = 'Не удалось инициализировать звук (модуль компрессора не загружен).';
+      this.elResult.hidden = false;
+      return false;
+    }
+    if (!this.dryBuf) {
+      this.dryBuf = PC.synthLoop(this.ctx, 'beat');
+      this.loopSec = PC.LOOP_SEC;
+      this.buildWet(this.dryBuf);
+    }
+    return true;
+  };
+
+  BlindTest.prototype.openFilePicker = function () {
+    if (this.elFile) this.elFile.click();
+  };
+
+  BlindTest.prototype.useBeat = function () {
+    var PC = window.PotokCompressor;
+    if (!this.ensureCtx() || !PC) return;
+    this.stopSound();
+    this.dryBuf = PC.synthLoop(this.ctx, 'beat');
+    this.loopSec = PC.LOOP_SEC;
+    this.buildWet(this.dryBuf);
+    this.customBuf = null;
+    this.trackName = null;
+    this.markSourceUi('beat', '');
+    this.newRound();
+  };
+
+  BlindTest.prototype.loadCustomTrack = function (file) {
+    var self = this;
+    var PC = window.PotokCompressor;
+    if (!this.ensureCtx() || !PC || typeof PC.prepareTrack !== 'function') return;
+    PC.prepareTrack(this.ctx, file).then(function (buf) {
+      self.stopSound();
+      self.customBuf = buf;
+      self.trackName = file.name;
+      self.dryBuf = buf;
+      self.loopSec = buf.duration;
+      self.buildWet(buf);
+      self.markSourceUi('custom', file.name + ' · ' + PC.fmtDur(buf.duration));
+      self.newRound();
+    }).catch(function (err) {
+      self.showTrackError(err);
+    });
+  };
+
+  BlindTest.prototype.markSourceUi = function (id, label) {
+    for (var i = 0; i < this.srcBtns.length; i++) {
+      this.srcBtns[i].classList.toggle('is-active', this.srcBtns[i].getAttribute('data-cbt-src') === id);
+    }
+    if (!this.elTrackName) return;
+    this.elTrackName.classList.remove('is-error');
+    this.elTrackName.textContent = label || '';
+    this.elTrackName.title = label ? (label + ' — нажми, чтобы заменить') : 'Загрузить свой луп (WAV, MP3, OGG) — до 2 минут';
+  };
+
+  BlindTest.prototype.showTrackError = function (err) {
+    if (!this.elTrackName) return;
+    this.elTrackName.classList.add('is-error');
+    var m = err && err.message || '';
+    this.elTrackName.textContent = m === 'too big' ? 'Файл больше 30 МБ — выбери покороче' : 'Не удалось прочитать файл. Подойдут WAV, MP3, OGG, FLAC.';
+    this.elTrackName.title = '';
   };
 
   BlindTest.prototype.playSlot = function (slot) {
@@ -154,7 +257,7 @@
     g.gain.linearRampToValueAtTime(1, tNow + CROSSFADE_SEC);
     src.connect(g);
     g.connect(this.master);
-    src.start(tNow, this.offset % window.PotokCompressor.LOOP_SEC);
+    src.start(tNow, this.offset % (this.loopSec || window.PotokCompressor.LOOP_SEC));
     this.src = src;
     this.gainNode = g;
     this.playingSlot = slot;
@@ -193,7 +296,8 @@
     this.round += 1;
     this.drySlot = Math.random() < 0.5 ? 0 : 1;
     // Одинаковая случайная точка входа для обоих звуков раунда — без позиционных подсказок
-    this.offset = (Math.floor(Math.random() * LOOP_STEPS) / LOOP_STEPS) * PC.LOOP_SEC;
+    var loopSec = this.loopSec || PC.LOOP_SEC;
+    this.offset = (Math.floor(Math.random() * LOOP_STEPS) / LOOP_STEPS) * loopSec;
     this.answered = false;
     this.stopSound();
 
