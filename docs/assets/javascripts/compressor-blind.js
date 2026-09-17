@@ -8,10 +8,26 @@
 (function () {
   'use strict';
 
-  // Радикальные настройки для заметного, но не карикатурного эффекта
-  var RADICAL = { threshold: -20, ratio: 8, attack: 5, release: 120, makeup: 6, knee: 3, mix: 100 };
+  // Радикальные настройки для заметного, но не карикатурного эффекта.
+  // Makeup вычисляется автоматически: RMS сжатого звука подгоняется под сухой,
+  // чтобы разница была в характере компрессии, а не в громкости.
+  var RADICAL = { threshold: -20, ratio: 8, attack: 5, release: 120, knee: 3, mix: 100 };
   var CROSSFADE_SEC = 0.01;
   var LOOP_STEPS = 32; // 2 такта по 16 шагов — точка входа квантуется по шагам
+
+  function rmsOf(buf) {
+    var x = buf.getChannelData(0), s = 0;
+    for (var i = 0; i < x.length; i++) s += x[i] * x[i];
+    return Math.sqrt(s / x.length);
+  }
+
+  // Gain в дБ, при котором RMS wet совпадает с RMS dry (ограничение — диапазон makeup)
+  function matchRmsMakeup(dryBuf, wetBuf) {
+    var dryRms = rmsOf(dryBuf), wetRms = rmsOf(wetBuf);
+    if (dryRms < 1e-9 || wetRms < 1e-9) return 0;
+    var db = 20 * Math.log10(dryRms / wetRms);
+    return Math.max(-12, Math.min(12, db));
+  }
 
   function BlindTest(root) {
     this.root = root;
@@ -107,7 +123,13 @@
       this.master.gain.value = 0.9;
       this.master.connect(this.ctx.destination);
       this.dryBuf = PC.synthLoop(this.ctx, 'beat');
-      this.wetBuf = PC.processLoop(this.ctx, this.dryBuf, RADICAL).buffer;
+      // Auto makeup: первый проход без makeup → измеряем разницу RMS → второй проход с компенсацией
+      var p = {};
+      for (var k in RADICAL) p[k] = RADICAL[k];
+      p.makeup = 0;
+      var wet0 = PC.processLoop(this.ctx, this.dryBuf, p);
+      p.makeup = matchRmsMakeup(this.dryBuf, wet0.buffer);
+      this.wetBuf = PC.processLoop(this.ctx, this.dryBuf, p).buffer;
     }
     if (this.ctx.state === 'suspended') this.ctx.resume();
     return true;
