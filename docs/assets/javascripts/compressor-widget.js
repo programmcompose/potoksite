@@ -272,6 +272,180 @@
     } catch (e) { return fallback; }
   }
 
+  // ---------- Кноб (крутилка): drag / wheel / клавиатура / dblclick-reset ----------
+  var KNOB_SWEEP_DEG = 270;   // ход по окружности
+  var KNOB_START_DEG = 135;   // canvas-угол начала хода (левый нижний)
+  var KNOB_TICKS = 11;
+
+  function knobAngle(t) { return (KNOB_START_DEG + KNOB_SWEEP_DEG * t) * Math.PI / 180; }
+
+  function Knob(opts) {
+    this.el = opts.el;
+    this.canvas = opts.canvas;
+    this.min = opts.min;
+    this.max = opts.max;
+    this.log = !!opts.log;
+    this.fmt = opts.fmt || function (v) { return String(v); };
+    this.defaultValue = opts.defaultValue != null ? opts.defaultValue : opts.value;
+    this.value = opts.value != null ? opts.value : opts.defaultValue;
+    this.onChange = opts.onChange || function () {};
+    this.dragging = false;
+    this._lastY = 0;
+    this._bind();
+    this.draw();
+  }
+
+  Knob.prototype.tOf = function (v) {
+    v = Math.max(this.min, Math.min(this.max, v));
+    if (!this.log) return (v - this.min) / (this.max - this.min);
+    var t = (Math.log(v) - Math.log(this.min)) / (Math.log(this.max) - Math.log(this.min));
+    return Math.max(0, Math.min(1, t));
+  };
+
+  Knob.prototype.valueOfT = function (t) {
+    t = Math.max(0, Math.min(1, t));
+    if (!this.log) return this.min + t * (this.max - this.min);
+    return Math.exp(Math.log(this.min) + t * (Math.log(this.max) - Math.log(this.min)));
+  };
+
+  Knob.prototype.setValue = function (v, fire) {
+    v = Math.max(this.min, Math.min(this.max, v));
+    if (v === this.value && !fire) return;
+    this.value = v;
+    this._updateAria();
+    this.draw();
+    if (fire) this.onChange(v);
+  };
+
+  Knob.prototype.setValueSilent = function (v) {
+    this.value = Math.max(this.min, Math.min(this.max, v));
+    this._updateAria();
+    this.draw();
+  };
+
+  Knob.prototype.reset = function () {
+    this.setValue(this.defaultValue, true);
+  };
+
+  Knob.prototype._updateAria = function () {
+    var el = this.el;
+    el.setAttribute('aria-valuemin', String(this.min));
+    el.setAttribute('aria-valuemax', String(this.max));
+    el.setAttribute('aria-valuenow', String(Math.round(this.value * 100) / 100));
+    el.setAttribute('aria-valuetext', this.fmt(this.value));
+  };
+
+  Knob.prototype._bind = function () {
+    var self = this;
+    var el = this.el;
+
+    el.addEventListener('pointerdown', function (e) {
+      if (el.setPointerCapture) { try { el.setPointerCapture(e.pointerId); } catch (err) {} }
+      self.dragging = true;
+      self._lastY = e.clientY;
+      el.classList.add('is-dragging');
+      el.focus();
+      e.preventDefault();
+    });
+
+    el.addEventListener('pointermove', function (e) {
+      if (!self.dragging) return;
+      var dy = self._lastY - e.clientY;
+      self._lastY = e.clientY;
+      var step = dy / 160;
+      if (e.shiftKey) step /= 8;
+      self.setValue(self.valueOfT(self.tOf(self.value) + step), true);
+    });
+
+    function endDrag() {
+      if (!self.dragging) return;
+      self.dragging = false;
+      el.classList.remove('is-dragging');
+      self.draw();
+    }
+    el.addEventListener('pointerup', endDrag);
+    el.addEventListener('pointercancel', endDrag);
+
+    el.addEventListener('wheel', function (e) {
+      e.preventDefault();
+      var d = e.deltaY;
+      if (e.deltaMode === 1) d *= 32;
+      var step = (d > 0 ? -1 : 1) * (e.shiftKey ? 0.004 : 0.02);
+      self.setValue(self.valueOfT(self.tOf(self.value) + step), true);
+    }, { passive: false });
+
+    el.addEventListener('dblclick', function () { self.reset(); });
+
+    el.addEventListener('keydown', function (e) {
+      var t = self.tOf(self.value);
+      if (e.key === 'ArrowUp' || e.key === 'ArrowRight') t += 0.01;
+      else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') t -= 0.01;
+      else if (e.key === 'PageUp') t += 0.1;
+      else if (e.key === 'PageDown') t -= 0.1;
+      else if (e.key === 'Home') t = 0;
+      else if (e.key === 'End') t = 1;
+      else return;
+      e.preventDefault();
+      self.setValue(self.valueOfT(t), true);
+    });
+  };
+
+  Knob.prototype.draw = function () {
+    var s = setupCanvas(this.canvas);
+    if (!s) return;
+    var g = s.ctx, w = s.w, h = s.h;
+    var cx = w / 2, cy = h / 2;
+    var rOuter = Math.min(w, h) / 2 - 2;
+    var accent = cssVar('--accent-orange', '#F2994A');
+    var t = this.tOf(this.value);
+
+    g.clearRect(0, 0, w, h);
+
+    // деления по окружности
+    g.lineWidth = 1.5;
+    for (var i = 0; i < KNOB_TICKS; i++) {
+      var tt = i / (KNOB_TICKS - 1);
+      var a = knobAngle(tt);
+      g.strokeStyle = 'rgba(148, 155, 170, .32)';
+      g.beginPath();
+      g.moveTo(cx + Math.cos(a) * rOuter, cy + Math.sin(a) * rOuter);
+      g.lineTo(cx + Math.cos(a) * (rOuter - 4), cy + Math.sin(a) * (rOuter - 4));
+      g.stroke();
+    }
+
+    // корпус
+    var bodyR = rOuter - 10.5;
+    g.beginPath();
+    g.arc(cx, cy, bodyR, 0, Math.PI * 2);
+    g.fillStyle = 'rgba(128, 128, 128, .07)';
+    g.fill();
+    g.strokeStyle = cssVar('--border-default', 'rgba(255, 255, 255, .1)');
+    g.lineWidth = 1;
+    g.stroke();
+
+    // дуга значения
+    var arcR = rOuter - 7.5;
+    if (this.dragging) { g.shadowColor = accent; g.shadowBlur = 9; }
+    g.strokeStyle = accent;
+    g.lineWidth = 3;
+    g.lineCap = 'round';
+    g.beginPath();
+    g.arc(cx, cy, arcR, knobAngle(0), knobAngle(t));
+    g.stroke();
+
+    // указатель
+    var a2 = knobAngle(t);
+    if (this.dragging) { g.shadowColor = accent; g.shadowBlur = 6; }
+    g.strokeStyle = accent;
+    g.lineWidth = 2.5;
+    g.lineCap = 'round';
+    g.beginPath();
+    g.moveTo(cx + Math.cos(a2) * bodyR * 0.38, cy + Math.sin(a2) * bodyR * 0.38);
+    g.lineTo(cx + Math.cos(a2) * bodyR * 0.82, cy + Math.sin(a2) * bodyR * 0.82);
+    g.stroke();
+    g.shadowBlur = 0;
+  };
+
   function Widget(root) {
     this.root = root;
     this.standalone = !!root.getAttribute('data-standalone');
@@ -354,29 +528,32 @@
     html += '<div class="pcp-params">';
     for (var j = 0; j < paramsDef.length; j++) {
       var d = paramsDef[j];
-      html += '<label class="pcp-param" data-key="' + d.key + '">';
+      html += '<div class="pcp-param" data-key="' + d.key + '">';
       html += '<span class="pcp-plabel">' + d.label + '</span>';
-      html += '<input type="range" min="0" max="1000" value="500">';
-      html += '<span class="pcp-pval"></span></label>';
+      html += '<div class="pcp-knob" tabindex="0" role="slider" aria-orientation="vertical" aria-label="' + d.label + '"><canvas class="pcp-knob-canvas"></canvas></div>';
+      html += '<span class="pcp-pval"></span></div>';
     }
     html += '</div>';
 
     root.innerHTML = html;
     this.paramsDef = paramsDef;
+    this.knobs = {};
 
     for (var m = 0; m < paramsDef.length; m++) {
       var def = paramsDef[m];
-      var input = root.querySelector('.pcp-param[data-key="' + def.key + '"] input');
-      this.syncSlider(def);
-      (function (def, input) {
-        input.addEventListener('input', function () {
-          var t = parseFloat(input.value) / 1000;
-          var v = def.log
-            ? sliderToParam(t * 1000, def.min, def.max)
-            : def.min + t * (def.max - def.min);
-          self.setParam(def.key, v);
-        });
-      })(def, input);
+      var knobEl = root.querySelector('.pcp-param[data-key="' + def.key + '"] .pcp-knob');
+      this.knobs[def.key] = new Knob({
+        el: knobEl,
+        canvas: knobEl.querySelector('canvas'),
+        min: def.min,
+        max: def.max,
+        log: def.log,
+        fmt: def.fmt,
+        defaultValue: DEFAULTS[def.key],
+        value: this.params[def.key],
+        onChange: (function (key) { return function (v) { self.setParam(key, v); }; })(def.key)
+      });
+      this.syncKnob(def);
     }
 
     var presetBtns = root.querySelectorAll('.pcp-preset');
@@ -436,25 +613,15 @@
     window.addEventListener('keydown', this._onKey);
   };
 
-  function sliderToParam(t, min, max) {
-    t = Math.min(1000, Math.max(0, t)) / 1000;
-    return Math.exp(Math.log(min) + t * (Math.log(max) - Math.log(min)));
-  }
-  function paramToSlider(v, min, max) {
-    var t = (Math.log(v) - Math.log(min)) / (Math.log(max) - Math.log(min));
-    return Math.round(t * 1000);
-  }
-
-  Widget.prototype.syncSlider = function (def) {
-    var input = this.root.querySelector('.pcp-param[data-key="' + def.key + '"] input');
+  Widget.prototype.syncKnob = function (def) {
+    var knob = this.knobs && this.knobs[def.key];
+    if (knob) knob.setValueSilent(this.params[def.key]);
     var valEl = this.root.querySelector('.pcp-param[data-key="' + def.key + '"] .pcp-pval');
-    if (!def.log) {
-      var t = (this.params[def.key] - def.min) / (def.max - def.min);
-      input.value = Math.round(Math.max(0, Math.min(1, t)) * 1000);
-    } else {
-      input.value = paramToSlider(Math.max(def.min, this.params[def.key]), def.min, def.max);
-    }
     if (valEl) valEl.textContent = def.fmt(this.params[def.key]);
+  };
+
+  Widget.prototype.drawKnobs = function () {
+    for (var k in this.knobs) this.knobs[k].draw();
   };
 
   Widget.prototype.setParam = function (key, value) {
@@ -464,7 +631,7 @@
     var def = null;
     for (var i = 0; i < this.paramsDef.length; i++) if (this.paramsDef[i].key === key) def = this.paramsDef[i];
     if (!def) return;
-    this.syncSlider(def);
+    this.syncKnob(def);
     if (key === 'mix') {
       this.applyMixGains();
       return;
@@ -486,7 +653,7 @@
       for (var k in v) this.params[k] = v[k];
       this.activePreset = id;
       this.markPresets();
-      for (var j = 0; j < this.paramsDef.length; j++) this.syncSlider(this.paramsDef[j]);
+      for (var j = 0; j < this.paramsDef.length; j++) this.syncKnob(this.paramsDef[j]);
       this.scheduleRerender();
       return;
     }
@@ -567,7 +734,7 @@
     if (force || Math.abs(next - this.params.makeup) > 0.15) {
       this.params.makeup = Math.max(-12, Math.min(12, next));
       for (var j = 0; j < this.paramsDef.length; j++) {
-        if (this.paramsDef[j].key === 'makeup') this.syncSlider(this.paramsDef[j]);
+        if (this.paramsDef[j].key === 'makeup') this.syncKnob(this.paramsDef[j]);
       }
       this.wet = processLoop(this.ctx, this.dryBuf, this.params);
     }
@@ -751,6 +918,7 @@
     this._resizeTimer = setTimeout(function () {
       self.drawWaveStatic();
       if (!self.playing) { self.drawGr(0); self.drawCurve(null); }
+      self.drawKnobs();
     }, 60);
   };
 
