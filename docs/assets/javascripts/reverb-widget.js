@@ -717,6 +717,138 @@
     this.rafId = requestAnimationFrame(next);
   };
 
+  // ===== Публичный API (слепой тест A/B и другие потребители) =====
+  var MAX_TRACK_SEC = 120;
+  var MAX_FILE_BYTES = 30 * 1024 * 1024;
+  var DRY_PEAK_DBFS = -6;
+
+  function dbToLin(db) { return Math.pow(10, db / 20); }
+
+  // Моно-импульс для оффлайн-рендера (та же форма, что у makeImpulse)
+  function makeImpulseMono(ctx, decay) {
+    var rate = ctx.sampleRate;
+    var length = Math.max(Math.floor(rate * 0.05), Math.floor(rate * decay));
+    var buf = ctx.createBuffer(1, length, rate);
+    var data = buf.getChannelData(0);
+    for (var i = 0; i < length; i++) {
+      var t = i / rate;
+      var envelope = Math.exp(-t * (6.0 / decay));
+      var early = i < rate * 0.08 ? 1.2 : 1.0;
+      data[i] = (Math.random() * 2 - 1) * envelope * early;
+    }
+    return buf;
+  }
+
+  // Оффлайн-реверб: dry + wet, хвост «заворачивается» в начало следующего такта —
+  // как реальный реверб на лупящемся треке. Возвращает Promise<{ buffer }> длиной
+  // ровно как dryBuf (можно играть с loop=true). Цепочка wet та же, что в виджете:
+  // Source → PreDelay → HPF → LPF → Convolver → WetGain; параллельно Source → DryGain.
+  function processLoop(ctx, dryBuf, p) {
+    var AC = window.OfflineAudioContext || window.webkitOfflineAudioContext;
+    if (!AC) return Promise.reject(new Error('offline audio not supported'));
+    var sr = dryBuf.sampleRate;
+    var L = dryBuf.length;
+    var decay = Math.max(0.2, p.decay);
+    var irLen = Math.max(Math.floor(sr * 0.05), Math.floor(sr * decay));
+    // Копий лупа в входе: хвост из предыдущей итерации должен целиком уместиться
+    // до начала окна вывода (иначе wrap-хвост на границе будет обрезан).
+    var copies = Math.max(2, Math.ceil(irLen / L) + 1);
+    var inLen = copies * L;
+
+    var offCtx = new AC(1, inLen, sr);
+    var inputBuf = offCtx.createBuffer(1, inLen, sr);
+    var idata = inputBuf.getChannelData(0);
+    var ddata = dryBuf.getChannelData(0);
+    for (var c = 0; c < copies; c++) idata.set(ddata, c * L);
+
+    var src = offCtx.createBufferSource();
+    src.buffer = inputBuf;
+
+    var dryGain = offCtx.createGain();
+    dryGain.gain.value = (p.dry != null ? p.dry : 100) / 100;
+
+    var preDelay = offCtx.createDelay(2.0);
+    preDelay.delayTime.value = Math.max(0, p.predelay || 0) / 1000;
+    var hpf = offCtx.createBiquadFilter();
+    hpf.type = 'highpass'; hpf.Q.value = 0.7;
+    hpf.frequency.value = p.hpf != null ? p.hpf : 300;
+    var lpf = offCtx.createBiquadFilter();
+    lpf.type = 'lowpass'; lpf.Q.value = 0.7;
+    lpf.frequency.value = p.lpf != null ? p.lpf : 8000;
+    var conv = offCtx.createConvolver();
+    conv.buffer = makeImpulseMono(offCtx, decay);
+    var wetGain = offCtx.createGain();
+    wetGain.gain.value = (p.mix != null ? p.mix : 35) / 100;
+
+    src.connect(dryGain);
+    dryGain.connect(offCtx.destination);
+    src.connect(preDelay);
+    preDelay.connect(hpf);
+    hpf.connect(lpf);
+    lpf.connect(conv);
+    conv.connect(wetGain);
+    wetGain.connect(offCtx.destination);
+    src.start(0);
+
+    return offCtx.startRendering().then(function (rendered) {
+      var out = rendered.getChannelData(0);
+      var loopOut = new Float32Array(L);
+      for (var i = 0; i < L; i++) loopOut[i] = out[(copies - 1) * L + i];
+      // Мягкий лимитер: сумма dry+wet может выбить пик
+      for (var j = 0; j < L; j++) {
+        var v = loopOut[j];
+        if (v > 0.98) v = 0.98 + 0.02 * Math.tanh((v - 0.98) / 0.02);
+        else if (v < -0.98) v = -0.98 - 0.02 * Math.tanh((-0.98 - v) / 0.02);
+        loopOut[j] = v;
+      }
+      var buf = ctx.createBuffer(1, L, sr);
+      if (buf.copyToChannel) buf.copyToChannel(loopOut, 0); else buf.getChannelData(0).set(loopOut);
+      return { buffer: buf };
+    });
+  }
+
+  // Загрузка пользовательского трека: decode → mono → trim → normalize peak (как в компрессоре)
+  function prepareTrack(ctx, file, maxSec) {
+    var P = window.Promise;
+    if (!P) return null;
+    if (!file || !file.size) return P.reject(new Error('empty'));
+    if (file.size > MAX_FILE_BYTES) return P.reject(new Error('too big'));
+    return new P(function (resolve, reject) {
+      var reader = new FileReader();
+      reader.onerror = function () { reject(reader.error || new Error('read error')); };
+      reader.onload = function () {
+        try { ctx.decodeAudioData(reader.result, resolve, reject); }
+        catch (e) { reject(e); }
+      };
+      reader.readAsArrayBuffer(file);
+    }).then(function (buf) {
+      var sr = buf.sampleRate;
+      var n = Math.min(buf.length, Math.floor((maxSec || MAX_TRACK_SEC) * sr));
+      var chs = buf.numberOfChannels;
+      var out = new Float32Array(n);
+      for (var c = 0; c < chs; c++) {
+        var d = buf.getChannelData(c);
+        for (var i = 0; i < n; i++) out[i] += d[i];
+      }
+      if (chs > 1) for (var j = 0; j < n; j++) out[j] /= chs;
+      var peak = 0;
+      for (var k = 0; k < n; k++) { var a = Math.abs(out[k]); if (a > peak) peak = a; }
+      if (peak > 1e-9) {
+        var g = dbToLin(DRY_PEAK_DBFS) / peak;
+        for (var m = 0; m < n; m++) out[m] *= g;
+      }
+      var mono = ctx.createBuffer(1, n, sr);
+      if (mono.copyToChannel) mono.copyToChannel(out, 0); else mono.getChannelData(0).set(out);
+      return mono;
+    });
+  }
+
+  function fmtDur(sec) {
+    sec = Math.max(0, Math.round(sec));
+    var m = Math.floor(sec / 60), s = sec % 60;
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+
   // ===== Boot =====
   var widgets = [];
   function boot() {
@@ -744,4 +876,20 @@
   if (typeof document$ !== 'undefined' && document$.subscribe) {
     document$.subscribe(function () { setTimeout(boot, 0); });
   }
+
+  // Публичный API для слепого теста A/B и других потребителей
+  window.PotokReverb = {
+    synthLoop: function (ctx, mode) { return mode === 'tone' ? synthTone(ctx) : synthBeat(ctx); },
+    processLoop: processLoop,
+    prepareTrack: prepareTrack,
+    fmtDur: fmtDur,
+    MAX_TRACK_SEC: MAX_TRACK_SEC,
+    LOOP_SEC: LOOP_SEC,
+    dbToLin: dbToLin,
+    stopAll: function () {
+      for (var i = 0; i < widgets.length; i++) {
+        if (widgets[i].playing) widgets[i].stop();
+      }
+    }
+  };
 })();

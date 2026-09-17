@@ -243,3 +243,305 @@
 @media (max-width: 640px) {
   .prv-params { grid-template-columns: 1fr 1fr; }
 }
+
+/* ========================================
+   Tabs (Reverb / Слепой тест A/B)
+   ======================================== */
+
+.prv-tabs { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+
+.prv-tab {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--text-secondary, #9CA3AF);
+  background: transparent;
+  border: 1px solid var(--border-default, rgba(255, 255, 255, 0.1));
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+.prv-tab svg { width: 16px; height: 16px; flex-shrink: 0; }
+.prv-tab:hover { border-color: var(--accent-orange, #F2994A); color: var(--text-main, #E5E7EB); }
+.prv-tab.is-active {
+  background: var(--accent-orange, #F2994A);
+  border-color: var(--accent-orange, #F2994A);
+  color: #170B03;
+}
+
+/* ========================================
+   Слепой тест A/B (.rbt) — без визуализации
+   ======================================== */
+
+.rbt {
+  --prv-bg: var(--bg-card, #14141F);
+  --prv-border: var(--border-default, rgba(255, 255, 255, 0.1));
+  --prv-text: var(--text-main, #E5E7EB);
+  --prv-muted: var(--text-secondary, #9CA3AF);
+  --prv-accent: var(--accent-orange, #F2994A);
+  --prv-accent-hover: var(--accent-orange-hover, #FFB26B);
+  --prv-cyan: #3DE8FF;
+  --prv-ok: #34d399;
+  --prv-hot: #f87171;
+
+  background: var(--prv-bg);
+  border: 1px solid var(--prv-border);
+  border-radius: 12px;
+  padding: 20px;
+  margin: 20px 0;
+  color: var(--prv-text);
+  font-size: 14px;
+}
+
+.rbt * { box-sizing: border-box; }
+
+.rbt-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+
+.rbt-round {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 12.5px;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--prv-muted);
+}
+.rbt-round b { color: var(--prv-accent); font-size: 15px; }
+
+.rbt-score {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(128, 128, 128, .08);
+  border: 1px solid var(--prv-border);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--prv-text);
+}
+
+.rbt-ic { width: 15px; height: 15px; color: var(--prv-accent); display: inline-block; vertical-align: -2px; flex-shrink: 0; }
+
+.rbt-task {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--prv-muted);
+  max-width: 640px;
+  margin-bottom: 18px;
+}
+.rbt-task b { color: var(--prv-text); }
+
+/* ---------- Сигнал (источник) ---------- */
+.rbt-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.rbt-row-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--prv-muted);
+  margin-right: 4px;
+}
+.rbt-src {
+  padding: 5px 11px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--prv-muted);
+  background: transparent;
+  border: 1px solid var(--prv-border);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+.rbt-src:hover { border-color: var(--prv-cyan); color: var(--prv-text); }
+.rbt-src.is-active {
+  border-color: var(--prv-cyan);
+  color: var(--prv-cyan);
+  background: rgba(61, 232, 255, 0.08);
+}
+
+.rbt-src--file { display: inline-flex; align-items: center; gap: 6px; }
+.rbt-src--file svg,
+.rbt-src--file i { width: 13px; height: 13px; display: inline-block; vertical-align: -2px; flex-shrink: 0; }
+
+.rbt-trackname {
+  font-size: 12px;
+  color: var(--prv-muted);
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.rbt-trackname:hover { color: var(--prv-accent); }
+.rbt-trackname.is-error { color: var(--prv-hot); cursor: default; }
+
+.rbt-file { display: none; }
+
+.rbt-srcrow { margin-bottom: 16px; }
+
+/* ---------- Плитки-звуки ---------- */
+.rbt-pads {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.rbt-pad {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 30px 16px;
+  background: rgba(128, 128, 128, .05);
+  border: 1.5px solid var(--prv-border);
+  border-radius: 12px;
+  font-family: inherit;
+  color: var(--prv-text);
+  cursor: pointer;
+  transition: background-color .15s ease, border-color .15s ease, box-shadow .2s ease;
+}
+.rbt-pad:hover:not(:disabled) { border-color: var(--prv-accent); }
+.rbt-pad:disabled { opacity: .55; cursor: default; }
+
+.rbt-eq { display: flex; align-items: flex-end; gap: 3px; height: 18px; }
+.rbt-eq span {
+  width: 4px;
+  border-radius: 2px;
+  background: var(--prv-muted);
+  height: 25%;
+  opacity: .6;
+}
+.rbt-pad.is-playing {
+  border-color: var(--prv-accent);
+  background: rgba(242, 153, 74, .08);
+  box-shadow: 0 0 22px rgba(242, 153, 74, .16);
+}
+.rbt-pad.is-playing .rbt-eq span { background: var(--prv-accent); opacity: .9; animation: rbt-bounce .7s ease-in-out infinite; }
+.rbt-pad.is-playing .rbt-eq span:nth-child(2) { animation-delay: .18s; }
+.rbt-pad.is-playing .rbt-eq span:nth-child(3) { animation-delay: .36s; }
+
+@keyframes rbt-bounce {
+  0%, 100% { height: 25%; }
+  50%      { height: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rbt-pad.is-playing .rbt-eq span { animation: none; height: 60%; }
+}
+
+.rbt-pad-label { font-size: 17px; font-weight: 700; letter-spacing: .02em; }
+.rbt-pad-hint { font-size: 11.5px; color: var(--prv-muted); opacity: .8; }
+
+/* ---------- Статус рендера ---------- */
+.rbt-status {
+  margin-bottom: 10px;
+  text-align: center;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 12.5px;
+  color: var(--prv-muted);
+}
+.rbt-status[hidden] { display: none; }
+
+/* ---------- Ответы ---------- */
+.rbt-guess {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.rbt-answer {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 13px 16px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--prv-text);
+  background: transparent;
+  border: 1.5px solid var(--prv-border);
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+}
+.rbt-answer:hover:not(:disabled) { border-color: var(--prv-accent); color: var(--prv-accent); }
+.rbt-answer:disabled { cursor: default; }
+.rbt-answer:disabled:not(.is-correct):not(.is-wrong) { opacity: .45; }
+.rbt-answer.is-correct { background: var(--prv-ok); border-color: var(--prv-ok); color: #0a1a12; }
+.rbt-answer.is-wrong { background: var(--prv-hot); border-color: var(--prv-hot); color: #1a0505; }
+
+/* ---------- Результат раунда ---------- */
+.rbt-result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 13px 16px;
+  background: rgba(128, 128, 128, .07);
+  border: 1px solid var(--prv-border);
+  border-radius: 10px;
+}
+.rbt-result[hidden] { display: none; }
+
+.rbt-result-body { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+
+.rbt-result-msg { font-size: 14.5px; line-height: 1.55; color: var(--prv-text); }
+
+.rbt-result-params {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--prv-text);
+  background: rgba(242, 153, 74, .08);
+  border: 1px solid rgba(242, 153, 74, .28);
+  padding: 7px 11px;
+  border-radius: 7px;
+}
+.rbt-result-params b { color: var(--prv-accent); font-weight: 600; }
+
+.rbt-result-desc {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--prv-muted);
+}
+
+.rbt-next {
+  padding: 10px 18px;
+  font-family: inherit;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #170B03;
+  background: var(--prv-accent);
+  border: none;
+  border-radius: 9px;
+  cursor: pointer;
+  transition: background-color .15s ease;
+}
+.rbt-next:hover { background: var(--prv-accent-hover); }
+
+@media (max-width: 640px) {
+  .rbt-pads,
+  .rbt-guess { grid-template-columns: 1fr; }
+  .rbt-pad { padding: 22px 16px; }
+}
