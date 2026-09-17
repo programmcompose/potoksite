@@ -182,7 +182,17 @@ def extract_links(md_text: str, from_file: pathlib.Path, docs_dir: pathlib.Path)
     return found
 
 
-def collect_pages(docs_dir: pathlib.Path) -> dict[str, Any]:
+def is_excluded(rel_posix: str, spec) -> bool:
+    """True if the docs-relative path matches mkdocs.yml `exclude_docs` (GitIgnoreSpec)."""
+    if spec is None:
+        return False
+    try:
+        return spec.match_file(rel_posix)
+    except Exception:
+        return False
+
+
+def collect_pages(docs_dir: pathlib.Path, exclude_spec=None) -> dict[str, Any]:
     pages: dict[str, Any] = {}
     outlinks: dict[str, list[str]] = {}
 
@@ -192,6 +202,8 @@ def collect_pages(docs_dir: pathlib.Path) -> dict[str, Any]:
         try:
             rel = md.relative_to(docs_dir)
         except ValueError:
+            continue
+        if is_excluded(rel.as_posix(), exclude_spec):
             continue
         url = md_path_to_url(rel)
         try:
@@ -243,7 +255,7 @@ def on_post_build(config, *args, **kwargs):
     site_dir = pathlib.Path(config.site_dir).resolve()
     site_dir.mkdir(parents=True, exist_ok=True)
 
-    graph = collect_pages(docs_dir)
+    graph = collect_pages(docs_dir, getattr(config, "exclude_docs", None))
     out = site_dir / "link-graph.json"
     with open(out, "w", encoding="utf-8") as f:
         json.dump(graph, f, ensure_ascii=False, indent=2)

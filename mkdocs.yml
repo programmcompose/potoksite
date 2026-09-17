@@ -2,6 +2,9 @@ site_name: "18 ПОТОК - Статьи и WIKI"
 site_description: "Полный курс по созданию музыки: от основ звука до мастеринга"
 site_url: "https://programmcompose.github.io/potoksite"
 docs_dir: "docs"
+# README.md внутри docs/tools/<tool>/ — документация для AI-агентов, не публикуется на сайт
+exclude_docs: |
+  tools/**/README.md
 copyright: "© 2026 - 18 ПОТОК - IY BEATS"
 
 theme:
