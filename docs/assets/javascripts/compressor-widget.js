@@ -868,4 +868,17 @@
   if (typeof document$ !== 'undefined' && document$.subscribe) {
     document$.subscribe(function () { setTimeout(boot, 0); });
   }
+
+  // Публичный API для слепого теста A/B и других потребителей
+  window.PotokCompressor = {
+    synthLoop: synthLoop,
+    processLoop: processLoop,
+    LOOP_SEC: LOOP_SEC,
+    dbToLin: dbToLin,
+    stopAll: function () {
+      for (var i = 0; i < widgets.length; i++) {
+        if (widgets[i].playing) widgets[i].stop();
+      }
+    }
+  };
 })();

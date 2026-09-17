@@ -95,16 +95,32 @@
 
 <div class="container">
   <h1>Компрессор</h1>
-  <p class="subtitle">Слышимая компрессия: синтезированный бит, реальный DSP (soft knee), GR-метр и кривая передачи. Нажми Play, переключай BYPASS и крути параметры — следи, как меняется звук и картинка.</p>
+  <p class="subtitle">Два режима: крути параметры компрессора на синтезированном бите — GR-метр, кривая передачи и A/B bypass. Или пройди слепой тест: два звука, один сжат, угадай, какой без компрессии.</p>
 
-  <div class="potok-compressor" data-standalone></div>
-
-  <div class="hint">
-    <b>Как слушать:</b> включи звук, нажми <b>Play</b>. Переключай <b>BYPASS</b>, чтобы сравнивать «до» и «после». Опусти Threshold — GR-метр начнёт «дышать» в такт биту, а точка на кривой передачи покажет, где компрессор работает. Пресеты — из таблицы «Применение» в уроке Compression.
+  <div class="pcp-tabs" role="tablist">
+    <button type="button" class="pcp-tab is-active" data-pcp-tab="compressor"><i data-lucide="sliders-horizontal"></i>Компрессор</button>
+    <button type="button" class="pcp-tab" data-pcp-tab="blind"><i data-lucide="ear"></i>Слепой тест A/B</button>
   </div>
+
+  <section data-pcp-panel="compressor">
+    <div class="potok-compressor" data-standalone></div>
+
+    <div class="hint">
+      <b>Как слушать:</b> включи звук, нажми <b>Play</b>. Переключай <b>BYPASS</b>, чтобы сравнивать «до» и «после». Опусти Threshold — GR-метр начнёт «дышать» в такт биту, а точка на кривой передачи покажет, где компрессор работает. Пресеты — из таблицы «Применение» в уроке Compression.
+    </div>
+  </section>
+
+  <section data-pcp-panel="blind" hidden>
+    <div class="potok-compressor-blind"></div>
+
+    <div class="hint">
+      <b>Как играть:</b> нажми на оба звука, послушай и выбери, какой звучит <b>без компрессии</b>. В каждом раунде роли звуков меняются местами — никаких подсказок: ни волны, ни метра. Сжатый вариант сделан намеренно жёстким (Ratio 8:1), чтобы эффект было слышно.
+    </div>
+  </section>
 </div>
 
 <script src="https://unpkg.com/lucide@latest"></script>
 <script src="../../assets/javascripts/compressor-widget.js"></script>
+<script src="../../assets/javascripts/compressor-blind.js"></script>
 </body>
 </html>
