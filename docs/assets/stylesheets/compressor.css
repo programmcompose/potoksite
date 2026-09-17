@@ -530,7 +530,28 @@
 }
 .cbt-result[hidden] { display: none; }
 
+.cbt-result-body { display: flex; flex-direction: column; gap: 7px; min-width: 0; }
+
 .cbt-result-msg { font-size: 14.5px; line-height: 1.55; color: var(--pcp-text); }
+
+.cbt-result-params {
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 12.5px;
+  line-height: 1.6;
+  color: var(--pcp-text);
+  background: rgba(242, 153, 74, .08);
+  border: 1px solid rgba(242, 153, 74, .28);
+  padding: 7px 11px;
+  border-radius: 7px;
+}
+.cbt-result-params b { color: var(--pcp-accent); font-weight: 600; }
+
+.cbt-result-desc {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--pcp-muted);
+}
 
 .cbt-next {
   padding: 10px 18px;

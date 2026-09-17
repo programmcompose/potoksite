@@ -3,17 +3,69 @@
    Один звук сухой, второй с компрессией.
    Слушатель угадывает, какой без эффекта.
    Без визуализации: ни волны, ни GR, ни кривой.
+   Настройки компрессора меняются каждый раунд;
+   после ответа показаны применённые параметры.
    ======================================== */
 
 (function () {
   'use strict';
 
-  // Радикальные настройки для заметного, но не карикатурного эффекта.
-  // Makeup вычисляется автоматически: RMS сжатого звука подгоняется под сухой,
-  // чтобы разница была в характере компрессии, а не в громкости.
-  var RADICAL = { threshold: -20, ratio: 8, attack: 5, release: 120, knee: 3, mix: 100 };
+  // Запасные настройки — если случайный набор дал слишком слабое сжатие.
+  var FALLBACK = { threshold: -20, ratio: 8, attack: 5, release: 120, knee: 6, mix: 100 };
   var CROSSFADE_SEC = 0.01;
   var LOOP_STEPS = 32; // 2 такта по 16 шагов — точка входа квантуется по шагам
+  var MIN_AVG_GR = 2;   // dB — минимально заметное среднее сжатие
+  var MAX_ROLLS = 10;   // сколько раз перекатываем случайные настройки
+
+  // Четыре «характера» компрессии: каждый раунд берётся случайный профиль,
+  // значения дёргаются внутри диапазона — раунды не повторяются.
+  var PROFILES = [
+    { threshold: [-30, -22], ratio: [6, 12],   attack: [1, 8],   release: [150, 400] }, // плотное сжатие
+    { threshold: [-26, -18], ratio: [3, 6],    attack: [30, 90], release: [80, 220]  }, // punch: медленный attack
+    { threshold: [-28, -20], ratio: [4, 8],    attack: [5, 15],  release: [400, 700] }, // «дыхание»: длинный release
+    { threshold: [-22, -16], ratio: [2, 3.5],  attack: [20, 60], release: [200, 500] }  // лёгкий glue
+  ];
+
+  function randIn(range) { return range[0] + Math.random() * (range[1] - range[0]); }
+
+  function randomParams() {
+    var prof = PROFILES[Math.floor(Math.random() * PROFILES.length)];
+    var atk = randIn(prof.attack);
+    return {
+      threshold: Math.round(randIn(prof.threshold)),
+      ratio: Math.round(randIn(prof.ratio) * 2) / 2,
+      attack: atk < 10 ? Math.round(atk * 10) / 10 : Math.round(atk),
+      release: Math.round(randIn(prof.release)),
+      knee: 6,
+      mix: 100
+    };
+  }
+
+  function fmtMs(v) { return (v < 10 ? v.toFixed(1) : String(Math.round(v))) + ' мс'; }
+  function fmtRatio(v) { return (v % 1 === 0 ? String(v) : v.toFixed(1)) + ':1'; }
+
+  // Короткое объяснение, что делает этот набор параметров со звуком.
+  function describeParams(p) {
+    var atk = p.attack < 8
+      ? 'быстрый attack (' + fmtMs(p.attack) + ') срезает атаку ударов — звук стал плотнее и суше'
+      : p.attack >= 30
+        ? 'медленный attack (' + fmtMs(p.attack) + ') пропускает транзиенты — punch сохранён, сжимается только тело звука'
+        : 'средний attack (' + fmtMs(p.attack) + ') мягко сглаживает атаки';
+    var rel = p.release > 400
+      ? 'длинный release (' + Math.round(p.release) + ' мс) даёт слышимое «дыхание» в паузах'
+      : p.release < 120
+        ? 'короткий release (' + Math.round(p.release) + ' мс) быстро отпускает сигнал — динамика остаётся живой'
+        : '';
+    var thr = p.threshold <= -26
+      ? 'низкий порог (' + p.threshold + ' dB) — компрессор работает почти всё время'
+      : p.threshold >= -18
+        ? 'высокий порог (' + p.threshold + ' dB) — сжимаются только самые громкие пики'
+        : '';
+    var parts = [atk];
+    if (rel) parts.push(rel);
+    if (thr) parts.push(thr);
+    return parts.join('; ');
+  }
 
   function rmsOf(buf) {
     var x = buf.getChannelData(0), s = 0;
@@ -47,6 +99,8 @@
     this.drySlot = 0;
     this.offset = 0;
     this.answered = false;
+    this.roundParams = null;
+    this.wetDirty = true;
   }
 
   BlindTest.prototype.start = function () {
@@ -62,7 +116,7 @@
         '<span class="cbt-round">Раунд <b>1</b></span>' +
         '<span class="cbt-score"><i data-lucide="target" class="cbt-ic"></i><span class="cbt-score-val">0 / 0</span></span>' +
       '</div>' +
-      '<p class="cbt-task">Один из звуков — <b>без компрессии</b>, второй сжат. Послушай оба и выбери, какой звучит без эффекта.</p>' +
+      '<p class="cbt-task">Один из звуков — <b>без компрессии</b>, второй сжат. Настройки компрессора <b>меняются каждый раунд</b> — после ответа покажем, что именно было применено. Послушай оба и выбери, какой звучит без эффекта.</p>' +
       '<div class="pcp-row cbt-srcrow">' +
         '<span class="pcp-row-label">Сигнал</span>' +
         '<button type="button" class="pcp-src is-active" data-cbt-src="beat">Бит</button>' +
@@ -79,7 +133,11 @@
         '<button type="button" class="cbt-answer" data-slot="1"><i data-lucide="ear" class="cbt-ic"></i>Звук 2 — без компрессии</button>' +
       '</div>' +
       '<div class="cbt-result" hidden>' +
-        '<span class="cbt-result-msg"></span>' +
+        '<div class="cbt-result-body">' +
+          '<span class="cbt-result-msg"></span>' +
+          '<div class="cbt-result-params" hidden></div>' +
+          '<p class="cbt-result-desc"></p>' +
+        '</div>' +
         '<button type="button" class="cbt-next">Следующий раунд →</button>' +
       '</div>';
 
@@ -95,6 +153,8 @@
     this.elScore = root.querySelector('.cbt-score-val');
     this.elResult = root.querySelector('.cbt-result');
     this.elResultMsg = root.querySelector('.cbt-result-msg');
+    this.elResultParams = root.querySelector('.cbt-result-params');
+    this.elResultDesc = root.querySelector('.cbt-result-desc');
     this.elNext = root.querySelector('.cbt-next');
     this.padBtns = Array.prototype.slice.call(root.querySelectorAll('.cbt-pad'));
     this.answerBtns = Array.prototype.slice.call(root.querySelectorAll('.cbt-answer'));
@@ -158,15 +218,28 @@
     return true;
   };
 
-  // Auto makeup: первый проход без makeup → измеряем разницу RMS → второй проход с компенсацией
-  BlindTest.prototype.buildWet = function (dryBuf) {
+  // Собирает сжатый вариант раунда: случайные настройки (перекатываем, пока
+  // среднее сжатие не станет заметным) + auto makeup — RMS подгоняется под сухой,
+  // чтобы разница была в характере компрессии, а не в громкости.
+  BlindTest.prototype.makeWet = function (dryBuf) {
     var PC = window.PotokCompressor;
-    var p = {};
-    for (var k in RADICAL) p[k] = RADICAL[k];
-    p.makeup = 0;
-    var wet0 = PC.processLoop(this.ctx, dryBuf, p);
+    var p = null, wet0 = null, attempt;
+    for (attempt = 0; attempt < MAX_ROLLS; attempt++) {
+      p = randomParams();
+      p.makeup = 0;
+      wet0 = PC.processLoop(this.ctx, dryBuf, p);
+      if ((wet0.avgGr || 0) >= MIN_AVG_GR) break;
+    }
+    if (!p || (wet0.avgGr || 0) < MIN_AVG_GR) {
+      p = {};
+      for (var k in FALLBACK) p[k] = FALLBACK[k];
+      p.makeup = 0;
+      wet0 = PC.processLoop(this.ctx, dryBuf, p);
+    }
     p.makeup = matchRmsMakeup(dryBuf, wet0.buffer);
     this.wetBuf = PC.processLoop(this.ctx, dryBuf, p).buffer;
+    this.roundParams = p;
+    this.wetDirty = false;
   };
 
   BlindTest.prototype.ensureAudio = function () {
@@ -180,8 +253,8 @@
     if (!this.dryBuf) {
       this.dryBuf = PC.synthLoop(this.ctx, 'beat');
       this.loopSec = PC.LOOP_SEC;
-      this.buildWet(this.dryBuf);
     }
+    if (this.wetDirty || !this.wetBuf) this.makeWet(this.dryBuf);
     return true;
   };
 
@@ -195,11 +268,10 @@
     this.stopSound();
     this.dryBuf = PC.synthLoop(this.ctx, 'beat');
     this.loopSec = PC.LOOP_SEC;
-    this.buildWet(this.dryBuf);
     this.customBuf = null;
     this.trackName = null;
     this.markSourceUi('beat', '');
-    this.newRound();
+    this.newRound(); // соберёт wet с новыми настройками раунда
   };
 
   BlindTest.prototype.loadCustomTrack = function (file) {
@@ -212,9 +284,8 @@
       self.trackName = file.name;
       self.dryBuf = buf;
       self.loopSec = buf.duration;
-      self.buildWet(buf);
       self.markSourceUi('custom', file.name + ' · ' + PC.fmtDur(buf.duration));
-      self.newRound();
+      self.newRound(); // соберёт wet с новыми настройками раунда
     }).catch(function (err) {
       self.showTrackError(err);
     });
@@ -301,6 +372,13 @@
     this.answered = false;
     this.stopSound();
 
+    // Новые настройки компрессора каждый раунд — слушатель слышит разные характеры сжатия.
+    if (this.ctx && this.dryBuf) {
+      this.makeWet(this.dryBuf);
+    } else {
+      this.wetDirty = true; // соберём при первом запуске звука
+    }
+
     this.elRound.textContent = String(this.round);
     for (var i = 0; i < this.padBtns.length; i++) this.padBtns[i].disabled = false;
     for (var j = 0; j < this.answerBtns.length; j++) {
@@ -332,6 +410,22 @@
     this.elResultMsg.innerHTML = ok
       ? '<b>Верно!</b> Без компрессии звучал ' + dryLabel + '.'
       : '<b>Неверно.</b> Без компрессии звучал ' + dryLabel + ', а ты выбрал Звук ' + (slot + 1) + '.';
+
+    // Показываем настройки, которыми был сделан сжатый звук этого раунда.
+    var p = this.roundParams;
+    if (p && this.elResultParams) {
+      this.elResultParams.innerHTML =
+        'Threshold <b>' + p.threshold + ' dB</b> · Ratio <b>' + fmtRatio(p.ratio) + '</b>' +
+        ' · Attack <b>' + fmtMs(p.attack) + '</b> · Release <b>' + Math.round(p.release) + ' мс</b>';
+      this.elResultParams.hidden = false;
+    } else if (this.elResultParams) {
+      this.elResultParams.hidden = true;
+    }
+    if (this.elResultDesc) {
+      this.elResultDesc.textContent = p ? describeParams(p) : '';
+      this.elResultDesc.hidden = !p;
+    }
+
     this.elResult.hidden = false;
     this.updateScore();
   };
