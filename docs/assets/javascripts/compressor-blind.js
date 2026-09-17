@@ -32,7 +32,6 @@
 
   BlindTest.prototype.start = function () {
     this.buildDom();
-    this.bindEvents();
     this.newRound();
   };
 
