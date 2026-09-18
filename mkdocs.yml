@@ -333,6 +333,7 @@ nav:
   - "<span class='nav-icon' data-lucide='plug'></span> Плагины":
       - "plugins/index.md"
       - "<span class='nav-icon' data-lucide='package'></span> Базовые VST-плагины": "plugins/bazovye-vst-plaginy.md"
+      - "<span class='nav-icon' data-lucide='activity'></span> Разновидности компрессоров": "plugins/raznovidnosti-kompressorov.md"
       - "<span class='nav-icon' data-lucide='palette'></span> Meraki Collection": "plugins/meraki-collection.md"
       - "<span class='nav-icon' data-lucide='landmark'></span> Waves Abbey Road": "plugins/waves-abbey-road.md"
       - "<span class='nav-icon' data-lucide='mic-vocal'></span> Waves CLA": "plugins/waves-cla.md"
