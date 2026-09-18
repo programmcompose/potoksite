@@ -339,6 +339,7 @@ nav:
       - "<span class='nav-icon' data-lucide='mic-vocal'></span> Waves CLA": "plugins/waves-cla.md"
       - "<span class='nav-icon' data-lucide='trophy'></span> Waves Manny Marroquin": "plugins/waves-mannym.md"
       - "<span class='nav-icon' data-lucide='headphones'></span> Waves Maserati": "plugins/waves-maserati.md"
+  - "<span class='nav-icon' data-lucide='lightbulb'></span> Советы ученику": "sovety-uchniku.md"
   - "<span class='nav-icon' data-lucide='help-circle'></span> FAQ": "faq.md"
   - "<span class='nav-icon' data-lucide='book-open'></span> Словарь терминов": "glossary.md"
   - "<span class='nav-icon' data-lucide='award'></span> Бейджи": "badges.md"
