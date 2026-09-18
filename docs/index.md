@@ -9,11 +9,6 @@
 </p>
 </div>
 
-<div class="desktop-warning">
-  <i data-lucide="monitor" class="warning-icon"></i>
-  <span><strong>Удобнее на компьютере.</strong> Инструменты, таблицы и навигация рассчитаны на десктоп.</span>
-</div>
-
 ## <i data-lucide="map" class="heading-icon"></i> Как учиться
 
 <div class="home-path">
