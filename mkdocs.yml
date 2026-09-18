@@ -3,8 +3,11 @@ site_description: "Полный курс по созданию музыки: о�
 site_url: "https://programmcompose.github.io/potoksite"
 docs_dir: "docs"
 # README.md внутри docs/tools/<tool>/ — документация для AI-агентов, не публикуется на сайт
+# plans/ и brainstorms/ — внутренние документы, не публикуются (canvases/ нужен canvas-viewer.js)
 exclude_docs: |
   tools/**/README.md
+  plans/**
+  brainstorms/**
 copyright: "© 2026 - 18 ПОТОК - IY BEATS"
 
 theme:
@@ -70,9 +73,10 @@ extra:
     text: Inter
     code: JetBrains Mono
     provider: google
-  analytics:
-    provider: google
-    property: G-XXXXXXXXXX
+  # аналитика: вписать реальный ID GA4 и раскомментировать
+  # analytics:
+  #   provider: google
+  #   property: G-XXXXXXXXXX
 
 extra_css:
   - assets/stylesheets/extra.css
@@ -174,9 +178,6 @@ markdown_extensions:
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.tilde
-  - pymdownx.snippets:
-      auto_append:
-        - includes/abbreviations.md
 
 nav:
   - "<span class='nav-icon' data-lucide='home'></span> Главная": index.md
