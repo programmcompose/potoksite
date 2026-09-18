@@ -102,11 +102,7 @@
   background-color: var(--bg-main);
 }
 
-/* Sidebar background */
-[data-md-color-scheme="slate"] .md-sidebar--primary {
-  background-color: var(--bg-sidebar);
-  border-right: 1px solid var(--border-subtle);
-}
+/* Sidebar chrome (floating menu window) lives in ambient.css → "Glass chrome" */
 
 /* Site-name block in the drawer — no solid plate over the gradient */
 .md-sidebar--primary .md-nav--primary > .md-nav__title,
