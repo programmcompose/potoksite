@@ -5,6 +5,8 @@
 !!! tip
     **Главное правило:** бери 2–3 совета за сессию и реально применяй их в работе. Список, который просто прочитал, ничего не стоит — список, который применил, меняет твой workflow.
 
+![Рабочее место продакшера: DAW, мониторы, контроллер](assets/images/sovety-uchniku/studio-setup.jpg)
+
 ## <i data-lucide="zap" class="section-icon"></i> WORKFLOW И СКОРОСТЬ
 
 ### <i data-lucide="file-box" class="q-icon"></i> Шаблон проекта
@@ -22,6 +24,8 @@
 ### <i data-lucide="folder-tree" class="q-icon"></i> Организация сэмплов + нейминг
 
 Когда вдохновение пришло, нужный звук должен находиться за секунды. Заведи понятную структуру папок и называй файлы по схеме: `Kick_808_140BPM_Cmin`. Выбрасывай мусор — низкое качество в библиотеке только замедляет.
+
+![Организация аудио-файлов проекта](assets/images/sovety-uchniku/AudioFileOrganization.png)
 
 ### <i data-lucide="save" class="q-icon"></i> Версии проекта и демо-рендеры
 
@@ -54,6 +58,8 @@
 ### <i data-lucide="volume-x" class="q-icon"></i> Аранжировка через mute
 
 Играй полный луп и в реальном времени мутя дорожки собирай структуру: где что входит, где тишина, где дроп. Это быстрее, чем рисовать клипы по одному, и ты слышишь трек целиком.
+
+![Структура трека](assets/images/sovety-uchniku/songstructure.png)
 
 ### <i data-lucide="disc-2" class="q-icon"></i> Рендер MIDI в аудио — чтобы «закрыть» композицию
 
@@ -89,6 +95,8 @@ Sound selection — то, что делает микс профессионал�
 
 Режь низ на всех reverb/delay-сёндах (обычно от 200–300 Hz). Мгновенно убирает грязь в низах, не трогая сам звук.
 
+![Reverb с high-pass EQ до и после](assets/images/sovety-uchniku/ReverbAndDelay.png)
+
 ## <i data-lucide="mixer-vertical" class="section-icon"></i> БАЗА СВЕДЕНИЯ
 
 ### <i data-lucide="scissors" class="q-icon"></i> High-pass всё, кроме баса и кика
@@ -117,9 +125,13 @@ Sound selection — то, что делает микс профессионал�
 
 Держи пики около −6 dBFS, чтобы у мастера (или твоего лимитера) было пространство. Не дави микс в ноль — это забирает динамику и оставляет мастеру только мусор.
 
+![Настройки рендера трека](assets/images/sovety-uchniku/ExportAudioAbletonLive.png)
+
 ### <i data-lucide="radio" class="q-icon"></i> Цель по громкости: ~−14 LUFS
 
 Для стриминга ориентируйся на −14 LUFS integrated (клубные треки могут быть громче). Измеряй луднес-метром, а не «на глаз». Подробнее: [Мастеринг](etap2/mastering.md).
+
+![Лимитер с LUFS-метром](assets/images/sovety-uchniku/Fabfilter.png)
 
 ### <i data-lucide="car" class="q-icon"></i> Тестируй на разных системах
 
@@ -153,7 +165,7 @@ Sound selection — то, что делает микс профессионал�
 
 ## <i data-lucide="book-open" class="section-icon"></i> ИСТОЧНИКИ
 
-Советы в статье собраны из проверенных статей по продакшну:
+Советы в статье собраны из проверенных статей по продакшну. Скриншоты DAW и плагинов — из [Ableton Lessons](https://abletonlessons.com/how-to-make-your-first-song-song-creation-guide-for-beginners/):
 
 - [How To Make Your First Song — Ableton Lessons](https://abletonlessons.com/how-to-make-your-first-song-song-creation-guide-for-beginners/)
 - [14 Boring but Effective DAW Workflow Tips — Waves](https://www.waves.com/daw-workflow-tips)
