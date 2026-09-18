@@ -14,13 +14,18 @@
    Ambient background + modern article UI
    ======================================== */
 
+/* Без isolation: isolate — он создавал stacking context, в котором drawer
+   (.md-sidebar--primary, z-index 5) оказывался ниже .md-overlay (z-index 5),
+   и затемнение закрывало и открытое меню. */
 .md-main {
   position: relative;
-  isolation: isolate;
   overflow: hidden;
 }
 
-.md-main__inner,
+/* Только .md-content поднимается над ambient-орбами (z-index 0).
+   .md-main__inner НЕ получает z-index: он — предок drawer'а, и любой
+   stacking context здесь заточил бы .md-sidebar--primary (z-index 5)
+   ниже .md-overlay (z-index 5), затемняя открытое меню. */
 .md-content {
   position: relative;
   z-index: 1;
