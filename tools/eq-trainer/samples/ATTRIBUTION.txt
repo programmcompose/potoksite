@@ -1,0 +1,9 @@
+Built-in loops (CC0 / public domain)
+
+mix-loop.ogg
+  Fun Bass Loop — Fupi
+  https://opengameart.org/content/fun-bass-loop
+  License: CC0
+
+piano.ogg, guitar.ogg, bass.ogg
+  Existing trainer samples already in this folder.

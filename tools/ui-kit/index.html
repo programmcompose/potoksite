@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UI Kit — Anthropic MCP Style</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- ===== Header ===== -->
+  <header class="header">
+    <a href="#" class="header__brand">
+      <span class="icon icon--20 icon--primary">
+        <svg viewBox="0 0 24 24"><title>Logo</title>
+          <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+          <path d="M2 17l10 5 10-5"/>
+          <path d="M2 12l10 5 10-5"/>
+        </svg>
+      </span>
+      UI Kit
+    </a>
+
+    <nav class="header__nav">
+      <a href="#tokens" class="header__nav-link header__nav-link--active">Tokens</a>
+      <a href="#icons" class="header__nav-link">Icons</a>
+      <a href="#buttons" class="header__nav-link">Buttons</a>
+      <a href="#inputs" class="header__nav-link">Inputs</a>
+      <a href="#cards" class="header__nav-link">Cards</a>
+      <a href="#badges" class="header__nav-link">Badges</a>
+    </nav>
+
+    <div class="header__actions">
+      <button class="btn btn--ghost btn--sm" id="themeToggle" aria-label="Переключить тему">
+        <span class="icon icon--16">
+          <svg viewBox="0 0 24 24"><title>Тема</title>
+            <circle cx="12" cy="12" r="5"/>
+            <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>
+          </svg>
+        </span>
+        Тема
+      </button>
+    </div>
+  </header>
+
+  <main class="container">
+
+    <!-- ===== Color Tokens ===== -->
+    <section class="section" id="tokens">
+      <h2 class="section__title">Цветовые токены</h2>
+      <p class="section__desc">Основные цвета дизайн-системы</p>
+
+      <div class="swatch-grid">
+        <div class="swatch">
+          <div class="swatch__color" style="background:#D97757"></div>
+          <div class="swatch__label">--color-primary<br>#D97757</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background:#C46444"></div>
+          <div class="swatch__label">--color-primary-hover<br>#C46444</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background:#FFFFFF; border-bottom:1px solid #E5E5E5"></div>
+          <div class="swatch__label">--color-background<br>#FFFFFF</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background:#F9F9F9"></div>
+          <div class="swatch__label">--color-background-alt<br>#F9F9F9</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background:#1A1A1A"></div>
+          <div class="swatch__label">--color-text-primary<br>#1A1A1A</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background:#666666"></div>
+          <div class="swatch__label">--color-text-secondary<br>#666666</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background:#2ECC71"></div>
+          <div class="swatch__label">--color-success<br>#2ECC71</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background:#F39C12"></div>
+          <div class="swatch__label">--color-warning<br>#F39C12</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background:#E74C3C"></div>
+          <div class="swatch__label">--color-error<br>#E74C3C</div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__color" style="background:#E5E5E5"></div>
+          <div class="swatch__label">--color-border<br>#E5E5E5</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Icons ===== -->
+    <section class="section" id="icons">
+      <h2 class="section__title">Иконки</h2>
+      <p class="section__desc">Минималистичные line-иконки (1.5px stroke). Размер: 16 / 20 / 24 / 32px</p>
+
+      <div class="component-row">
+        <span class="icon icon--16">
+          <svg viewBox="0 0 24 24"><title>Home</title><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </span>
+        <span class="icon icon--20">
+          <svg viewBox="0 0 24 24"><title>Settings</title><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        </span>
+        <span class="icon icon--24">
+          <svg viewBox="0 0 24 24"><title>Search</title><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </span>
+        <span class="icon icon--32 icon--primary">
+          <svg viewBox="0 0 24 24"><title>Music</title><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+        </span>
+
+        <span class="icon icon--24">
+          <svg viewBox="0 0 24 24"><title>Play</title><polygon points="5 3 19 12 5 21 5 3"/></svg>
+        </span>
+        <span class="icon icon--24">
+          <svg viewBox="0 0 24 24"><title>Volume</title><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+        </span>
+        <span class="icon icon--24">
+          <svg viewBox="0 0 24 24"><title>Waveform</title><path d="M2 12h2l3-9 4 18 4-18 3 9h2"/></svg>
+        </span>
+        <span class="icon icon--24">
+          <svg viewBox="0 0 24 24"><title>Download</title><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </span>
+      </div>
+    </section>
+
+    <!-- ===== Buttons ===== -->
+    <section class="section" id="buttons">
+      <h2 class="section__title">Кнопки</h2>
+      <p class="section__desc">Primary, Secondary, Ghost, Danger — с размерами sm / default / lg</p>
+
+      <div class="component-row">
+        <button class="btn btn--primary">Primary</button>
+        <button class="btn btn--secondary">Secondary</button>
+        <button class="btn btn--ghost">Ghost</button>
+        <button class="btn btn--danger">Danger</button>
+        <button class="btn btn--primary" disabled>Disabled</button>
+      </div>
+
+      <div class="component-row">
+        <button class="btn btn--primary btn--sm">Small</button>
+        <button class="btn btn--primary">Default</button>
+        <button class="btn btn--primary btn--lg">Large</button>
+      </div>
+
+      <div class="component-row">
+        <button class="btn btn--primary">
+          <span class="icon icon--16">
+            <svg viewBox="0 0 24 24"><title>Plus</title><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          </span>
+          Добавить
+        </button>
+        <button class="btn btn--secondary">
+          <span class="icon icon--16">
+            <svg viewBox="0 0 24 24"><title>Download</title><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          </span>
+          Скачать
+        </button>
+        <button class="btn btn--ghost">
+          <span class="icon icon--16">
+            <svg viewBox="0 0 24 24"><title>Settings</title><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4"/></svg>
+          </span>
+          Настройки
+        </button>
+      </div>
+    </section>
+
+    <!-- ===== Inputs ===== -->
+    <section class="section" id="inputs">
+      <h2 class="section__title">Поля ввода</h2>
+      <p class="section__desc">Label, placeholder, helper text, error state</p>
+
+      <div class="grid grid--2" style="max-width:640px">
+        <div class="form-group">
+          <label class="form-label" for="input-default">Обычное поле</label>
+          <input class="form-input" type="text" id="input-default" placeholder="Введите текст…">
+          <span class="form-helper">Подсказка для пользователя</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label form-label--required" for="input-required">Обязательное поле</label>
+          <input class="form-input" type="text" id="input-required" placeholder="Необходимо заполнить">
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="input-error">Поле с ошибкой</label>
+          <input class="form-input form-input--error" type="text" id="input-error" value="Некорректное значение">
+          <span class="form-helper form-helper--error">Это поле заполнено некорректно</span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="input-email">Email</label>
+          <input class="form-input" type="email" id="input-email" placeholder="you@example.com">
+          <span class="form-helper">Мы не передаём ваш email третьим лицам</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Cards ===== -->
+    <section class="section" id="cards">
+      <h2 class="section__title">Карточки</h2>
+      <p class="section__desc">Контейнер с header / body / footer и лёгкой тенью</p>
+
+      <div class="grid grid--3" style="max-width:800px">
+        <div class="card">
+          <div class="card__header">
+            <h3 class="card__title">Простая карточка</h3>
+          </div>
+          <div class="card__body">
+            <p style="font-size:var(--text-sm); color:var(--color-text-secondary);">
+              Минималистичный контейнер с границей и тенью. Подходит для отображения контента блоков.
+            </p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__header">
+            <h3 class="card__title">Карточка с футером</h3>
+          </div>
+          <div class="card__body">
+            <p style="font-size:var(--text-sm); color:var(--color-text-secondary);">
+              Расширенная карточка с дополнительным действием внизу.
+            </p>
+          </div>
+          <div class="card__footer">
+            <button class="btn btn--primary btn--sm">Подробнее</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card__header">
+            <div class="flex items-center justify-between">
+              <h3 class="card__title">С бейджем</h3>
+              <span class="badge badge--success">
+                <span class="icon" style="width:10px;height:10px">
+                  <svg viewBox="0 0 24 24"><title>Check</title><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
+                Active
+              </span>
+            </div>
+          </div>
+          <div class="card__body">
+            <p style="font-size:var(--text-sm); color:var(--color-text-secondary);">
+              Карточка со статусом. Бейджи показывают состояние элемента.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== Badges ===== -->
+    <section class="section" id="badges">
+      <h2 class="section__title">Бейджи статуса</h2>
+      <p class="section__desc">Индикаторы: success, warning, error, info, neutral</p>
+
+      <div class="component-row">
+        <span class="badge badge--success">
+          <span class="icon" style="width:10px;height:10px">
+            <svg viewBox="0 0 24 24"><title>Check</title><polyline points="20 6 9 17 4 12"/></svg>
+          </span>
+          Success
+        </span>
+        <span class="badge badge--warning">
+          <span class="icon" style="width:10px;height:10px">
+            <svg viewBox="0 0 24 24"><title>Warning</title><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </span>
+          Warning
+        </span>
+        <span class="badge badge--error">
+          <span class="icon" style="width:10px;height:10px">
+            <svg viewBox="0 0 24 24"><title>Error</title><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+          </span>
+          Error
+        </span>
+        <span class="badge badge--info">
+          <span class="icon" style="width:10px;height:10px">
+            <svg viewBox="0 0 24 24"><title>Info</title><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </span>
+          Info
+        </span>
+        <span class="badge badge--neutral">Neutral</span>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    // Theme toggle
+    const themeBtn = document.getElementById('themeToggle');
+    themeBtn.addEventListener('click', () => {
+      const html = document.documentElement;
+      const current = html.getAttribute('data-theme');
+      html.setAttribute('data-theme', current === 'dark' ? 'light' : 'dark');
+    });
+
+    // Smooth scroll for nav links
+    document.querySelectorAll('.header__nav-link').forEach(link => {
+      link.addEventListener('click', e => {
+        e.preventDefault();
+        const target = document.querySelector(link.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        document.querySelectorAll('.header__nav-link').forEach(l => l.classList.remove('header__nav-link--active'));
+        link.classList.add('header__nav-link--active');
+      });
+    });
+  </script>
+</body>
+</html>
