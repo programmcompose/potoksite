@@ -107,6 +107,7 @@ extra_css:
   - assets/stylesheets/etap0-bg.css
   - assets/stylesheets/etap1-bg.css
   - assets/stylesheets/gamification.css
+  - assets/stylesheets/personalization.css
   - assets/stylesheets/lucide-icons.css
   - assets/stylesheets/glossary-tooltip.css
   - assets/stylesheets/challenge.css
@@ -134,6 +135,8 @@ extra_javascript:
 
   - assets/javascripts/etap0-bg.js
   - assets/javascripts/etap1-bg.js
+  # Персонализация загружается ПЕРЕД gamification.js: мост potok:xp должен быть готов
+  - assets/javascripts/personalization.js
   - assets/javascripts/gamification.js
   - assets/javascripts/bridge.js
   - assets/javascripts/bookmarks.js

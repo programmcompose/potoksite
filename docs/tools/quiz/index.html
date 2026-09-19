@@ -363,6 +363,7 @@ header p { font-size: 17px; color: var(--text-muted); max-width: 540px; margin: 
 <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
 <script src="../../assets/data/quiz/stages-bundle.js"></script>
 <script src="../../assets/javascripts/quiz-svg.js"></script>
+<script src="../../assets/javascripts/personalization.js"></script>
 <script>
 /* SVG-генераторы вынесены в assets/javascripts/quiz-svg.js
    (window.POTOK_QUIZ_SVG) — общий с инлайн-виджетом. */
@@ -389,6 +390,7 @@ var LETTERS = ["A", "B", "C", "D"];
    STATE
    ============================================================ */
 var state = { stageId: null, idx: 0, answers: [], combo: 0 };
+var quizStartTime = 0;
 
 /* ============================================================
    SFX — процедурные звуки через Web Audio API (без файлов)
@@ -688,6 +690,24 @@ function finish(st) {
   renderStages();
 
   var pct = Math.round(score / total * 100);
+
+  // Система персонализации: результат теста → прогресс, навыки, ачивки
+  if (window.PotokPersonalization) {
+    try {
+      var weakTopics = [];
+      state.answers.forEach(function (a) {
+        if (!a.ok) {
+          var cat = st.questions[a.idx].cat;
+          if (cat && weakTopics.indexOf(cat) === -1) weakTopics.push(cat);
+        }
+      });
+      PotokPersonalization.recordTestResult(state.stageId, pct, {
+        timeSpentSec: quizStartTime ? Math.round((Date.now() - quizStartTime) / 1000) : null,
+        weakTopics: weakTopics.slice(0, 6)
+      });
+    } catch (e) {}
+  }
+
   var circle = document.getElementById("scoreCircle");
   circle.style.setProperty("--pct", 0);
   circle.style.setProperty("--ring-color", pct >= 80 ? "var(--green)" : (pct >= 50 ? "#FFB300" : "var(--red)"));
@@ -736,6 +756,7 @@ function finish(st) {
 document.getElementById("startBtn").addEventListener("click", function () {
   state.idx = 0;
   state.answers = [];
+  quizStartTime = Date.now();
   showScreen("quizScreen");
   renderQuestion();
 });

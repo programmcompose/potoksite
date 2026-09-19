@@ -759,6 +759,7 @@ body.tour-on .chassis:has(.mod.spotlight) { position: relative; z-index: 4; }
   </div>
 </div>
 
+<script src="../../assets/javascripts/personalization.js"></script>
 <script>
 (function () {
   'use strict';
@@ -1656,6 +1657,11 @@ registerProcessor('moog-ladder', MoogLadderProcessor);
   }
 
   document.addEventListener('DOMContentLoaded', () => {
+    // Система персонализации: открытие синтезатора (ачивка synth_lover, навык soundDesign)
+    if (window.PotokPersonalization) {
+      try { PotokPersonalization.recordToolUse('synth'); } catch (e) {}
+    }
+
     document.querySelectorAll('[data-knob]').forEach(createKnob);
     buildWaves();
     buildKeyboard();

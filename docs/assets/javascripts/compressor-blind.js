@@ -397,6 +397,11 @@
     this.totalCount += 1;
     if (ok) this.correctCount += 1;
 
+    // Персонализация: результат слепого теста → стрик для ачивки compressor_master
+    if (window.PotokPersonalization) {
+      try { PotokPersonalization.recordToolUse('compressor', { correct: ok }); } catch (e) {}
+    }
+
     for (var i = 0; i < this.answerBtns.length; i++) {
       var b = this.answerBtns[i];
       var s = parseInt(b.getAttribute('data-slot'), 10);

@@ -1,0 +1,483 @@
+/* ========================================
+   Personalization — стили системы персонализации
+   Токены: extra.css (тёмная/светлая темы)
+   ======================================== */
+
+/* ---------- Контейнер тостов ---------- */
+
+#potok-pers-toasts {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: min(340px, calc(100vw - 32px));
+  pointer-events: none;
+}
+
+.potok-pers-toast {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-left: 3px solid var(--accent-orange);
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  opacity: 0;
+  transform: translateX(24px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.potok-pers-toast.show {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.potok-pers-toast__icon {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  color: var(--accent-orange);
+}
+
+.potok-pers-toast__title {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-heading);
+}
+
+.potok-pers-toast__sub {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.potok-pers-toast--rank { border-left-color: var(--accent-orange-hover); }
+.potok-pers-toast--achievement { border-left-width: 4px; }
+.potok-pers-toast--common { border-left-color: var(--text-secondary); }
+.potok-pers-toast--uncommon { border-left-color: #22c55e; }
+.potok-pers-toast--rare { border-left-color: var(--accent-blue); }
+.potok-pers-toast--epic { border-left-color: #a855f7; }
+.potok-pers-toast--legendary { border-left-color: var(--accent-orange); box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), 0 0 18px var(--glow-orange-soft); }
+.potok-pers-toast--challenge { border-left-color: #22c55e; }
+
+/* ---------- Карточка профиля ---------- */
+
+.potok-pers-profile {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 18px 20px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: 14px;
+}
+
+.potok-pers-profile__avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--accent-orange);
+  flex-shrink: 0;
+}
+
+.potok-pers-profile__avatar--initials {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--accent-orange);
+  background: var(--glow-orange-soft);
+}
+
+.potok-pers-profile__main { min-width: 140px; }
+
+.potok-pers-profile__name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-heading);
+}
+
+.potok-pers-profile__rank {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+  padding: 3px 10px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--accent-orange);
+  background: var(--glow-orange-soft);
+  border: 1px solid color-mix(in srgb, var(--accent-orange) 35%, transparent);
+  border-radius: 999px;
+}
+
+.potok-pers-profile__rank svg { width: 14px; height: 14px; }
+
+.potok-pers-profile__xp { flex: 1; min-width: 200px; }
+
+.potok-pers-profile__xp-num {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--text-heading);
+}
+
+.potok-pers-profile__xp-num small {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.potok-pers-profile__track {
+  height: 8px;
+  margin-top: 8px;
+  background-color: var(--bg-hover);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.potok-pers-profile__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-orange), #F59E0B);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.potok-pers-profile__xp-next {
+  margin-top: 6px;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+
+/* ---------- Сводка под профилем ---------- */
+
+.potok-pers-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 10px;
+  margin-top: 12px;
+}
+
+.potok-pers-summary__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 12px 8px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+}
+
+.potok-pers-summary__item svg {
+  width: 18px;
+  height: 18px;
+  color: var(--accent-orange);
+}
+
+.potok-pers-summary__item b {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-heading);
+}
+
+.potok-pers-summary__item span {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+/* ---------- Радар навыков ---------- */
+
+.potok-pers-radar {
+  padding: 16px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: 14px;
+}
+
+.potok-pers-radar__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.potok-pers-radar__ring {
+  fill: none;
+  stroke: var(--border-subtle);
+  stroke-width: 1;
+}
+
+.potok-pers-radar__axis {
+  stroke: var(--border-default);
+  stroke-width: 1;
+}
+
+.potok-pers-radar__data {
+  fill: color-mix(in srgb, var(--accent-orange) 25%, transparent);
+  stroke: var(--accent-orange);
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.potok-pers-radar__label {
+  font-size: 11px;
+  fill: var(--text-secondary);
+  font-family: inherit;
+}
+
+.potok-pers-radar__gaps {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  font-size: 0.85rem;
+  color: var(--text-main);
+  background: var(--glow-orange-soft);
+  border: 1px solid color-mix(in srgb, var(--accent-orange) 25%, transparent);
+  border-radius: 8px;
+}
+
+.potok-pers-radar__gaps svg {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--accent-orange);
+}
+
+/* ---------- Ачивки ---------- */
+
+.potok-pers-ach-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 12px;
+}
+
+.potok-pers-ach {
+  position: relative;
+  padding: 16px 14px 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.potok-pers-ach > svg {
+  width: 30px;
+  height: 30px;
+  color: var(--accent-orange);
+  margin-bottom: 8px;
+}
+
+.potok-pers-ach__name {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-heading);
+}
+
+.potok-pers-ach__desc {
+  margin-top: 4px;
+  font-size: 0.75rem;
+  line-height: 1.35;
+  color: var(--text-secondary);
+  min-height: 2.6em;
+}
+
+.potok-pers-ach__date {
+  margin-top: 8px;
+  font-size: 0.7rem;
+  color: var(--accent-orange);
+}
+
+.potok-pers-ach--locked { opacity: 0.55; }
+.potok-pers-ach--locked > svg { color: var(--text-secondary); }
+
+.potok-pers-ach--common { border-top: 2px solid var(--text-secondary); }
+.potok-pers-ach--uncommon { border-top: 2px solid #22c55e; }
+.potok-pers-ach--rare { border-top: 2px solid var(--accent-blue); }
+.potok-pers-ach--epic { border-top: 2px solid #a855f7; }
+.potok-pers-ach--legendary { border-top: 2px solid var(--accent-orange); box-shadow: 0 0 14px var(--glow-orange-soft); }
+
+.potok-pers-ach__track {
+  height: 6px;
+  margin-top: 8px;
+  background-color: var(--bg-hover);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.potok-pers-ach__fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--accent-orange), #F59E0B);
+  border-radius: 999px;
+}
+
+.potok-pers-ach__prog {
+  margin-top: 4px;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+/* ---------- Рекомендации ---------- */
+
+#potok-recommendations-container .potok-pers-rec + .potok-pers-rec,
+.potok-pers-chal + .potok-pers-chal { margin-top: 10px; }
+
+.potok-pers-rec {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-radius: 12px;
+}
+
+.potok-pers-rec__icon {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  color: var(--accent-orange);
+}
+
+.potok-pers-rec__body { flex: 1; min-width: 0; }
+
+.potok-pers-rec__title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-heading);
+}
+
+.potok-pers-rec__desc {
+  margin-top: 3px;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+.potok-pers-rec__action {
+  flex-shrink: 0;
+  padding: 7px 12px;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #fff;
+  background-color: var(--accent-orange);
+  border-radius: 8px;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.potok-pers-rec__action:hover {
+  background-color: var(--accent-orange-hover);
+  color: #fff;
+}
+
+/* ---------- Челленджи ---------- */
+
+.potok-pers-chal {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-default);
+  border-left: 3px solid #22c55e;
+  border-radius: 12px;
+}
+
+.potok-pers-chal__icon {
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  color: var(--accent-orange);
+}
+
+.potok-pers-chal__body { flex: 1; min-width: 0; }
+
+.potok-pers-chal__title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-heading);
+}
+
+.potok-pers-chal__desc {
+  margin-top: 3px;
+  font-size: 0.8rem;
+  line-height: 1.4;
+  color: var(--text-secondary);
+}
+
+.potok-pers-chal__track {
+  height: 6px;
+  margin-top: 8px;
+  background-color: var(--bg-hover);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.potok-pers-chal__fill {
+  height: 100%;
+  background: linear-gradient(90deg, #22c55e, #4ade80);
+  border-radius: 999px;
+  transition: width 0.4s ease;
+}
+
+.potok-pers-chal__meta {
+  margin-top: 4px;
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+.potok-pers-chal__reward {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent-orange);
+  background: var(--glow-orange-soft);
+  border-radius: 8px;
+}
+
+.potok-pers-chal__reward svg { width: 14px; height: 14px; }
+
+/* ---------- Пустые состояния ---------- */
+
+.potok-pers-empty {
+  padding: 16px;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  background-color: var(--bg-card);
+  border: 1px dashed var(--border-default);
+  border-radius: 12px;
+}
+
+/* ---------- Двухколоночная сетка (радар + рекомендации) ---------- */
+
+.potok-pers-duo {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+/* ---------- Адаптив ---------- */
+
+@media (max-width: 900px) {
+  .potok-pers-duo { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 600px) {
+  .potok-pers-profile { gap: 12px; }
+  .potok-pers-rec, .potok-pers-chal { flex-wrap: wrap; }
+  .potok-pers-rec__action, .potok-pers-chal__reward { width: auto; }
+}

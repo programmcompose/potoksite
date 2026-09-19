@@ -383,6 +383,7 @@ body{font-family:'Unbounded',sans-serif;background:var(--bg);overflow:hidden;hei
     </div>
   </div>
 </div>
+<script src="../../assets/javascripts/personalization.js"></script>
 <script>
 const STAGES=[
   {id:0,name:"Этап 0",title:"Подготовка работы и DAW",cls:"zone-e0",icon:"🖥️",start:1,end:5},
@@ -837,6 +838,8 @@ function claimXp(){
   updateStreak();
   checkAchievements();
   saveState();
+  // Система персонализации: задание → профиль (XP, навыки, ачивки)
+  if(window.PotokPersonalization){try{PotokPersonalization.completeTask(currentTaskNum,{xpGained:gain});}catch(e){}}
   floatXP('+'+gain+' XP');
   if(quizCorrectFlag){spawnConfetti();spawnNotes();}
   buildTreePath();updateUI();

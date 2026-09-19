@@ -684,6 +684,7 @@ header p {
   </div>
 </div>
 
+<script src="../../assets/javascripts/personalization.js"></script>
 <script>
 (function () {
   const LEVELS = {
@@ -1250,6 +1251,14 @@ header p {
     state.revealed = true;
     updateScore();
     syncSubmit();
+
+    // Система персонализации: результат EQ-тренажёра → навык сведения, ачивка eq_wizard
+    if (window.PotokPersonalization) {
+      try {
+        const pctEq = state.scoreTotal ? Math.round(state.scoreCorrect / state.scoreTotal * 100) : 0;
+        PotokPersonalization.recordToolUse('eq-trainer', { correct: allOk, bestScore: pctEq });
+      } catch (e) {}
+    }
 
     const bandName = state.band.label + ' · ' + state.band.display;
     let html = allOk ? 'Верно: вы услышали изменение.' : 'Почти. Вот что было на самом деле.';

@@ -495,8 +495,24 @@
     }
 
     checkBadges();
+
+    // Мост в систему персонализации: единый totalXP под Telegram ID
+    try {
+      document.dispatchEvent(new CustomEvent('potok:xp', { detail: { amount: amount, reason: reason } }));
+    } catch (e) { /* ignore */ }
+
     return { amount: amount, newLevel: newLevel, leveledUp: newLevel > oldLevel };
   }
+
+  // Персонализация начислила XP напрямую (задания/тесты/челленджи) — синхронизируем отображение
+  document.addEventListener('potok:xp-awarded', function (e) {
+    var d = e.detail || {};
+    if (typeof d.total !== 'number') return;
+    state.xp.total = d.total;
+    saveStats();
+    updateLevelPanel();
+    checkBadges();
+  });
 
   // ========================
   // СИСТЕМА БЕЙДЖЕЙ
