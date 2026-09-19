@@ -166,9 +166,30 @@
 
   function cloudAvailable() {
     try {
-      var wa = window.Telegram && window.Telegram.WebApp;
-      return !!(wa && wa.Cloud && typeof wa.Cloud.set === 'function' && typeof wa.Cloud.get === 'function');
+      var cs = window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.CloudStorage;
+      return !!(cs && typeof cs.setItem === 'function' && typeof cs.getItem === 'function');
     } catch (e) { return false; }
+  }
+
+  // Официальный API CloudStorage — callback-based, оборачиваем в промисы
+  function cloudGet(key) {
+    return new Promise(function (resolve) {
+      try {
+        window.Telegram.WebApp.CloudStorage.getItem(key, function (error, value) {
+          resolve(error ? null : value);
+        });
+      } catch (e) { resolve(null); }
+    });
+  }
+
+  function cloudSet(key, value) {
+    return new Promise(function (resolve) {
+      try {
+        window.Telegram.WebApp.CloudStorage.setItem(key, value, function (error) {
+          resolve(!error);
+        });
+      } catch (e) { resolve(false); }
+    });
   }
 
   // ========================
@@ -295,6 +316,9 @@
     achievements: null, challenges: null, portfolio: null, activity: null
   };
 
+  // Были ли локальные данные до loadAll (для синка с CloudStorage на новом устройстве)
+  var hadLocal = {};
+
   function touch(name) { S[name].updatedAt = nowISO(); }
 
   // ========================
@@ -317,12 +341,15 @@
 
   var cloudQueue = Promise.resolve();
   var dirtyKeys = {};
+  var cloudReady = false;   // CloudStorage сверен с локальным — можно писать
 
   function markDirty(key) {
     lsWrite(KEYS[key], S[key]);
     if (!cloudAvailable()) return;
     dirtyKeys[key] = true;
-    scheduleCloudFlush();
+    // До завершения сверки не пишем в облако: иначе дефолтные данные
+    // с нового устройства могут затереть реальные (гонка при первом входе)
+    if (cloudReady) scheduleCloudFlush();
   }
 
   var flushTimer = null;
@@ -369,48 +396,76 @@
     if (!keys.length) return;
 
     cloudQueue = cloudQueue.then(function () {
-      var wa = window.Telegram.WebApp;
       return Promise.all(keys.map(function (name) {
         var json = fitForCloud(name, S[name]);
         if (json == null) return null;
-        try { return wa.Cloud.set(KEYS[name], json); } catch (e) { return null; }
-      })).catch(function (e) {
-        console.warn('[Personalization] Ошибка записи в CloudStorage:', e);
-      });
+        return cloudSet(KEYS[name], json).then(function (ok) {
+          if (!ok) console.warn('[Personalization] Ошибка записи в CloudStorage:', KEYS[name]);
+        });
+      }));
+    }).catch(function (e) {
+      console.warn('[Personalization] Ошибка синхронизации с CloudStorage:', e);
     });
   }
 
-  // Фоновая сверка с CloudStorage: берём свежее по updatedAt
+  // Фоновая сверка с CloudStorage: берём свежее по updatedAt.
+  // Если локальных данных не было вовсе (новое устройство) — облачные wins без сравнения дат.
   function reconcileWithCloud() {
-    if (!cloudAvailable()) return;
-    var wa = window.Telegram.WebApp;
-    Object.keys(KEYS).forEach(function (name) {
-      try {
-        wa.Cloud.get(KEYS[name]).then(function (raw) {
-          if (!raw) return;
-          var cloudData = JSON.parse(raw);
-          var local = S[name];
-          if (!cloudData || !local) return;
-          var ct = new Date(cloudData.updatedAt || 0).getTime();
-          var lt = new Date(local.updatedAt || 0).getTime();
-          if (ct > lt + 1000) {
-            S[name] = migrate(name, cloudData);
-            lsWrite(KEYS[name], S[name]);
-            refreshUI();
-          }
-        }).catch(function () {});
-      } catch (e) { /* ignore */ }
+    if (!cloudAvailable()) { cloudReady = true; return Promise.resolve(); }
+
+    var jobs = Object.keys(KEYS).map(function (name) {
+      return cloudGet(KEYS[name]).then(function (raw) {
+        if (!raw || !S[name]) return;
+        var cloudData = null;
+        try { cloudData = JSON.parse(raw); } catch (e) { return; }
+        if (!cloudData) return;
+
+        if (!hadLocal[name]) {
+          S[name] = migrate(name, cloudData);
+          if (name === 'profile') S.profile.lastActiveAt = nowISO();
+          lsWrite(KEYS[name], S[name]);
+          refreshUI();
+          return;
+        }
+
+        var ct = new Date(cloudData.updatedAt || 0).getTime();
+        var lt = new Date(S[name].updatedAt || 0).getTime();
+        if (ct > lt + 1000) {
+          S[name] = migrate(name, cloudData);
+          lsWrite(KEYS[name], S[name]);
+          refreshUI();
+        }
+      }).catch(function () {});
+    });
+
+    return Promise.all(jobs).then(function () {
+      cloudReady = true;
+      flushToCloud(); // сбрасываем накопленные изменения после сверки
     });
   }
 
   function loadAll() {
-    S.profile = migrate('profile', lsRead(KEYS.profile));
-    S.progress = migrate('progress', lsRead(KEYS.progress));
-    S.skills = migrate('skills', lsRead(KEYS.skills));
-    S.achievements = migrate('achievements', lsRead(KEYS.achievements));
-    S.challenges = migrate('challenges', lsRead(KEYS.challenges));
-    S.portfolio = migrate('portfolio', lsRead(KEYS.portfolio));
-    S.activity = migrate('activity', lsRead(KEYS.activity));
+    var rawProfile = lsRead(KEYS.profile);
+    var rawProgress = lsRead(KEYS.progress);
+    var rawSkills = lsRead(KEYS.skills);
+    var rawAchievements = lsRead(KEYS.achievements);
+    var rawChallenges = lsRead(KEYS.challenges);
+    var rawPortfolio = lsRead(KEYS.portfolio);
+    var rawActivity = lsRead(KEYS.activity);
+
+    hadLocal = {
+      profile: !!rawProfile, progress: !!rawProgress, skills: !!rawSkills,
+      achievements: !!rawAchievements, challenges: !!rawChallenges,
+      portfolio: !!rawPortfolio, activity: !!rawActivity
+    };
+
+    S.profile = migrate('profile', rawProfile);
+    S.progress = migrate('progress', rawProgress);
+    S.skills = migrate('skills', rawSkills);
+    S.achievements = migrate('achievements', rawAchievements);
+    S.challenges = migrate('challenges', rawChallenges);
+    S.portfolio = migrate('portfolio', rawPortfolio);
+    S.activity = migrate('activity', rawActivity);
 
     // Профиль из Telegram (имя, фото) — обновляем при каждом входе
     var u = getIdentity().user;
@@ -608,6 +663,11 @@
     logEvent('task_completed', { taskId: taskId });
     markDirty('progress');
     markDirty('skills');
+
+    // noAward — XP уже начислен через геймификацию (авто-комплит bridge.js)
+    if (opts.noAward) {
+      return { gained: 0, totalXP: S.profile.totalXP, rankChanged: false, newRank: S.profile.currentRank, unlocked: [] };
+    }
     return _award(gain, 'quest_task_' + taskId);
   }
 
@@ -682,7 +742,8 @@
     markDirty('progress');
   }
 
-  function completeStage(stageId) {
+  function completeStage(stageId, opts) {
+    opts = opts || {};
     var st = ensureStage(stageId);
     if (st.status === 'completed') return null;
     st.status = 'completed';
@@ -710,6 +771,11 @@
     touch('progress');
     markDirty('progress');
     markDirty('skills');
+
+    // noAward — бонус за этап уже начислен через геймификацию (bridge.js)
+    if (opts.noAward) {
+      return { gained: 0, totalXP: S.profile.totalXP, rankChanged: false, newRank: S.profile.currentRank, unlocked: [] };
+    }
     return _award(XP_REWARDS.stage_complete, 'stage_' + stageId);
   }
 

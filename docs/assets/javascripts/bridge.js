@@ -57,6 +57,23 @@
   }
 
   // ========================
+  // Sync quest state from personalization (новое устройство:
+  // iyquest_state пуст, а прогресс уже есть в CloudStorage)
+  // ========================
+  function syncFromPersonalization(questState) {
+    if (!window.PotokPersonalization || !window.PotokPersonalization.getState) return questState;
+    try {
+      var pers = window.PotokPersonalization.getState();
+      var ids = pers && pers.progress && pers.progress.quest ? pers.progress.quest.completedTaskIds : [];
+      for (var i = 0; i < ids.length; i++) {
+        if (!questState.completedSet.has(ids[i])) questState.completedSet.add(ids[i]);
+      }
+      questState.completedTasks = Math.max(questState.completedTasks, questState.completedSet.size);
+    } catch (e) { /* ignore */ }
+    return questState;
+  }
+
+  // ========================
   // Detect current etap from URL
   // ========================
   function detectCurrentEtap() {
@@ -222,30 +239,35 @@
 
     // Проверяем, есть ли новая страница этапа
     var currentEtap = detectCurrentEtap();
-    if (currentEtap) {
-      // Авто-комплит следующей задачи
-      var result = autoCompleteTask(questState);
-      if (result) {
-        showTaskCompleteNotification(result.taskNum, result.xp);
+    if (!currentEtap) return;
 
-        // Award XP via gamification
-        awardGamificationXP(result.taskNum, questState);
+    // Авто-комплит следующей задачи
+    var result = autoCompleteTask(questState);
+    if (result) {
+      showTaskCompleteNotification(result.taskNum, result.xp);
 
-        // Sync to course progress
-        syncToCourseProgress(questState);
+      // Award XP via gamification (один раз — повторный вызов дублировал XP)
+      awardGamificationXP(result.taskNum, questState);
 
-        // Проверяем completion этапа
-        if (checkEtapComplete(questState, currentEtap)) {
-          showEtapCompleteNotification(currentEtap, questState);
-          awardGamificationXP(result.taskNum, questState);
-        }
-      } else {
-        // Если следующая задача не на этом этапе — показываем текущий этап
-        var nextTask = questState.completedTasks + 1;
-        if (nextTask > TOTAL_TASKS) {
-          showQuestToast('\uD83D\uDC51 Курс пройден! Все 100 заданий выполнены!', '#ffd700');
-        }
+      // Sync to course progress
+      syncToCourseProgress(questState);
+
+      // Персонализация: фиксируем задание в прогрессе без повторного начисления XP
+      if (window.PotokPersonalization) {
+        try { window.PotokPersonalization.completeTask(result.taskNum, { noAward: true }); } catch (e) {}
       }
+    } else {
+      // Если следующая задача не на этом этапе — показываем текущий этап
+      var nextTask = questState.completedTasks + 1;
+      if (nextTask > TOTAL_TASKS) {
+        showQuestToast('\uD83D\uDC51 Курс пройден! Все 100 заданий выполнены!', '#ffd700');
+      }
+    }
+
+    // Этап полностью выполнен — фиксируем в персонализации (идемпотентно,
+    // работает и когда задания сделаны через UI IY Quest)
+    if (window.PotokPersonalization && checkEtapComplete(questState, currentEtap)) {
+      try { window.PotokPersonalization.completeStage(currentEtap.etap, { noAward: true }); } catch (e) {}
     }
   }
 
@@ -253,7 +275,7 @@
   // SPA Navigation handler
   // ========================
   function onNavigate() {
-    var questState = loadQuestState();
+    var questState = syncFromPersonalization(loadQuestState());
     initBridge(questState);
   }
 
@@ -265,11 +287,11 @@
   // Обычная загрузка
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', function () {
-      var questState = loadQuestState();
+      var questState = syncFromPersonalization(loadQuestState());
       initBridge(questState);
     });
   } else {
-    var questState = loadQuestState();
+    var questState = syncFromPersonalization(loadQuestState());
     initBridge(questState);
   }
 

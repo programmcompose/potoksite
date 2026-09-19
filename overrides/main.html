@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block site_meta %}
+  {{ super() }}
+  <!-- Официальный скрипт Telegram Mini Apps -->
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <!-- Наш модуль инициализации Mini App (до всех остальных скриптов) -->
+  <script src="{{ base_url }}/assets/javascripts/tg-app.js"></script>
+{% endblock %}

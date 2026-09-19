@@ -12,6 +12,7 @@ copyright: "© 2026 - 18 ПОТОК - IY BEATS"
 
 theme:
   name: material
+  custom_dir: overrides   # Telegram Mini App: telegram-web-app.js + tg-app.js на всех страницах
   language: ru
   logo: assets/images/iy_logo.jpg
   favicon: assets/images/favicon.svg
