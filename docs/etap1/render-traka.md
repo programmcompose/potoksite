@@ -36,17 +36,55 @@
 
 ## Рендер в FL Studio
 
-1. Нажмите **File → Export → MP3/WAV**
-2. Выберите качество в настройках
-3. Убедитесь, что включён **Dithering** (для 16-bit)
-4. Нажмите **Save** и подождите завершения
+<div class="step-cards">
+  <div class="step-card">
+    <span class="step-num">01</span>
+    <h4>Откройте окно экспорта</h4>
+    <p>File → Export → MP3/WAV.</p>
+    <code class="step-key">Ctrl+R</code>
+  </div>
+  <div class="step-card">
+    <span class="step-num">02</span>
+    <h4>Выберите качество</h4>
+    <p>Задайте формат и битность в настройках.</p>
+  </div>
+  <div class="step-card">
+    <span class="step-num">03</span>
+    <h4>Включите Dithering</h4>
+    <p>Обязательно для экспорта в 16-bit.</p>
+  </div>
+  <div class="step-card">
+    <span class="step-num">04</span>
+    <h4>Сохраните файл</h4>
+    <p>Нажмите Save и дождитесь завершения процесса.</p>
+  </div>
+</div>
 
 ## Рендер в Ableton Live
 
-1. Нажмите **Ctrl+Shift+M** (Export Audio Mix)
-2. Выберите формат (WAV/MP3)
-3. Установите **Sample Depth** (24-bit рекомендуется)
-4. Нажмите **Export**
+<div class="step-cards">
+  <div class="step-card">
+    <span class="step-num">01</span>
+    <h4>Откройте экспорт микса</h4>
+    <p>Export Audio Mix.</p>
+    <code class="step-key">Ctrl+Shift+M</code>
+  </div>
+  <div class="step-card">
+    <span class="step-num">02</span>
+    <h4>Выберите формат</h4>
+    <p>WAV или MP3.</p>
+  </div>
+  <div class="step-card">
+    <span class="step-num">03</span>
+    <h4>Установите Sample Depth</h4>
+    <p>Рекомендуется 24-bit.</p>
+  </div>
+  <div class="step-card">
+    <span class="step-num">04</span>
+    <h4>Нажмите Export</h4>
+    <p>Дождитесь записи файла на диск.</p>
+  </div>
+</div>
 
 !!! tip
     Сохраняйте проект перед рендером. И иногда DAW падает в процессе экспорта длинных проектов.

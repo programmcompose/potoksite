@@ -96,6 +96,7 @@ extra_css:
   - assets/stylesheets/inline-quiz.css
   - assets/stylesheets/link-features.css
   - assets/stylesheets/canvas-viewer.css
+  - assets/stylesheets/step-cards.css
   # - assets/stylesheets/graph-override.css
 
 extra_javascript:

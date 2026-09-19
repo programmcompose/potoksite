@@ -9,11 +9,35 @@
 
 ### Шаги:
 
-1. Создайте **Drum Rack** или отдельные аудио-треки для ударных
-2. Загрузите сэмплы (кик, снейр, хэты)
-3. Запишите или запрограммируйте MIDI-паттерны
-4. Переключитесь в Arrangement View (`Tab`)
-5. Расставьте секции для построения структуры
+<div class="step-cards">
+  <div class="step-card">
+    <span class="step-num">01</span>
+    <h4>Создайте Drum Rack</h4>
+    <p>Или отдельные аудио-треки для ударных.</p>
+    <code class="step-key">Ctrl+Shift+T</code>
+  </div>
+  <div class="step-card">
+    <span class="step-num">02</span>
+    <h4>Загрузите сэмплы</h4>
+    <p>Кик, снейр и хэты на пэды.</p>
+  </div>
+  <div class="step-card">
+    <span class="step-num">03</span>
+    <h4>Запрограммируйте MIDI-паттерны</h4>
+    <p>Запишите или нарисуйте драмку в секвенсоре.</p>
+  </div>
+  <div class="step-card">
+    <span class="step-num">04</span>
+    <h4>Переключитесь в Arrangement View</h4>
+    <p>Линейная временная шкала для аранжировки.</p>
+    <code class="step-key">Tab</code>
+  </div>
+  <div class="step-card">
+    <span class="step-num">05</span>
+    <h4>Расставьте секции</h4>
+    <p>Постройте структуру трека из клипов.</p>
+  </div>
+</div>
 
 ### Горячие клавиши Ableton Live
 
