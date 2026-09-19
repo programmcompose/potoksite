@@ -43,7 +43,7 @@ theme:
     - navigation.instant.progress # полоска загрузки при переходе между страницами
     - navigation.tracking         # URL обновляется при скролле по заголовкам
     # navigation.expand — выключено: раскрывает ВСЕ разделы сразу, меню превращается в сплошной текст
-    - navigation.sections         # группировка в сайдбаре
+    # navigation.sections — выключено: делает топ-разделы нераскрываемыми (pointer-events:none) и всегда раскрытыми
     - navigation.top              # кнопка "наверх"
     - navigation.footer           # кнопки «Предыдущая / Следующая» внизу каждой страницы
     - navigation.path             # breadcrumb (путь) над заголовком страницы
