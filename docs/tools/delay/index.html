@@ -19,6 +19,10 @@
     --cyan: #3DE8FF;
     --ok: #34d399;
     --hot: #f87171;
+
+    /* Токены для кнобов (виджет) */
+    --accent-orange: #FF6B1A;
+    --border-default: #35354B;
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -234,54 +238,56 @@
     line-height: 1.2;
   }
 
+  /* ---------- Params (knobs) ---------- */
   .pdy-params {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-    gap: 14px 18px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 14px 8px;
     margin-top: 6px;
   }
   .pdy-param {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 6px;
+    min-width: 0;
   }
   .pdy-plabel {
     font-size: 11px;
     font-weight: 600;
-    letter-spacing: .05em;
+    letter-spacing: .04em;
     text-transform: uppercase;
     color: var(--muted);
-  }
-  .pdy-param input[type="range"] {
-    -webkit-appearance: none;
-    appearance: none;
-    width: 100%;
-    height: 6px;
-    background: #2a2a3d;
-    border-radius: 3px;
-    outline: none;
-  }
-  .pdy-param input[type="range"]::-webkit-slider-thumb {
-    -webkit-appearance: none;
-    width: 16px; height: 16px;
-    border-radius: 50%;
-    background: var(--orange);
-    cursor: pointer;
-    border: 2px solid #170B03;
-    box-shadow: 0 0 8px rgba(255, 107, 26, .4);
-  }
-  .pdy-param input[type="range"]::-moz-range-thumb {
-    width: 16px; height: 16px;
-    border-radius: 50%;
-    background: var(--orange);
-    cursor: pointer;
-    border: 2px solid #170B03;
+    white-space: nowrap;
   }
   .pdy-pval {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12.5px;
     color: var(--orange);
-    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pdy-knob {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    margin-top: 3px;
+    border-radius: 50%;
+    cursor: ns-resize;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: transform .12s ease;
+  }
+  .pdy-knob:focus { outline: none; }
+  .pdy-knob:focus-visible { box-shadow: 0 0 0 2px var(--orange); }
+  .pdy-knob.is-dragging { transform: scale(1.05); cursor: grabbing; }
+  .pdy-knob-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
   }
 
   .pdy-sync-row {
@@ -311,7 +317,8 @@
   @media (max-width: 640px) {
     .topbar { padding: 0 18px; }
     .container { padding: 28px 14px 0; }
-    .pdy-params { grid-template-columns: 1fr 1fr; }
+    .pdy-params { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 6px; }
+    .pdy-knob { width: 52px; height: 52px; }
   }
 </style>
 </head>
@@ -356,9 +363,9 @@
     </div>
 
     <div class="pdy-params">
-      <label class="pdy-param">
+      <div class="pdy-param" data-key="time">
         <span class="pdy-plabel">Time</span>
-        <input type="range" id="time" min="1" max="1000" value="375">
+        <div class="pdy-knob" tabindex="0" role="slider" aria-orientation="vertical" aria-label="Time"><canvas class="pdy-knob-canvas"></canvas></div>
         <span class="pdy-pval" id="time-val">375 ms</span>
         <div class="pdy-sync-row" id="sync-buttons">
           <button type="button" class="pdy-sync" data-ms="94">1/16</button>
@@ -367,27 +374,27 @@
           <button type="button" class="pdy-sync" data-ms="250">1/8T</button>
           <button type="button" class="pdy-sync" data-ms="750">1/2</button>
         </div>
-      </label>
-      <label class="pdy-param">
+      </div>
+      <div class="pdy-param" data-key="feedback">
         <span class="pdy-plabel">Feedback</span>
-        <input type="range" id="feedback" min="0" max="95" value="35">
+        <div class="pdy-knob" tabindex="0" role="slider" aria-orientation="vertical" aria-label="Feedback"><canvas class="pdy-knob-canvas"></canvas></div>
         <span class="pdy-pval" id="feedback-val">35%</span>
-      </label>
-      <label class="pdy-param">
+      </div>
+      <div class="pdy-param" data-key="mix">
         <span class="pdy-plabel">Mix / Wet</span>
-        <input type="range" id="mix" min="0" max="100" value="40">
+        <div class="pdy-knob" tabindex="0" role="slider" aria-orientation="vertical" aria-label="Mix"><canvas class="pdy-knob-canvas"></canvas></div>
         <span class="pdy-pval" id="mix-val">40%</span>
-      </label>
-      <label class="pdy-param">
+      </div>
+      <div class="pdy-param" data-key="lowcut">
         <span class="pdy-plabel">Low-cut</span>
-        <input type="range" id="lowcut" min="20" max="800" value="200">
+        <div class="pdy-knob" tabindex="0" role="slider" aria-orientation="vertical" aria-label="Low-cut"><canvas class="pdy-knob-canvas"></canvas></div>
         <span class="pdy-pval" id="lowcut-val">200 Hz</span>
-      </label>
-      <label class="pdy-param">
+      </div>
+      <div class="pdy-param" data-key="highcut">
         <span class="pdy-plabel">High-cut</span>
-        <input type="range" id="highcut" min="2000" max="16000" value="8000">
+        <div class="pdy-knob" tabindex="0" role="slider" aria-orientation="vertical" aria-label="High-cut"><canvas class="pdy-knob-canvas"></canvas></div>
         <span class="pdy-pval" id="highcut-val">8.0 kHz</span>
-      </label>
+      </div>
     </div>
   </div>
 
@@ -437,6 +444,199 @@
 
   // ===== Synth (same spirit as compressor) =====
   function dbToLin(db) { return Math.pow(10, db / 20); }
+
+  function setupCanvas(canvas) {
+    const dpr = window.devicePixelRatio || 1;
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if (w === 0 || h === 0) return null;
+    const W = Math.round(w * dpr), H = Math.round(h * dpr);
+    if (canvas.width !== W || canvas.height !== H) { canvas.width = W; canvas.height = H; }
+    const g = canvas.getContext('2d');
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx: g, w, h };
+  }
+
+  function cssVar(name, fallback) {
+    try {
+      const v = getComputedStyle(document.documentElement).getPropertyValue(name);
+      const t = (v || '').trim();
+      return t || fallback;
+    } catch (e) { return fallback; }
+  }
+
+  // ---------- Кноб (крутилка): drag / wheel / клавиатура / dblclick-reset ----------
+  const KNOB_SWEEP_DEG = 270;   // ход по окружности
+  const KNOB_START_DEG = 135;   // canvas-угол начала хода (левый нижний)
+  const KNOB_TICKS = 11;
+
+  function knobAngle(t) { return (KNOB_START_DEG + KNOB_SWEEP_DEG * t) * Math.PI / 180; }
+
+  class Knob {
+    constructor(opts) {
+      this.el = opts.el;
+      this.canvas = opts.canvas;
+      this.min = opts.min;
+      this.max = opts.max;
+      this.log = !!opts.log;
+      this.fmt = opts.fmt || (v => String(v));
+      this.defaultValue = opts.defaultValue != null ? opts.defaultValue : opts.value;
+      this.value = opts.value != null ? opts.value : opts.defaultValue;
+      this.onChange = opts.onChange || (() => {});
+      this.dragging = false;
+      this._lastY = 0;
+      this._bind();
+      this.draw();
+    }
+
+    tOf(v) {
+      v = Math.max(this.min, Math.min(this.max, v));
+      if (!this.log) return (v - this.min) / (this.max - this.min);
+      const t = (Math.log(v) - Math.log(this.min)) / (Math.log(this.max) - Math.log(this.min));
+      return Math.max(0, Math.min(1, t));
+    }
+
+    valueOfT(t) {
+      t = Math.max(0, Math.min(1, t));
+      if (!this.log) return this.min + t * (this.max - this.min);
+      return Math.exp(Math.log(this.min) + t * (Math.log(this.max) - Math.log(this.min)));
+    }
+
+    setValue(v, fire) {
+      v = Math.max(this.min, Math.min(this.max, v));
+      if (v === this.value && !fire) return;
+      this.value = v;
+      this._updateAria();
+      this.draw();
+      if (fire) this.onChange(v);
+    }
+
+    setValueSilent(v) {
+      this.value = Math.max(this.min, Math.min(this.max, v));
+      this._updateAria();
+      this.draw();
+    }
+
+    reset() { this.setValue(this.defaultValue, true); }
+
+    _updateAria() {
+      const el = this.el;
+      el.setAttribute('aria-valuemin', String(this.min));
+      el.setAttribute('aria-valuemax', String(this.max));
+      el.setAttribute('aria-valuenow', String(Math.round(this.value * 100) / 100));
+      el.setAttribute('aria-valuetext', this.fmt(this.value));
+    }
+
+    _bind() {
+      const self = this;
+      const el = this.el;
+
+      el.addEventListener('pointerdown', (e) => {
+        if (el.setPointerCapture) { try { el.setPointerCapture(e.pointerId); } catch (err) {} }
+        self.dragging = true;
+        self._lastY = e.clientY;
+        el.classList.add('is-dragging');
+        el.focus();
+        e.preventDefault();
+      });
+
+      el.addEventListener('pointermove', (e) => {
+        if (!self.dragging) return;
+        const dy = self._lastY - e.clientY;
+        self._lastY = e.clientY;
+        let step = dy / 160;
+        if (e.shiftKey) step /= 8;
+        self.setValue(self.valueOfT(self.tOf(self.value) + step), true);
+      });
+
+      const endDrag = () => {
+        if (!self.dragging) return;
+        self.dragging = false;
+        el.classList.remove('is-dragging');
+        self.draw();
+      };
+      el.addEventListener('pointerup', endDrag);
+      el.addEventListener('pointercancel', endDrag);
+
+      el.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        let d = e.deltaY;
+        if (e.deltaMode === 1) d *= 32;
+        const step = (d > 0 ? -1 : 1) * (e.shiftKey ? 0.004 : 0.02);
+        self.setValue(self.valueOfT(self.tOf(self.value) + step), true);
+      }, { passive: false });
+
+      el.addEventListener('dblclick', () => { self.reset(); });
+
+      el.addEventListener('keydown', (e) => {
+        let t = self.tOf(self.value);
+        if (e.key === 'ArrowUp' || e.key === 'ArrowRight') t += 0.01;
+        else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') t -= 0.01;
+        else if (e.key === 'PageUp') t += 0.1;
+        else if (e.key === 'PageDown') t -= 0.1;
+        else if (e.key === 'Home') t = 0;
+        else if (e.key === 'End') t = 1;
+        else return;
+        e.preventDefault();
+        self.setValue(self.valueOfT(t), true);
+      });
+    }
+
+    draw() {
+      const s = setupCanvas(this.canvas);
+      if (!s) return;
+      const g = s.ctx, w = s.w, h = s.h;
+      const cx = w / 2, cy = h / 2;
+      const rOuter = Math.min(w, h) / 2 - 2;
+      const accent = cssVar('--accent-orange', '#FF6B1A');
+      const t = this.tOf(this.value);
+
+      g.clearRect(0, 0, w, h);
+
+      // деления по окружности
+      g.lineWidth = 1.5;
+      for (let i = 0; i < KNOB_TICKS; i++) {
+        const tt = i / (KNOB_TICKS - 1);
+        const a = knobAngle(tt);
+        g.strokeStyle = 'rgba(148, 155, 170, .32)';
+        g.beginPath();
+        g.moveTo(cx + Math.cos(a) * rOuter, cy + Math.sin(a) * rOuter);
+        g.lineTo(cx + Math.cos(a) * (rOuter - 4), cy + Math.sin(a) * (rOuter - 4));
+        g.stroke();
+      }
+
+      // корпус
+      const bodyR = rOuter - 10.5;
+      g.beginPath();
+      g.arc(cx, cy, bodyR, 0, Math.PI * 2);
+      g.fillStyle = 'rgba(128, 128, 128, .07)';
+      g.fill();
+      g.strokeStyle = cssVar('--border-default', 'rgba(255, 255, 255, .1)');
+      g.lineWidth = 1;
+      g.stroke();
+
+      // дуга значения
+      const arcR = rOuter - 7.5;
+      if (this.dragging) { g.shadowColor = accent; g.shadowBlur = 9; }
+      g.strokeStyle = accent;
+      g.lineWidth = 3;
+      g.lineCap = 'round';
+      g.beginPath();
+      g.arc(cx, cy, arcR, knobAngle(0), knobAngle(t));
+      g.stroke();
+
+      // указатель
+      const a2 = knobAngle(t);
+      if (this.dragging) { g.shadowColor = accent; g.shadowBlur = 6; }
+      g.strokeStyle = accent;
+      g.lineWidth = 2.5;
+      g.lineCap = 'round';
+      g.beginPath();
+      g.moveTo(cx + Math.cos(a2) * bodyR * 0.38, cy + Math.sin(a2) * bodyR * 0.38);
+      g.lineTo(cx + Math.cos(a2) * bodyR * 0.82, cy + Math.sin(a2) * bodyR * 0.82);
+      g.stroke();
+      g.shadowBlur = 0;
+    }
+  }
 
   function biquadCoeffs(type, freq, Q, sr) {
     const w0 = 2 * Math.PI * freq / sr;
@@ -777,15 +977,15 @@
 
   function applyPreset(p) {
     setParam('time', p.values.time);
-    document.getElementById('time').value = p.values.time;
+    knobs.time.setValueSilent(p.values.time);
     setParam('feedback', p.values.feedback / 100);
-    document.getElementById('feedback').value = p.values.feedback;
+    knobs.feedback.setValueSilent(p.values.feedback);
     setParam('mix', p.values.mix / 100);
-    document.getElementById('mix').value = p.values.mix;
+    knobs.mix.setValueSilent(p.values.mix);
     setParam('lowcut', p.values.lowcut);
-    document.getElementById('lowcut').value = p.values.lowcut;
+    knobs.lowcut.setValueSilent(p.values.lowcut);
     setParam('highcut', p.values.highcut);
-    document.getElementById('highcut').value = p.values.highcut;
+    knobs.highcut.setValueSilent(p.values.highcut);
     pingPong = !!p.values.pingpong;
     document.getElementById('btn-pingpong').classList.toggle('is-active', pingPong);
     applyParams();
@@ -830,17 +1030,33 @@
     });
   });
 
-  // ranges
-  document.getElementById('time').addEventListener('input', e => setParam('time', +e.target.value));
-  document.getElementById('feedback').addEventListener('input', e => setParam('feedback', +e.target.value / 100));
-  document.getElementById('mix').addEventListener('input', e => setParam('mix', +e.target.value / 100));
-  document.getElementById('lowcut').addEventListener('input', e => setParam('lowcut', +e.target.value));
-  document.getElementById('highcut').addEventListener('input', e => setParam('highcut', +e.target.value));
+  // knobs (крутилки, как в компрессоре)
+  const knobDefs = [
+    { key: 'time',     min: 1, max: 1000, log: true,  get: () => currentParams.time, set: v => setParam('time', v) },
+    { key: 'feedback', min: 0, max: 95,   log: false, get: () => currentParams.feedback * 100, set: v => setParam('feedback', v / 100) },
+    { key: 'mix',      min: 0, max: 100,  log: false, get: () => currentParams.mix * 100, set: v => setParam('mix', v / 100) },
+    { key: 'lowcut',   min: 20, max: 800, log: false, get: () => currentParams.lowcut, set: v => setParam('lowcut', v) },
+    { key: 'highcut',  min: 2000, max: 16000, log: true, get: () => currentParams.highcut, set: v => setParam('highcut', v) }
+  ];
+  const knobs = {};
+  knobDefs.forEach(d => {
+    const el = document.querySelector('.pdy-param[data-key="' + d.key + '"] .pdy-knob');
+    knobs[d.key] = new Knob({
+      el,
+      canvas: el.querySelector('canvas'),
+      min: d.min,
+      max: d.max,
+      log: d.log,
+      defaultValue: d.get(),
+      value: d.get(),
+      onChange: d.set
+    });
+  });
 
   document.querySelectorAll('.pdy-sync').forEach(btn => {
     btn.addEventListener('click', () => {
       const ms = +btn.dataset.ms;
-      document.getElementById('time').value = ms;
+      knobs.time.setValueSilent(ms);
       setParam('time', ms);
     });
   });

@@ -189,59 +189,66 @@
   line-height: 1.2;
 }
 
-/* ---------- Params ---------- */
+/* ---------- Params (knobs) ---------- */
 .prv-params {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 14px 18px;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 14px 8px;
   margin-top: 6px;
 }
 .prv-param {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 6px;
+  min-width: 0;
 }
 .prv-plabel {
   font-size: 11px;
   font-weight: 600;
-  letter-spacing: .05em;
+  letter-spacing: .04em;
   text-transform: uppercase;
   color: var(--prv-muted);
-}
-.prv-param input[type="range"] {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 100%;
-  height: 6px;
-  background: rgba(128, 128, 128, .25);
-  border-radius: 3px;
-  outline: none;
-}
-.prv-param input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 16px; height: 16px;
-  border-radius: 50%;
-  background: var(--prv-accent);
-  cursor: pointer;
-  border: 2px solid #170B03;
-  box-shadow: 0 0 8px rgba(242, 153, 74, .4);
-}
-.prv-param input[type="range"]::-moz-range-thumb {
-  width: 16px; height: 16px;
-  border-radius: 50%;
-  background: var(--prv-accent);
-  cursor: pointer;
-  border: 2px solid #170B03;
+  white-space: nowrap;
 }
 .prv-pval {
-  font-family: 'JetBrains Mono', monospace;
-  font-size: 13px;
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 12.5px;
   color: var(--prv-accent);
-  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}
+
+.prv-knob {
+  position: relative;
+  width: 62px;
+  height: 62px;
+  margin-top: 3px;
+  border-radius: 50%;
+  cursor: ns-resize;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: transform .12s ease;
+}
+.prv-knob:focus { outline: none; }
+.prv-knob:focus-visible { box-shadow: 0 0 0 2px var(--prv-accent); }
+.prv-knob.is-dragging { transform: scale(1.05); cursor: grabbing; }
+.prv-knob-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.prv--full .prv-knob { width: 68px; height: 68px; }
+
+@media (max-width: 900px) {
+  .prv-params { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 @media (max-width: 640px) {
-  .prv-params { grid-template-columns: 1fr 1fr; }
+  .prv-knob { width: 52px; height: 52px; }
 }
 
 /* ========================================

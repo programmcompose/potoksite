@@ -211,6 +211,180 @@
     } catch (e) { return fallback; }
   }
 
+  // ---------- Кноб (крутилка): drag / wheel / клавиатура / dblclick-reset ----------
+  var KNOB_SWEEP_DEG = 270;   // ход по окружности
+  var KNOB_START_DEG = 135;   // canvas-угол начала хода (левый нижний)
+  var KNOB_TICKS = 11;
+
+  function knobAngle(t) { return (KNOB_START_DEG + KNOB_SWEEP_DEG * t) * Math.PI / 180; }
+
+  function Knob(opts) {
+    this.el = opts.el;
+    this.canvas = opts.canvas;
+    this.min = opts.min;
+    this.max = opts.max;
+    this.log = !!opts.log;
+    this.fmt = opts.fmt || function (v) { return String(v); };
+    this.defaultValue = opts.defaultValue != null ? opts.defaultValue : opts.value;
+    this.value = opts.value != null ? opts.value : opts.defaultValue;
+    this.onChange = opts.onChange || function () {};
+    this.dragging = false;
+    this._lastY = 0;
+    this._bind();
+    this.draw();
+  }
+
+  Knob.prototype.tOf = function (v) {
+    v = Math.max(this.min, Math.min(this.max, v));
+    if (!this.log) return (v - this.min) / (this.max - this.min);
+    var t = (Math.log(v) - Math.log(this.min)) / (Math.log(this.max) - Math.log(this.min));
+    return Math.max(0, Math.min(1, t));
+  };
+
+  Knob.prototype.valueOfT = function (t) {
+    t = Math.max(0, Math.min(1, t));
+    if (!this.log) return this.min + t * (this.max - this.min);
+    return Math.exp(Math.log(this.min) + t * (Math.log(this.max) - Math.log(this.min)));
+  };
+
+  Knob.prototype.setValue = function (v, fire) {
+    v = Math.max(this.min, Math.min(this.max, v));
+    if (v === this.value && !fire) return;
+    this.value = v;
+    this._updateAria();
+    this.draw();
+    if (fire) this.onChange(v);
+  };
+
+  Knob.prototype.setValueSilent = function (v) {
+    this.value = Math.max(this.min, Math.min(this.max, v));
+    this._updateAria();
+    this.draw();
+  };
+
+  Knob.prototype.reset = function () {
+    this.setValue(this.defaultValue, true);
+  };
+
+  Knob.prototype._updateAria = function () {
+    var el = this.el;
+    el.setAttribute('aria-valuemin', String(this.min));
+    el.setAttribute('aria-valuemax', String(this.max));
+    el.setAttribute('aria-valuenow', String(Math.round(this.value * 100) / 100));
+    el.setAttribute('aria-valuetext', this.fmt(this.value));
+  };
+
+  Knob.prototype._bind = function () {
+    var self = this;
+    var el = this.el;
+
+    el.addEventListener('pointerdown', function (e) {
+      if (el.setPointerCapture) { try { el.setPointerCapture(e.pointerId); } catch (err) {} }
+      self.dragging = true;
+      self._lastY = e.clientY;
+      el.classList.add('is-dragging');
+      el.focus();
+      e.preventDefault();
+    });
+
+    el.addEventListener('pointermove', function (e) {
+      if (!self.dragging) return;
+      var dy = self._lastY - e.clientY;
+      self._lastY = e.clientY;
+      var step = dy / 160;
+      if (e.shiftKey) step /= 8;
+      self.setValue(self.valueOfT(self.tOf(self.value) + step), true);
+    });
+
+    function endDrag() {
+      if (!self.dragging) return;
+      self.dragging = false;
+      el.classList.remove('is-dragging');
+      self.draw();
+    }
+    el.addEventListener('pointerup', endDrag);
+    el.addEventListener('pointercancel', endDrag);
+
+    el.addEventListener('wheel', function (e) {
+      e.preventDefault();
+      var d = e.deltaY;
+      if (e.deltaMode === 1) d *= 32;
+      var step = (d > 0 ? -1 : 1) * (e.shiftKey ? 0.004 : 0.02);
+      self.setValue(self.valueOfT(self.tOf(self.value) + step), true);
+    }, { passive: false });
+
+    el.addEventListener('dblclick', function () { self.reset(); });
+
+    el.addEventListener('keydown', function (e) {
+      var t = self.tOf(self.value);
+      if (e.key === 'ArrowUp' || e.key === 'ArrowRight') t += 0.01;
+      else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') t -= 0.01;
+      else if (e.key === 'PageUp') t += 0.1;
+      else if (e.key === 'PageDown') t -= 0.1;
+      else if (e.key === 'Home') t = 0;
+      else if (e.key === 'End') t = 1;
+      else return;
+      e.preventDefault();
+      self.setValue(self.valueOfT(t), true);
+    });
+  };
+
+  Knob.prototype.draw = function () {
+    var s = setupCanvas(this.canvas);
+    if (!s) return;
+    var g = s.ctx, w = s.w, h = s.h;
+    var cx = w / 2, cy = h / 2;
+    var rOuter = Math.min(w, h) / 2 - 2;
+    var accent = cssVar('--accent-orange', '#F2994A');
+    var t = this.tOf(this.value);
+
+    g.clearRect(0, 0, w, h);
+
+    // деления по окружности
+    g.lineWidth = 1.5;
+    for (var i = 0; i < KNOB_TICKS; i++) {
+      var tt = i / (KNOB_TICKS - 1);
+      var a = knobAngle(tt);
+      g.strokeStyle = 'rgba(148, 155, 170, .32)';
+      g.beginPath();
+      g.moveTo(cx + Math.cos(a) * rOuter, cy + Math.sin(a) * rOuter);
+      g.lineTo(cx + Math.cos(a) * (rOuter - 4), cy + Math.sin(a) * (rOuter - 4));
+      g.stroke();
+    }
+
+    // корпус
+    var bodyR = rOuter - 10.5;
+    g.beginPath();
+    g.arc(cx, cy, bodyR, 0, Math.PI * 2);
+    g.fillStyle = 'rgba(128, 128, 128, .07)';
+    g.fill();
+    g.strokeStyle = cssVar('--border-default', 'rgba(255, 255, 255, .1)');
+    g.lineWidth = 1;
+    g.stroke();
+
+    // дуга значения
+    var arcR = rOuter - 7.5;
+    if (this.dragging) { g.shadowColor = accent; g.shadowBlur = 9; }
+    g.strokeStyle = accent;
+    g.lineWidth = 3;
+    g.lineCap = 'round';
+    g.beginPath();
+    g.arc(cx, cy, arcR, knobAngle(0), knobAngle(t));
+    g.stroke();
+
+    // указатель
+    var a2 = knobAngle(t);
+    if (this.dragging) { g.shadowColor = accent; g.shadowBlur = 6; }
+    g.strokeStyle = accent;
+    g.lineWidth = 2.5;
+    g.lineCap = 'round';
+    g.beginPath();
+    g.moveTo(cx + Math.cos(a2) * bodyR * 0.38, cy + Math.sin(a2) * bodyR * 0.38);
+    g.lineTo(cx + Math.cos(a2) * bodyR * 0.82, cy + Math.sin(a2) * bodyR * 0.82);
+    g.stroke();
+    g.shadowBlur = 0;
+  };
+
   // ===== Widget =====
   function Widget(root) {
     this.root = root;
@@ -253,7 +427,7 @@
     };
     window.addEventListener('keydown', this._onKey);
 
-    this._onResize = function () { self.drawWaveStatic(); };
+    this._onResize = function () { self.drawWaveStatic(); self.drawKnobs(); };
     window.addEventListener('resize', this._onResize);
   };
 
@@ -289,47 +463,44 @@
     html += '</div>';
 
     var paramsDef = [
-      { key: 'decay',    label: 'Decay' },
-      { key: 'predelay', label: 'Pre-Delay' },
-      { key: 'mix',      label: 'Mix / Wet' },
-      { key: 'dry',      label: 'Dry' },
-      { key: 'hpf',      label: 'HPF (низ)' },
-      { key: 'lpf',      label: 'LPF (верх)' }
+      { key: 'decay',    label: 'Decay',     min: 0.2, max: 12,   log: true,  fmt: function (v) { return v.toFixed(1) + ' s'; } },
+      { key: 'predelay', label: 'Pre-Delay', min: 0,   max: 150,  log: false, fmt: function (v) { return Math.round(v) + ' ms'; } },
+      { key: 'mix',      label: 'Mix / Wet', min: 0,   max: 100,  log: false, fmt: function (v) { return Math.round(v) + '%'; } },
+      { key: 'dry',      label: 'Dry',       min: 0,   max: 100,  log: false, fmt: function (v) { return Math.round(v) + '%'; } },
+      { key: 'hpf',      label: 'HPF (низ)', min: 20,  max: 1000, log: true,  fmt: function (v) { return Math.round(v) + ' Hz'; } },
+      { key: 'lpf',      label: 'LPF (верх)',min: 2000,max: 16000,log: true,  fmt: function (v) { return v >= 1000 ? (v / 1000).toFixed(1) + ' kHz' : Math.round(v) + ' Hz'; } }
     ];
     html += '<div class="prv-params">';
     for (var p = 0; p < paramsDef.length; p++) {
       var d = paramsDef[p];
-      html += '<label class="prv-param" data-key="' + d.key + '">';
+      html += '<div class="prv-param" data-key="' + d.key + '">';
       html += '<span class="prv-plabel">' + d.label + '</span>';
-      html += '<input type="range">';
+      html += '<div class="prv-knob" tabindex="0" role="slider" aria-orientation="vertical" aria-label="' + d.label + '"><canvas class="prv-knob-canvas"></canvas></div>';
       html += '<span class="prv-pval"></span>';
-      html += '</label>';
+      html += '</div>';
     }
     html += '</div>';
 
     root.innerHTML = html;
 
     var self = this;
-    var ranges = {
-      decay:    { min: 0.2, max: 12 },
-      predelay: { min: 0,   max: 150 },
-      mix:      { min: 0,   max: 100 },
-      dry:      { min: 0,   max: 100 },
-      hpf:      { min: 20,  max: 1000 },
-      lpf:      { min: 2000, max: 16000 }
-    };
+    this.paramsDef = paramsDef;
+    this.knobs = {};
 
     for (var r = 0; r < paramsDef.length; r++) {
       var def = paramsDef[r];
-      var cfg = ranges[def.key];
-      var input = root.querySelector('.prv-param[data-key="' + def.key + '"] input');
-      input.min = cfg.min;
-      input.max = cfg.max;
-      (function (key, input) {
-        input.addEventListener('input', function () {
-          self.setParam(key, parseFloat(input.value));
-        });
-      })(def.key, input);
+      var knobEl = root.querySelector('.prv-param[data-key="' + def.key + '"] .prv-knob');
+      this.knobs[def.key] = new Knob({
+        el: knobEl,
+        canvas: knobEl.querySelector('canvas'),
+        min: def.min,
+        max: def.max,
+        log: def.log,
+        fmt: def.fmt,
+        defaultValue: DEFAULTS[def.key],
+        value: this.params[def.key],
+        onChange: (function (key) { return function (v) { self.setParam(key, v); }; })(def.key)
+      });
     }
 
     var presetBtns = root.querySelectorAll('.prv-preset');
@@ -363,17 +534,18 @@
     });
     this.elBypass.addEventListener('click', function () { self2.toggleBypass(); });
 
-    this.syncSliders();
+    for (var n = 0; n < paramsDef.length; n++) this.syncKnob(paramsDef[n]);
   };
 
-  Widget.prototype.syncSliders = function () {
-    var keys = ['decay', 'predelay', 'mix', 'dry', 'hpf', 'lpf'];
-    for (var i = 0; i < keys.length; i++) {
-      var k = keys[i];
-      var input = this.root.querySelector('.prv-param[data-key="' + k + '"] input');
-      if (!input) continue;
-      input.value = Math.round(this.params[k] * 10) / 10;
-    }
+  Widget.prototype.syncKnob = function (def) {
+    var knob = this.knobs && this.knobs[def.key];
+    if (knob) knob.setValueSilent(this.params[def.key]);
+    var valEl = this.root.querySelector('.prv-param[data-key="' + def.key + '"] .prv-pval');
+    if (valEl) valEl.textContent = def.fmt(this.params[def.key]);
+  };
+
+  Widget.prototype.drawKnobs = function () {
+    for (var k in this.knobs) this.knobs[k].draw();
   };
 
   // ===== Audio graph =====
@@ -632,18 +804,7 @@
       this.setParam('dry', p.values.dry);
       this.setParam('hpf', p.values.hpf);
       this.setParam('lpf', p.values.lpf);
-      var input = this.root.querySelector('.prv-param[data-key="decay"] input');
-      if (input) input.value = p.values.decay;
-      var pdInput = this.root.querySelector('.prv-param[data-key="predelay"] input');
-      if (pdInput) pdInput.value = p.values.predelay;
-      var mixInput = this.root.querySelector('.prv-param[data-key="mix"] input');
-      if (mixInput) mixInput.value = p.values.mix;
-      var dryInput = this.root.querySelector('.prv-param[data-key="dry"] input');
-      if (dryInput) dryInput.value = p.values.dry;
-      var hpfInput = this.root.querySelector('.prv-param[data-key="hpf"] input');
-      if (hpfInput) hpfInput.value = p.values.hpf;
-      var lpfInput = this.root.querySelector('.prv-param[data-key="lpf"] input');
-      if (lpfInput) lpfInput.value = p.values.lpf;
+      for (var j = 0; j < this.paramsDef.length; j++) this.syncKnob(this.paramsDef[j]);
       var presetBtns = this.root.querySelectorAll('.prv-preset');
       for (var b = 0; b < presetBtns.length; b++) {
         presetBtns[b].classList.toggle('is-active', presetBtns[b].getAttribute('data-id') === id);
