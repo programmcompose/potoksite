@@ -52,7 +52,3 @@ DAW (Digital Audio Workstation) — это программа для запис�
 - Полная кастомизация интерфейса
 - Scripting на Lua и Python
 - Очень низкая латентность
-
----
-
-**← [Назад: Оборудование](oborudovanie.md)** | **[Далее: Этап №6 →](../etap6/index.md)**

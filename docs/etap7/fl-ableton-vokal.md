@@ -115,6 +115,3 @@
 
 
 <div class="potok-inline-quiz" data-stage="etap7"></div>
----
-
-**← [Назад: Работа с референсами](referensy-i-stream.md)** | **[На главную этапа →](index.md)**

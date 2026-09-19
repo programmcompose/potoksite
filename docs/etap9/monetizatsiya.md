@@ -84,7 +84,3 @@
 ### пример: Metro Boomin
 
 Metro Boomin чередует **коммерческие проекты** (биты для Drake, Future, 21 Savage) с **авторскими альбомами** («HEROES & VILLAINS», «WE DON'T TRUST YOU»). Каждый коммерческий проект финансирует следующий авторский.
-
----
-
-**← [Назад: Как не перегореть →](burnout-psihologiya.md)** | **[Далее: Отношения с артистами →](otnosheniya-s-artistami.md)**

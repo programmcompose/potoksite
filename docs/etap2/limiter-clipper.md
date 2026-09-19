@@ -39,7 +39,3 @@
 | **FabFilter Pro-L 2** | Limiter | Точный lookahead, визуализация в реальном времени, transparent и character режимы |
 | **Waves L2 Ultra** | Limiter | Классика мастеринга — надёжный «потолок», простой интерфейс, прозрачный звук |
 | **Soundtoys MicroShift** | Stereo processor + limiter | Расширение стереополя + контроль пиков — ширина и громкость в одном плагине |
-
----
-
-**← [Назад: Compression / Компрессия](compression-kompressiya.md)** | **[Далее: Стилизация сэмплов →](sample-styling.md)**

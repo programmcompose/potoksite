@@ -126,7 +126,3 @@ ADSR — огибающая звука (Attack, Decay, Sustain, Release).
 
 !!! important
     **ADSR — это 50% характера звука.** Один и тот же пресет звучит совершенно по-разному с разными настройками ADSR.
-
----
-
-**← [Назад: Первая мелодия](pervaya-melodiya.md)** | **[Далее: Мелодии из One-Shot →](melodii-iz-one-shot.md)**

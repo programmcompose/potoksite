@@ -74,7 +74,3 @@ Simple/Simpler в Ableton Live:
 - Retrig и warp
 - Envelope и filter
 - Grain mode для текстурирования
-
----
-
-**← [Назад: Синтез Звука →](sintez-zvuka.md)** | **[Далее: Базовые жанры EDM →](edzhanry.md)**

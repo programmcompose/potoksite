@@ -55,7 +55,3 @@
 | **Valhalla VintageVerb** | Алгоритмический реверб | 12 алгоритмов (room, hall, plate, spring), тёплый аналоговый характер, доступный |
 | **UAD Lexicon 224X** | Convolution / Algorithmic | Эмуляция легенды 80-х — «дорогое» пространство, чёткая атака, винтажный характер |
 | **Soundtoys MicroShift** | Stereo widener + reverb | Не классический реверб, но создаёт «пространство» через расстройку голосов — ширина и объём |
-
----
-
-**← [Назад: Saturation / Сатурация](saturation-saturatsiya.md)** | **[Далее: Delay / Делэй →](delay-delay.md)**

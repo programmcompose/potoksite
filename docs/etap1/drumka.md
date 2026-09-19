@@ -94,7 +94,3 @@
     <span class="potok-challenge__meta" data-challenge-meta></span>
   </div>
 </div>
-
----
-
-**← [Назад: Что такое сэмпл](che-takoe-sampl.md)** | **[Далее: Подбор сэмплов и структура бита →**](podbor-samplow.md)

@@ -156,6 +156,3 @@
 
 
 <div class="potok-inline-quiz" data-stage="etap8"></div>
----
-
-**← [Назад: Эмбиент треки →](ambient-traki.md)** | **[На главную этапа →](index.md)**

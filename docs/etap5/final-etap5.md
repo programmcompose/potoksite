@@ -26,6 +26,3 @@
 
 
 <div class="potok-inline-quiz" data-stage="etap5"></div>
----
-
-**← [Назад: Ремиксы треков →](remiksy.md)** | **[Далее: Этап №6 →](../etap6/index.md)**

@@ -58,7 +58,3 @@
 - **Rhythmic complexity** — сложные полиритмические паттерны
 - **Sound design as melody** — саунд-дизайн заменяет традиционные мелодии
 - **Genre-blending** — элементы из разных жанров в одном треке
-
----
-
-**← [Назад: 2hollis →](2hollis.md)** | **[Далее: Саунд-дизайн / Acropool →](sound-design.md)**

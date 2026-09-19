@@ -53,7 +53,3 @@
 - **Reverb и Delay** — пространство
 - **Sidechain** — вокал «дышит» с киком
 - **Doubling и harmonies** — толщина вокала
-
----
-
-**← [Назад: Фишки сведения →](fishki-svedeniya.md)** | **[Далее: Финал этапа →](final-etap5.md)**

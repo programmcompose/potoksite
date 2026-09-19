@@ -55,7 +55,3 @@
 - Soundgarden — тяжёлый, сложный гранж
 - Alice in Chains — тёмный, мелодичный гранж
 - Pearl Jam — более «чистый» гранж
-
----
-
-**← [Назад: Пост-Панк — Сведение](post-punk-svedenie.md)** | **[Далее: Гранж — Плагины и Сэмпл паки →](grunge-plaginy-sample-paki.md)**

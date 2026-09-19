@@ -80,7 +80,3 @@
 |-----|-----------|
 | **FL Studio** | Take editor в Playlist |
 | **Ableton** | Compile takes в Arrangement View |
-
----
-
-**← [Назад: Этап №7](index.md)** | **[Далее: Редакция вокала →](redaktsiya-vokala.md)**

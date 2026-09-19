@@ -124,7 +124,3 @@ SoundCloud — это **ваше портфолио**. Здесь ищут би�
 - **[Internet Money](https://www.instagram.com/internetmoney/)** — продюсерский коллектив, который строит личный бренд через соцсети
 - **[Pi'erre Bourne](https://www.instagram.com/pierrbourne/)** — показывает процесс, делится звуками, вдохновляет
 - **[Dora](https://www.tiktok.com/@doratheband)** — продюсер, который использует TikTok для продвижения своих битов
-
----
-
-**← [Назад: Цель пиара и музыки →](cel-prodvizheniya.md)** | **[Далее: Продажа битов и сведения →](prodazha-bitov.md)**

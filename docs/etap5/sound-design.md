@@ -159,7 +159,3 @@
 - **Sonic Academy** — уроки по саунд-дизайну
 - **Point Blank** — онлайн-курсы
 - **YouTube каналы** — Nobal, You Suck at Producing, Sensormical
-
----
-
-**← [Назад: DeathStep →](deathstep.md)** | **[Далее: Работа с референсами →](referensy-sd.md)**

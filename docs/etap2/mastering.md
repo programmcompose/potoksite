@@ -89,6 +89,3 @@ Mixer Output → EQ → Compressor → Saturation → Limiter → Reference (с�
 
 
 <div class="potok-inline-quiz" data-stage="etap2"></div>
----
-
-**← [Назад: Сведение](mixing.md)** | **[К глоссарию →](../glossary.md)**

@@ -159,7 +159,3 @@ Split sheet — это документ, который фиксирует **д�
 - **РАО (Российское авторское общество)** — [rao.ru](https://rao.ru/)
 - **ASCAP/BMI/SESAC** — PRO для США
 - **SoundExchange** — [soundexchange.com](https://www.soundexchange.com/)
-
----
-
-**← [Назад: Отношения с артистами →](otnosheniya-s-artistami.md)** | **[Далее: Финал этапа →](final-etap9.md)**

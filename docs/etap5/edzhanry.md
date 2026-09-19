@@ -136,7 +136,3 @@ EDM-продакшн отличается от хип-хоп битов:
 - **Busy Works Beats** — продакшн-техники
 - **Nobal** — саунд-дизайн
 - **You Suck at Producing** — синтез с юмором
-
----
-
-**← [Назад: Сэмплирование →](samplirovanie.md)** | **[Далее: Crystal Castles →](crystal-castles.md)**

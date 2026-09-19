@@ -75,7 +75,3 @@ Release должен «уложиться» в один такт или полт
 | **Waves SSL G-Master Buss** | Channel strip compressor | Эмуляция консольного SSL — «клей» для микс-буса, прозрачная компрессия |
 | **UAD 1176 Classic** | FET compressor | Агрессивная атака, fast release, характер для вокала и ударных — «всё в одно» |
 | **FabFilter Pro-C 2** | Multiband compressor | Визуализация GR, sidechain filter, preset-библиотека — точность и контроль |
-
----
-
-**← [Назад: Chorus / Хорус](chorus-chorus.md)** | **[Далее: Limiter и Clipper →](limiter-clipper.md)**

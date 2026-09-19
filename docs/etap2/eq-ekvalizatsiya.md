@@ -150,7 +150,3 @@ EQ (Equalizer) — инструмент для управления амплит
     <span class="potok-challenge__meta" data-challenge-meta></span>
   </div>
 </div>
-
----
-
-**← [Назад: Основные понятия](osnovnye-ponyatiya.md)** | **[Далее: Saturation / Сатурация →](saturation-saturatsiya.md)**

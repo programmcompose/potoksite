@@ -81,6 +81,3 @@
 
 
 <div class="potok-inline-quiz" data-stage="etap9"></div>
----
-
-**← [Назад: Договора и права →](dogovory-pravo.md)** | **[На главную →](../index.md)**

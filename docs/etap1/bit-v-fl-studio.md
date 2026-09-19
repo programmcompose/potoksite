@@ -97,7 +97,3 @@
     <code class="step-key">Ctrl+R</code>
   </div>
 </div>
-
----
-
-**← [Назад: Рендер трека](render-traka.md)** | **[Далее: Бит в Ableton →**](bit-v-ableton.md)

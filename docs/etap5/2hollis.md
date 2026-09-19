@@ -63,7 +63,3 @@
 - **Hard clipping на мастере** — финальный этап gain staging
 - **Channel clipping** — контролируемый перегруз на каналах
 - **Character clipping** — аналоговые эмуляции для «теплого» клиппинга
-
----
-
-**← [Назад: Атмосферный EDM →](atmosfernyy-edm.md)** | **[Далее: DeathStep / Fatal-M →](deathstep.md)**

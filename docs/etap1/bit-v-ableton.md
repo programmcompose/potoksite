@@ -59,7 +59,3 @@
 
 !!! tip
     Session View удобен для экспериментов и импровизации. Arrangement View — для финальной аранжировки.
-
----
-
-**← [Назад: Бит в FL Studio](bit-v-fl-studio.md)** | **[Далее: Финал этапа →**](final-etap1.md)
