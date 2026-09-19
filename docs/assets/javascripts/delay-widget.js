@@ -298,11 +298,11 @@
       var input = root.querySelector('.pdy-param[data-key="' + def.key + '"] input');
       input.min = cfg.min;
       input.max = cfg.max;
-      (function (key, cfg) {
-        input.addEventListener('input', function () {
-          self.setParam(key, cfg.toParam(parseFloat(input.value)));
+      (function (key, cfg, slider) {
+        slider.addEventListener('input', function () {
+          self.setParam(key, cfg.toParam(parseFloat(slider.value)));
         });
-      })(def.key, cfg);
+      })(def.key, cfg, input);
     }
 
     // sync buttons
