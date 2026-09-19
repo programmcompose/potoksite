@@ -37,16 +37,30 @@ theme:
     repo: fontawesome/brands/github
     edit: material/pencil
     view: material/eye
-    features:
-    - navigation.tracking
-    - navigation.expand
-    - navigation.sections
-    - navigation.top
+  features:
+    # === Навигация ===
+    - navigation.instant          # SPA-режим — страницы грузятся без перезагрузки
+    - navigation.instant.progress # полоска загрузки при переходе между страницами
+    - navigation.tracking         # URL обновляется при скролле по заголовкам
+    - navigation.expand           # разделы раскрыты по умолчанию
+    - navigation.sections         # группировка в сайдбаре
+    - navigation.top              # кнопка "наверх"
+    - navigation.footer           # кнопки «Предыдущая / Следующая» внизу каждой страницы
+    - navigation.path             # breadcrumb (путь) над заголовком страницы
+
+    # === Table of Contents ===
+    - toc.follow                  # TOC автоматически скроллится за текущим заголовком
+
+    # === Контент ===
+    - content.code.copy           # кнопка копирования кода
+    - content.code.annotate       # аннотации к коду
+    - content.tabs.link           # связанные вкладки
+    - content.tooltips            # красивые тултипы вместо браузерных
+
+    # === Поиск ===
     - search.highlight
     - search.share
-    - content.code.copy
-    - content.code.annotate
-    - content.tabs.link
+    - search.suggest              # подсказки при вводе в поиск
 
 repo_name: "potoksite"
 repo_url: "https://github.com/programmcompose/potoksite"
@@ -66,6 +80,14 @@ plugins:
   # - graph:
   #     name: "title"
   #     debug: true
+
+  # === Время чтения страницы (опционально) ===
+  # Сначала установи: pip install mkdocs-statistics-plugin
+  # - statistics:
+  #     page_read_time: true
+  #     page_images: false
+  #     words_per_minute: 220   # для русского текста
+  #     codelines_per_minute: 80
 
 extra:
   generator: false
@@ -97,10 +119,12 @@ extra_css:
   - assets/stylesheets/link-features.css
   - assets/stylesheets/canvas-viewer.css
   - assets/stylesheets/step-cards.css
+  - assets/stylesheets/reading-progress.css
   # - assets/stylesheets/graph-override.css
 
 extra_javascript:
   - https://unpkg.com/lucide@latest
+  - assets/javascripts/reading-progress.js
   - assets/javascripts/back-to-top.js
   - assets/javascripts/stage-unlock.js
   - assets/javascripts/scroll-cards.js
@@ -140,6 +164,7 @@ markdown_extensions:
   - footnotes
   - md_in_html
   - tables
+  - abbr                            # ← ДОБАВЛЕНО: для аббревиатур и глоссария
   - toc:
       permalink: " #"
       slugify: !!python/object/apply:pymdownx.slugs.slugify
@@ -156,14 +181,12 @@ markdown_extensions:
       emoji_generator: !!python/name:material.extensions.emoji.to_svg
   - pymdownx.highlight:
       anchor_linenums: true
-      line_spans: __sp
+      line_spans: __span
       pygments_lang_class: true
   - pymdownx.inlinehilite
   - pymdownx.keys
   - pymdownx.magiclink:
       repo_url_shorthand: true
-      user: squidfunk
-      repo: mkdocs-material
   - pymdownx.mark
   - pymdownx.smartsymbols
   - pymdownx.superfences:
@@ -179,6 +202,8 @@ markdown_extensions:
   - pymdownx.tasklist:
       custom_checkbox: true
   - pymdownx.tilde
+
+  - pymdownx.snippets                # ← ДОБАВЛЕНО: переиспользование кусков markdown
 
 nav:
   - "<span class='nav-icon' data-lucide='home'></span> Главная": index.md
