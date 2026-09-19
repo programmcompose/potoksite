@@ -144,6 +144,30 @@
       icon: '🐦',
       rarity: 'uncommon',
       condition: function (stats) { return !!stats.earlySession; }
+    },
+    {
+      id: 'streak3',
+      name: 'Разогрев',
+      desc: 'Сирек 3 дня подряд',
+      icon: '🔥',
+      rarity: 'common',
+      condition: function (stats) { return computeStreaks(stats.activityDays).current >= 3; }
+    },
+    {
+      id: 'streak7',
+      name: 'Неделя огня',
+      desc: 'Сирек 7 дней подряд',
+      icon: '☄️',
+      rarity: 'uncommon',
+      condition: function (stats) { return computeStreaks(stats.activityDays).current >= 7; }
+    },
+    {
+      id: 'streak30',
+      name: 'Месяц в потоке',
+      desc: 'Сирек 30 дней подряд',
+      icon: '🌊',
+      rarity: 'epic',
+      condition: function (stats) { return computeStreaks(stats.activityDays).current >= 30; }
     }
   ];
 
@@ -199,10 +223,13 @@
   // ========================
   // СОСТОЯНИЕ МОДУЛЯ
   // ========================
+  var loadedBadges = loadJSON(BADGES_KEY, []);
+  var loadedXp = loadJSON(XP_KEY, { total: 0, log: [] });
+
   var state = {
-    badges: loadJSON(BADGES_KEY, []),
-    xp: loadJSON(XP_KEY, { total: 0, log: [] }),
-    stats: loadJSON(STATS_KEY, defaultStats())
+    badges: loadedBadges,
+    xp: loadedXp,
+    stats: normalizeStats(loadJSON(STATS_KEY, defaultStats()), loadedXp.log)
   };
 
   function defaultStats() {
@@ -219,8 +246,96 @@
       lastVisit: null,
       pagesViewed: 0,
       lastSessionXP: 0,
-      lastPageXP: 0
+      lastPageXP: 0,
+      activityDays: {},
+      visitedPages: {}
     };
+  }
+
+  // ========================
+  // ДАТЫ И АКТИВНОСТЬ ПО ДНЯМ
+  // ========================
+  var MONTHS_SHORT = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+
+  function dateKey(d) {
+    var m = d.getMonth() + 1;
+    var day = d.getDate();
+    return d.getFullYear() + '-' + (m < 10 ? '0' + m : m) + '-' + (day < 10 ? '0' + day : day);
+  }
+
+  function parseDateKey(key) {
+    var parts = key.split('-');
+    return new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
+  }
+
+  // Записать XP за текущий день (для сирека и heatmap)
+  function recordActivity(amount) {
+    if (!state.stats.activityDays || typeof state.stats.activityDays !== 'object') {
+      state.stats.activityDays = {};
+    }
+    var key = dateKey(new Date());
+    state.stats.activityDays[key] = (state.stats.activityDays[key] || 0) + amount;
+  }
+
+  // Запомнить просмотренную страницу (для освоения разделов)
+  function trackPage() {
+    if (!state.stats.visitedPages || typeof state.stats.visitedPages !== 'object') {
+      state.stats.visitedPages = {};
+    }
+    var path = window.location.pathname;
+    if (path.length > 1 && path.charAt(path.length - 1) === '/') {
+      path = path.slice(0, -1);
+    }
+    state.stats.visitedPages[path] = 1;
+  }
+
+  // Сирек: текущая и лучшая серия дней подряд с активностью
+  function computeStreaks(activityDays) {
+    var days = activityDays || {};
+    var keys = Object.keys(days).sort();
+
+    var best = 0;
+    var run = 0;
+    for (var i = 0; i < keys.length; i++) {
+      if (i > 0) {
+        var diff = Math.round((parseDateKey(keys[i]) - parseDateKey(keys[i - 1])) / 86400000);
+        run = diff === 1 ? run + 1 : 1;
+      } else {
+        run = 1;
+      }
+      if (run > best) best = run;
+    }
+
+    var current = 0;
+    var d = new Date();
+    d.setHours(0, 0, 0, 0);
+    // Если сегодня ещё нет активности — серия считается от вчерашнего дня
+    if (!days[dateKey(d)]) {
+      d.setDate(d.getDate() - 1);
+    }
+    while (days[dateKey(d)]) {
+      current++;
+      d.setDate(d.getDate() - 1);
+    }
+
+    return { current: current, best: Math.max(best, current) };
+  }
+
+  // Обновить недостающие поля в старых данных (бэкфилл из xp.log)
+  function normalizeStats(stats, xpLog) {
+    if (!stats.activityDays || typeof stats.activityDays !== 'object') {
+      var days = {};
+      var log = xpLog || [];
+      for (var i = 0; i < log.length; i++) {
+        var key = dateKey(new Date(log[i].time));
+        days[key] = (days[key] || 0) + log[i].amount;
+      }
+      stats.activityDays = days;
+    }
+    if (!stats.visitedPages || typeof stats.visitedPages !== 'object') {
+      stats.visitedPages = {};
+    }
+    return stats;
   }
 
   // ========================
@@ -268,8 +383,9 @@
       addXP(XP_REWARDS.session_start, 'session_start');
     }
 
-    // Отслеживаем текущий раздел
+    // Отслеживаем текущий раздел и страницу
     trackSection();
+    trackPage();
 
     // Cooldown для page_view — не чаще 10 секунд
     var lastPageXP = state.stats.lastPageXP || 0;
@@ -362,6 +478,8 @@
     if (state.xp.log.length > 200) {
       state.xp.log = state.xp.log.slice(-150);
     }
+
+    recordActivity(amount);
 
     saveJSON(XP_KEY, state.xp);
     saveStats();
@@ -534,6 +652,30 @@
     return labels[rarity] || rarity;
   }
 
+  // Простой toast (самодостаточный, без progress.js)
+  function showToast(message) {
+    var old = document.querySelector('.potok-toast');
+    if (old) old.remove();
+
+    var toast = document.createElement('div');
+    toast.className = 'potok-toast';
+    toast.textContent = message;
+    toast.setAttribute('role', 'status');
+    toast.setAttribute('aria-live', 'polite');
+    document.body.appendChild(toast);
+
+    requestAnimationFrame(function () {
+      toast.classList.add('show');
+    });
+
+    setTimeout(function () {
+      toast.classList.remove('show');
+      setTimeout(function () {
+        if (toast.parentNode) toast.remove();
+      }, 300);
+    }, 2500);
+  }
+
   // ========================
   // СБРОС ДАННЫХ
   // ========================
@@ -560,7 +702,7 @@
   // ========================
   function exportData() {
     var data = {
-      version: '1.0',
+      version: '1.1',
       exportDate: new Date().toISOString(),
       badges: state.badges,
       xp: state.xp,
@@ -589,7 +731,7 @@
 
       state.badges = data.badges;
       state.xp = data.xp;
-      state.stats = data.stats;
+      state.stats = normalizeStats(data.stats, data.xp.log);
 
       saveJSON(BADGES_KEY, state.badges);
       saveJSON(XP_KEY, state.xp);
@@ -773,6 +915,162 @@
   }
 
   // ========================
+  // HEATMAP АКТИВНОСТИ (6 месяцев)
+  // ========================
+  var HEATMAP_WEEKS = 26;
+
+  function heatLevel(xp) {
+    if (!xp || xp <= 0) return 0;
+    if (xp < 15) return 1;
+    if (xp < 40) return 2;
+    if (xp < 80) return 3;
+    return 4;
+  }
+
+  function buildHeatmapHTML() {
+    var days = state.stats.activityDays || {};
+
+    var today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // Начало: понедельник недели, в которую попадает (today - 181 день)
+    var start = new Date(today);
+    start.setDate(start.getDate() - (HEATMAP_WEEKS * 7 - 1));
+    var diffToMonday = (start.getDay() + 6) % 7; // 0=Пн ... 6=Вс
+    start.setDate(start.getDate() - diffToMonday);
+
+    // Колонки-недели по 7 дней
+    var weeks = [];
+    var cur = new Date(start);
+    while (cur <= today) {
+      var week = [];
+      for (var i = 0; i < 7; i++) {
+        week.push(new Date(cur));
+        cur.setDate(cur.getDate() + 1);
+      }
+      weeks.push(week);
+    }
+
+    var html = '<div class="potok-heatmap__grid" style="--weeks:' + weeks.length + '">';
+
+    // Уголок (пересечение подписей)
+    html += '<span class="potok-heatmap__corner"></span>';
+
+    // Подписи месяцев — в первой строке, явная колонка
+    var lastMonth = -1;
+    for (var w = 0; w < weeks.length; w++) {
+      var m = weeks[w][0].getMonth();
+      if (m !== lastMonth) {
+        html += '<span class="potok-heatmap__month" style="grid-column:' + (w + 2) + '">' + MONTHS_SHORT[m] + '</span>';
+        lastMonth = m;
+      }
+    }
+
+    // Подписи дней недели — в первом столбце, все 7 строк (часть пустые)
+    var dowLabels = ['Пн', '', 'Ср', '', 'Пт', '', ''];
+    for (var r = 0; r < 7; r++) {
+      html += '<span class="potok-heatmap__dow" style="grid-row:' + (r + 2) + ';grid-column:1">' + dowLabels[r] + '</span>';
+    }
+
+    // Клетки
+    for (var w2 = 0; w2 < weeks.length; w2++) {
+      for (var r2 = 0; r2 < 7; r2++) {
+        var date = weeks[w2][r2];
+        if (date > today) continue; // будущие дни не рисуем
+
+        var key = dateKey(date);
+        var xp = days[key] || 0;
+        var level = heatLevel(xp);
+        var tipDate = date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
+        var title = xp > 0 ? (xp + ' XP — ' + tipDate) : ('Нет активности — ' + tipDate);
+
+        html += '<span class="potok-heatmap__cell potok-heatmap__cell--lvl' + level + '" ' +
+          'style="grid-row:' + (r2 + 2) + ';grid-column:' + (w2 + 2) + '" title="' + title + '"></span>';
+      }
+    }
+
+    html += '</div>';
+
+    // Легенда
+    html += '<div class="potok-heatmap__legend">' +
+      '<span>Меньше</span>' +
+      '<span class="potok-heatmap__cell potok-heatmap__cell--lvl0"></span>' +
+      '<span class="potok-heatmap__cell potok-heatmap__cell--lvl1"></span>' +
+      '<span class="potok-heatmap__cell potok-heatmap__cell--lvl2"></span>' +
+      '<span class="potok-heatmap__cell potok-heatmap__cell--lvl3"></span>' +
+      '<span class="potok-heatmap__cell potok-heatmap__cell--lvl4"></span>' +
+      '<span>Больше</span>' +
+    '</div>';
+
+    return html;
+  }
+
+  // ========================
+  // ОСВОЕНИЕ РАЗДЕЛОВ
+  // ========================
+  function getSectionTotals() {
+    var totals = {};
+    var links = document.querySelectorAll('.md-nav--primary a[href]');
+    for (var i = 0; i < links.length; i++) {
+      var href = links[i].getAttribute('href') || '';
+      var m = href.match(/\/(etap\d+|plugins|zvuk)\//);
+      if (m) totals[m[1]] = (totals[m[1]] || 0) + 1;
+    }
+    return totals;
+  }
+
+  function getSectionVisited() {
+    var visited = {};
+    var pages = state.stats.visitedPages || {};
+    for (var path in pages) {
+      if (!pages.hasOwnProperty(path)) continue;
+      var m = path.match(/\/(etap\d+|plugins|zvuk)\//);
+      if (m) visited[m[1]] = (visited[m[1]] || 0) + 1;
+    }
+    return visited;
+  }
+
+  function sectionLabel(key) {
+    var m = key.match(/^etap(\d+)$/);
+    if (m) return 'Этап №' + m[1];
+    if (key === 'plugins') return 'Плагины';
+    if (key === 'zvuk') return 'Основы звука';
+    return key;
+  }
+
+  function buildSectionsHTML() {
+    var totals = getSectionTotals();
+    var visited = getSectionVisited();
+
+    var keys = Object.keys(totals).sort(function (a, b) {
+      var na = parseInt(a.match(/\d+/), 10);
+      var nb = parseInt(b.match(/\d+/), 10);
+      if (!isNaN(na) && !isNaN(nb)) return na - nb;
+      return a.localeCompare(b);
+    });
+
+    if (keys.length === 0) {
+      return '<p class="potok-stats-empty">Разделы не найдены</p>';
+    }
+
+    var html = '';
+    for (var i = 0; i < keys.length; i++) {
+      var key = keys[i];
+      var total = totals[key];
+      var done = Math.min(visited[key] || 0, total);
+      var percent = total > 0 ? Math.round((done / total) * 100) : 0;
+
+      html += '<div class="potok-sections-row' + (percent === 100 ? ' potok-sections-row--full' : '') + '">';
+      html += '<div class="potok-sections-row__name">' + sectionLabel(key) + '</div>';
+      html += '<div class="potok-sections-row__track"><div class="potok-sections-row__fill" style="width:' + percent + '%"></div></div>';
+      html += '<div class="potok-sections-row__stat">' + done + ' / ' + total + ' · ' + percent + '%</div>';
+      html += '</div>';
+    }
+
+    return html;
+  }
+
+  // ========================
   // РЕНДЕР СТРАНИЦЫ СТАТИСТИКИ
   // ========================
   function renderStatsPage() {
@@ -782,6 +1080,7 @@
     var s = state.stats;
     var level = getCurrentLevel();
     var progress = getLevelProgressPercent();
+    var streak = computeStreaks(state.stats.activityDays);
 
     // Форматируем даты
     var firstVisitDate = s.firstVisit ? new Date(s.firstVisit).toLocaleDateString('ru-RU', {
@@ -861,6 +1160,26 @@
           '<div class="potok-stats-card__value">' + s.sectionsVisited + '</div>' +
           '<div class="potok-stats-card__label">Разделов посещено</div>' +
         '</div>' +
+
+        // Сирек
+        '<div class="potok-stats-card potok-stats-card--streak">' +
+          '<div class="potok-stats-card__icon">🔥</div>' +
+          '<div class="potok-stats-card__value">' + streak.current + '</div>' +
+          '<div class="potok-stats-card__label">Дней подряд</div>' +
+          '<div class="potok-stats-card__sub">Лучший сирек: ' + streak.best + '</div>' +
+        '</div>' +
+      '</div>' +
+
+      // Heatmap активности
+      '<div class="potok-heatmap-panel">' +
+        '<h3>📅 Активность за 6 месяцев</h3>' +
+        buildHeatmapHTML() +
+      '</div>' +
+
+      // Освоение разделов
+      '<div class="potok-sections-panel">' +
+        '<h3>🗺️ Освоение разделов</h3>' +
+        buildSectionsHTML() +
       '</div>' +
 
       // История XP
