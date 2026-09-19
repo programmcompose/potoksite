@@ -30,12 +30,12 @@
 </div>
 
 <div class="home-chats">
-  <a class="home-chat" href="https://t.me/+CnxT3MTe6sswMzcy">
+  <a class="home-chat" href="https://t.me/c/3736036158/4">
     <i data-lucide="send" class="home-chat__icon"></i>
     <strong>Домашние задания</strong>
     <span>Сдавать ДЗ в .mp3</span>
   </a>
-  <a class="home-chat" href="https://t.me/+VwqTOwj1HdVkZWEy">
+  <a class="home-chat" href="https://t.me/c/2819427050/3">
     <i data-lucide="folder" class="home-chat__icon"></i>
     <strong>Материалы потока</strong>
     <span>Сэмплы, плагины, файлы</span>
