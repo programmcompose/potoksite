@@ -3,73 +3,72 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>EQ-тренажёр — Курс по музыкальному продакшену</title>
+<title>EQ-тренажёр — улучшенная версия</title>
 <script src="https://unpkg.com/lucide@latest"></script>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="../../assets/javascripts/tg-app.js"></script>
+<script src="../../assets/javascripts/personalization.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700;900&display=swap');
 
 :root,
 [data-theme="dark"] {
   --bg-main: #0B1220;
-  --bg-sidebar: #0F172A;
   --bg-card: #111827;
   --bg-hover: #1F2937;
   --text-main: #E5E7EB;
   --text-secondary: #9CA3AF;
   --text-heading: #F9FAFB;
-  --accent-orange: #F2994A;
-  --accent-orange-hover: #FFB26B;
+  --accent: #F2994A;
+  --accent-hover: #FFB26B;
   --accent-blue: #3B82F6;
-  --border-subtle: rgba(255, 255, 255, 0.06);
-  --border-default: rgba(255, 255, 255, 0.1);
-  --glow-orange: rgba(242, 153, 74, 0.28);
-  --glow-orange-soft: rgba(242, 153, 74, 0.10);
+  --border: rgba(255,255,255,0.1);
+  --border-subtle: rgba(255,255,255,0.06);
+  --glow: rgba(242,153,74,0.28);
+  --glow-soft: rgba(242,153,74,0.10);
   --success: #66bb6a;
   --danger: #ef5350;
   --warning: #ffd740;
   --before: #F2994A;
   --after: #66bb6a;
   --radius: 14px;
-  --shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  --shadow: 0 12px 40px rgba(0,0,0,0.35);
 }
 
 [data-theme="light"] {
   --bg-main: #FDFBDF;
-  --bg-sidebar: #f5f2d0;
   --bg-card: #efeacd;
   --bg-hover: #e5e0c0;
   --text-main: #282828;
   --text-secondary: #5a5a5a;
   --text-heading: #1a1a1a;
-  --accent-orange: #E08A3E;
-  --accent-orange-hover: #F2994A;
+  --accent: #E08A3E;
+  --accent-hover: #F2994A;
   --accent-blue: #2563EB;
-  --border-subtle: rgba(0, 0, 0, 0.08);
-  --border-default: rgba(0, 0, 0, 0.12);
-  --glow-orange: rgba(224, 138, 62, 0.22);
-  --glow-orange-soft: rgba(224, 138, 62, 0.08);
+  --border: rgba(0,0,0,0.12);
+  --border-subtle: rgba(0,0,0,0.08);
+  --glow: rgba(224,138,62,0.22);
+  --glow-soft: rgba(224,138,62,0.08);
   --success: #2e7d32;
   --danger: #c62828;
   --warning: #f9a825;
   --before: #E08A3E;
   --after: #2e7d32;
-  --shadow: 0 8px 28px rgba(0, 0, 0, 0.08);
+  --shadow: 0 8px 28px rgba(0,0,0,0.08);
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body {
   font-family: 'Unbounded', system-ui, sans-serif;
-  background:
-    radial-gradient(ellipse at 50% -10%, var(--glow-orange-soft) 0%, transparent 55%),
-    var(--bg-main);
+  background: radial-gradient(ellipse at 50% -10%, var(--glow-soft) 0%, transparent 55%), var(--bg-main);
   color: var(--text-main);
   min-height: 100vh;
-  padding: 20px 16px 48px;
-  transition: background 0.3s ease, color 0.3s ease;
+  padding: 20px 16px 56px;
+  transition: background 0.3s, color 0.3s;
 }
 
-.page { max-width: 760px; margin: 0 auto; }
+.page { max-width: 820px; margin: 0 auto; }
 
 .topbar {
   display: flex;
@@ -82,663 +81,755 @@ body {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--accent-orange);
+  color: var(--accent);
   text-decoration: none;
   font-size: 0.8em;
 }
-.back-link:hover { color: var(--accent-orange-hover); }
-.back-link i { width: 16px; height: 16px; stroke: var(--accent-orange); }
+.back-link:hover { color: var(--accent-hover); }
+.back-link i { width: 16px; height: 16px; }
 
 .theme-toggle {
-  width: 40px;
-  height: 40px;
+  width: 40px; height: 40px;
   border-radius: 50%;
-  border: 1px solid var(--border-default);
+  border: 1px solid var(--border);
   background: var(--bg-card);
   color: var(--text-main);
   cursor: pointer;
   display: grid;
   place-items: center;
 }
-.theme-toggle:hover { border-color: var(--accent-orange); }
-.theme-toggle i { width: 18px; height: 18px; stroke: var(--accent-orange); }
-[data-theme="dark"] .icon-sun { display: none; }
-[data-theme="light"] .icon-moon { display: none; }
+.theme-toggle:hover { background: var(--bg-hover); }
+.theme-toggle i { width: 18px; height: 18px; }
 
-header { margin-bottom: 20px; }
-header h1 {
-  font-size: 1.55em;
-  font-weight: 800;
+h1 {
+  font-size: 1.55rem;
+  font-weight: 700;
   color: var(--text-heading);
+  margin-bottom: 6px;
   display: flex;
   align-items: center;
   gap: 10px;
-  letter-spacing: -0.02em;
 }
-header h1 i { width: 28px; height: 28px; stroke: var(--accent-orange); }
-header p {
-  margin-top: 8px;
-  font-size: 0.86em;
+h1 i { width: 28px; height: 28px; color: var(--accent); }
+
+.subtitle {
+  font-size: 0.82rem;
   color: var(--text-secondary);
-  line-height: 1.55;
-  max-width: 560px;
+  line-height: 1.45;
+  margin-bottom: 20px;
+  max-width: 640px;
 }
 
-.score-row {
+/* Stats */
+.stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 16px;
 }
-.score-chip {
+.stat {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
-  border-radius: 12px;
-  padding: 10px 8px;
+  border-radius: var(--radius);
+  padding: 12px 10px;
   text-align: center;
 }
-.score-chip b {
-  display: block;
-  font-size: 1.25em;
-  font-weight: 800;
-  font-variant-numeric: tabular-nums;
+.stat-value {
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  line-height: 1.1;
 }
-.score-chip span {
-  font-size: 0.62em;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
+.stat-label {
+  font-size: 0.65rem;
   color: var(--text-secondary);
+  margin-top: 4px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
-.panel {
+/* Cards */
+.card {
   background: var(--bg-card);
   border: 1px solid var(--border-subtle);
   border-radius: var(--radius);
   padding: 16px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   box-shadow: var(--shadow);
 }
-
-.panel-label {
-  font-size: 0.68em;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+.card-title {
+  font-size: 0.72rem;
   color: var(--text-secondary);
-  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 12px;
   display: flex;
   align-items: center;
   gap: 6px;
 }
-.panel-label i { width: 14px; height: 14px; stroke: var(--accent-orange); }
+.card-title i { width: 14px; height: 14px; }
 
-.level-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
+/* Level / Sound selectors */
+.pills {
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
 }
-.level-btn {
-  text-align: left;
-  background: var(--bg-hover);
-  border: 1px solid var(--border-default);
-  border-radius: 12px;
-  padding: 12px 12px 11px;
-  color: var(--text-main);
-  cursor: pointer;
-  font-family: inherit;
-  transition: 0.15s;
-}
-.level-btn:hover { border-color: var(--accent-orange); }
-.level-btn.active {
-  border-color: var(--accent-orange);
-  background: var(--glow-orange-soft);
-  box-shadow: 0 0 0 1px var(--accent-orange);
-}
-.level-btn strong {
-  display: block;
-  font-size: 0.84em;
-  margin-bottom: 3px;
-}
-.level-btn em {
-  font-style: normal;
-  font-size: 0.68em;
-  color: var(--text-secondary);
-  line-height: 1.35;
-  font-weight: 400;
-}
-
-.sound-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
-}
-.sound-btn {
-  background: var(--bg-hover);
-  border: 1px solid var(--border-default);
-  border-radius: 12px;
-  padding: 12px 6px 10px;
-  color: var(--text-main);
-  cursor: pointer;
-  font-family: inherit;
-  text-align: center;
-  transition: 0.15s;
-}
-.sound-btn:hover { border-color: var(--accent-orange); }
-.sound-btn.active {
-  border-color: var(--accent-orange);
-  background: var(--glow-orange-soft);
-}
-.sound-btn i {
-  width: 20px;
-  height: 20px;
-  stroke: var(--accent-orange);
-  display: block;
-  margin: 0 auto 6px;
-}
-.sound-btn strong { display: block; font-size: 0.72em; }
-.sound-btn span {
-  display: block;
-  margin-top: 2px;
-  font-size: 0.6em;
-  color: var(--text-secondary);
-  line-height: 1.3;
-}
-
-.upload-row {
-  display: none;
-  margin-top: 10px;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 10px;
-  background: var(--bg-hover);
-  border-radius: 10px;
-  font-size: 0.78em;
-}
-.upload-row.visible { display: flex; }
-.upload-row b {
+.pill {
   flex: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-weight: 500;
-}
-.ghost-btn {
-  background: transparent;
-  border: 1px solid var(--border-default);
-  color: var(--text-main);
-  border-radius: 8px;
-  padding: 4px 8px;
+  min-width: 110px;
+  background: var(--bg-hover);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 12px 10px;
   cursor: pointer;
+  text-align: left;
+  color: var(--text-main);
+  transition: all 0.15s;
   font-family: inherit;
-  font-size: 0.75em;
 }
-.ghost-btn:hover { border-color: var(--danger); color: var(--danger); }
+.pill:hover { border-color: var(--border); }
+.pill.active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--bg-card));
+  box-shadow: 0 0 0 1px var(--glow);
+}
+.pill-title { font-size: 0.88rem; font-weight: 600; margin-bottom: 3px; }
+.pill-desc { font-size: 0.68rem; color: var(--text-secondary); line-height: 1.3; }
 
-.player {
-  padding: 20px 16px 16px;
+.sound-pills { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+@media (max-width: 640px) {
+  .sound-pills { grid-template-columns: repeat(3, 1fr); }
+  .stats { grid-template-columns: repeat(2, 1fr); }
 }
+.sound-pill {
+  background: var(--bg-hover);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 12px 8px;
+  cursor: pointer;
+  text-align: center;
+  color: var(--text-main);
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.sound-pill:hover { border-color: var(--border); }
+.sound-pill.active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--bg-card));
+}
+.sound-pill i { width: 20px; height: 20px; margin-bottom: 4px; display: block; margin-left: auto; margin-right: auto; }
+.sound-pill-title { font-size: 0.78rem; font-weight: 600; }
+.sound-pill-desc { font-size: 0.62rem; color: var(--text-secondary); margin-top: 2px; }
+
+/* A/B controls */
 .ab-row {
   display: grid;
   grid-template-columns: 1fr auto 1fr;
-  gap: 12px;
-  align-items: stretch;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
 }
 .ab-btn {
-  min-height: 92px;
-  border-radius: 16px;
-  border: 1px solid var(--border-default);
   background: var(--bg-hover);
-  color: var(--text-main);
+  border: 2px solid transparent;
+  border-radius: 12px;
+  padding: 16px 12px;
   cursor: pointer;
+  text-align: center;
+  color: var(--text-main);
   font-family: inherit;
-  padding: 14px 12px;
-  transition: 0.15s;
+  transition: all 0.15s;
 }
-.ab-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-.ab-btn kbd {
-  display: inline-block;
-  margin-top: 8px;
-  font-size: 0.64em;
-  opacity: 0.5;
-  font-family: inherit;
-}
-.ab-btn strong {
-  display: block;
-  font-size: 1.35em;
-  letter-spacing: 0.04em;
-}
-.ab-btn span {
-  display: block;
-  margin-top: 4px;
-  font-size: 0.72em;
-  color: var(--text-secondary);
-}
-.ab-btn.before:hover:not(:disabled),
-.ab-btn.before.active {
+.ab-btn:hover { border-color: var(--border); }
+.ab-btn.active-before {
   border-color: var(--before);
-  background: color-mix(in srgb, var(--before) 16%, var(--bg-hover));
-  box-shadow: 0 0 0 1px var(--before);
+  background: color-mix(in srgb, var(--before) 15%, var(--bg-card));
 }
-.ab-btn.after:hover:not(:disabled),
-.ab-btn.after.active {
+.ab-btn.active-after {
   border-color: var(--after);
-  background: color-mix(in srgb, var(--after) 16%, var(--bg-hover));
-  box-shadow: 0 0 0 1px var(--after);
+  background: color-mix(in srgb, var(--after) 15%, var(--bg-card));
+}
+.ab-btn-label { font-size: 1.1rem; font-weight: 700; }
+.ab-btn-sub { font-size: 0.68rem; color: var(--text-secondary); margin-top: 2px; }
+.ab-btn-key {
+  font-size: 0.62rem;
+  color: var(--text-secondary);
+  margin-top: 4px;
+  opacity: 0.8;
 }
 .ab-swap {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-secondary);
   display: grid;
   place-items: center;
-  color: var(--text-secondary);
+  cursor: pointer;
 }
-.ab-swap i { width: 20px; height: 20px; stroke: var(--accent-orange); }
+.ab-swap i { width: 16px; height: 16px; }
 
-.player-meta {
+.status-row {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-  margin-top: 14px;
+  margin-bottom: 12px;
   flex-wrap: wrap;
 }
-.status {
+.status-dot {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.78em;
+  font-size: 0.78rem;
   color: var(--text-secondary);
 }
-.status-dot {
-  width: 8px;
-  height: 8px;
+.status-dot::before {
+  content: '';
+  width: 8px; height: 8px;
   border-radius: 50%;
   background: var(--text-secondary);
 }
-.status-dot.playing { background: var(--success); box-shadow: 0 0 8px var(--success); }
-.status-dot.ready { background: var(--accent-orange); }
+.status-dot.playing-before::before { background: var(--before); box-shadow: 0 0 8px var(--before); }
+.status-dot.playing-after::before { background: var(--after); box-shadow: 0 0 8px var(--after); }
 
-.vol {
+.vol-wrap {
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 0.75em;
+  font-size: 0.75rem;
   color: var(--text-secondary);
 }
-.vol i { width: 16px; height: 16px; stroke: var(--accent-orange); }
-.vol input[type="range"] {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 120px;
-  height: 4px;
-  border-radius: 2px;
-  background: var(--bg-hover);
-  outline: none;
-}
-.vol input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 14px;
-  height: 14px;
-  border-radius: 50%;
-  background: var(--accent-orange);
-  cursor: pointer;
+.vol-wrap input[type=range] {
+  width: 90px;
+  accent-color: var(--accent);
 }
 
-.actions {
+.controls {
   display: flex;
-  gap: 8px;
-  margin-top: 14px;
   flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 4px;
 }
 .btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  border: none;
+  padding: 10px 16px;
   border-radius: 10px;
-  padding: 10px 14px;
+  border: none;
   font-family: inherit;
-  font-size: 0.8em;
+  font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
+  transition: all 0.15s;
 }
-.btn i { width: 16px; height: 16px; stroke: currentColor; }
-.btn-primary { background: var(--accent-orange); color: #111; }
-.btn-primary:hover { background: var(--accent-orange-hover); }
-.btn-ghost-fill {
+.btn i { width: 16px; height: 16px; }
+.btn-primary {
+  background: var(--accent);
+  color: #1a1a1a;
+}
+.btn-primary:hover { background: var(--accent-hover); }
+.btn-secondary {
   background: var(--bg-hover);
   color: var(--text-main);
-  border: 1px solid var(--border-default);
+  border: 1px solid var(--border);
 }
-.btn-ghost-fill.active {
-  border-color: var(--accent-orange);
-  color: var(--accent-orange);
+.btn-secondary:hover { background: var(--bg-card); }
+.btn-secondary:disabled,
+.btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
 }
-.btn-success { background: var(--success); color: #111; }
-.btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
-.wave-wrap {
-  display: none;
-  margin-top: 12px;
-  background: #0a1020;
-  border-radius: 10px;
-  overflow: hidden;
-  cursor: pointer;
-}
-[data-theme="light"] .wave-wrap { background: #1a1a14; }
-.wave-wrap.visible { display: block; }
-#waveCanvas { display: block; width: 100%; height: 64px; }
-
-.guess { display: none; }
-.guess.visible { display: block; }
+/* Guess area */
+.guess-section { display: none; }
+.guess-section.visible { display: block; }
 
 .band-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
   gap: 8px;
+  margin-bottom: 14px;
 }
-
 .band-btn {
   background: var(--bg-hover);
-  border: 1px solid var(--border-default);
+  border: 2px solid transparent;
   border-radius: 12px;
   padding: 12px 10px;
-  color: var(--text-main);
   cursor: pointer;
-  font-family: inherit;
   text-align: left;
-  transition: 0.15s;
+  color: var(--text-main);
+  font-family: inherit;
+  transition: all 0.15s;
 }
-.band-btn:hover { border-color: var(--accent-orange); }
-.band-btn.active {
-  border-color: var(--accent-orange);
-  background: var(--glow-orange-soft);
-  box-shadow: 0 0 0 1px var(--accent-orange);
+.band-btn:hover { border-color: var(--border); }
+.band-btn.selected {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, var(--bg-card));
 }
-.band-btn strong { display: block; font-size: 0.82em; }
-.band-btn span {
-  display: block;
-  margin-top: 3px;
-  font-size: 0.66em;
-  color: var(--text-secondary);
-}
+.band-btn-title { font-size: 0.85rem; font-weight: 600; }
+.band-btn-desc { font-size: 0.65rem; color: var(--text-secondary); margin-top: 2px; }
 
 .gain-row {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 4px;
+  margin-bottom: 14px;
 }
 .gain-btn {
   flex: 1;
-  min-width: 72px;
+  min-width: 70px;
   background: var(--bg-hover);
-  border: 1px solid var(--border-default);
+  border: 2px solid transparent;
   border-radius: 10px;
   padding: 10px 8px;
-  color: var(--text-main);
   cursor: pointer;
   font-family: inherit;
-  font-weight: 700;
-  font-size: 0.85em;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-main);
+  transition: all 0.15s;
 }
-.gain-btn.cut { color: #ef9a9a; }
-.gain-btn.boost { color: #a5d6a7; }
-.gain-btn.active.cut {
-  border-color: var(--danger);
-  background: rgba(239, 83, 80, 0.12);
+.gain-btn:hover { border-color: var(--border); }
+.gain-btn.selected {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, var(--bg-card));
 }
-.gain-btn.active.boost {
-  border-color: var(--success);
-  background: rgba(102, 187, 106, 0.12);
-}
+.gain-btn.neg { color: #ef9a9a; }
+.gain-btn.pos { color: #a5d6a7; }
+[data-theme="light"] .gain-btn.neg { color: #c62828; }
+[data-theme="light"] .gain-btn.pos { color: #2e7d32; }
 
-.result {
+/* Result / feedback */
+.result-box {
   display: none;
-  margin-top: 12px;
-  border-radius: 12px;
+  margin-top: 14px;
   padding: 14px;
-  line-height: 1.55;
-  font-size: 0.86em;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg-hover);
 }
-.result.visible { display: block; }
-.result.ok { background: rgba(102, 187, 106, 0.12); border: 1px solid var(--success); }
-.result.bad { background: rgba(239, 83, 80, 0.12); border: 1px solid var(--danger); }
+.result-box.visible { display: block; }
+.result-box.correct { border-color: var(--success); background: color-mix(in srgb, var(--success) 12%, var(--bg-card)); }
+.result-box.wrong { border-color: var(--danger); background: color-mix(in srgb, var(--danger) 10%, var(--bg-card)); }
 
-.eq-panel { display: none; }
-.eq-panel.visible { display: block; }
-.canvas-wrap {
-  background: #0a1020;
+.result-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  margin-bottom: 6px;
+}
+.result-detail {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  margin-bottom: 10px;
+}
+
+.eq-canvas-wrap {
+  position: relative;
+  height: 140px;
+  margin: 10px 0 12px;
   border-radius: 10px;
   overflow: hidden;
+  background: rgba(0,0,0,0.2);
 }
-[data-theme="light"] .canvas-wrap { background: #1a1a14; }
-#eqCanvas { display: block; width: 100%; height: 160px; }
-.eq-caption {
+[data-theme="light"] .eq-canvas-wrap { background: rgba(0,0,0,0.06); }
+#eqCanvas { width: 100%; height: 100%; display: block; }
+
+.feedback-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   margin-top: 8px;
-  font-size: 0.78em;
-  color: var(--text-secondary);
-  text-align: center;
 }
 
-.howto {
-  font-size: 0.78em;
-  color: var(--text-secondary);
-  line-height: 1.65;
+/* Skill map */
+.skill-map {
+  display: none;
+  margin-top: 8px;
 }
-.howto b { color: var(--text-main); font-weight: 600; }
+.skill-map.visible { display: block; }
+.skill-row {
+  display: grid;
+  grid-template-columns: 110px 1fr 42px;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+  font-size: 0.72rem;
+}
+.skill-bar {
+  height: 8px;
+  background: var(--bg-hover);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.skill-fill {
+  height: 100%;
+  background: var(--accent);
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
 
-@media (max-width: 680px) {
-  .sound-grid { grid-template-columns: repeat(2, 1fr); }
-  .sound-grid .sound-btn:last-child { grid-column: span 2; }
-  .level-grid { grid-template-columns: 1fr; }
-  .band-grid { grid-template-columns: 1fr; }
-  .ab-btn { min-height: 78px; }
-  .ab-btn strong { font-size: 1.1em; }
-  header h1 { font-size: 1.25em; }
+/* Help */
+.help-list {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  line-height: 1.55;
+  padding-left: 18px;
+}
+.help-list li { margin-bottom: 6px; }
+.help-list strong { color: var(--text-main); }
+
+.hotkeys {
+  margin-top: 12px;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+}
+.hotkeys kbd {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: var(--bg-hover);
+  border: 1px solid var(--border);
+  font-size: 0.68rem;
+  font-family: inherit;
+  color: var(--text-main);
+}
+
+/* Waveform for long files */
+.wave-wrap {
+  display: none;
+  margin-bottom: 12px;
+  height: 56px;
+  border-radius: 8px;
+  overflow: hidden;
+  background: rgba(0,0,0,0.15);
+}
+.wave-wrap.visible { display: block; }
+#waveCanvas { width: 100%; height: 100%; display: block; }
+
+/* Custom file */
+.file-input-wrap { display: none; margin-top: 10px; }
+.file-input-wrap.visible { display: block; }
+.file-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--bg-hover);
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+}
+.file-label:hover { border-color: var(--accent); color: var(--text-main); }
+.file-label input { display: none; }
+.file-name { font-size: 0.75rem; color: var(--accent); margin-top: 6px; }
+
+.hidden { display: none !important; }
+
+.toast {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  color: var(--text-main);
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-size: 0.8rem;
+  box-shadow: var(--shadow);
+  opacity: 0;
+  transition: all 0.25s;
+  z-index: 100;
+  pointer-events: none;
+}
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 </style>
 </head>
 <body>
 <div class="page">
   <div class="topbar">
-    <a href="../index.html" class="back-link"><i data-lucide="arrow-left"></i> К инструментам</a>
-    <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">
-      <i data-lucide="moon" class="icon-moon"></i>
-      <i data-lucide="sun" class="icon-sun"></i>
+    <a class="back-link" href="../index.html">
+      <i data-lucide="arrow-left"></i> К инструментам
+    </a>
+    <button class="theme-toggle" id="themeToggle" title="Тема">
+      <i data-lucide="sun"></i>
     </button>
   </div>
 
-  <header>
-    <h1><i data-lucide="sliders-horizontal"></i> EQ-тренажёр</h1>
-    <p>Слушайте один и тот же звук до обработки и после. Угадайте, какие частоты стали громче или тише — и на сколько децибел.</p>
-  </header>
+  <h1><i data-lucide="sliders-horizontal"></i> EQ-тренажёр</h1>
+  <p class="subtitle">
+    Слушайте один и тот же звук до обработки и после.
+    Угадайте, какие частоты стали громче или тише — и на сколько децибел.
+    Горячие клавиши ускоряют тренировку.
+  </p>
 
-  <div class="score-row">
-    <div class="score-chip"><b id="scoreTotal">0</b><span>Раундов</span></div>
-    <div class="score-chip"><b id="scoreCorrect" style="color:var(--success)">0</b><span>Верно</span></div>
-    <div class="score-chip"><b id="scoreStreak" style="color:var(--accent-orange)">0</b><span>Серия</span></div>
-    <div class="score-chip"><b id="scorePercent">0%</b><span>Точность</span></div>
+  <!-- Stats -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-value" id="statRounds">0</div>
+      <div class="stat-label">Раундов</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="statCorrect">0</div>
+      <div class="stat-label">Верно</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="statStreak">0</div>
+      <div class="stat-label">Серия</div>
+    </div>
+    <div class="stat">
+      <div class="stat-value" id="statAcc">0%</div>
+      <div class="stat-label">Точность</div>
+    </div>
   </div>
 
-  <div class="panel">
-    <div class="panel-label"><i data-lucide="gauge"></i> Сложность</div>
-    <div class="level-grid">
-      <button class="level-btn active" data-level="easy">
-        <strong>Лёгкий</strong>
-        <em>Низ / середина / верх<br>±6 и ±9 дБ</em>
+  <!-- Level -->
+  <div class="card">
+    <div class="card-title"><i data-lucide="gauge"></i> Сложность</div>
+    <div class="pills" id="levelPills">
+      <button class="pill active" data-level="easy">
+        <div class="pill-title">Лёгкий</div>
+        <div class="pill-desc">Низ / середина / верх<br>только ±9 дБ</div>
       </button>
-      <button class="level-btn" data-level="medium">
-        <strong>Средний</strong>
-        <em>Пять диапазонов<br>±3 и ±6 дБ</em>
+      <button class="pill" data-level="medium">
+        <div class="pill-title">Средний</div>
+        <div class="pill-desc">Пять диапазонов<br>только ±6 дБ</div>
       </button>
-      <button class="level-btn" data-level="hard">
-        <strong>Сложный</strong>
-        <em>Шесть частот<br>±2, ±4 и ±6 дБ</em>
+      <button class="pill" data-level="hard">
+        <div class="pill-title">Сложный</div>
+        <div class="pill-desc">Шесть частот<br>только ±3 дБ</div>
       </button>
     </div>
   </div>
 
-  <div class="panel">
-    <div class="panel-label"><i data-lucide="music"></i> Что слушаем</div>
-    <div class="sound-grid">
-      <button class="sound-btn active" data-sound="drums">
+  <!-- Sound source -->
+  <div class="card">
+    <div class="card-title"><i data-lucide="music"></i> Что слушаем</div>
+    <div class="sound-pills" id="soundPills">
+      <button class="sound-pill active" data-sound="drums">
         <i data-lucide="drum"></i>
-        <strong>Барабаны</strong>
-        <span>весь спектр</span>
+        <div class="sound-pill-title">Барабаны</div>
+        <div class="sound-pill-desc">весь спектр</div>
       </button>
-      <button class="sound-btn" data-sound="mix">
+      <button class="sound-pill" data-sound="mix">
         <i data-lucide="layers"></i>
-        <strong>Микс</strong>
-        <span>бас и грув</span>
+        <div class="sound-pill-title">Микс</div>
+        <div class="sound-pill-desc">бас и грув</div>
       </button>
-      <button class="sound-btn" data-sound="keys">
+      <button class="sound-pill" data-sound="keys">
         <i data-lucide="piano"></i>
-        <strong>Пианино</strong>
-        <span>середина и верх</span>
+        <div class="sound-pill-title">Пианино</div>
+        <div class="sound-pill-desc">середина и верх</div>
       </button>
-      <button class="sound-btn" data-sound="noise">
-        <i data-lucide="audio-lines"></i>
-        <strong>Шум</strong>
-        <span>все частоты</span>
+      <button class="sound-pill" data-sound="noise">
+        <i data-lucide="audio-waveform"></i>
+        <div class="sound-pill-title">Шум</div>
+        <div class="sound-pill-desc">все частоты</div>
       </button>
-      <button class="sound-btn" data-sound="upload" id="btnUpload">
+      <button class="sound-pill" data-sound="custom">
         <i data-lucide="upload"></i>
-        <strong>Свой трек</strong>
-        <span>MP3, WAV, OGG</span>
+        <div class="sound-pill-title">Свой трек</div>
+        <div class="sound-pill-desc">MP3, WAV, OGG</div>
       </button>
     </div>
-    <input type="file" id="fileInput" accept="audio/*,.mp3,.ogg,.wav,.flac,.m4a,.webm" hidden>
-    <div class="upload-row" id="uploadRow">
-      <i data-lucide="file-audio" style="width:16px;height:16px;stroke:var(--accent-orange)"></i>
-      <b id="uploadName"></b>
-      <button class="ghost-btn" id="btnRemoveFile">Убрать</button>
+    <div class="file-input-wrap" id="fileWrap">
+      <label class="file-label">
+        <i data-lucide="file-audio"></i>
+        Выбрать файл
+        <input type="file" id="fileInput" accept="audio/*,.mp3,.wav,.ogg,.flac">
+      </label>
+      <div class="file-name" id="fileName"></div>
     </div>
   </div>
 
-  <div class="panel player">
+  <!-- Player -->
+  <div class="card">
     <div class="ab-row">
-      <button class="ab-btn before" id="btnBefore" disabled>
-        <strong>ДО</strong>
-        <span>без обработки</span>
-        <kbd>клавиша Z</kbd>
+      <button class="ab-btn" id="btnBefore">
+        <div class="ab-btn-label">ДО</div>
+        <div class="ab-btn-sub">без обработки</div>
+        <div class="ab-btn-key">клавиша Z</div>
       </button>
-      <div class="ab-swap"><i data-lucide="arrow-left-right"></i></div>
-      <button class="ab-btn after" id="btnAfter" disabled>
-        <strong>ПОСЛЕ</strong>
-        <span>с эквалайзером</span>
-        <kbd>клавиша X</kbd>
+      <button class="ab-swap" id="btnSwap" title="Переключить">
+        <i data-lucide="arrow-left-right"></i>
+      </button>
+      <button class="ab-btn" id="btnAfter">
+        <div class="ab-btn-label">ПОСЛЕ</div>
+        <div class="ab-btn-sub">с эквалайзером</div>
+        <div class="ab-btn-key">клавиша X</div>
       </button>
     </div>
 
-    <div class="player-meta">
-      <div class="status">
-        <div class="status-dot" id="statusDot"></div>
-        <span id="statusText">Выберите сложность и нажмите «Начать раунд»</span>
+    <div class="status-row">
+      <div class="status-dot" id="statusDot">Выберите сложность и нажмите «Начать раунд»</div>
+      <div class="vol-wrap">
+        <i data-lucide="volume-2" style="width:16px;height:16px"></i>
+        <input type="range" id="volSlider" min="0" max="100" value="70">
+        <span id="volLabel">70%</span>
       </div>
-      <label class="vol">
-        <i data-lucide="volume-2"></i>
-        <input type="range" id="volumeSlider" min="0" max="100" value="70">
-        <span id="volumeValue">70%</span>
-      </label>
     </div>
 
     <div class="wave-wrap" id="waveWrap">
-      <canvas id="waveCanvas" height="64"></canvas>
+      <canvas id="waveCanvas"></canvas>
     </div>
 
-    <div class="actions">
-      <button class="btn btn-primary" id="btnNewRound"><i data-lucide="play"></i> Начать раунд</button>
-      <button class="btn btn-ghost-fill" id="btnLoop" disabled><i data-lucide="repeat"></i> Авто ДО ⇄ ПОСЛЕ</button>
-      <button class="btn btn-ghost-fill" id="btnStop" disabled><i data-lucide="circle-stop"></i> Стоп</button>
+    <div class="controls">
+      <button class="btn btn-primary" id="btnNewRound">
+        <i data-lucide="play"></i> Начать раунд
+      </button>
+      <button class="btn btn-secondary" id="btnAutoAB" disabled>
+        <i data-lucide="repeat"></i> Авто ДО ⇄ ПОСЛЕ
+      </button>
+      <button class="btn btn-secondary" id="btnStop" disabled>
+        <i data-lucide="square"></i> Стоп
+      </button>
     </div>
   </div>
 
-  <div class="panel guess" id="guessSection">
-    <div class="panel-label"><i data-lucide="ear"></i> Что изменилось?</div>
+  <!-- Guess -->
+  <div class="card guess-section" id="guessSection">
+    <div class="card-title"><i data-lucide="help-circle"></i> Что изменилось?</div>
     <div class="band-grid" id="bandGrid"></div>
 
-    <div class="panel-label" style="margin-top:14px;"><i data-lucide="volume-2"></i> Насколько?</div>
+    <div class="card-title"><i data-lucide="volume-2"></i> Насколько?</div>
     <div class="gain-row" id="gainRow"></div>
 
-    <div class="actions">
-      <button class="btn btn-success" id="btnSubmit" disabled><i data-lucide="check"></i> Проверить</button>
+    <button class="btn btn-primary" id="btnCheck" disabled>
+      <i data-lucide="check"></i> Проверить
+    </button>
+
+    <!-- Result feedback -->
+    <div class="result-box" id="resultBox">
+      <div class="result-title" id="resultTitle"></div>
+      <div class="result-detail" id="resultDetail"></div>
+      <div class="eq-canvas-wrap">
+        <canvas id="eqCanvas"></canvas>
+      </div>
+      <div class="feedback-actions">
+        <button class="btn btn-secondary" id="btnListenError">
+          <i data-lucide="ear"></i> Послушать ошибку
+        </button>
+        <button class="btn btn-secondary" id="btnListenCorrect">
+          <i data-lucide="check-circle"></i> Правильный вариант
+        </button>
+        <button class="btn btn-primary" id="btnNextRound">
+          <i data-lucide="refresh-cw"></i> Новый раунд
+        </button>
+      </div>
     </div>
-    <div class="result" id="resultBox"></div>
   </div>
 
-  <div class="panel eq-panel" id="eqPanel">
-    <div class="panel-label"><i data-lucide="audio-waveform"></i> Как звучал EQ</div>
-    <div class="canvas-wrap">
-      <canvas id="eqCanvas" height="160"></canvas>
+  <!-- Skill map -->
+  <div class="card">
+    <div class="card-title"><i data-lucide="bar-chart-2"></i> Карта навыков (локально)</div>
+    <div class="skill-map visible" id="skillMap">
+      <div class="skill-row"><span>Низ</span><div class="skill-bar"><div class="skill-fill" id="skillLow" style="width:0%"></div></div><span id="skillLowPct">—</span></div>
+      <div class="skill-row"><span>Середина</span><div class="skill-bar"><div class="skill-fill" id="skillMid" style="width:0%"></div></div><span id="skillMidPct">—</span></div>
+      <div class="skill-row"><span>Верх</span><div class="skill-bar"><div class="skill-fill" id="skillHigh" style="width:0%"></div></div><span id="skillHighPct">—</span></div>
     </div>
-    <div class="eq-caption" id="eqCaption"></div>
+    <p style="font-size:0.68rem;color:var(--text-secondary);margin-top:8px">
+      Статистика считается по зонам. Чем больше раундов — тем точнее картина.
+    </p>
   </div>
 
-  <div class="panel">
-    <div class="panel-label"><i data-lucide="info"></i> Как тренироваться</div>
-    <div class="howto">
-      <p>1. На лёгком уровне слушайте только три зоны: <b>низ</b>, <b>середину</b> и <b>верх</b>.</p>
-      <p>2. <b>ДО</b> — исходный звук. <b>ПОСЛЕ</b> — одна полоса стала громче или тише.</p>
-      <p>3. Переключайте туда-сюда на одном и том же месте трека. Розовый шум прощает ошибки новичкам: изменение слышно сразу.</p>
-      <p>4. После ответа кривая EQ откроется — дослушайте разницу ещё раз, затем возьмите новый раунд.</p>
+  <!-- Help -->
+  <div class="card">
+    <div class="card-title"><i data-lucide="info"></i> Как тренироваться</div>
+    <ol class="help-list">
+      <li>На лёгком уровне слушайте только три зоны: <strong>низ</strong>, <strong>середину</strong> и <strong>верх</strong>.</li>
+      <li><strong>ДО</strong> — исходный звук. <strong>ПОСЛЕ</strong> — одна полоса стала громче или тише.</li>
+      <li>Переключайте туда-сюда на одном и том же месте трека. Розовый шум прощает ошибки новичкам.</li>
+      <li>После ответа кривая EQ откроется — дослушайте разницу ещё раз, затем возьмите новый раунд.</li>
+    </ol>
+    <div class="hotkeys">
+      <span><kbd>Z</kbd> ДО</span>
+      <span><kbd>X</kbd> ПОСЛЕ</span>
+      <span><kbd>Пробел</kbd> Play/Pause</span>
+      <span><kbd>A</kbd> Авто A/B</span>
+      <span><kbd>Enter</kbd> Проверить / Новый раунд</span>
+      <span><kbd>1–6</kbd> Выбор полосы</span>
     </div>
   </div>
 </div>
 
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="../../assets/javascripts/tg-app.js"></script>
-<script src="../../assets/javascripts/personalization.js"></script>
+<div class="toast" id="toast"></div>
+
 <script>
+/**
+ * EQ-тренажёр — улучшенная версия
+ * -------------------------------------------------
+ * Готово к вставке на сайт. Самодостаточно (один HTML).
+ * Для доработки нейросетью:
+ *  - Все константы уровней в LEVELS
+ *  - Состояние в state
+ *  - Аудио-движок изолирован в AudioEngine
+ *  - Статистика в localStorage (ключ 'eq-trainer-v2')
+ *  - TODO-маркеры там, где можно расширять
+ */
+
 (function () {
+  'use strict';
+
+  // ========== CONFIG ==========
   const LEVELS = {
     easy: {
       q: 0.75,
       bands: [
-        { id: 'low', label: 'Низ', freq: 120, range: [60, 250], display: '60–250 Гц', hint: 'бочка, бас, гул' },
-        { id: 'mid', label: 'Середина', freq: 1000, range: [400, 2500], display: '0.4–2.5 кГц', hint: 'тело, голос' },
-        { id: 'high', label: 'Верх', freq: 6500, range: [4000, 12000], display: '4–12 кГц', hint: 'тарелки, воздух' }
+        { id: 'low',  label: 'Низ',       freq: 120,  range: [60, 250],    display: '60–250 Гц',   hint: 'бочка, бас, гул',   zone: 'low' },
+        { id: 'mid',  label: 'Середина',  freq: 1000, range: [400, 2500],  display: '0.4–2.5 кГц', hint: 'тело, голос',       zone: 'mid' },
+        { id: 'high', label: 'Верх',      freq: 6500, range: [4000, 12000],display: '4–12 кГц',    hint: 'тарелки, воздух',   zone: 'high' }
       ],
-      gains: [-9, -6, 6, 9]
+      gains: [-9, 9]   // только ±9 дБ
     },
     medium: {
       q: 1.15,
       bands: [
-        { id: 'bass', label: 'Бас', freq: 80, range: [40, 160], display: '40–160 Гц', hint: 'фундамент' },
-        { id: 'lowmid', label: 'Низкая середина', freq: 350, range: [200, 500], display: '200–500 Гц', hint: 'тепло / муть' },
-        { id: 'mid', label: 'Середина', freq: 1000, range: [600, 2000], display: '0.6–2 кГц', hint: 'присутствует' },
-        { id: 'highmid', label: 'Высокая середина', freq: 3500, range: [2500, 5000], display: '2.5–5 кГц', hint: 'атака, речь' },
-        { id: 'air', label: 'Верх', freq: 9000, range: [7000, 14000], display: '7–14 кГц', hint: 'блеск' }
+        { id: 'bass',    label: 'Бас',             freq: 80,   range: [40, 160],    display: '40–160 Гц',  hint: 'фундамент',     zone: 'low' },
+        { id: 'lowmid',  label: 'Низкая середина', freq: 350,  range: [200, 500],   display: '200–500 Гц', hint: 'тепло / муть',  zone: 'mid' },
+        { id: 'mid',     label: 'Середина',        freq: 1000, range: [600, 2000],  display: '0.6–2 кГц',  hint: 'присутствует',  zone: 'mid' },
+        { id: 'highmid', label: 'Высокая середина',freq: 3500, range: [2500, 5000], display: '2.5–5 кГц',  hint: 'атака, речь',   zone: 'high' },
+        { id: 'air',     label: 'Верх',            freq: 9000, range: [7000, 14000],display: '7–14 кГц',   hint: 'блеск',         zone: 'high' }
       ],
-      gains: [-6, -3, 3, 6]
+      gains: [-6, 6]   // только ±6 дБ
     },
     hard: {
       q: 1.85,
       bands: [
-        { id: 'f60', label: '60 Гц', freq: 60, range: [40, 90], display: '60 Гц', hint: 'саб' },
-        { id: 'f200', label: '200 Гц', freq: 200, range: [140, 280], display: '200 Гц', hint: 'тело баса' },
-        { id: 'f500', label: '500 Гц', freq: 500, range: [350, 700], display: '500 Гц', hint: 'коробка' },
-        { id: 'f1500', label: '1.5 кГц', freq: 1500, range: [1100, 2000], display: '1.5 кГц', hint: 'носовость' },
-        { id: 'f4000', label: '4 кГц', freq: 4000, range: [3000, 5500], display: '4 кГц', hint: 'атака' },
-        { id: 'f10000', label: '10 кГц', freq: 10000, range: [8000, 14000], display: '10 кГц', hint: 'воздух' }
+        { id: 'f60',    label: '60 Гц',   freq: 60,    range: [40, 90],     display: '60 Гц',   hint: 'саб',        zone: 'low' },
+        { id: 'f200',   label: '200 Гц',  freq: 200,   range: [140, 280],   display: '200 Гц',  hint: 'тело баса',  zone: 'low' },
+        { id: 'f500',   label: '500 Гц',  freq: 500,   range: [350, 700],   display: '500 Гц',  hint: 'коробка',    zone: 'mid' },
+        { id: 'f1500',  label: '1.5 кГц', freq: 1500,  range: [1100, 2000], display: '1.5 кГц', hint: 'носовость',  zone: 'mid' },
+        { id: 'f4000',  label: '4 кГц',   freq: 4000,  range: [3000, 5500], display: '4 кГц',   hint: 'атака',      zone: 'high' },
+        { id: 'f10000', label: '10 кГц',  freq: 10000, range: [8000, 14000],display: '10 кГц',  hint: 'воздух',     zone: 'high' }
       ],
-      gains: [-6, -4, -2, 2, 4, 6]
+      gains: [-3, 3]   // только ±3 дБ
     }
   };
 
-  const SAMPLE_FILES = {
-    mix: 'samples/mix-loop.ogg',
-    keys: 'piano.ogg',
-    guitar: 'guitar.ogg',
-    bass: 'bass.ogg'
-  };
+  const STORAGE_KEY = 'eq-trainer-v2';
+  const LOOP_LEN = 4.5; // секунд зацикленного фрагмента
 
+  // ========== STATE ==========
   const state = {
     level: 'easy',
     sound: 'drums',
     roundActive: false,
     revealed: false,
-    band: null,
-    db: 0,
-    guessBand: '',
+    band: null,       // правильная полоса (object)
+    db: 0,            // правильный gain
+    guessBand: null,  // id выбранной полосы
     guessDb: null,
     buffer: null,
     customBuffer: null,
@@ -747,103 +838,217 @@ header p {
     playOffset: 0,
     scoreTotal: 0,
     scoreCorrect: 0,
-    scoreStreak: 0
+    scoreStreak: 0,
+    // статистика по зонам: { low: {ok, total}, mid: {...}, high: {...} }
+    zoneStats: { low: { ok: 0, total: 0 }, mid: { ok: 0, total: 0 }, high: { ok: 0, total: 0 } },
+    // для «послушать ошибку»
+    userGuessFilter: null
   };
 
+  // ========== DOM ==========
   const $ = (id) => document.getElementById(id);
   const btnBefore = $('btnBefore');
   const btnAfter = $('btnAfter');
   const btnNewRound = $('btnNewRound');
-  const btnLoop = $('btnLoop');
+  const btnAutoAB = $('btnAutoAB');
   const btnStop = $('btnStop');
-  const btnSubmit = $('btnSubmit');
+  const btnCheck = $('btnCheck');
+  const btnSwap = $('btnSwap');
+  const btnListenError = $('btnListenError');
+  const btnListenCorrect = $('btnListenCorrect');
+  const btnNextRound = $('btnNextRound');
   const guessSection = $('guessSection');
   const resultBox = $('resultBox');
-  const eqPanel = $('eqPanel');
-  const eqCanvas = $('eqCanvas');
-  const eqCtx = eqCanvas.getContext('2d');
-  const waveCanvas = $('waveCanvas');
-  const waveCtx = waveCanvas.getContext('2d');
+  const statusDot = $('statusDot');
+  const volSlider = $('volSlider');
+  const volLabel = $('volLabel');
   const bandGrid = $('bandGrid');
   const gainRow = $('gainRow');
+  const fileWrap = $('fileWrap');
+  const fileInput = $('fileInput');
+  const fileName = $('fileName');
+  const waveWrap = $('waveWrap');
+  const waveCanvas = $('waveCanvas');
+  const eqCanvas = $('eqCanvas');
+  const toastEl = $('toast');
 
+  // ========== AUDIO ENGINE ==========
   let audioCtx = null;
-  let eqFilter = null;
   let masterGain = null;
+  let eqFilter = null;       // BiquadFilterNode (peaking)
   let sourceNode = null;
   let playing = false;
-  let mode = null;
+  let mode = 'before';        // 'before' | 'after' | 'user'
+  let autoAB = false;
+  let autoABTimer = null;
   let playStartTime = 0;
-  let loopTimer = null;
-  const sampleCache = {};
+  let pausedOffset = 0;
+  const waveCtx = waveCanvas.getContext('2d');
+  const eqCtx = eqCanvas.getContext('2d');
 
   function ensureAudio() {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    if (!eqFilter) {
-      eqFilter = audioCtx.createBiquadFilter();
-      eqFilter.type = 'peaking';
-      eqFilter.Q.value = 1;
-      eqFilter.gain.value = 0;
-      masterGain = audioCtx.createGain();
-      masterGain.gain.value = state.volume;
-      eqFilter.connect(masterGain);
-      masterGain.connect(audioCtx.destination);
+    if (audioCtx) return;
+    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = state.volume;
+    masterGain.connect(audioCtx.destination);
+
+    eqFilter = audioCtx.createBiquadFilter();
+    eqFilter.type = 'peaking';
+    eqFilter.frequency.value = 1000;
+    eqFilter.Q.value = 1;
+    eqFilter.gain.value = 0;
+    eqFilter.connect(masterGain);
+  }
+
+  function stopSource() {
+    if (sourceNode) {
+      try { sourceNode.stop(); } catch (_) {}
+      try { sourceNode.disconnect(); } catch (_) {}
+      sourceNode = null;
     }
-    return audioCtx;
+    playing = false;
   }
 
-  function currentLevel() { return LEVELS[state.level]; }
-
-  function formatDb(db) { return (db > 0 ? '+' : '') + db + ' дБ'; }
-
-  function updateScore() {
-    $('scoreTotal').textContent = state.scoreTotal;
-    $('scoreCorrect').textContent = state.scoreCorrect;
-    $('scoreStreak').textContent = state.scoreStreak;
-    const pct = state.scoreTotal ? Math.round(state.scoreCorrect / state.scoreTotal * 100) : 0;
-    $('scorePercent').textContent = pct + '%';
+  function currentOffset() {
+    if (!playing || !audioCtx) return pausedOffset;
+    return pausedOffset + (audioCtx.currentTime - playStartTime);
   }
 
-  function setStatus(text, kind) {
-    $('statusText').textContent = text;
-    $('statusDot').className = 'status-dot' + (kind ? ' ' + kind : '');
+  function loopWindow(buffer) {
+    const dur = buffer.duration;
+    if (dur <= LOOP_LEN + 0.2) {
+      return { start: 0, length: dur };
+    }
+    // берём середину трека — обычно там больше энергии
+    const start = Math.max(0, (dur - LOOP_LEN) * 0.35);
+    return { start, length: LOOP_LEN };
   }
 
-  function renderGuessUI() {
-    const level = currentLevel();
-    bandGrid.className = 'band-grid';
-    bandGrid.innerHTML = '';
-    level.bands.forEach((band) => {
-      const btn = document.createElement('button');
-      btn.className = 'band-btn' + (state.guessBand === band.id ? ' active' : '');
-      btn.type = 'button';
-      btn.innerHTML = '<strong>' + band.label + '</strong><span>' + band.display + ' · ' + band.hint + '</span>';
-      btn.addEventListener('click', () => {
-        state.guessBand = band.id;
-        renderGuessUI();
-        syncSubmit();
-      });
-      bandGrid.appendChild(btn);
-    });
-
-    gainRow.innerHTML = '';
-    level.gains.forEach((db) => {
-      const btn = document.createElement('button');
-      btn.className = 'gain-btn ' + (db < 0 ? 'cut' : 'boost') + (state.guessDb === db ? ' active' : '');
-      btn.type = 'button';
-      btn.textContent = formatDb(db);
-      btn.addEventListener('click', () => {
-        state.guessDb = db;
-        renderGuessUI();
-        syncSubmit();
-      });
-      gainRow.appendChild(btn);
-    });
+  /**
+   * Применяет EQ. ВАЖНО: без auto-makeup / компенсации громкости.
+   * Общая громкость ДО и ПОСЛЕ может отличаться — это намеренно,
+   * чтобы легче слышать, какая полоса изменилась (а не «просто тише/громче в целом»).
+   */
+  function armFilter(gainOverride) {
+    ensureAudio();
+    if (!state.band) return;
+    eqFilter.frequency.value = state.band.freq;
+    eqFilter.Q.value = LEVELS[state.level].q;
+    // Только gain выбранной полосы. masterGain НЕ трогаем — никакого makeup.
+    if (gainOverride !== undefined) {
+      eqFilter.gain.value = gainOverride;
+    } else if (mode === 'after') {
+      eqFilter.gain.value = state.db;
+    } else if (mode === 'user' && state.guessBand && state.guessDb !== null) {
+      const band = LEVELS[state.level].bands.find(b => b.id === state.guessBand);
+      if (band) {
+        eqFilter.frequency.value = band.freq;
+        eqFilter.gain.value = state.guessDb;
+      } else {
+        eqFilter.gain.value = 0;
+      }
+    } else {
+      eqFilter.gain.value = 0;
+    }
   }
 
-  function syncSubmit() {
-    btnSubmit.disabled = !state.roundActive || state.revealed || !state.guessBand || state.guessDb === null;
+  function startPlayback(offset) {
+    if (!state.buffer) return;
+    ensureAudio();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+
+    stopSource();
+    const win = loopWindow(state.buffer);
+    const src = audioCtx.createBufferSource();
+    src.buffer = state.buffer;
+    src.loop = true;
+    src.loopStart = win.start;
+    src.loopEnd = win.start + win.length;
+    src.connect(eqFilter);
+
+    const startAt = Math.min(Math.max(offset ?? win.start, win.start), win.start + win.length - 0.05);
+    src.start(0, startAt);
+    sourceNode = src;
+    playing = true;
+    playStartTime = audioCtx.currentTime;
+    pausedOffset = startAt;
+    btnStop.disabled = false;
+    updateStatusUI();
+  }
+
+  function pausePlayback() {
+    if (!playing) return;
+    pausedOffset = currentOffset();
+    stopSource();
+    updateStatusUI();
+  }
+
+  function togglePlay() {
+    if (!state.roundActive || !state.buffer) return;
+    if (playing) pausePlayback();
+    else startPlayback(pausedOffset);
+  }
+
+  function setMode(m) {
+    mode = m;
+    armFilter();
+    if (state.roundActive && state.buffer) {
+      if (!playing) startPlayback(pausedOffset);
+      // фильтр уже применён — звук меняется мгновенно
+    }
+    updateABButtons();
+    updateStatusUI();
+  }
+
+  function updateABButtons() {
+    btnBefore.classList.toggle('active-before', mode === 'before');
+    btnAfter.classList.toggle('active-after', mode === 'after' || mode === 'user');
+  }
+
+  function updateStatusUI() {
+    statusDot.className = 'status-dot';
+    if (!state.roundActive) {
+      statusDot.textContent = 'Выберите сложность и нажмите «Начать раунд»';
+      return;
+    }
+    if (!playing) {
+      statusDot.textContent = 'Пауза — нажмите Пробел или ДО/ПОСЛЕ';
+      return;
+    }
+    if (mode === 'before') {
+      statusDot.classList.add('playing-before');
+      statusDot.textContent = 'ДО — без обработки';
+    } else if (mode === 'after') {
+      statusDot.classList.add('playing-after');
+      statusDot.textContent = 'ПОСЛЕ — с эквалайзером';
+    } else {
+      statusDot.classList.add('playing-after');
+      statusDot.textContent = 'Ваш вариант (ошибка)';
+    }
+  }
+
+  // ========== SYNTHESIS (встроенные сэмплы) ==========
+  function normalizeBuffer(buffer, target) {
+    let max = 0;
+    for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
+      const data = buffer.getChannelData(ch);
+      for (let i = 0; i < data.length; i++) max = Math.max(max, Math.abs(data[i]));
+    }
+    if (max > 0) {
+      const scale = target / max;
+      for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
+        const data = buffer.getChannelData(ch);
+        for (let i = 0; i < data.length; i++) data[i] *= scale;
+      }
+    }
+    return buffer;
+  }
+
+  function writeStereo(L, R, i, v, w) {
+    if (i < 0 || i >= L.length) return;
+    L[i] += v;
+    R[i] += v * (0.92 + 0.16 * (w == null ? 1 : w));
   }
 
   function createPinkNoise(ctx, duration) {
@@ -867,29 +1072,6 @@ header p {
     return normalizeBuffer(buffer, 0.55);
   }
 
-  function normalizeBuffer(buffer, target) {
-    let max = 0;
-    for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
-      const data = buffer.getChannelData(ch);
-      for (let i = 0; i < data.length; i++) max = Math.max(max, Math.abs(data[i]));
-    }
-    if (max > 0) {
-      const scale = target / max;
-      for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
-        const data = buffer.getChannelData(ch);
-        for (let i = 0; i < data.length; i++) data[i] *= scale;
-      }
-    }
-    return buffer;
-  }
-
-  function writeStereo(L, R, i, v, w) {
-    if (i < 0 || i >= L.length) return;
-    const width = w == null ? 1 : w;
-    L[i] += v;
-    R[i] += v * (0.92 + 0.16 * width);
-  }
-
   function synthesizeDrums(ctx) {
     const duration = 8;
     const sr = ctx.sampleRate;
@@ -901,6 +1083,7 @@ header p {
     for (let t = 0; t < duration; t += beat / 2) {
       const eighth = Math.round(t / (beat / 2));
       const start = Math.floor(t * sr);
+      // kick
       if (eighth % 8 === 0 || eighth % 8 === 6) {
         const n = Math.floor(sr * 0.18);
         for (let i = 0; i < n; i++) {
@@ -909,6 +1092,7 @@ header p {
           writeStereo(L, R, start + i, Math.sin(2 * Math.PI * freq * i / sr) * env * 0.85, 0.2);
         }
       }
+      // snare
       if (eighth % 8 === 4) {
         const n = Math.floor(sr * 0.14);
         for (let i = 0; i < n; i++) {
@@ -918,6 +1102,7 @@ header p {
           writeStereo(L, R, start + i, noise + tone, 0.7);
         }
       }
+      // hats
       const hatN = Math.floor(sr * (eighth % 2 === 0 ? 0.05 : 0.03));
       const hatV = eighth % 2 === 0 ? 0.16 : 0.08;
       for (let i = 0; i < hatN; i++) {
@@ -974,133 +1159,107 @@ header p {
       const i0 = Math.floor(start * sr);
       for (let i = 0; i < n && i0 + i < length; i++) {
         const age = i / sr;
-        const env = Math.min(1, age * 90) * Math.exp(-age * 1.35);
-        let val = 0;
-        for (let h = 1; h <= 6; h++) val += Math.sin(2 * Math.PI * freq * h * (start + age)) / (h * 1.15);
-        writeStereo(L, R, i0 + i, val * env * 0.22, 0.4);
+        const env = Math.min(1, age * 90) * Math.exp(-age * 1.8);
+        const val = Math.sin(2 * Math.PI * freq * (i / sr)) * 0.55
+          + Math.sin(2 * Math.PI * freq * 2 * (i / sr)) * 0.12
+          + Math.sin(2 * Math.PI * freq * 3 * (i / sr)) * 0.05;
+        writeStereo(L, R, i0 + i, val * env * 0.7, 0.5 + 0.3 * Math.sin(i / sr * 3));
       }
     });
-    return normalizeBuffer(buffer, 0.78);
+    return normalizeBuffer(buffer, 0.75);
   }
 
-  function synthesizeSample(ctx, type) {
-    if (type === 'noise') return createPinkNoise(ctx, 8);
-    if (type === 'mix') return synthesizeMix(ctx);
-    if (type === 'keys') return synthesizeKeys(ctx);
-    return synthesizeDrums(ctx);
-  }
-
-  function loadSample(type) {
-    if (type === 'upload') {
-      return state.customBuffer
-        ? Promise.resolve(state.customBuffer)
-        : Promise.reject(new Error('no-file'));
-    }
-    if (sampleCache[type]) return Promise.resolve(sampleCache[type]);
-    const ctx = ensureAudio();
-    const file = SAMPLE_FILES[type];
-    if (!file) {
-      sampleCache[type] = synthesizeSample(ctx, type);
-      return Promise.resolve(sampleCache[type]);
-    }
-    return fetch(file)
-      .then((r) => { if (!r.ok) throw new Error('missing'); return r.arrayBuffer(); })
-      .then((ab) => ctx.decodeAudioData(ab))
-      .then((buf) => { sampleCache[type] = buf; return buf; })
-      .catch(() => {
-        sampleCache[type] = synthesizeSample(ctx, type);
-        return sampleCache[type];
-      });
-  }
-
-  function loopWindow(buffer) {
-    if (buffer.duration <= 12) return { start: 0, length: buffer.duration };
-    const start = Math.min(state.playOffset, Math.max(0, buffer.duration - 8));
-    return { start: start, length: 8 };
-  }
-
-  function currentOffset() {
-    if (!playing || !state.buffer) return state.playOffset;
-    const win = loopWindow(state.buffer);
-    const elapsed = audioCtx.currentTime - playStartTime;
-    return win.start + ((state.playOffset - win.start + elapsed) % win.length);
-  }
-
-  function stopSource() {
-    if (sourceNode) {
-      try { sourceNode.onended = null; sourceNode.stop(); } catch (e) {}
-      try { sourceNode.disconnect(); } catch (e) {}
-      sourceNode = null;
-    }
-    playing = false;
-  }
-
-  function stopAll() {
-    stopSource();
-    stopAuto();
-    mode = null;
-    btnBefore.classList.remove('active');
-    btnAfter.classList.remove('active');
-    btnStop.disabled = true;
-    if (state.roundActive) setStatus('Раунд готов — слушайте ДО и ПОСЛЕ', 'ready');
-  }
-
-  function applyMode(next, restart) {
-    mode = next;
-    btnBefore.classList.toggle('active', next === 'before');
-    btnAfter.classList.toggle('active', next === 'after');
-    if (eqFilter && state.band) {
-      const target = next === 'after' ? state.db : 0;
-      eqFilter.gain.cancelScheduledValues(audioCtx.currentTime);
-      eqFilter.gain.setTargetAtTime(target, audioCtx.currentTime, 0.012);
-    }
-    setStatus(next === 'after' ? 'ПОСЛЕ — эквалайзер включён' : 'ДО — без обработки', 'playing');
-    if (restart || !playing) startPlayback();
-  }
-
-  function startPlayback() {
-    if (!state.buffer) return;
-    const ctx = ensureAudio();
-    const offset = currentOffset();
-    stopSource();
-    const win = loopWindow(state.buffer);
-    const src = ctx.createBufferSource();
-    src.buffer = state.buffer;
-    src.loop = true;
-    src.loopStart = win.start;
-    src.loopEnd = win.start + win.length;
-    src.connect(eqFilter);
-    const startAt = Math.min(Math.max(offset, win.start), win.start + win.length - 0.01);
-    src.start(0, startAt);
-    sourceNode = src;
-    playing = true;
-    playStartTime = ctx.currentTime;
-    state.playOffset = startAt;
-    btnStop.disabled = false;
-  }
-
-  function armFilter() {
+  async function loadSoundBuffer() {
     ensureAudio();
-    eqFilter.frequency.value = state.band.freq;
-    eqFilter.Q.value = currentLevel().q;
-    eqFilter.gain.value = mode === 'after' ? state.db : 0;
+    if (state.sound === 'custom') {
+      if (!state.customBuffer) {
+        showToast('Сначала загрузите свой трек');
+        return null;
+      }
+      return state.customBuffer;
+    }
+    if (state.sound === 'noise') return createPinkNoise(audioCtx, 6);
+    if (state.sound === 'drums') return synthesizeDrums(audioCtx);
+    if (state.sound === 'mix') return synthesizeMix(audioCtx);
+    if (state.sound === 'keys') return synthesizeKeys(audioCtx);
+    return createPinkNoise(audioCtx, 6);
+  }
+
+  // ========== UI RENDER ==========
+  function currentLevel() {
+    return LEVELS[state.level];
+  }
+
+  function renderGuessUI() {
+    const lvl = currentLevel();
+    bandGrid.innerHTML = '';
+    lvl.bands.forEach((b, idx) => {
+      const btn = document.createElement('button');
+      btn.className = 'band-btn' + (state.guessBand === b.id ? ' selected' : '');
+      btn.innerHTML = `<div class="band-btn-title">${b.label}</div>
+        <div class="band-btn-desc">${b.display} · ${b.hint}</div>`;
+      btn.addEventListener('click', () => {
+        if (state.revealed) return;
+        state.guessBand = b.id;
+        renderGuessUI();
+        updateCheckBtn();
+      });
+      // номер для горячих клавиш
+      btn.dataset.idx = idx;
+      bandGrid.appendChild(btn);
+    });
+
+    gainRow.innerHTML = '';
+    lvl.gains.forEach(g => {
+      const btn = document.createElement('button');
+      const cls = g < 0 ? 'neg' : 'pos';
+      btn.className = 'gain-btn ' + cls + (state.guessDb === g ? ' selected' : '');
+      btn.textContent = (g > 0 ? '+' : '') + g + ' дБ';
+      btn.addEventListener('click', () => {
+        if (state.revealed) return;
+        state.guessDb = g;
+        renderGuessUI();
+        updateCheckBtn();
+      });
+      gainRow.appendChild(btn);
+    });
+  }
+
+  function updateCheckBtn() {
+    btnCheck.disabled = state.revealed || !state.guessBand || state.guessDb === null;
+  }
+
+  function updateStatsUI() {
+    $('statRounds').textContent = state.scoreTotal;
+    $('statCorrect').textContent = state.scoreCorrect;
+    $('statStreak').textContent = state.scoreStreak;
+    const acc = state.scoreTotal ? Math.round((state.scoreCorrect / state.scoreTotal) * 100) : 0;
+    $('statAcc').textContent = acc + '%';
+
+    // skill map
+    ['low', 'mid', 'high'].forEach(z => {
+      const s = state.zoneStats[z];
+      const pct = s.total ? Math.round((s.ok / s.total) * 100) : 0;
+      const el = $('skill' + z.charAt(0).toUpperCase() + z.slice(1));
+      const pctEl = $('skill' + z.charAt(0).toUpperCase() + z.slice(1) + 'Pct');
+      if (el) el.style.width = pct + '%';
+      if (pctEl) pctEl.textContent = s.total ? pct + '%' : '—';
+    });
   }
 
   function drawWaveform() {
-    const canvas = waveCanvas;
-    const wrap = $('waveWrap');
     if (!state.buffer || state.buffer.duration <= 12) {
-      wrap.classList.remove('visible');
+      waveWrap.classList.remove('visible');
       return;
     }
-    wrap.classList.add('visible');
+    waveWrap.classList.add('visible');
     const dpr = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * dpr;
-    canvas.height = 64 * dpr;
+    const rect = waveCanvas.getBoundingClientRect();
+    waveCanvas.width = rect.width * dpr;
+    waveCanvas.height = 56 * dpr;
     waveCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
     const w = rect.width;
-    const h = 64;
+    const h = 56;
     waveCtx.clearRect(0, 0, w, h);
     const data = state.buffer.getChannelData(0);
     const step = Math.max(1, Math.floor(data.length / w));
@@ -1130,267 +1289,350 @@ header p {
     waveCtx.stroke();
   }
 
-  function drawEQCurve() {
-    const canvas = eqCanvas;
+  /**
+   * Рисует кривую EQ: правильную (зелёная) и ответ пользователя (оранжевая, если ошибся).
+   */
+  function drawEQCurve(userBand, userDb) {
     const dpr = window.devicePixelRatio || 1;
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * dpr;
-    canvas.height = 160 * dpr;
+    const rect = eqCanvas.getBoundingClientRect();
+    eqCanvas.width = rect.width * dpr;
+    eqCanvas.height = 140 * dpr;
     eqCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
     const w = rect.width;
-    const h = 160;
+    const h = 140;
     eqCtx.clearRect(0, 0, w, h);
-    const freqMin = 20;
-    const freqMax = 20000;
-    const freqToX = (freq) => {
-      const a = Math.log10(freqMin);
-      const b = Math.log10(freqMax);
-      return ((Math.log10(freq) - a) / (b - a)) * (w - 36) + 36;
-    };
+
+    // сетка
     eqCtx.strokeStyle = 'rgba(255,255,255,0.06)';
-    [50, 100, 200, 500, 1000, 2000, 5000, 10000].forEach((f) => {
-      const x = freqToX(f);
+    eqCtx.lineWidth = 1;
+    for (let db = -12; db <= 12; db += 6) {
+      const y = h / 2 - (db / 18) * (h / 2);
       eqCtx.beginPath();
-      eqCtx.moveTo(x, 0);
-      eqCtx.lineTo(x, h);
+      eqCtx.moveTo(0, y);
+      eqCtx.lineTo(w, y);
       eqCtx.stroke();
-    });
-    eqCtx.strokeStyle = 'rgba(255,255,255,0.16)';
+    }
+    // нулевая линия
+    eqCtx.strokeStyle = 'rgba(255,255,255,0.15)';
     eqCtx.beginPath();
     eqCtx.moveTo(0, h / 2);
     eqCtx.lineTo(w, h / 2);
     eqCtx.stroke();
 
-    if (!state.band) return;
-    const Q = currentLevel().q;
-    const dbGain = state.db;
-    eqCtx.beginPath();
-    for (let px = 0; px < w; px++) {
-      const a = Math.log10(freqMin);
-      const b = Math.log10(freqMax);
-      const freq = Math.pow(10, a + (px - 36) / (w - 36) * (b - a));
-      const ratio = freq / state.band.freq;
-      const A = Math.pow(10, dbGain / 20);
-      const sq = 1 - ratio * ratio;
-      const num = sq * sq + (A * ratio / Q) * (A * ratio / Q);
-      const den = sq * sq + (ratio / (A * Q)) * (ratio / (A * Q));
-      const magDb = 10 * Math.log10(Math.max(1e-8, num / den));
-      const y = h / 2 - (magDb / 12) * (h / 2);
-      if (px === 0) eqCtx.moveTo(px, y);
-      else eqCtx.lineTo(px, y);
+    const q = currentLevel().q;
+
+    function peakResponse(freq, gainDb, f) {
+      // упрощённая peaking-response для визуализации
+      const w0 = 2 * Math.PI * freq;
+      const A = Math.pow(10, gainDb / 40);
+      // логарифмическая близость
+      const ratio = f / freq;
+      const oct = Math.log2(ratio);
+      const bw = 1 / q;
+      const g = gainDb / (1 + Math.pow(oct / (bw * 0.7), 2));
+      return g;
     }
-    eqCtx.strokeStyle = '#F2994A';
-    eqCtx.lineWidth = 2.4;
-    eqCtx.stroke();
-    eqCtx.lineTo(w, h / 2);
-    eqCtx.lineTo(0, h / 2);
-    eqCtx.closePath();
-    eqCtx.fillStyle = 'rgba(242,153,74,0.12)';
-    eqCtx.fill();
 
-    eqCtx.fillStyle = 'rgba(255,255,255,0.4)';
+    function drawCurve(band, gainDb, color, lineWidth) {
+      eqCtx.strokeStyle = color;
+      eqCtx.lineWidth = lineWidth;
+      eqCtx.beginPath();
+      for (let x = 0; x < w; x++) {
+        const f = 20 * Math.pow(1000, x / (w - 1)); // 20..20k log
+        const g = peakResponse(band.freq, gainDb, f);
+        const y = h / 2 - (g / 18) * (h / 2);
+        if (x === 0) eqCtx.moveTo(x, y);
+        else eqCtx.lineTo(x, y);
+      }
+      eqCtx.stroke();
+    }
+
+    // правильная кривая
+    drawCurve(state.band, state.db, 'rgba(102,187,106,0.95)', 2.5);
+
+    // кривая пользователя (если отличается)
+    if (userBand && (userBand.id !== state.band.id || userDb !== state.db)) {
+      drawCurve(userBand, userDb, 'rgba(242,153,74,0.9)', 2);
+    }
+
+    // подписи
+    eqCtx.fillStyle = 'rgba(255,255,255,0.45)';
     eqCtx.font = '10px Unbounded, sans-serif';
-    eqCtx.textAlign = 'center';
-    [[60, '60'], [200, '200'], [500, '500'], [1000, '1k'], [4000, '4k'], [10000, '10k']].forEach(([f, label]) => {
-      eqCtx.fillText(label, freqToX(f), h - 8);
-    });
+    eqCtx.fillText('+12 dB', 4, 12);
+    eqCtx.fillText('0', 4, h / 2 - 4);
+    eqCtx.fillText('−12 dB', 4, h - 4);
   }
 
-  function pickChallenge() {
-    const level = currentLevel();
-    state.band = level.bands[Math.floor(Math.random() * level.bands.length)];
-    state.db = level.gains[Math.floor(Math.random() * level.gains.length)];
-    state.guessBand = '';
-    state.guessDb = null;
-    state.revealed = false;
-  }
-
-  function startRound() {
-    if (state.sound === 'upload' && !state.customBuffer) {
-      setStatus('Сначала загрузите свой трек', '');
-      $('fileInput').click();
+  // ========== ROUND LOGIC ==========
+  async function startRound() {
+    if (state.sound === 'custom' && !state.customBuffer) {
+      showToast('Загрузите аудиофайл');
       return;
     }
-    ensureAudio();
-    pickChallenge();
+
+    // сброс
+    state.revealed = false;
+    state.guessBand = null;
+    state.guessDb = null;
     state.roundActive = true;
-    resultBox.className = 'result';
-    eqPanel.classList.remove('visible');
+    resultBox.classList.remove('visible', 'correct', 'wrong');
     guessSection.classList.add('visible');
+    btnAutoAB.disabled = false;
+    btnNewRound.innerHTML = '<i data-lucide="refresh-cw"></i> Новый раунд';
+    if (window.lucide) lucide.createIcons({ attrs: { 'stroke-width': 1.8 } });
+
+    // выбираем случайную полосу и gain
+    const lvl = currentLevel();
+    state.band = lvl.bands[Math.floor(Math.random() * lvl.bands.length)];
+    state.db = lvl.gains[Math.floor(Math.random() * lvl.gains.length)];
+
+    // загружаем буфер
+    state.buffer = await loadSoundBuffer();
+    if (!state.buffer) {
+      state.roundActive = false;
+      return;
+    }
+
+    drawWaveform();
     renderGuessUI();
-    syncSubmit();
-    btnBefore.disabled = true;
-    btnAfter.disabled = true;
-    btnLoop.disabled = true;
-    setStatus('Готовим звук…', '');
-    loadSample(state.sound).then((buf) => {
-      state.buffer = buf;
-      if (buf.duration <= 12) state.playOffset = 0;
-      armFilter();
-      btnBefore.disabled = false;
-      btnAfter.disabled = false;
-      btnLoop.disabled = false;
-      btnNewRound.innerHTML = '<i data-lucide="rotate-cw"></i> Новый раунд';
-      if (window.lucide) lucide.createIcons({ attrs: { 'stroke-width': 1.8 } });
-      setStatus('Раунд готов — сравнивайте ДО и ПОСЛЕ', 'ready');
-      drawWaveform();
-      applyMode('before', true);
-    }).catch(() => setStatus('Не удалось загрузить звук', ''));
+    updateCheckBtn();
+
+    // стартуем с ДО
+    setMode('before');
+    startPlayback(loopWindow(state.buffer).start);
+    showToast('Раунд начат — слушайте и выбирайте');
   }
 
-  function submitGuess() {
-    if (!state.roundActive || state.guessDb === null || !state.guessBand) return;
-    const bandOk = state.guessBand === state.band.id;
-    const dbOk = state.guessDb === state.db;
-    const allOk = bandOk && dbOk;
-    state.scoreTotal += 1;
-    if (allOk) {
-      state.scoreCorrect += 1;
-      state.scoreStreak += 1;
+  function checkAnswer() {
+    if (state.revealed || !state.guessBand || state.guessDb === null) return;
+    state.revealed = true;
+    autoAB = false;
+    clearInterval(autoABTimer);
+    btnAutoAB.classList.remove('active');
+
+    const correctBand = state.guessBand === state.band.id;
+    const correctDb = state.guessDb === state.db;
+    const ok = correctBand && correctDb;
+
+    state.scoreTotal++;
+    if (ok) {
+      state.scoreCorrect++;
+      state.scoreStreak++;
     } else {
       state.scoreStreak = 0;
     }
-    state.revealed = true;
-    updateScore();
-    syncSubmit();
 
-    // Система персонализации: результат EQ-тренажёра → навык сведения, ачивка eq_wizard
+    // zone stats
+    const zone = state.band.zone;
+    state.zoneStats[zone].total++;
+    if (correctBand) state.zoneStats[zone].ok++;
+
+    saveStats();
+    updateStatsUI();
+
     if (window.PotokPersonalization) {
-      try {
-        const pctEq = state.scoreTotal ? Math.round(state.scoreCorrect / state.scoreTotal * 100) : 0;
-        PotokPersonalization.recordToolUse('eq-trainer', { correct: allOk, bestScore: pctEq });
-      } catch (e) {}
+      const acc = state.scoreTotal ? Math.round((state.scoreCorrect / state.scoreTotal) * 100) : 0;
+      try { PotokPersonalization.recordToolUse('eq-trainer', { correct: ok, bestScore: acc }); } catch (_) {}
     }
 
-    const bandName = state.band.label + ' · ' + state.band.display;
-    let html = allOk ? 'Верно: вы услышали изменение.' : 'Почти. Вот что было на самом деле.';
-    html += '<br>' + (bandOk ? 'Диапазон угадан.' : 'Менялся диапазон: <b>' + bandName + '</b>');
-    html += '<br>' + (dbOk ? 'Громкость угадана.' : 'Изменение: <b>' + formatDb(state.db) + '</b>');
-    resultBox.innerHTML = html;
-    resultBox.className = 'result visible ' + (allOk ? 'ok' : 'bad');
-    eqPanel.classList.add('visible');
-    $('eqCaption').textContent = state.band.label + '  ' + formatDb(state.db) + '  ·  ' + state.band.hint;
-    drawEQCurve();
-    setStatus(allOk ? 'Верно. Дослушайте разницу и возьмите новый раунд' : 'Неверно. Дослушайте ДО / ПОСЛЕ с открытой кривой', 'ready');
-  }
+    // UI
+    resultBox.classList.add('visible');
+    resultBox.classList.toggle('correct', ok);
+    resultBox.classList.toggle('wrong', !ok);
 
-  function startAuto() {
-    if (loopTimer) { stopAuto(); return; }
-    if (!state.roundActive) return;
-    btnLoop.classList.add('active');
-    if (!playing) applyMode('before', true);
-    loopTimer = setInterval(() => {
-      applyMode(mode === 'before' ? 'after' : 'before', false);
-    }, 2200);
-  }
-
-  function stopAuto() {
-    if (loopTimer) {
-      clearInterval(loopTimer);
-      loopTimer = null;
+    if (ok) {
+      $('resultTitle').textContent = '✓ Верно!';
+      $('resultDetail').textContent = `${state.band.label} (${state.band.display}) · ${(state.db > 0 ? '+' : '') + state.db} дБ`;
+    } else {
+      $('resultTitle').textContent = '✗ Неверно';
+      const userBandObj = currentLevel().bands.find(b => b.id === state.guessBand);
+      $('resultDetail').innerHTML =
+        `Правильно: <strong>${state.band.label}</strong> (${state.band.display}) · <strong>${(state.db > 0 ? '+' : '') + state.db} дБ</strong><br>` +
+        `Вы выбрали: ${userBandObj ? userBandObj.label : '?'} · ${(state.guessDb > 0 ? '+' : '') + state.guessDb} дБ`;
     }
-    btnLoop.classList.remove('active');
+
+    const userBandObj = currentLevel().bands.find(b => b.id === state.guessBand);
+    drawEQCurve(userBandObj, state.guessDb);
+
+    // остаёмся на «после» (правильный)
+    setMode('after');
+    updateCheckBtn();
+    btnCheck.disabled = true;
   }
 
-  function handleFile(file) {
-    if (!file) return;
-    ensureAudio();
-    file.arrayBuffer().then((ab) => audioCtx.decodeAudioData(ab)).then((buf) => {
-      state.customBuffer = buf;
-      state.customName = file.name;
-      state.sound = 'upload';
-      state.buffer = buf;
-      state.playOffset = 0;
-      document.querySelectorAll('.sound-btn').forEach((b) => b.classList.toggle('active', b.dataset.sound === 'upload'));
-      $('uploadName').textContent = file.name;
-      $('uploadRow').classList.add('visible');
-      if (window.lucide) lucide.createIcons({ attrs: { 'stroke-width': 1.8 } });
-      setStatus('Трек загружен. Нажмите «Начать раунд»', 'ready');
-      drawWaveform();
-    }).catch(() => setStatus('Не удалось прочитать файл', ''));
+  function listenError() {
+    if (!state.revealed) return;
+    setMode('user');
+    if (!playing) startPlayback(pausedOffset);
   }
 
-  document.querySelectorAll('.level-btn').forEach((btn) => {
+  function listenCorrect() {
+    if (!state.revealed) return;
+    setMode('after');
+    if (!playing) startPlayback(pausedOffset);
+  }
+
+  // ========== PERSISTENCE ==========
+  function saveStats() {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        scoreTotal: state.scoreTotal,
+        scoreCorrect: state.scoreCorrect,
+        scoreStreak: state.scoreStreak,
+        zoneStats: state.zoneStats
+      }));
+    } catch (_) {}
+  }
+
+  function loadStats() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      if (data.scoreTotal != null) state.scoreTotal = data.scoreTotal;
+      if (data.scoreCorrect != null) state.scoreCorrect = data.scoreCorrect;
+      if (data.scoreStreak != null) state.scoreStreak = data.scoreStreak;
+      if (data.zoneStats) state.zoneStats = data.zoneStats;
+    } catch (_) {}
+  }
+
+  // ========== HELPERS ==========
+  function showToast(msg) {
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => toastEl.classList.remove('show'), 2200);
+  }
+
+  // ========== EVENTS ==========
+  // Level
+  document.querySelectorAll('#levelPills .pill').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.level-btn').forEach((b) => b.classList.remove('active'));
+      if (state.roundActive && !state.revealed) return;
+      document.querySelectorAll('#levelPills .pill').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       state.level = btn.dataset.level;
-      if (state.roundActive && !state.revealed) startRound();
-      else if (!state.revealed) renderGuessUI();
+      renderGuessUI();
     });
   });
 
-  document.querySelectorAll('.sound-btn').forEach((btn) => {
+  // Sound
+  document.querySelectorAll('#soundPills .sound-pill').forEach(btn => {
     btn.addEventListener('click', () => {
-      if (btn.dataset.sound === 'upload') {
-        if (!state.customBuffer) {
-          $('fileInput').click();
-          return;
-        }
-      }
-      document.querySelectorAll('.sound-btn').forEach((b) => b.classList.remove('active'));
+      document.querySelectorAll('#soundPills .sound-pill').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       state.sound = btn.dataset.sound;
+      fileWrap.classList.toggle('visible', state.sound === 'custom');
       if (state.roundActive) {
-        loadSample(state.sound).then((buf) => {
-          state.buffer = buf;
-          if (buf.duration <= 12) state.playOffset = 0;
-          drawWaveform();
-          if (playing) startPlayback();
-        });
+        // при смене источника — перезагрузка на следующем раунде
+        showToast('Источник изменён — нажмите «Новый раунд»');
       }
     });
   });
 
-  $('fileInput').addEventListener('change', (e) => {
-    if (e.target.files[0]) handleFile(e.target.files[0]);
-  });
-  $('btnRemoveFile').addEventListener('click', () => {
-    state.customBuffer = null;
-    state.customName = '';
-    $('uploadRow').classList.remove('visible');
-    $('fileInput').value = '';
-    state.sound = 'drums';
-    document.querySelectorAll('.sound-btn').forEach((b) => b.classList.toggle('active', b.dataset.sound === 'drums'));
+  fileInput.addEventListener('change', async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    ensureAudio();
+    try {
+      const arr = await file.arrayBuffer();
+      const buf = await audioCtx.decodeAudioData(arr.slice(0));
+      state.customBuffer = buf;
+      state.customName = file.name;
+      fileName.textContent = file.name + ` (${buf.duration.toFixed(1)} с)`;
+      showToast('Файл загружен');
+    } catch (err) {
+      showToast('Не удалось декодировать файл');
+      console.error(err);
+    }
   });
 
-  btnNewRound.addEventListener('click', startRound);
-  btnBefore.addEventListener('click', () => { if (!btnBefore.disabled) applyMode('before', !playing); });
-  btnAfter.addEventListener('click', () => { if (!btnAfter.disabled) applyMode('after', !playing); });
-  btnSubmit.addEventListener('click', submitGuess);
-  btnLoop.addEventListener('click', startAuto);
-  btnStop.addEventListener('click', stopAll);
+  btnBefore.addEventListener('click', () => {
+    if (!state.roundActive) return;
+    setMode('before');
+    if (!playing) startPlayback(pausedOffset);
+  });
+  btnAfter.addEventListener('click', () => {
+    if (!state.roundActive) return;
+    setMode(state.revealed ? 'after' : 'after');
+    if (!playing) startPlayback(pausedOffset);
+  });
+  btnSwap.addEventListener('click', () => {
+    if (!state.roundActive) return;
+    setMode(mode === 'before' ? 'after' : 'before');
+  });
 
-  $('volumeSlider').addEventListener('input', () => {
-    const val = parseInt($('volumeSlider').value, 10);
-    $('volumeValue').textContent = val + '%';
-    state.volume = val / 100;
+  btnNewRound.addEventListener('click', () => startRound());
+  btnNextRound.addEventListener('click', () => startRound());
+  btnCheck.addEventListener('click', () => checkAnswer());
+  btnListenError.addEventListener('click', () => listenError());
+  btnListenCorrect.addEventListener('click', () => listenCorrect());
+
+  btnStop.addEventListener('click', () => {
+    pausePlayback();
+    autoAB = false;
+    clearInterval(autoABTimer);
+  });
+
+  btnAutoAB.addEventListener('click', () => {
+    if (!state.roundActive) return;
+    autoAB = !autoAB;
+    btnAutoAB.classList.toggle('active', autoAB);
+    if (autoAB) {
+      setMode('before');
+      if (!playing) startPlayback(pausedOffset);
+      autoABTimer = setInterval(() => {
+        if (!state.roundActive) return;
+        setMode(mode === 'before' ? 'after' : 'before');
+      }, 1400);
+    } else {
+      clearInterval(autoABTimer);
+    }
+  });
+
+  volSlider.addEventListener('input', () => {
+    state.volume = volSlider.value / 100;
+    volLabel.textContent = volSlider.value + '%';
     if (masterGain) masterGain.gain.value = state.volume;
   });
 
-  waveCanvas.addEventListener('click', (e) => {
-    if (!state.buffer) return;
-    const rect = waveCanvas.getBoundingClientRect();
-    state.playOffset = ((e.clientX - rect.left) / rect.width) * state.buffer.duration;
-    drawWaveform();
-    if (playing) startPlayback();
-  });
-
+  // Hotkeys
   document.addEventListener('keydown', (e) => {
-    if (e.target.matches('input, select, textarea')) return;
-    if (['z', 'Z', 'й', 'Й'].includes(e.key) && !btnBefore.disabled) applyMode('before', !playing);
-    if (['x', 'X', 'ч', 'Ч'].includes(e.key) && !btnAfter.disabled) applyMode('after', !playing);
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    const key = e.key.toLowerCase();
+
+    if (key === 'z') {
+      e.preventDefault();
+      if (state.roundActive) { setMode('before'); if (!playing) startPlayback(pausedOffset); }
+    } else if (key === 'x') {
+      e.preventDefault();
+      if (state.roundActive) { setMode('after'); if (!playing) startPlayback(pausedOffset); }
+    } else if (key === ' ') {
+      e.preventDefault();
+      togglePlay();
+    } else if (key === 'a') {
+      e.preventDefault();
+      btnAutoAB.click();
+    } else if (key === 'enter') {
+      e.preventDefault();
+      if (state.revealed) startRound();
+      else if (!btnCheck.disabled) checkAnswer();
+      else if (!state.roundActive) startRound();
+    } else if (/^[1-6]$/.test(key)) {
+      const idx = parseInt(key, 10) - 1;
+      const bands = currentLevel().bands;
+      if (bands[idx] && !state.revealed && state.roundActive) {
+        state.guessBand = bands[idx].id;
+        renderGuessUI();
+        updateCheckBtn();
+      }
+    }
   });
 
-  window.addEventListener('resize', () => {
-    drawWaveform();
-    if (state.revealed) drawEQCurve();
-  });
-
+  // Theme
   const themeToggle = $('themeToggle');
-  const stored = localStorage.getItem('tools-theme');
-  if (stored) document.documentElement.setAttribute('data-theme', stored);
-  else if (window.matchMedia('(prefers-color-scheme: light)').matches) document.documentElement.setAttribute('data-theme', 'light');
+  const savedTheme = localStorage.getItem('tools-theme');
+  if (savedTheme === 'light') document.documentElement.setAttribute('data-theme', 'light');
   else document.documentElement.setAttribute('data-theme', 'dark');
   themeToggle.addEventListener('click', () => {
     const next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
@@ -1398,8 +1640,19 @@ header p {
     localStorage.setItem('tools-theme', next);
   });
 
+  // Init
+  loadStats();
+  updateStatsUI();
   renderGuessUI();
   if (window.lucide) lucide.createIcons({ attrs: { 'stroke-width': 1.8 } });
+
+  // TODO для нейросети / дальнейшей доработки:
+  // 1. Режим «Исправь EQ»: дать уже изменённый звук + параметрический EQ (gain + Q + freq)
+  // 2. Адаптивная сложность: чаще выдавать зоны, где zoneStats.ok/total низкий
+  // 3. Мультиполосные изменения (2 полосы сразу) на очень сложном уровне
+  // 4. Загрузка нескольких пользовательских файлов + плейлист
+  // 5. Экспорт статистики / шаринг результата в Telegram
+  // 6. Визуальный спектр (AnalyserNode) в реальном времени рядом с кривой EQ
 })();
 </script>
 </body>
