@@ -1,5 +1,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&display=swap');
 
+/* Компактный текст: чуть меньше дефолтных 0.8rem, чтобы больше текста помещалось на экран */
+:root {
+  --md-text-font-size: 0.75rem;
+}
+
 /* ========================================
    Design Tokens — Music Production Course
    ======================================== */
