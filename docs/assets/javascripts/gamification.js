@@ -588,7 +588,8 @@
   // УВЕДОМЛЕНИЯ
   // ========================
   var badgeToastEl = null;
-  var badgeToastTimeout = null;
+  var badgeToastHideTimer = null;
+  var badgeToastRemoveTimer = null;
 
   function showBadgeToast(badgeDef) {
     hideBadgeToast();
@@ -614,24 +615,28 @@
     badgeToastEl = toast;
 
     requestAnimationFrame(function () {
-      toast.classList.add('show');
+      if (toast.parentNode) toast.classList.add('show');
     });
 
-    badgeToastTimeout = setTimeout(function () {
+    badgeToastHideTimer = setTimeout(function () {
       hideBadgeToast();
-    }, 4000);
+    }, 3000);
   }
 
   function hideBadgeToast() {
-    if (badgeToastEl) {
-      badgeToastEl.classList.remove('show');
-      badgeToastTimeout = setTimeout(function () {
-        if (badgeToastEl && badgeToastEl.parentNode) {
-          badgeToastEl.remove();
-          badgeToastEl = null;
-        }
-      }, 400);
+    if (badgeToastHideTimer) {
+      clearTimeout(badgeToastHideTimer);
+      badgeToastHideTimer = null;
     }
+    var el = badgeToastEl;
+    badgeToastEl = null;
+    if (!el) return;
+
+    el.classList.remove('show');
+    if (badgeToastRemoveTimer) clearTimeout(badgeToastRemoveTimer);
+    badgeToastRemoveTimer = setTimeout(function () {
+      if (el.parentNode) el.remove();
+    }, 400);
   }
 
   function showLevelUpToast(level) {
