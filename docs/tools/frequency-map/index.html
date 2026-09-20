@@ -482,17 +482,31 @@ buildControls();
 buildLegend();
 draw();
 
-// === Audio Playback System (обычный <audio> — работает и на сайте, и через file://) ===
-let currentAudio = null;
+// === Audio Playback System (один переиспользуемый <audio> — работает на сайте, file:// и мобильных) ===
+const audioEl = document.createElement("audio");
+audioEl.volume = 0.8;
+let currentAudio = null;      // элемент, который сейчас играет (или null)
+let endedHandler = null;      // его обработчик 'ended'
+let errorTimer = null;
 const playingIndicator = document.getElementById("playingIndicator");
 const playingName = document.getElementById("playingName");
 
 function stopCurrentAudio() {
   if (currentAudio) {
-    currentAudio.pause();
-    currentAudio.currentTime = 0;
+    try { currentAudio.pause(); } catch (e) {}
+    if (endedHandler) {
+      currentAudio.removeEventListener("ended", endedHandler);
+      endedHandler = null;
+    }
     currentAudio = null;
   }
+}
+
+function flashError(msg) {
+  clearTimeout(errorTimer);
+  playingName.textContent = msg;
+  playingIndicator.style.display = "block";
+  errorTimer = setTimeout(() => { playingIndicator.style.display = "none"; }, 2500);
 }
 
 async function playSample(index) {
@@ -501,18 +515,23 @@ async function playSample(index) {
 
   // Stop any currently playing audio first
   stopCurrentAudio();
+  clearTimeout(errorTimer);
   playingIndicator.style.display = "none";
   document.querySelectorAll(".legend-item.playing").forEach(el => el.classList.remove("playing"));
   hoveredInstrument = null;
   draw();
 
-  const audio = new Audio(inst.sample);
-  audio.volume = 0.8;
-  currentAudio = audio;
+  if (audioEl.getAttribute("src") !== inst.sample) {
+    audioEl.src = inst.sample;
+  } else {
+    audioEl.currentTime = 0; // повтор того же сэмпла — мгновенно из кэша
+  }
+  currentAudio = audioEl;
   try {
-    await audio.play();
+    await audioEl.play();
   } catch (e) {
     console.warn("Playback failed:", inst.sample, e);
+    flashError("⚠ Не удалось воспроизвести звук");
     return;
   }
 
@@ -521,11 +540,14 @@ async function playSample(index) {
   playingIndicator.style.display = "block";
   highlightInstrument(index);
 
-  audio.onended = () => {
-    if (currentAudio === audio) currentAudio = null;
+  endedHandler = () => {
+    audioEl.removeEventListener("ended", endedHandler);
+    endedHandler = null;
+    if (currentAudio === audioEl) currentAudio = null;
     playingIndicator.style.display = "none";
     unhighlightInstrument(index);
   };
+  audioEl.addEventListener("ended", endedHandler);
 }
 
 function highlightInstrument(index) {
