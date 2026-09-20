@@ -179,7 +179,7 @@
   (function buildLevelTable() {
     var cumulative = 0;
     for (var i = 1; i <= 50; i++) {
-      var xpForLevel = Math.floor(50 * Math.pow(1.15, i - 1));
+      var xpForLevel = Math.floor(75 * Math.pow(1.2, i - 1));
       cumulative += xpForLevel;
       LEVEL_XP[i] = cumulative;
     }
@@ -193,8 +193,7 @@
     page_view: 5,
     tool_use: 10,
     session_start: 3,
-    badge_earn: 50,
-    level_up: 100
+    badge_earn: 50
   };
 
   // ========================
@@ -491,7 +490,6 @@
       for (var i = 0; i < levelUps; i++) {
         showLevelUpToast(oldLevel + i + 1);
       }
-      addXP(XP_REWARDS.level_up, 'level_up_bonus');
     }
 
     checkBadges();
