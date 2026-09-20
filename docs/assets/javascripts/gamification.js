@@ -1,6 +1,7 @@
 /* ========================================
    Gamification — Геймификация курса «18 ПОТОК»
-   Бейджи, уровни, XP, статистика (LocalStorage)
+   Уровни, XP, статистика (LocalStorage).
+   Ачивки (единая коллекция наград) — в personalization.js.
    ======================================== */
 
 (function () {
@@ -9,167 +10,9 @@
   // ========================
   // КЛЮЧИ LocalStorage
   // ========================
-  var BADGES_KEY = 'potok_badges';
+  var BADGES_KEY = 'potok_badges'; // legacy-ключ: читается personalization.js для миграции, чистится при сбросе
   var XP_KEY = 'potok_xp';
   var STATS_KEY = 'potok_stats';
-
-  // ========================
-  // КОНФИГУРАЦИЯ БЕЙДЖЕЙ
-  // ========================
-  var BADGE_DEFS = [
-    {
-      id: 'first_step',
-      name: 'Первый шаг',
-      desc: 'Отметить первый урок',
-      icon: '👣',
-      rarity: 'common',
-      condition: function (stats) { return (stats.lessonsDone || 0) >= 1; }
-    },
-    {
-      id: 'five_lessons',
-      name: 'Пять уроков',
-      desc: 'Пройти 5 уроков',
-      icon: '🔥',
-      rarity: 'common',
-      condition: function (stats) { return (stats.lessonsDone || 0) >= 5; }
-    },
-    {
-      id: 'ten_lessons',
-      name: 'Десять уроков',
-      desc: 'Пройти 10 уроков',
-      icon: '💯',
-      rarity: 'uncommon',
-      condition: function (stats) { return (stats.lessonsDone || 0) >= 10; }
-    },
-    {
-      id: 'quarter_hour',
-      name: '15 минут',
-      desc: 'Потратить 15 минут в курсе',
-      icon: '⏱️',
-      rarity: 'common',
-      condition: function (stats) { return (stats.totalMinutes || 0) >= 15; }
-    },
-    {
-      id: 'hour_warrior',
-      name: 'Часовой воин',
-      desc: 'Потратить 60 минут в курсе',
-      icon: '⚔️',
-      rarity: 'uncommon',
-      condition: function (stats) { return (stats.totalMinutes || 0) >= 60; }
-    },
-    {
-      id: 'marathon',
-      name: 'Марафонец',
-      desc: 'Потратить 300 минут в курсе',
-      icon: '🏃',
-      rarity: 'rare',
-      condition: function (stats) { return (stats.totalMinutes || 0) >= 300; }
-    },
-    {
-      id: 'five_sessions',
-      name: 'Регулярность',
-      desc: '5 учебных сессий',
-      icon: '📅',
-      rarity: 'uncommon',
-      condition: function (stats) { return (stats.sessions || 0) >= 5; }
-    },
-    {
-      id: 'ten_sessions',
-      name: 'Преданность',
-      desc: '10 учебных сессий',
-      icon: '🏅',
-      rarity: 'rare',
-      condition: function (stats) { return (stats.sessions || 0) >= 10; }
-    },
-    {
-      id: 'level5',
-      name: 'Ученик',
-      desc: 'Достичь 5 уровня',
-      icon: '🎓',
-      rarity: 'uncommon',
-      condition: function (stats) { return (stats.level || 1) >= 5; }
-    },
-    {
-      id: 'level10',
-      name: 'Продвинутый',
-      desc: 'Достичь 10 уровня',
-      icon: '🌟',
-      rarity: 'rare',
-      condition: function (stats) { return (stats.level || 1) >= 10; }
-    },
-    {
-      id: 'level20',
-      name: 'Мастер',
-      desc: 'Достичь 20 уровня',
-      icon: '👑',
-      rarity: 'epic',
-      condition: function (stats) { return (stats.level || 1) >= 20; }
-    },
-    {
-      id: 'explorer',
-      name: 'Исследователь',
-      desc: 'Посетить все разделы',
-      icon: '🗺️',
-      rarity: 'rare',
-      condition: function (stats) { return (stats.sectionsVisited || 0) >= 5; }
-    },
-    {
-      id: 'xp_1000',
-      name: 'Тысячник',
-      desc: 'Набрать 1000 XP',
-      icon: '💎',
-      rarity: 'epic',
-      condition: function (stats) { return (stats.totalXP || 0) >= 1000; }
-    },
-    {
-      id: 'xp_5000',
-      name: 'Легенда',
-      desc: 'Набрать 5000 XP',
-      icon: '🔮',
-      rarity: 'legendary',
-      condition: function (stats) { return (stats.totalXP || 0) >= 5000; }
-    },
-    {
-      id: 'night_owl',
-      name: 'Сова',
-      desc: 'Учиться после 23:00',
-      icon: '🦉',
-      rarity: 'uncommon',
-      condition: function (stats) { return !!stats.nightSession; }
-    },
-    {
-      id: 'early_bird',
-      name: 'Жаворонок',
-      desc: 'Учиться до 07:00',
-      icon: '🐦',
-      rarity: 'uncommon',
-      condition: function (stats) { return !!stats.earlySession; }
-    },
-    {
-      id: 'streak3',
-      name: 'Разогрев',
-      desc: 'Сирек 3 дня подряд',
-      icon: '🔥',
-      rarity: 'common',
-      condition: function (stats) { return computeStreaks(stats.activityDays).current >= 3; }
-    },
-    {
-      id: 'streak7',
-      name: 'Неделя огня',
-      desc: 'Сирек 7 дней подряд',
-      icon: '☄️',
-      rarity: 'uncommon',
-      condition: function (stats) { return computeStreaks(stats.activityDays).current >= 7; }
-    },
-    {
-      id: 'streak30',
-      name: 'Месяц в потоке',
-      desc: 'Сирек 30 дней подряд',
-      icon: '🌊',
-      rarity: 'epic',
-      condition: function (stats) { return computeStreaks(stats.activityDays).current >= 30; }
-    }
-  ];
 
   // ========================
   // КОНФИГУРАЦИЯ УРОВНЕЙ
@@ -192,8 +35,7 @@
     lesson_complete: 25,
     page_view: 5,
     tool_use: 10,
-    session_start: 3,
-    badge_earn: 50
+    session_start: 3
   };
 
   // ========================
@@ -222,11 +64,9 @@
   // ========================
   // СОСТОЯНИЕ МОДУЛЯ
   // ========================
-  var loadedBadges = loadJSON(BADGES_KEY, []);
   var loadedXp = loadJSON(XP_KEY, { total: 0, log: [] });
 
   var state = {
-    badges: loadedBadges,
     xp: loadedXp,
     stats: normalizeStats(loadJSON(STATS_KEY, defaultStats()), loadedXp.log)
   };
@@ -394,7 +234,6 @@
     }
 
     saveStats();
-    checkBadges();
   }
 
   function trackSection() {
@@ -492,9 +331,8 @@
       }
     }
 
-    checkBadges();
-
-    // Мост в систему персонализации: единый totalXP под Telegram ID
+    // Мост в систему персонализации: единый totalXP под Telegram ID.
+    // Ачивки проверяются там же (checkAchievements внутри _award).
     try {
       document.dispatchEvent(new CustomEvent('potok:xp', { detail: { amount: amount, reason: reason } }));
     } catch (e) { /* ignore */ }
@@ -509,136 +347,11 @@
     state.xp.total = d.total;
     saveStats();
     updateLevelPanel();
-    checkBadges();
   });
-
-  // ========================
-  // СИСТЕМА БЕЙДЖЕЙ
-  // ========================
-  function hasBadge(badgeId) {
-    return state.badges.indexOf(badgeId) !== -1;
-  }
-
-  function getBadgeDef(badgeId) {
-    for (var i = 0; i < BADGE_DEFS.length; i++) {
-      if (BADGE_DEFS[i].id === badgeId) return BADGE_DEFS[i];
-    }
-    return null;
-  }
-
-  function getEarnedBadges() {
-    var earned = [];
-    for (var i = 0; i < BADGE_DEFS.length; i++) {
-      if (state.badges.indexOf(BADGE_DEFS[i].id) !== -1) {
-        earned.push(BADGE_DEFS[i]);
-      }
-    }
-    return earned;
-  }
-
-  function getUnearnedBadges() {
-    var unearned = [];
-    for (var i = 0; i < BADGE_DEFS.length; i++) {
-      if (state.badges.indexOf(BADGE_DEFS[i].id) === -1) {
-        unearned.push(BADGE_DEFS[i]);
-      }
-    }
-    return unearned;
-  }
-
-  function getAllBadges() {
-    return BADGE_DEFS.map(function (def) {
-      return {
-        def: def,
-        earned: state.badges.indexOf(def.id) !== -1
-      };
-    });
-  }
-
-  // Начислить бейдж вручную
-  function earnBadge(badgeId) {
-    if (hasBadge(badgeId)) return null;
-
-    var def = getBadgeDef(badgeId);
-    if (!def) return null;
-
-    state.badges.push(badgeId);
-    saveJSON(BADGES_KEY, state.badges);
-
-    addXP(XP_REWARDS.badge_earn, 'badge_' + badgeId);
-    showBadgeToast(def);
-
-    return def;
-  }
-
-  // Автоматическая проверка условий
-  function checkBadges() {
-    var newBadges = [];
-    for (var i = 0; i < BADGE_DEFS.length; i++) {
-      var def = BADGE_DEFS[i];
-      if (!hasBadge(def.id) && def.condition(state.stats)) {
-        var earned = earnBadge(def.id);
-        if (earned) newBadges.push(earned);
-      }
-    }
-    return newBadges;
-  }
 
   // ========================
   // УВЕДОМЛЕНИЯ
   // ========================
-  var badgeToastEl = null;
-  var badgeToastHideTimer = null;
-  var badgeToastRemoveTimer = null;
-
-  function showBadgeToast(badgeDef) {
-    hideBadgeToast();
-
-    var toast = document.createElement('div');
-    toast.className = 'potok-badge-toast';
-    toast.setAttribute('role', 'alert');
-    toast.setAttribute('aria-live', 'assertive');
-
-    toast.innerHTML =
-      '<div class="potok-badge-toast__icon">' + badgeDef.icon + '</div>' +
-      '<div class="potok-badge-toast__content">' +
-        '<div class="potok-badge-toast__title">Новый бейдж!</div>' +
-        '<div class="potok-badge-toast__name">' + badgeDef.name + '</div>' +
-        '<div class="potok-badge-toast__desc">' + badgeDef.desc + '</div>' +
-        '<div class="potok-badge-toast__xp">+' + XP_REWARDS.badge_earn + ' XP</div>' +
-      '</div>' +
-      '<div class="potok-badge-toast__rarity potok-badge-toast__rarity--' + badgeDef.rarity + '">' +
-        rarityLabel(badgeDef.rarity) +
-      '</div>';
-
-    document.body.appendChild(toast);
-    badgeToastEl = toast;
-
-    requestAnimationFrame(function () {
-      if (toast.parentNode) toast.classList.add('show');
-    });
-
-    badgeToastHideTimer = setTimeout(function () {
-      hideBadgeToast();
-    }, 3000);
-  }
-
-  function hideBadgeToast() {
-    if (badgeToastHideTimer) {
-      clearTimeout(badgeToastHideTimer);
-      badgeToastHideTimer = null;
-    }
-    var el = badgeToastEl;
-    badgeToastEl = null;
-    if (!el) return;
-
-    el.classList.remove('show');
-    if (badgeToastRemoveTimer) clearTimeout(badgeToastRemoveTimer);
-    badgeToastRemoveTimer = setTimeout(function () {
-      if (el.parentNode) el.remove();
-    }, 400);
-  }
-
   function showLevelUpToast(level) {
     // Используем общий toast из progress.js (если есть) или создаём свой
     var toast = document.createElement('div');
@@ -658,17 +371,6 @@
         if (toast.parentNode) toast.remove();
       }, 300);
     }, 3000);
-  }
-
-  function rarityLabel(rarity) {
-    var labels = {
-      common: 'Обычный',
-      uncommon: 'Необычный',
-      rare: 'Редкий',
-      epic: 'Эпический',
-      legendary: 'Легендарный'
-    };
-    return labels[rarity] || rarity;
   }
 
   // Простой toast (самодостаточный, без progress.js)
@@ -703,7 +405,6 @@
     localStorage.removeItem(XP_KEY);
     localStorage.removeItem(STATS_KEY);
 
-    state.badges = [];
     state.xp = { total: 0, log: [] };
     state.stats = defaultStats();
     visitedSections.clear();
@@ -721,9 +422,8 @@
   // ========================
   function exportData() {
     var data = {
-      version: '1.1',
+      version: '1.2',
       exportDate: new Date().toISOString(),
-      badges: state.badges,
       xp: state.xp,
       stats: state.stats
     };
@@ -744,15 +444,13 @@
     try {
       var data = JSON.parse(jsonString);
 
-      if (!data.badges || !data.xp || !data.stats) {
+      if (!data.xp || !data.stats) {
         throw new Error('Неверный формат данных');
       }
 
-      state.badges = data.badges;
       state.xp = data.xp;
       state.stats = normalizeStats(data.stats, data.xp.log);
 
-      saveJSON(BADGES_KEY, state.badges);
       saveJSON(XP_KEY, state.xp);
       saveJSON(STATS_KEY, state.stats);
 
@@ -769,13 +467,8 @@
   // ПУБЛИЧНЫЙ API
   // ========================
   var GamificationAPI = {
-    earnBadge: earnBadge,
     addXP: addXP,
     getStats: function () { return Object.assign({}, state.stats); },
-    getBadges: getAllBadges,
-    getEarnedBadges: getEarnedBadges,
-    getUnearnedBadges: getUnearnedBadges,
-    hasBadge: hasBadge,
     getCurrentLevel: getCurrentLevel,
     getLevelProgressPercent: getLevelProgressPercent,
     getXpInCurrentLevel: getXpInCurrentLevel,
@@ -784,9 +477,6 @@
     resetAll: resetAll,
     exportData: exportData,
     importData: importData,
-    checkBadges: checkBadges,
-    getBadgeDef: getBadgeDef,
-    BADGE_DEFS: BADGE_DEFS,
     XP_REWARDS: XP_REWARDS
   };
 
@@ -797,6 +487,20 @@
   // UI: ПАНЕЛЬ УРОВНЯ (в контенте)
   // ========================
   var levelPanelEl = null;
+
+  // Счётчик ачивок берём из системы персонализации (единая коллекция наград)
+  function getAchievementCounts() {
+    try {
+      var pers = window.PotokPersonalization;
+      if (!pers || !pers.getState) return null;
+      var st = pers.getState();
+      if (!st || !st.achievements || !st.achievements.unlocked) return null;
+      return {
+        earned: Object.keys(st.achievements.unlocked).length,
+        total: (pers.ACHIEVEMENT_DEFS && pers.ACHIEVEMENT_DEFS.length) || 0
+      };
+    } catch (e) { return null; }
+  }
 
   function createLevelPanel() {
     var old = document.querySelector('.potok-level-panel');
@@ -814,8 +518,7 @@
     var progress = getLevelProgressPercent();
     var currentXP = getXpInCurrentLevel();
     var neededXP = getXpForNextLevel();
-    var earnedCount = state.badges.length;
-    var totalCount = BADGE_DEFS.length;
+    var ach = getAchievementCounts();
 
     panel.innerHTML =
       '<div class="potok-level-panel__header">' +
@@ -835,9 +538,9 @@
       '<div class="potok-level-panel__progress-text">' +
         currentXP + ' / ' + neededXP + ' XP до уровня ' + (level + 1) +
       '</div>' +
-      '<div class="potok-level-panel__badges-count">' +
-        '🏅 Бейджей: ' + earnedCount + ' / ' + totalCount +
-      '</div>';
+      (ach
+        ? '<div class="potok-level-panel__ach-count"><i data-lucide="trophy"></i>Ачивок: ' + ach.earned + ' / ' + ach.total + '</div>'
+        : '');
 
     article.insertBefore(panel, article.firstChild);
     levelPanelEl = panel;
@@ -850,8 +553,6 @@
     var progress = getLevelProgressPercent();
     var currentXP = getXpInCurrentLevel();
     var neededXP = getXpForNextLevel();
-    var earnedCount = state.badges.length;
-    var totalCount = BADGE_DEFS.length;
 
     var levelNum = levelPanelEl.querySelector('.potok-level-panel__level-num');
     if (levelNum) levelNum.textContent = level;
@@ -865,72 +566,11 @@
     var progressText = levelPanelEl.querySelector('.potok-level-panel__progress-text');
     if (progressText) progressText.textContent = currentXP + ' / ' + neededXP + ' XP до уровня ' + (level + 1);
 
-    var badgesCount = levelPanelEl.querySelector('.potok-level-panel__badges-count');
-    if (badgesCount) badgesCount.textContent = '🏅 Бейджей: ' + earnedCount + ' / ' + totalCount;
-  }
-
-  // ========================
-  // РЕНДЕР СТРАНИЦЫ БЕЙДЖЕЙ
-  // ========================
-  function renderBadgesPage() {
-    var container = document.getElementById('potok-badges-container');
-    if (!container) return;
-
-    var allBadges = getAllBadges();
-    var html = '';
-
-    // Фильтр-табы
-    html += '<div class="potok-badges-tabs">';
-    html += '<button class="potok-badges-tab active" data-filter="all">Все (' + allBadges.length + ')</button>';
-    html += '<button class="potok-badges-tab" data-filter="earned">Полученные (' + state.badges.length + ')</button>';
-    html += '<button class="potok-badges-tab" data-filter="unearned">Неполученные (' + (allBadges.length - state.badges.length) + ')</button>';
-    html += '</div>';
-
-    // Сетка бейджей
-    html += '<div class="potok-badges-grid" id="potok-badges-grid">';
-    for (var i = 0; i < allBadges.length; i++) {
-      var badge = allBadges[i];
-      var def = badge.def;
-      var earned = badge.earned;
-
-      html += '<div class="potok-badge-card potok-badge-card--' + def.rarity + '" ' +
-        'data-earned="' + earned + '" data-rarity="' + def.rarity + '">';
-      html += '<div class="potok-badge-card__icon ' + (earned ? '' : 'potok-badge-card__icon--locked') + '">' +
-        (earned ? def.icon : '❓') + '</div>';
-      html += '<div class="potok-badge-card__name">' + def.name + '</div>';
-      html += '<div class="potok-badge-card__desc">' + def.desc + '</div>';
-      html += '<div class="potok-badge-card__rarity potok-badge-card__rarity--' + def.rarity + '">' +
-        rarityLabel(def.rarity) + '</div>';
-      if (!earned) {
-        html += '<div class="potok-badge-card__lock">🔒</div>';
-      }
-      html += '</div>';
+    var achCount = levelPanelEl.querySelector('.potok-level-panel__ach-count');
+    if (achCount) {
+      var ach = getAchievementCounts();
+      if (ach) achCount.innerHTML = '<i data-lucide="trophy"></i>Ачивок: ' + ach.earned + ' / ' + ach.total;
     }
-    html += '</div>';
-
-    container.innerHTML = html;
-
-    // Обработчики табов
-    var tabs = container.querySelectorAll('.potok-badges-tab');
-    tabs.forEach(function (tab) {
-      tab.addEventListener('click', function () {
-        tabs.forEach(function (t) { t.classList.remove('active'); });
-        tab.classList.add('active');
-
-        var filter = tab.getAttribute('data-filter');
-        var cards = container.querySelectorAll('.potok-badge-card');
-        cards.forEach(function (card) {
-          var earned = card.getAttribute('data-earned') === 'true';
-          if (filter === 'all') {
-            card.style.display = '';
-          } else if (filter === 'earned') {
-            card.style.display = earned ? '' : 'none';
-          } else {
-            card.style.display = earned ? 'none' : '';
-          }
-        });
-      });
-    });
   }
 
   // ========================
@@ -1100,6 +740,7 @@
     var level = getCurrentLevel();
     var progress = getLevelProgressPercent();
     var streak = computeStreaks(state.stats.activityDays);
+    var ach = getAchievementCounts();
 
     // Форматируем даты
     var firstVisitDate = s.firstVisit ? new Date(s.firstVisit).toLocaleDateString('ru-RU', {
@@ -1137,12 +778,12 @@
           '<div class="potok-stats-card__sub">+' + XP_REWARDS.lesson_complete + ' XP за урок</div>' +
         '</div>' +
 
-        // Бейджи
-        '<div class="potok-stats-card potok-stats-card--badges">' +
-          '<div class="potok-stats-card__icon">🏅</div>' +
-          '<div class="potok-stats-card__value">' + state.badges.length + ' / ' + BADGE_DEFS.length + '</div>' +
-          '<div class="potok-stats-card__label">Бейджей</div>' +
-          '<div class="potok-stats-card__sub">' + Math.round((state.badges.length / BADGE_DEFS.length) * 100) + '% собрано</div>' +
+        // Ачивки (единая коллекция наград — personalization.js)
+        '<div class="potok-stats-card potok-stats-card--achievements">' +
+          '<div class="potok-stats-card__icon">🏆</div>' +
+          '<div class="potok-stats-card__value">' + (ach ? ach.earned + ' / ' + ach.total : '—') + '</div>' +
+          '<div class="potok-stats-card__label">Ачивок</div>' +
+          '<div class="potok-stats-card__sub">' + (ach && ach.total ? Math.round((ach.earned / ach.total) * 100) : 0) + '% открыто</div>' +
         '</div>' +
 
         // Уроки
@@ -1282,11 +923,11 @@
       'tool_use': '🔧 Использование инструмента',
       'session_start': '🚀 Начало сессии',
       'level_up_bonus': '⬆️ Бонус за уровень',
-      'badge_': '🏅 Бейдж'
+      'badge_': '🏆 Ачивка' // legacy-записи в логе XP (бейджи → ачивки)
     };
 
     for (var key in map) {
-      if (reason.indexOf(key) === 0) return map[key].replace('badge_', 'badge_' + reason.split('_').slice(2).join('_'));
+      if (reason.indexOf(key) === 0) return map[key];
     }
     return reason;
   }
@@ -1329,8 +970,7 @@
     startSession();
     hookProgressCheckboxes();
 
-    // Рендерим страницы бейджей и статистики
-    renderBadgesPage();
+    // Рендерим страницу статистики (ачивки рендерит personalization.js)
     renderStatsPage();
   }
 

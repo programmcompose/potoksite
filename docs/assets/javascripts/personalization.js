@@ -508,6 +508,29 @@
     } catch (e) { /* ignore */ }
   }
 
+  // Перенос legacy-бейджей в ачивки: единая коллекция, дубли уходят в существующие ачивки
+  var LEGACY_BADGE_MAP = {
+    first_step: 'first_step', five_lessons: 'five_lessons', ten_lessons: 'ten_lessons',
+    quarter_hour: 'quarter_hour', hour_warrior: 'hour_warrior', marathon: 'marathon',
+    five_sessions: 'five_sessions', ten_sessions: 'ten_sessions',
+    level5: 'level5', level10: 'level10', level20: 'level20', explorer: 'explorer',
+    xp_1000: 'xp_1000', xp_5000: 'xp_5000', night_owl: 'night_owl', early_bird: 'early_bird',
+    streak3: 'streak_3', streak7: 'streak_7', streak30: 'streak_30'
+  };
+
+  function migrateLegacyBadges() {
+    try {
+      var raw = localStorage.getItem('potok_badges');
+      if (!raw) return;
+      var ids = JSON.parse(raw);
+      if (!ids || !ids.length) return;
+      for (var i = 0; i < ids.length; i++) {
+        var target = LEGACY_BADGE_MAP[ids[i]];
+        if (target && !isUnlocked(target)) unlockAchievement(target, true);
+      }
+    } catch (e) { /* ignore */ }
+  }
+
   // ========================
   // СТРИК
   // ========================
@@ -894,6 +917,16 @@
   // АЧИВКИ
   // ========================
 
+  // Legacy-статистика из gamification.js (уроки, время, сессии) — для ачивок, перенесённых из бейджей
+  function legacyStats() {
+    try {
+      if (window.PotokGamification && typeof window.PotokGamification.getStats === 'function') {
+        return window.PotokGamification.getStats();
+      }
+    } catch (e) {}
+    return {};
+  }
+
   var ACHIEVEMENT_DEFS = [
     // Прогресс
     { id: 'first_steps', name: 'Первые шаги', desc: 'Выполнил первое задание IY Quest', icon: 'footprints', rarity: 'common',
@@ -978,7 +1011,34 @@
           if (hw && hw.status === 'accepted' && hw.attempts >= 3) return true;
         }
         return false;
-      } }
+      } },
+    // Перенесены из legacy-бейджей: уроки, время в курсе, сессии, уровни
+    { id: 'first_step', name: 'Первый урок', desc: 'Отметить первый урок как пройденный', icon: 'book-open', rarity: 'common',
+      check: function () { return (legacyStats().lessonsDone || 0) >= 1; } },
+    { id: 'five_lessons', name: 'Пять уроков', desc: 'Пройти 5 уроков', icon: 'library', rarity: 'common',
+      check: function () { return (legacyStats().lessonsDone || 0) >= 5; } },
+    { id: 'ten_lessons', name: 'Десять уроков', desc: 'Пройти 10 уроков', icon: 'star', rarity: 'uncommon',
+      check: function () { return (legacyStats().lessonsDone || 0) >= 10; } },
+    { id: 'quarter_hour', name: '15 минут', desc: 'Потратить 15 минут в курсе', icon: 'timer', rarity: 'common',
+      check: function () { return (legacyStats().totalMinutes || 0) >= 15; } },
+    { id: 'hour_warrior', name: 'Часовой воин', desc: 'Потратить 60 минут в курсе', icon: 'clock', rarity: 'uncommon',
+      check: function () { return (legacyStats().totalMinutes || 0) >= 60; } },
+    { id: 'marathon', name: 'Марафонец', desc: 'Потратить 300 минут в курсе', icon: 'hourglass', rarity: 'rare',
+      check: function () { return (legacyStats().totalMinutes || 0) >= 300; } },
+    { id: 'five_sessions', name: 'Регулярность', desc: '5 учебных сессий', icon: 'calendar-check', rarity: 'uncommon',
+      check: function () { return (legacyStats().sessions || 0) >= 5; } },
+    { id: 'ten_sessions', name: 'Преданность', desc: '10 учебных сессий', icon: 'repeat', rarity: 'rare',
+      check: function () { return (legacyStats().sessions || 0) >= 10; } },
+    { id: 'level5', name: 'Ученик', desc: 'Достичь 5 уровня', icon: 'sprout', rarity: 'uncommon',
+      check: function () { return (legacyStats().level || 1) >= 5; } },
+    { id: 'level10', name: 'Продвинутый', desc: 'Достичь 10 уровня', icon: 'rocket', rarity: 'rare',
+      check: function () { return (legacyStats().level || 1) >= 10; } },
+    { id: 'level20', name: 'Мастер', desc: 'Достичь 20 уровня', icon: 'crown', rarity: 'epic',
+      check: function () { return (legacyStats().level || 1) >= 20; } },
+    { id: 'explorer', name: 'Исследователь', desc: 'Посетить все разделы курса', icon: 'compass', rarity: 'rare',
+      check: function () { return (legacyStats().sectionsVisited || 0) >= 5; } },
+    { id: 'xp_5000', name: 'Легенда', desc: 'Набрать 5000 XP', icon: 'gem', rarity: 'legendary',
+      check: function () { return S.profile.totalXP >= 5000; } }
   ];
 
   function getAchievementDef(id) {
@@ -1589,6 +1649,7 @@
   function init() {
     loadAll();
     importLegacyXp();
+    migrateLegacyBadges();
 
     // Ачивка «comeback» — проверили ДО обновления lastActiveAt
     var p = S.profile;

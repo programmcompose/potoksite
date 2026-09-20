@@ -374,6 +374,6 @@ nav:
   - "<span class='nav-icon' data-lucide='lightbulb'></span> Советы ученику": "sovety-uchniku.md"
   - "<span class='nav-icon' data-lucide='help-circle'></span> FAQ": "faq.md"
   - "<span class='nav-icon' data-lucide='book-open'></span> Словарь терминов": "glossary.md"
-  - "<span class='nav-icon' data-lucide='bar-chart-3'></span> Статистика и бейджи": "stats.md"
+  - "<span class='nav-icon' data-lucide='bar-chart-3'></span> Статистика и ачивки": "stats.md"
   - "<span class='nav-icon' data-lucide='map'></span> Маршрут обучения": "roadmap.md"
   - "<span class='nav-icon' data-lucide='sliders-horizontal'></span> Интерактивные инструменты": "interactive-tools.md"

@@ -108,7 +108,7 @@
     var pages = [
       ['glossary', 'Словарь терминов', 'book-open'],
       ['faq', 'FAQ — частые вопросы', 'circle-help'],
-      ['stats', 'Статистика и бейджи', 'bar-chart-3'],
+      ['stats', 'Статистика и ачивки', 'bar-chart-3'],
       ['roadmap', 'Маршрут курса', 'route'],
       ['interactive-tools', 'Все интерактивные инструменты', 'layout-grid']
     ];
