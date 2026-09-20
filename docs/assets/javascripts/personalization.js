@@ -8,6 +8,15 @@
 (function () {
   'use strict';
 
+  // --- Базовый URL сайта (GH Pages: /potoksite/, локально: /) ---
+  var ASSET_BASE = '';
+  try {
+    var cs = document.currentScript;
+    if (cs && cs.src && cs.src.indexOf('/assets/') !== -1) {
+      ASSET_BASE = cs.src.slice(0, cs.src.indexOf('/assets/'));
+    }
+  } catch (e) {}
+
   // ========================
   // КОНФИГУРАЦИЯ
   // ========================
@@ -1480,7 +1489,7 @@
           '<div class="potok-pers-rec__title">' + esc(r.title) + '</div>' +
           '<div class="potok-pers-rec__desc">' + esc(r.description) + '</div>' +
         '</div>' +
-        (r.actionUrl ? '<a class="potok-pers-rec__action" href="' + esc(r.actionUrl) + '">' + esc(r.actionLabel || 'Перейти') + '</a>' : '') +
+        (r.actionUrl ? '<a class="potok-pers-rec__action" href="' + esc(/^https?:\/\//.test(r.actionUrl) ? r.actionUrl : ASSET_BASE + r.actionUrl) + '">' + esc(r.actionLabel || 'Перейти') + '</a>' : '') +
       '</div>';
     }
     container.innerHTML = html;
