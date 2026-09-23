@@ -12,6 +12,8 @@
 
 ![SSL G-Master Buss Compressor](../assets/waves-ssl-glue-ui.png)
 
+![VCA-компрессия](../assets/VCA compression.png)
+
 - **Что это:** Эмуляция мастер-шинного компрессора SSL 4000 G. VCA-механика — быстрая и прозрачная, без «окраски».
     
 - **Особенности:** Не давит звук, а связывает его. Добавляет плотность и «аналоговость» без потери деталей.
@@ -26,6 +28,8 @@
 ## LA-2A — оптический компрессор
 
 ![Teletronix LA-2A Leveler Collection](../assets/uad-la-2a-ui.png)
+
+![Оптическая компрессия](../assets/OPTO compression.png)
 
 - **Что это:** Эмуляция *Teletronix LA-2A Leveling Amplifier* (1960-е). Самый известный вокальный компрессор в истории — на нём сведены тысячи хитов.
     
@@ -43,6 +47,8 @@
 ## 1176 — FET-компрессор
 
 ![UA 1176 Classic FET Compressor](../assets/uad-ua-1176-ui.png)
+
+![FET-компрессия](../assets/FET compresstion.png)
 
 - **Что это:** Эмуляция *UREI/UA 1176LN Limiting Amplifier* (1968). Фирменный «панч» рок- и поп-записей.
     
@@ -62,6 +68,8 @@
 ![Fairchild 670 (UAD)](../assets/uad-fairchild-670-ui.png)
 
 ![Fairchild Tube Limiter Collection](../assets/uad-fairchild-670-ui2.png)
+
+![Ламповая компрессия Fairchild 670](../assets/TUBE 670 compression.png)
 
 - **Что это:** Эмуляция *Fairchild CMA 381* (серии 660/670, 1950–60-е). Компрессор с самым «дорогим» звуком в истории — на нём сведены записи The Beatles, Beach Boys и десятки других классических альбомов.
     
