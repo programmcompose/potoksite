@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Интерактивные инструменты — Курс по музыкальному продакшену</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #14141F;
+    --panel: #20202E;
+    --line: #35354B;
+    --ink: #F5F5FA;
+    --muted: #9C9CB0;
+    --orange: #FF6B1A;
+    --cyan: #3DE8FF;
+    --pink: #FF4D8D;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 50% -12%, rgba(255, 190, 84, .13) 0%, transparent 55%),
+      radial-gradient(circle, rgba(255, 255, 255, .035) 1px, transparent 1.4px);
+    background-size: auto, 28px 28px;
+    color: var(--ink);
+    min-height: 100vh;
+    line-height: 1.5;
+  }
+  ::selection { background: rgba(61, 232, 255, .3); }
+
+  /* === Top bar === */
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; justify-content: space-between; align-items: center;
+    height: 58px; padding: 0 28px;
+    background: rgba(20, 20, 31, .78);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .brand-dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--orange), var(--cyan));
+    box-shadow: 0 0 12px rgba(61, 232, 255, .7);
+  }
+  .back-link { font-size: 14px; color: var(--muted); text-decoration: none; transition: color .15s ease; }
+  .back-link:hover { color: var(--cyan); }
+
+  .container { max-width: 1040px; margin: 0 auto; padding: 56px 28px 80px; }
+
+  /* === Header === */
+  .eyebrow {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--cyan); margin-bottom: 16px;
+  }
+  h1 {
+    font-weight: 800; font-size: clamp(38px, 5.5vw, 54px);
+    letter-spacing: -.025em; line-height: 1.08;
+    margin-bottom: 18px;
+    background-image: linear-gradient(90deg, #FFC46B 0%, var(--orange) 38%, var(--cyan) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Плёночное зерно поверх всего (как на tailwindcss.com) */
+  body::after {
+    content: "";
+    position: fixed; inset: 0;
+    pointer-events: none; z-index: 999;
+    opacity: .05;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180' viewBox='0 0 180 180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px 180px;
+  }
+  .lede {
+    font-size: 17.5px; color: var(--muted);
+    max-width: 620px; line-height: 1.65; margin-bottom: 48px;
+  }
+
+  /* === Hero card === */
+  .hero-card {
+    position: relative; display: block; overflow: hidden;
+    background: linear-gradient(135deg, rgba(43, 26, 12, .82) 0%, rgba(32, 32, 46, .58) 45%);
+    backdrop-filter: blur(16px) saturate(1.2); -webkit-backdrop-filter: blur(16px) saturate(1.2);
+    border: 1px solid rgba(255, 107, 26, .45);
+    border-radius: 14px;
+    padding: 40px 36px 56px;
+    text-decoration: none; color: inherit;
+    transition: border-color .2s ease, transform .2s ease, box-shadow .25s ease;
+  }
+  .hero-card:hover {
+    border-color: var(--orange);
+    transform: translateY(-2px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, .55), 0 0 0 1px rgba(255, 107, 26, .2), 0 0 64px rgba(255, 107, 26, .18);
+  }
+  .hero-wave {
+    position: absolute; left: 0; right: 0; bottom: -6px; height: 80px;
+    width: 100%; pointer-events: none; opacity: .6;
+  }
+  .hero-top { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; position: relative; z-index: 1; }
+  .hero-icon {
+    width: 52px; height: 52px; border-radius: 10px;
+    background: rgba(255, 107, 26, .14);
+    border: 1px solid rgba(255, 107, 26, .5);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 26px; flex-shrink: 0;
+  }
+  .hero-card h2 { font-weight: 700; font-size: 30px; letter-spacing: -.015em; }
+  .hero-card p {
+    color: var(--muted); font-size: 16px; line-height: 1.65;
+    max-width: 680px; margin-bottom: 28px; position: relative; z-index: 1;
+  }
+  .cta-row { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; position: relative; z-index: 1; }
+  .hero-cta {
+    display: inline-block;
+    background: linear-gradient(90deg, var(--orange), #FFA24D);
+    color: #170B03; font-weight: 700; font-size: 15px;
+    padding: 14px 30px; border-radius: 9px;
+    box-shadow: 0 0 24px rgba(255, 107, 26, .35);
+    transition: filter .15s ease, transform .15s ease, box-shadow .2s ease;
+  }
+  .hero-card:hover .hero-cta { filter: brightness(1.08); transform: translateY(-1px); box-shadow: 0 0 36px rgba(255, 107, 26, .55); }
+
+  /* === Tags (неоновые) === */
+  .tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase;
+    padding: 5px 12px; border-radius: 7px;
+    margin-right: 6px; margin-bottom: 4px;
+  }
+  .tag-orange { color: #FFA24D; background: rgba(255, 107, 26, .10); border: 1px solid rgba(255, 107, 26, .5); }
+  .tag-cyan   { color: var(--cyan); background: rgba(61, 232, 255, .08); border: 1px solid rgba(61, 232, 255, .45); }
+  .tag-pink   { color: #FF7FAC; background: rgba(255, 77, 141, .10); border: 1px solid rgba(255, 77, 141, .5); }
+  .tag-yellow { color: #FFE14D; background: rgba(255, 225, 77, .08); border: 1px solid rgba(255, 225, 77, .42); }
+
+  /* === Section === */
+  .section-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; letter-spacing: .16em; text-transform: uppercase;
+    color: var(--muted);
+    margin: 52px 0 20px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .section-title::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+  /* === Tool grid (равномерные карточки) === */
+  .tool-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr)); gap: 16px; }
+
+  .tool-card {
+    position: relative; overflow: hidden;
+    background: rgba(32, 32, 46, .52);
+    backdrop-filter: blur(14px) saturate(1.25); -webkit-backdrop-filter: blur(14px) saturate(1.25);
+    border: 1px solid rgba(255, 255, 255, .07);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, .04);
+    border-radius: 12px;
+    padding: 26px;
+    text-decoration: none; color: inherit;
+    display: block;
+    transition: border-color .2s ease, transform .2s ease, box-shadow .25s ease;
+  }
+
+  .tool-card:hover {
+    border-color: rgba(61, 232, 255, .6);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, .5), 0 0 0 1px rgba(61, 232, 255, .18), 0 0 44px rgba(61, 232, 255, .10);
+  }
+  .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .tool-icon { font-size: 26px; }
+  .tool-icon--lucide { width: 26px; height: 26px; color: var(--orange); stroke: var(--orange); display: inline-block; vertical-align: middle; }
+  .card-index {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: #565674; letter-spacing: .1em;
+  }
+  .tool-card h3 { font-weight: 600; font-size: 17.5px; letter-spacing: -.01em; margin-bottom: 9px; }
+  .tool-card p { font-size: 14.5px; color: var(--muted); line-height: 1.62; margin-bottom: 16px; }
+
+  /* === Footer === */
+  .footer-note {
+    margin-top: 56px; padding-top: 22px;
+    border-top: 1px solid var(--line);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
+    color: #606078;
+  }
+
+  @media (max-width: 640px) {
+    .topbar { padding: 0 18px; }
+    .container { padding: 36px 18px 60px; }
+    .hero-card { padding: 28px 24px 52px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span class="brand-dot"></span>Potok / Tools</div>
+  <a href="https://programmcompose.github.io/potoksite/" class="back-link">Главная курса →</a>
+</div>
+
+<div class="container">
+
+  <header>
+    <h1>Интерактивные инструменты</h1>
+    <p class="lede">Практикуйте теорию музыки с помощью интерактивных инструментов прямо в браузере — без установки и регистрации.</p>
+  </header>
+
+  <a href="quiz/index.html" class="hero-card">
+    <div class="hero-top">
+      <div class="hero-icon">🎯</div>
+      <h2>Тесты по курсу</h2>
+    </div>
+    <p>Проверьте знания после каждого этапа: вопросы с мгновенным разбором — почему верно и где ошиблись. Лучший результат сохраняется в браузере, итог можно отправить в Telegram.</p>
+    <div class="cta-row">
+      <span class="hero-cta">Пройти тесты →</span>
+      <span>
+        <span class="tag tag-orange">Тесты</span>
+        <span class="tag tag-cyan">Прогресс</span>
+      </span>
+    </div>
+    <svg class="hero-wave" viewBox="0 0 1040 80" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 46 Q32.5 14 65 46 T130 46 T195 46 T260 46 T325 46 T390 46 T455 46 T520 46 T585 46 T650 46 T715 46 T780 46 T845 46 T910 46 T975 46 T1040 46"
+            fill="none" stroke="#FF6B1A" stroke-width="1.5" opacity=".6"/>
+      <path d="M0 54 Q32.5 32 65 54 T130 54 T195 54 T260 54 T325 54 T390 54 T455 54 T520 54 T585 54 T650 54 T715 54 T780 54 T845 54 T910 54 T975 54 T1040 54"
+            fill="none" stroke="#3DE8FF" stroke-width="1.2" opacity=".4"/>
+    </svg>
+  </a>
+
+  <h2 class="section-title">Другие инструменты</h2>
+
+  <div class="tool-grid">
+    <a href="wavetable/index.html" class="tool-card">
+      <div class="card-head"><span class="tool-icon">🌊</span><span class="card-index">01</span></div>
+      <h3>Аналоговый синтезатор</h3>
+      <p>Субтрактивный синтез в стиле Moog: волны, лестничный фильтр, ADSR, LFO. Короткий туториал и пресеты Bass / Lead / Acid — крути слева направо и сразу слышишь, зачем каждая ручка.</p>
+      <span class="tag tag-cyan">Синтез</span><span class="tag tag-yellow">Аудио</span>
+    </a>
+
+    <a href="harmony-map/index.html" class="tool-card">
+      <div class="card-head"><span class="tool-icon">🎹</span><span class="card-index">02</span></div>
+      <h3>Карта гармоний</h3>
+      <p>Исследуйте круг интервалов, играйте в игру на знание аккордов и стройте собственные аккордовые прогрессии. Три режима: исследование, игра, конструктор.</p>
+      <span class="tag tag-orange">Теория</span><span class="tag tag-pink">Игра</span>
+    </a>
+
+    <a href="frequency-map/index.html" class="tool-card">
+      <div class="card-head"><span class="tool-icon">📊</span><span class="card-index">03</span></div>
+      <h3>Карта частот</h3>
+      <p>Интерактивная карта частотных диапазонов инструментов: барабаны, бас, гитары, синтезаторы, вокал, живые инструменты. Фильтрация по группам и подсказки при наведении.</p>
+      <span class="tag tag-orange">Теория</span><span class="tag tag-cyan">Частоты</span>
+    </a>
+
+    <a href="eq-trainer/index.html" class="tool-card">
+      <div class="card-head"><span class="tool-icon">🎚️</span><span class="card-index">04</span></div>
+      <h3>EQ-тренажёр</h3>
+      <p>Сравнивайте звук до и после эквализации. Три уровня: от низ/середина/верх до точных частот и децибел. Встроенные сэмплы или свой трек.</p>
+      <span class="tag tag-orange">Теория</span><span class="tag tag-yellow">Аудио</span>
+    </a>
+
+    <a href="https://programmcompose.github.io/potoksite/tools/iy-quest/index.html" class="tool-card">
+      <div class="card-head"><span class="tool-icon">🎮</span><span class="card-index">05</span></div>
+      <h3>Прохождение Потока — IY Quest</h3>
+      <p>Геймифицированный трекер прогресса по курсу. 100 заданий, 10 этапов, XP, ранги и достижения. Данные сохраняются в браузере.</p>
+      <span class="tag tag-pink">Геймификация</span><span class="tag tag-cyan">Прогресс</span>
+    </a>
+
+    <a href="compressor/index.html" class="tool-card">
+      <div class="card-head"><i data-lucide="audio-lines" class="tool-icon tool-icon--lucide"></i><span class="card-index">06</span></div>
+      <h3>Компрессор</h3>
+      <p>Слышимая компрессия: синтезированный бит, реальный DSP с soft knee, GR-метр и кривая передачи. A/B bypass — сравнивай до/после одним нажатием. Плюс слепой тест: угадай, какой из двух звуков без компрессии.</p>
+      <span class="tag tag-orange">Аудио</span><span class="tag tag-cyan">Сведение</span>
+    </a>
+
+    <a href="delay/index.html" class="tool-card">
+      <div class="card-head"><i data-lucide="repeat" class="tool-icon tool-icon--lucide"></i><span class="card-index">07</span></div>
+      <h3>Delay / Делэй</h3>
+      <p>Слышимый делэй: синтезированный бит, дискретные повторы с low/high-фильтрами и Ping-Pong. Синхронизация Time с BPM (1/16…1/2), пресеты от slap до длинного ½, A/B bypass.</p>
+      <span class="tag tag-orange">Аудио</span><span class="tag tag-cyan">Сведение</span>
+    </a>
+
+    <a href="reverb/index.html" class="tool-card">
+      <div class="card-head"><i data-lucide="waves" class="tool-icon tool-icon--lucide"></i><span class="card-index">08</span></div>
+      <h3>Reverb / Реверберация</h3>
+      <p>Слышимый реверб: конволюция с генерируемым импульсом, Pre-Delay и HPF/LPF на хвосте. Пресеты от Room до Cathedral, A/B bypass, свой аудиофайл или микрофон. Плюс слепой тест: угадай, какой из двух звуков сухой.</p>
+      <span class="tag tag-orange">Аудио</span><span class="tag tag-cyan">Сведение</span>
+    </a>
+  </div>
+
+  <div class="footer-note">Все инструменты работают локально в вашем браузере · Звук запускается по жесту пользователя</div>
+</div>
+
+<script src="https://unpkg.com/lucide@latest"></script>
+<script>if (window.lucide) lucide.createIcons({ attrs: { 'stroke-width': 1.8 } });</script>
+</body>
+</html>

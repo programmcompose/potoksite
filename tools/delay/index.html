@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Delay / Делэй — Интерактивный инструмент</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #14141F;
+    --panel: #20202E;
+    --line: #35354B;
+    --ink: #F5F5FA;
+    --muted: #9C9CB0;
+    --orange: #FF6B1A;
+    --orange-hover: #FF8A47;
+    --cyan: #3DE8FF;
+    --ok: #34d399;
+    --hot: #f87171;
+
+    /* Токены для кнобов (виджет) */
+    --accent-orange: #FF6B1A;
+    --border-default: #35354B;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 50% -12%, rgba(255, 190, 84, .13) 0%, transparent 55%),
+      radial-gradient(circle, rgba(255, 255, 255, .035) 1px, transparent 1.4px);
+    background-size: auto, 28px 28px;
+    color: var(--ink);
+    min-height: 100vh;
+    line-height: 1.5;
+    padding-bottom: 60px;
+  }
+
+  .topbar {
+    position: sticky; top: 0; z-index: 50;
+    display: flex; justify-content: space-between; align-items: center;
+    height: 58px; padding: 0 28px;
+    background: rgba(20, 20, 31, .78);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  .brand {
+    display: flex; align-items: center; gap: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--muted);
+  }
+  .brand-dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--orange), var(--cyan));
+    box-shadow: 0 0 12px rgba(61, 232, 255, .7);
+  }
+  .back-link { font-size: 14px; color: var(--muted); text-decoration: none; transition: color .15s ease; }
+  .back-link:hover { color: var(--orange-hover); }
+
+  .container { max-width: 920px; margin: 0 auto; padding: 40px 20px 0; }
+
+  h1 {
+    font-weight: 800; font-size: clamp(30px, 5vw, 44px);
+    letter-spacing: -.02em; line-height: 1.1; margin-bottom: 12px;
+  }
+  .subtitle { color: var(--muted); font-size: 16.5px; max-width: 720px; line-height: 1.65; margin-bottom: 28px; }
+
+  .hint {
+    margin-top: 24px; padding: 14px 16px;
+    background: rgba(255, 107, 26, .07);
+    border: 1px solid rgba(255, 107, 26, .3);
+    border-radius: 10px;
+    font-size: 14px; color: var(--muted); line-height: 1.6;
+  }
+  .hint b { color: var(--ink); }
+
+  /* ===== Widget ===== */
+  .pdy {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 16px;
+    margin: 20px 0;
+    color: var(--ink);
+    font-size: 14px;
+  }
+  .pdy * { box-sizing: border-box; }
+
+  .pdy-head {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  .pdy-btn, .pdy-bypass, .pdy-preset, .pdy-src, .pdy-toggle {
+    font-family: inherit;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color .15s ease, color .15s ease, border-color .15s ease, box-shadow .2s ease;
+  }
+
+  .pdy-play {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #170B03;
+    background: var(--orange);
+    border: none;
+  }
+  .pdy-play:hover { background: var(--orange-hover); }
+  .pdy-play.is-playing { animation: pdy-pulse 1.2s ease-in-out infinite; }
+
+  @keyframes pdy-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 107, 26, .45); }
+    50%      { box-shadow: 0 0 0 6px rgba(255, 107, 26, 0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pdy-play.is-playing { animation: none; }
+  }
+
+  .pdy-bypass {
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-width: 92px;
+    padding: 7px 16px;
+    background: transparent;
+    border: 1.5px solid var(--line);
+    color: var(--muted);
+  }
+  .pdy-bypass-t { font-size: 13px; font-weight: 700; letter-spacing: .08em; }
+  .pdy-bypass-s { font-size: 10.5px; opacity: .75; margin-top: 1px; }
+  .pdy-bypass:hover { border-color: var(--orange); color: var(--ink); }
+  .pdy-bypass.is-on {
+    background: var(--hot);
+    border-color: var(--hot);
+    color: #1a0505;
+    box-shadow: 0 0 18px rgba(248, 113, 113, .35);
+  }
+
+  .pdy-presets { display: flex; gap: 6px; flex-wrap: wrap; margin-left: auto; }
+  .pdy-preset {
+    padding: 7px 12px;
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--line);
+  }
+  .pdy-preset:hover { color: var(--orange); border-color: var(--orange); }
+  .pdy-preset.is-active {
+    color: #170B03;
+    background: var(--orange);
+    border-color: var(--orange);
+    font-weight: 600;
+  }
+
+  .pdy-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .pdy-row-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-right: 4px;
+  }
+  .pdy-src, .pdy-toggle {
+    padding: 6px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--line);
+  }
+  .pdy-src:hover, .pdy-toggle:hover { color: var(--ink); border-color: var(--orange); }
+  .pdy-src.is-active, .pdy-toggle.is-active {
+    color: #170B03;
+    background: var(--cyan);
+    border-color: var(--cyan);
+    font-weight: 600;
+  }
+
+  .pdy-viz {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .pdy-wave {
+    flex: 1;
+    background: #181825;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    height: 140px;
+    display: block;
+    width: 100%;
+  }
+  .pdy-echo-wrap {
+    width: 72px;
+    background: #181825;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 8px 4px 6px;
+    position: relative;
+  }
+  .pdy-echo-bar {
+    width: 18px;
+    background: linear-gradient(to top, var(--orange), var(--cyan));
+    border-radius: 4px 4px 0 0;
+    transition: height .08s ease;
+    min-height: 2px;
+  }
+  .pdy-echo-label {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 4px;
+    text-align: center;
+    line-height: 1.2;
+  }
+
+  /* ---------- Params (knobs) ---------- */
+  .pdy-params {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 14px 8px;
+    margin-top: 6px;
+  }
+  .pdy-param {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    min-width: 0;
+  }
+  .pdy-plabel {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .pdy-pval {
+    font-family: 'JetBrains Mono', ui-monospace, monospace;
+    font-size: 12.5px;
+    color: var(--orange);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .pdy-knob {
+    position: relative;
+    width: 64px;
+    height: 64px;
+    margin-top: 3px;
+    border-radius: 50%;
+    cursor: ns-resize;
+    touch-action: none;
+    user-select: none;
+    -webkit-user-select: none;
+    transition: transform .12s ease;
+  }
+  .pdy-knob:focus { outline: none; }
+  .pdy-knob:focus-visible { box-shadow: 0 0 0 2px var(--orange); }
+  .pdy-knob.is-dragging { transform: scale(1.05); cursor: grabbing; }
+  .pdy-knob-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+
+  .pdy-sync-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+  }
+  .pdy-sync {
+    padding: 4px 10px;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    cursor: pointer;
+  }
+  .pdy-sync:hover { color: var(--orange); border-color: var(--orange); }
+  .pdy-sync.is-active {
+    color: #170B03;
+    background: var(--orange);
+    border-color: var(--orange);
+    font-weight: 600;
+  }
+
+  @media (max-width: 640px) {
+    .topbar { padding: 0 18px; }
+    .container { padding: 28px 14px 0; }
+    .pdy-params { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px 6px; }
+    .pdy-knob { width: 52px; height: 52px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand"><span class="brand-dot"></span>Potok / Tools</div>
+  <a href="../index.html" class="back-link">← Все инструменты</a>
+</div>
+
+<div class="container">
+  <h1>Delay / Делэй</h1>
+  <p class="subtitle">Повторения (эхо) исходного сигнала. Чёткие дискретные повторы вместо «облака» реверба. Крути Time, Feedback и Mix — сразу слышишь, как работает каждый параметр. Есть Ping-Pong, фильтры и синхронизация с BPM.</p>
+
+  <div class="pdy" id="delay-widget">
+    <div class="pdy-head">
+      <button type="button" class="pdy-btn pdy-play" id="btn-play">
+        <span id="play-icon">▶</span> <span id="play-text">Play</span>
+      </button>
+      <button type="button" class="pdy-bypass" id="btn-bypass" title="Горячая клавиша B">
+        <span class="pdy-bypass-t">BYPASS</span>
+        <span class="pdy-bypass-s">A/B</span>
+      </button>
+      <div class="pdy-presets" id="presets"></div>
+    </div>
+
+    <div class="pdy-row">
+      <span class="pdy-row-label">Сигнал</span>
+      <button type="button" class="pdy-src is-active" data-src="beat">Бит</button>
+      <button type="button" class="pdy-src" data-src="kick">Kick</button>
+      <button type="button" class="pdy-src" data-src="snare">Snare</button>
+      <button type="button" class="pdy-src" data-src="hat">Hat</button>
+      <button type="button" class="pdy-toggle" id="btn-pingpong" title="Чётные/нечётные повторы влево-вправо">Ping-Pong</button>
+    </div>
+
+    <div class="pdy-viz">
+      <canvas class="pdy-wave" id="wave" width="700" height="140"></canvas>
+      <div class="pdy-echo-wrap">
+        <div class="pdy-echo-bar" id="echo-bar" style="height: 4px;"></div>
+        <div class="pdy-echo-label">wet<br><span id="echo-val">0%</span></div>
+      </div>
+    </div>
+
+    <div class="pdy-params">
+      <div class="pdy-param" data-key="time">
+        <span class="pdy-plabel">Time</span>
+        <div class="pdy-knob" tabindex="0" role="slider" aria-orientation="vertical" aria-label="Time"><canvas class="pdy-knob-canvas"></canvas></div>
+        <span class="pdy-pval" id="time-val">375 ms</span>
+        <div class="pdy-sync-row" id="sync-buttons">
+          <button type="button" class="pdy-sync" data-ms="94">1/16</button>
+          <button type="button" class="pdy-sync" data-ms="188">1/8</button>
+          <button type="button" class="pdy-sync is-active" data-ms="375">1/4</button>
+          <button type="button" class="pdy-sync" data-ms="250">1/8T</button>
+          <button type="button" class="pdy-sync" data-ms="750">1/2</button>
+        </div>
+      </div>
+      <div class="pdy-param" data-key="feedback">
+        <span class="pdy-plabel">Feedback</span>
+        <div class="pdy-knob" tabindex="0" role="slider" aria-orientation="vertical" aria-label="Feedback"><canvas class="pdy-knob-canvas"></canvas></div>
+        <span class="pdy-pval" id="feedback-val">35%</span>
+      </div>
+      <div class="pdy-param" data-key="mix">
+        <span class="pdy-plabel">Mix / Wet</span>
+        <div class="pdy-knob" tabindex="0" role="slider" aria-orientation="vertical" aria-label="Mix"><canvas class="pdy-knob-canvas"></canvas></div>
+        <span class="pdy-pval" id="mix-val">40%</span>
+      </div>
+      <div class="pdy-param" data-key="lowcut">
+        <span class="pdy-plabel">Low-cut</span>
+        <div class="pdy-knob" tabindex="0" role="slider" aria-orientation="vertical" aria-label="Low-cut"><canvas class="pdy-knob-canvas"></canvas></div>
+        <span class="pdy-pval" id="lowcut-val">200 Hz</span>
+      </div>
+      <div class="pdy-param" data-key="highcut">
+        <span class="pdy-plabel">High-cut</span>
+        <div class="pdy-knob" tabindex="0" role="slider" aria-orientation="vertical" aria-label="High-cut"><canvas class="pdy-knob-canvas"></canvas></div>
+        <span class="pdy-pval" id="highcut-val">8.0 kHz</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="hint">
+    <b>Как слушать:</b> включи звук, нажми <b>Play</b>. Переключай <b>BYPASS</b> (или клавишу <b>B</b>), чтобы сравнивать «до» и «после».
+    Time синхронизируй с BPM (кнопки 1/16 … 1/2). Feedback выше 60% — много повторений с затуханием.
+    Low-cut убирает «грязь», High-cut делает повторы мягче и «дальше». Ping-Pong расширяет стерео.
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  const BPM = 80;
+  const BEAT_SEC = 60 / BPM;
+  const STEP_SEC = BEAT_SEC / 4;
+  const BARS = 2;
+  const STEPS = BARS * 16;
+  const LOOP_SEC = STEPS * STEP_SEC;
+
+  const PRESETS = [
+    { id: 'slap',   label: 'Slap (вокал)', values: { time: 90,  feedback: 15, mix: 25, lowcut: 300, highcut: 10000, pingpong: false } },
+    { id: 'snare',  label: 'Snare 1/16',   values: { time: 94,  feedback: 25, mix: 30, lowcut: 400, highcut: 9000,  pingpong: false } },
+    { id: 'eighth', label: 'Мелодия 1/8',  values: { time: 188, feedback: 40, mix: 35, lowcut: 250, highcut: 7000,  pingpong: true  } },
+    { id: 'quarter',label: '¼ + space',    values: { time: 375, feedback: 45, mix: 40, lowcut: 200, highcut: 6000,  pingpong: true  } },
+    { id: 'long',   label: 'Долгий ½',     values: { time: 750, feedback: 55, mix: 45, lowcut: 150, highcut: 5000,  pingpong: true  } }
+  ];
+
+  let audioCtx = null;
+  let isPlaying = false;
+  let isBypass = false;
+  let sourceMode = 'beat';
+  let pingPong = false;
+  let dryGain, wetGain, delayL, delayR, feedbackGainL, feedbackGainR, lowpass, highpass, merger, splitter;
+  let bufferSource = null;
+  let dryBuffer = null;
+  let analyser = null;
+  let animId = null;
+  let currentParams = {
+    time: 375,
+    feedback: 0.35,
+    mix: 0.40,
+    lowcut: 200,
+    highcut: 8000
+  };
+
+  // ===== Synth (same spirit as compressor) =====
+  function dbToLin(db) { return Math.pow(10, db / 20); }
+
+  function setupCanvas(canvas) {
+    const dpr = window.devicePixelRatio || 1;
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    if (w === 0 || h === 0) return null;
+    const W = Math.round(w * dpr), H = Math.round(h * dpr);
+    if (canvas.width !== W || canvas.height !== H) { canvas.width = W; canvas.height = H; }
+    const g = canvas.getContext('2d');
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return { ctx: g, w, h };
+  }
+
+  function cssVar(name, fallback) {
+    try {
+      const v = getComputedStyle(document.documentElement).getPropertyValue(name);
+      const t = (v || '').trim();
+      return t || fallback;
+    } catch (e) { return fallback; }
+  }
+
+  // ---------- Кноб (крутилка): drag / wheel / клавиатура / dblclick-reset ----------
+  const KNOB_SWEEP_DEG = 270;   // ход по окружности
+  const KNOB_START_DEG = 135;   // canvas-угол начала хода (левый нижний)
+  const KNOB_TICKS = 11;
+
+  function knobAngle(t) { return (KNOB_START_DEG + KNOB_SWEEP_DEG * t) * Math.PI / 180; }
+
+  class Knob {
+    constructor(opts) {
+      this.el = opts.el;
+      this.canvas = opts.canvas;
+      this.min = opts.min;
+      this.max = opts.max;
+      this.log = !!opts.log;
+      this.fmt = opts.fmt || (v => String(v));
+      this.defaultValue = opts.defaultValue != null ? opts.defaultValue : opts.value;
+      this.value = opts.value != null ? opts.value : opts.defaultValue;
+      this.onChange = opts.onChange || (() => {});
+      this.dragging = false;
+      this._lastY = 0;
+      this._bind();
+      this.draw();
+    }
+
+    tOf(v) {
+      v = Math.max(this.min, Math.min(this.max, v));
+      if (!this.log) return (v - this.min) / (this.max - this.min);
+      const t = (Math.log(v) - Math.log(this.min)) / (Math.log(this.max) - Math.log(this.min));
+      return Math.max(0, Math.min(1, t));
+    }
+
+    valueOfT(t) {
+      t = Math.max(0, Math.min(1, t));
+      if (!this.log) return this.min + t * (this.max - this.min);
+      return Math.exp(Math.log(this.min) + t * (Math.log(this.max) - Math.log(this.min)));
+    }
+
+    setValue(v, fire) {
+      v = Math.max(this.min, Math.min(this.max, v));
+      if (v === this.value && !fire) return;
+      this.value = v;
+      this._updateAria();
+      this.draw();
+      if (fire) this.onChange(v);
+    }
+
+    setValueSilent(v) {
+      this.value = Math.max(this.min, Math.min(this.max, v));
+      this._updateAria();
+      this.draw();
+    }
+
+    reset() { this.setValue(this.defaultValue, true); }
+
+    _updateAria() {
+      const el = this.el;
+      el.setAttribute('aria-valuemin', String(this.min));
+      el.setAttribute('aria-valuemax', String(this.max));
+      el.setAttribute('aria-valuenow', String(Math.round(this.value * 100) / 100));
+      el.setAttribute('aria-valuetext', this.fmt(this.value));
+    }
+
+    _bind() {
+      const self = this;
+      const el = this.el;
+
+      el.addEventListener('pointerdown', (e) => {
+        if (el.setPointerCapture) { try { el.setPointerCapture(e.pointerId); } catch (err) {} }
+        self.dragging = true;
+        self._lastY = e.clientY;
+        el.classList.add('is-dragging');
+        el.focus();
+        e.preventDefault();
+      });
+
+      el.addEventListener('pointermove', (e) => {
+        if (!self.dragging) return;
+        const dy = self._lastY - e.clientY;
+        self._lastY = e.clientY;
+        let step = dy / 160;
+        if (e.shiftKey) step /= 8;
+        self.setValue(self.valueOfT(self.tOf(self.value) + step), true);
+      });
+
+      const endDrag = () => {
+        if (!self.dragging) return;
+        self.dragging = false;
+        el.classList.remove('is-dragging');
+        self.draw();
+      };
+      el.addEventListener('pointerup', endDrag);
+      el.addEventListener('pointercancel', endDrag);
+
+      el.addEventListener('wheel', (e) => {
+        e.preventDefault();
+        let d = e.deltaY;
+        if (e.deltaMode === 1) d *= 32;
+        const step = (d > 0 ? -1 : 1) * (e.shiftKey ? 0.004 : 0.02);
+        self.setValue(self.valueOfT(self.tOf(self.value) + step), true);
+      }, { passive: false });
+
+      el.addEventListener('dblclick', () => { self.reset(); });
+
+      el.addEventListener('keydown', (e) => {
+        let t = self.tOf(self.value);
+        if (e.key === 'ArrowUp' || e.key === 'ArrowRight') t += 0.01;
+        else if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') t -= 0.01;
+        else if (e.key === 'PageUp') t += 0.1;
+        else if (e.key === 'PageDown') t -= 0.1;
+        else if (e.key === 'Home') t = 0;
+        else if (e.key === 'End') t = 1;
+        else return;
+        e.preventDefault();
+        self.setValue(self.valueOfT(t), true);
+      });
+    }
+
+    draw() {
+      const s = setupCanvas(this.canvas);
+      if (!s) return;
+      const g = s.ctx, w = s.w, h = s.h;
+      const cx = w / 2, cy = h / 2;
+      const rOuter = Math.min(w, h) / 2 - 2;
+      const accent = cssVar('--accent-orange', '#FF6B1A');
+      const t = this.tOf(this.value);
+
+      g.clearRect(0, 0, w, h);
+
+      // деления по окружности
+      g.lineWidth = 1.5;
+      for (let i = 0; i < KNOB_TICKS; i++) {
+        const tt = i / (KNOB_TICKS - 1);
+        const a = knobAngle(tt);
+        g.strokeStyle = 'rgba(148, 155, 170, .32)';
+        g.beginPath();
+        g.moveTo(cx + Math.cos(a) * rOuter, cy + Math.sin(a) * rOuter);
+        g.lineTo(cx + Math.cos(a) * (rOuter - 4), cy + Math.sin(a) * (rOuter - 4));
+        g.stroke();
+      }
+
+      // корпус
+      const bodyR = rOuter - 10.5;
+      g.beginPath();
+      g.arc(cx, cy, bodyR, 0, Math.PI * 2);
+      g.fillStyle = 'rgba(128, 128, 128, .07)';
+      g.fill();
+      g.strokeStyle = cssVar('--border-default', 'rgba(255, 255, 255, .1)');
+      g.lineWidth = 1;
+      g.stroke();
+
+      // дуга значения
+      const arcR = rOuter - 7.5;
+      if (this.dragging) { g.shadowColor = accent; g.shadowBlur = 9; }
+      g.strokeStyle = accent;
+      g.lineWidth = 3;
+      g.lineCap = 'round';
+      g.beginPath();
+      g.arc(cx, cy, arcR, knobAngle(0), knobAngle(t));
+      g.stroke();
+
+      // указатель
+      const a2 = knobAngle(t);
+      if (this.dragging) { g.shadowColor = accent; g.shadowBlur = 6; }
+      g.strokeStyle = accent;
+      g.lineWidth = 2.5;
+      g.lineCap = 'round';
+      g.beginPath();
+      g.moveTo(cx + Math.cos(a2) * bodyR * 0.38, cy + Math.sin(a2) * bodyR * 0.38);
+      g.lineTo(cx + Math.cos(a2) * bodyR * 0.82, cy + Math.sin(a2) * bodyR * 0.82);
+      g.stroke();
+      g.shadowBlur = 0;
+    }
+  }
+
+  function biquadCoeffs(type, freq, Q, sr) {
+    const w0 = 2 * Math.PI * freq / sr;
+    const alpha = Math.sin(w0) / (2 * Q);
+    const cosw = Math.cos(w0);
+    let b0, b1, b2, a0, a1, a2;
+    if (type === 'highpass') {
+      b0 = (1 + Math.sin(w0)) / 2; b1 = -cosw; b2 = (1 - Math.sin(w0)) / 2;
+    } else if (type === 'lowpass') {
+      b0 = (1 - cosw) / 2; b1 = 1 - cosw; b2 = (1 - cosw) / 2;
+    } else { // bandpass
+      b0 = alpha; b1 = 0; b2 = -alpha;
+    }
+    a0 = 1 + alpha; a1 = -2 * cosw; a2 = 1 - alpha;
+    return [b0/a0, b1/a0, b2/a0, a1/a0, a2/a0];
+  }
+
+  function applyBiquad(x, c) {
+    let z1 = 0, z2 = 0, y1 = 0, y2 = 0;
+    for (let i = 0; i < x.length; i++) {
+      const xi = x[i];
+      const yi = c[0]*xi + c[1]*z1 + c[2]*z2 - c[3]*y1 - c[4]*y2;
+      z2 = z1; z1 = xi; y2 = y1; y1 = yi;
+      x[i] = yi;
+    }
+  }
+
+  function synthLoop(ctx, mode) {
+    const sr = ctx.sampleRate;
+    const len = Math.ceil(LOOP_SEC * sr);
+    const out = new Float32Array(len);
+
+    const kicks  = [0, 8, 16, 24];
+    const snares = [4, 12, 20, 28];
+    const hats   = [0,2,4,6,8,10,12,14,16,18,20,22,24,26,28,30];
+
+    const doKick  = mode === 'beat' || mode === 'kick';
+    const doSnare = mode === 'beat' || mode === 'snare';
+    const doHat   = mode === 'beat' || mode === 'hat';
+
+    function addKick(step) {
+      const t0 = Math.floor(step * STEP_SEC * sr);
+      if (t0 >= len) return;
+      const dur = Math.min(len - t0, Math.floor(0.28 * sr));
+      let phase = 0;
+      for (let i = 0; i < dur; i++) {
+        const t = i / sr;
+        const f = 48 + 90 * Math.exp(-t / 0.035);
+        phase += 2 * Math.PI * f / sr;
+        out[t0 + i] += Math.sin(phase) * Math.exp(-t / 0.08);
+      }
+      const clickDur = Math.min(len - t0, Math.floor(0.003 * sr));
+      for (let j = 0; j < clickDur; j++) {
+        out[t0 + j] += (Math.random() * 2 - 1) * Math.exp(-j / (sr * 0.0008)) * 0.45;
+      }
+    }
+
+    function addSnare(step) {
+      const t0 = Math.floor(step * STEP_SEC * sr);
+      if (t0 >= len) return;
+      const bodyDur = Math.min(len - t0, Math.floor(0.11 * sr));
+      let phase = 0;
+      for (let i = 0; i < bodyDur; i++) {
+        const t = i / sr;
+        phase += 2 * Math.PI * 185 / sr;
+        out[t0 + i] += Math.sin(phase) * Math.exp(-t / 0.03) * 0.65;
+      }
+      const nDur = Math.min(len - t0, Math.floor(0.18 * sr));
+      const noise = new Float32Array(nDur);
+      for (let k = 0; k < nDur; k++) noise[k] = (Math.random()*2-1) * Math.exp(-(k/sr)/0.045);
+      applyBiquad(noise, biquadCoeffs('bandpass', 1700, 0.85, sr));
+      for (let m = 0; m < nDur; m++) out[t0 + m] += noise[m] * 1.25;
+    }
+
+    function addHat(step, vel) {
+      const t0 = Math.floor(step * STEP_SEC * sr);
+      if (t0 >= len) return;
+      const hDur = Math.min(len - t0, Math.floor(0.045 * sr));
+      const noise = new Float32Array(hDur);
+      for (let i = 0; i < hDur; i++) noise[i] = (Math.random()*2-1) * Math.exp(-(i/sr)/0.01);
+      applyBiquad(noise, biquadCoeffs('highpass', 7000, 0.7, sr));
+      for (let j = 0; j < hDur; j++) out[t0 + j] += noise[j] * vel;
+    }
+
+    if (doKick)  kicks.forEach(addKick);
+    if (doSnare) snares.forEach(addSnare);
+    if (doHat) {
+      hats.forEach((s, i) => addHat(s, (i % 2 === 0) ? 0.55 : 0.28));
+    }
+
+    // normalize peak
+    let peak = 0;
+    for (let i = 0; i < len; i++) peak = Math.max(peak, Math.abs(out[i]));
+    if (peak > 0.01) {
+      const g = 0.85 / peak;
+      for (let i = 0; i < len; i++) out[i] *= g;
+    }
+
+    const buffer = ctx.createBuffer(2, len, sr);
+    buffer.copyToChannel(out, 0);
+    buffer.copyToChannel(out, 1);
+    return buffer;
+  }
+
+  // ===== Audio graph =====
+  function buildGraph() {
+    if (!audioCtx) return;
+
+    // Clean previous
+    if (bufferSource) {
+      try { bufferSource.stop(); } catch(e) {}
+      bufferSource.disconnect();
+      bufferSource = null;
+    }
+
+    dryBuffer = synthLoop(audioCtx, sourceMode);
+
+    // Nodes
+    dryGain = audioCtx.createGain();
+    wetGain = audioCtx.createGain();
+    delayL = audioCtx.createDelay(2.0);
+    delayR = audioCtx.createDelay(2.0);
+    feedbackGainL = audioCtx.createGain();
+    feedbackGainR = audioCtx.createGain();
+    highpass = audioCtx.createBiquadFilter();
+    lowpass = audioCtx.createBiquadFilter();
+    splitter = audioCtx.createChannelSplitter(2);
+    merger = audioCtx.createChannelMerger(2);
+    analyser = audioCtx.createAnalyser();
+    analyser.fftSize = 2048;
+    analyser.smoothingTimeConstant = 0.75;
+
+    highpass.type = 'highpass';
+    highpass.Q.value = 0.7;
+    lowpass.type = 'lowpass';
+    lowpass.Q.value = 0.7;
+
+    // Source → dry + (filters → delays)
+    const src = audioCtx.createBufferSource();
+    src.buffer = dryBuffer;
+    src.loop = true;
+    bufferSource = src;
+
+    src.connect(dryGain);
+    src.connect(highpass);
+    highpass.connect(lowpass);
+
+    // Mono into stereo delay paths
+    lowpass.connect(delayL);
+    lowpass.connect(delayR);
+
+    // Feedback
+    delayL.connect(feedbackGainL);
+    feedbackGainL.connect(delayL);
+    delayR.connect(feedbackGainR);
+    feedbackGainR.connect(delayR);
+
+    // Ping-pong cross feedback when enabled
+    // (simple stereo: L feedback stays L, R stays R; for true ping-pong we swap)
+    // We'll handle ping-pong by swapping delay times slightly and cross-connecting
+
+    delayL.connect(merger, 0, 0);
+    delayR.connect(merger, 0, 1);
+
+    merger.connect(wetGain);
+    dryGain.connect(analyser);
+    wetGain.connect(analyser);
+    analyser.connect(audioCtx.destination);
+
+    applyParams();
+    updateBypass();
+  }
+
+  function applyParams() {
+    if (!audioCtx) return;
+    const t = currentParams.time / 1000;
+    delayL.delayTime.setTargetAtTime(t, audioCtx.currentTime, 0.01);
+    // slight offset for stereo width even without ping-pong
+    const offset = pingPong ? t * 0.5 : t * 0.02;
+    delayR.delayTime.setTargetAtTime(Math.min(1.95, t + offset), audioCtx.currentTime, 0.01);
+
+    feedbackGainL.gain.setTargetAtTime(currentParams.feedback, audioCtx.currentTime, 0.02);
+    feedbackGainR.gain.setTargetAtTime(currentParams.feedback, audioCtx.currentTime, 0.02);
+
+    if (pingPong) {
+      // cross feedback for classic ping-pong
+      try {
+        feedbackGainL.disconnect();
+        feedbackGainR.disconnect();
+        delayL.connect(feedbackGainL);
+        feedbackGainL.connect(delayR);
+        delayR.connect(feedbackGainR);
+        feedbackGainR.connect(delayL);
+      } catch(e) {}
+    } else {
+      try {
+        feedbackGainL.disconnect();
+        feedbackGainR.disconnect();
+        delayL.connect(feedbackGainL);
+        feedbackGainL.connect(delayL);
+        delayR.connect(feedbackGainR);
+        feedbackGainR.connect(delayR);
+      } catch(e) {}
+    }
+
+    highpass.frequency.setTargetAtTime(currentParams.lowcut, audioCtx.currentTime, 0.02);
+    lowpass.frequency.setTargetAtTime(currentParams.highcut, audioCtx.currentTime, 0.02);
+
+    const wet = isBypass ? 0 : currentParams.mix;
+    const dry = isBypass ? 1 : (1 - currentParams.mix * 0.7); // keep some dry headroom
+    dryGain.gain.setTargetAtTime(dry, audioCtx.currentTime, 0.02);
+    wetGain.gain.setTargetAtTime(wet, audioCtx.currentTime, 0.02);
+
+    document.getElementById('echo-val').textContent = Math.round(wet * 100) + '%';
+    document.getElementById('echo-bar').style.height = Math.max(2, wet * 110) + 'px';
+  }
+
+  function updateBypass() {
+    const btn = document.getElementById('btn-bypass');
+    if (isBypass) {
+      btn.classList.add('is-on');
+      dryGain.gain.setTargetAtTime(1, audioCtx.currentTime, 0.02);
+      wetGain.gain.setTargetAtTime(0, audioCtx.currentTime, 0.02);
+    } else {
+      btn.classList.remove('is-on');
+      applyParams();
+    }
+  }
+
+  // ===== Visual =====
+  function drawWave() {
+    if (!analyser) return;
+    const canvas = document.getElementById('wave');
+    const ctx = canvas.getContext('2d');
+    const w = canvas.width;
+    const h = canvas.height;
+    const data = new Uint8Array(analyser.fftSize);
+    analyser.getByteTimeDomainData(data);
+
+    ctx.fillStyle = '#181825';
+    ctx.fillRect(0, 0, w, h);
+
+    // grid
+    ctx.strokeStyle = 'rgba(255,255,255,0.04)';
+    ctx.lineWidth = 1;
+    for (let y = 0; y < h; y += 28) {
+      ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+    }
+
+    ctx.beginPath();
+    ctx.strokeStyle = isBypass ? '#9C9CB0' : '#FF6B1A';
+    ctx.lineWidth = 1.6;
+    const slice = w / data.length;
+    for (let i = 0; i < data.length; i++) {
+      const v = (data[i] / 128) - 1;
+      const y = h/2 + v * (h * 0.42);
+      if (i === 0) ctx.moveTo(0, y);
+      else ctx.lineTo(i * slice, y);
+    }
+    ctx.stroke();
+
+    // subtle wet overlay when delay is active
+    if (!isBypass && currentParams.mix > 0.05) {
+      ctx.beginPath();
+      ctx.strokeStyle = 'rgba(61, 232, 255, 0.35)';
+      ctx.lineWidth = 1;
+      for (let i = 0; i < data.length; i++) {
+        const v = (data[i] / 128) - 1;
+        const y = h/2 + v * (h * 0.28) * currentParams.mix;
+        if (i === 0) ctx.moveTo(0, y);
+        else ctx.lineTo(i * slice, y);
+      }
+      ctx.stroke();
+    }
+
+    animId = requestAnimationFrame(drawWave);
+  }
+
+  // ===== Controls =====
+  function ensureCtx() {
+    if (!audioCtx) {
+      audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      buildGraph();
+    }
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+  }
+
+  function start() {
+    ensureCtx();
+    if (isPlaying) return;
+    isPlaying = true;
+    document.getElementById('btn-play').classList.add('is-playing');
+    document.getElementById('play-icon').textContent = '■';
+    document.getElementById('play-text').textContent = 'Stop';
+    if (bufferSource) {
+      try { bufferSource.start(0); } catch(e) {
+        buildGraph();
+        bufferSource.start(0);
+      }
+    }
+    drawWave();
+  }
+
+  function stop() {
+    isPlaying = false;
+    document.getElementById('btn-play').classList.remove('is-playing');
+    document.getElementById('play-icon').textContent = '▶';
+    document.getElementById('play-text').textContent = 'Play';
+    if (bufferSource) {
+      try { bufferSource.stop(); } catch(e) {}
+      bufferSource.disconnect();
+      bufferSource = null;
+    }
+    if (animId) cancelAnimationFrame(animId);
+    // rebuild so next play is clean
+    if (audioCtx) buildGraph();
+  }
+
+  function setParam(key, value) {
+    currentParams[key] = value;
+    applyParams();
+    // update labels
+    if (key === 'time') {
+      document.getElementById('time-val').textContent = Math.round(value) + ' ms';
+      // sync buttons
+      document.querySelectorAll('.pdy-sync').forEach(b => {
+        b.classList.toggle('is-active', Math.abs(+b.dataset.ms - value) < 8);
+      });
+    }
+    if (key === 'feedback') document.getElementById('feedback-val').textContent = Math.round(value * 100) + '%';
+    if (key === 'mix') document.getElementById('mix-val').textContent = Math.round(value * 100) + '%';
+    if (key === 'lowcut') document.getElementById('lowcut-val').textContent = Math.round(value) + ' Hz';
+    if (key === 'highcut') {
+      const v = value >= 1000 ? (value/1000).toFixed(1) + ' kHz' : Math.round(value) + ' Hz';
+      document.getElementById('highcut-val').textContent = v;
+    }
+  }
+
+  function applyPreset(p) {
+    setParam('time', p.values.time);
+    knobs.time.setValueSilent(p.values.time);
+    setParam('feedback', p.values.feedback / 100);
+    knobs.feedback.setValueSilent(p.values.feedback);
+    setParam('mix', p.values.mix / 100);
+    knobs.mix.setValueSilent(p.values.mix);
+    setParam('lowcut', p.values.lowcut);
+    knobs.lowcut.setValueSilent(p.values.lowcut);
+    setParam('highcut', p.values.highcut);
+    knobs.highcut.setValueSilent(p.values.highcut);
+    pingPong = !!p.values.pingpong;
+    document.getElementById('btn-pingpong').classList.toggle('is-active', pingPong);
+    applyParams();
+    document.querySelectorAll('.pdy-preset').forEach(b => {
+      b.classList.toggle('is-active', b.dataset.id === p.id);
+    });
+  }
+
+  // UI wiring
+  document.getElementById('btn-play').addEventListener('click', () => {
+    if (isPlaying) stop(); else start();
+  });
+
+  document.getElementById('btn-bypass').addEventListener('click', () => {
+    isBypass = !isBypass;
+    updateBypass();
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'b' || e.key === 'B') {
+      if (e.target.tagName === 'INPUT') return;
+      isBypass = !isBypass;
+      updateBypass();
+    }
+  });
+
+  document.getElementById('btn-pingpong').addEventListener('click', () => {
+    pingPong = !pingPong;
+    document.getElementById('btn-pingpong').classList.toggle('is-active', pingPong);
+    applyParams();
+  });
+
+  document.querySelectorAll('.pdy-src').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.pdy-src').forEach(b => b.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      sourceMode = btn.dataset.src;
+      const wasPlaying = isPlaying;
+      if (wasPlaying) stop();
+      if (audioCtx) buildGraph();
+      if (wasPlaying) start();
+    });
+  });
+
+  // knobs (крутилки, как в компрессоре)
+  const knobDefs = [
+    { key: 'time',     min: 1, max: 1000, log: true,  get: () => currentParams.time, set: v => setParam('time', v) },
+    { key: 'feedback', min: 0, max: 95,   log: false, get: () => currentParams.feedback * 100, set: v => setParam('feedback', v / 100) },
+    { key: 'mix',      min: 0, max: 100,  log: false, get: () => currentParams.mix * 100, set: v => setParam('mix', v / 100) },
+    { key: 'lowcut',   min: 20, max: 800, log: false, get: () => currentParams.lowcut, set: v => setParam('lowcut', v) },
+    { key: 'highcut',  min: 2000, max: 16000, log: true, get: () => currentParams.highcut, set: v => setParam('highcut', v) }
+  ];
+  const knobs = {};
+  knobDefs.forEach(d => {
+    const el = document.querySelector('.pdy-param[data-key="' + d.key + '"] .pdy-knob');
+    knobs[d.key] = new Knob({
+      el,
+      canvas: el.querySelector('canvas'),
+      min: d.min,
+      max: d.max,
+      log: d.log,
+      defaultValue: d.get(),
+      value: d.get(),
+      onChange: d.set
+    });
+  });
+
+  document.querySelectorAll('.pdy-sync').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const ms = +btn.dataset.ms;
+      knobs.time.setValueSilent(ms);
+      setParam('time', ms);
+    });
+  });
+
+  // presets
+  const presetsEl = document.getElementById('presets');
+  PRESETS.forEach(p => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'pdy-preset';
+    b.dataset.id = p.id;
+    b.textContent = p.label;
+    b.addEventListener('click', () => applyPreset(p));
+    presetsEl.appendChild(b);
+  });
+
+  // init labels
+  setParam('time', 375);
+  setParam('feedback', 0.35);
+  setParam('mix', 0.40);
+  setParam('lowcut', 200);
+  setParam('highcut', 8000);
+})();
+</script>
+</body>
+</html>

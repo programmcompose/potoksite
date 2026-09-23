@@ -1,0 +1,212 @@
+/* ========================================
+   JSON Canvas viewer — potoksite
+   ======================================== */
+
+.potok-canvas {
+  --cv-bg: color-mix(in srgb, var(--md-code-bg-color, #121212) 95%, #000);
+  --cv-node: color-mix(in srgb, var(--md-default-bg-color, #1e1e1e) 90%, #333);
+  --cv-border: color-mix(in srgb, var(--md-default-fg-color, #fff) 18%, transparent);
+  --cv-text: var(--md-typeset-color, #e8e8e8);
+  --cv-muted: color-mix(in srgb, var(--md-typeset-color, #fff) 55%, transparent);
+  --cv-accent: var(--md-accent-fg-color, #ff9800);
+  --cv-edge: color-mix(in srgb, var(--md-typeset-color, #fff) 35%, transparent);
+
+  position: relative;
+  width: 100%;
+  height: 480px;
+  margin: 1.5rem 0 2rem;
+  border-radius: 12px;
+  border: 1px solid color-mix(in srgb, var(--cv-accent) 30%, transparent);
+  background: var(--cv-bg);
+  overflow: hidden;
+  touch-action: none;
+  user-select: none;
+}
+
+.potok-canvas[data-height] {
+  /* height set inline via JS from data-height */
+}
+
+.potok-canvas__viewport {
+  position: absolute;
+  inset: 0;
+  cursor: grab;
+}
+
+.potok-canvas__viewport.is-dragging {
+  cursor: grabbing;
+}
+
+.potok-canvas__world {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  will-change: transform;
+}
+
+.potok-canvas__edges {
+  position: absolute;
+  left: 0;
+  top: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.potok-canvas__node {
+  position: absolute;
+  box-sizing: border-box;
+  border-radius: 8px;
+  border: 1px solid var(--cv-border);
+  background: var(--cv-node);
+  color: var(--cv-text);
+  overflow: hidden;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.potok-canvas__node--group {
+  background: color-mix(in srgb, var(--cv-accent) 8%, transparent);
+  border-style: dashed;
+  border-width: 2px;
+  box-shadow: none;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.potok-canvas__node--text,
+.potok-canvas__node--file,
+.potok-canvas__node--link {
+  z-index: 1;
+  pointer-events: auto;
+}
+
+.potok-canvas__node-inner {
+  padding: 0.55rem 0.7rem;
+  height: 100%;
+  overflow: auto;
+  box-sizing: border-box;
+}
+
+.potok-canvas__node--group .potok-canvas__node-inner {
+  padding: 0.35rem 0.55rem;
+  font-size: 12px;
+  font-weight: 700;
+  opacity: 0.85;
+  color: var(--cv-accent);
+}
+
+.potok-canvas__node a {
+  color: var(--md-typeset-a-color, var(--md-primary-fg-color, #00bcd4));
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.potok-canvas__node a:hover {
+  text-decoration: underline;
+}
+
+.potok-canvas__node h1,
+.potok-canvas__node h2,
+.potok-canvas__node h3 {
+  margin: 0 0 0.35rem;
+  font-size: 0.95em;
+  line-height: 1.25;
+  color: var(--cv-accent);
+}
+
+.potok-canvas__node p {
+  margin: 0 0 0.35rem;
+}
+
+.potok-canvas__node p:last-child {
+  margin-bottom: 0;
+}
+
+.potok-canvas__node ul {
+  margin: 0.25rem 0;
+  padding-left: 1.1rem;
+}
+
+.potok-canvas__edge-label {
+  font-size: 11px;
+  fill: var(--cv-muted);
+}
+
+/* Color presets 1–6 (Obsidian) */
+.potok-canvas__node[data-color="1"] { border-color: #c74a4a; }
+.potok-canvas__node[data-color="2"] { border-color: #d97706; }
+.potok-canvas__node[data-color="3"] { border-color: #ca8a04; }
+.potok-canvas__node[data-color="4"] { border-color: #16a34a; }
+.potok-canvas__node[data-color="5"] { border-color: #0891b2; }
+.potok-canvas__node[data-color="6"] { border-color: #9333ea; }
+
+.potok-canvas__toolbar {
+  position: absolute;
+  right: 10px;
+  top: 10px;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.potok-canvas__toolbar button {
+  appearance: none;
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid var(--cv-border);
+  background: color-mix(in srgb, var(--cv-node) 90%, #000);
+  color: var(--cv-text);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.9;
+}
+
+.potok-canvas__toolbar button:hover {
+  border-color: var(--cv-accent);
+  opacity: 1;
+}
+
+.potok-canvas__hint {
+  position: absolute;
+  left: 10px;
+  bottom: 8px;
+  z-index: 5;
+  font-size: 11px;
+  color: var(--cv-muted);
+  pointer-events: none;
+}
+
+.potok-canvas.is-loading::after {
+  content: "Загрузка canvas…";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cv-muted);
+  font-size: 0.9rem;
+}
+
+.potok-canvas.is-error::after {
+  content: attr(data-error);
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+  text-align: center;
+  color: #f87171;
+  font-size: 0.85rem;
+}
+
+@media (max-width: 600px) {
+  .potok-canvas {
+    height: 360px;
+  }
+}
