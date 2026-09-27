@@ -7,6 +7,13 @@
   --md-typeset-max-width: 64ch;
 }
 
+/* Глобальный размер шрифта: −10% (28.07.2026).
+   Material задаёт все размеры в rem от html, поэтому масштабируем корень.
+   Адаптивное увеличение Material на широких экранах сохраняем — просто ×0.9. */
+html { font-size: 90%; }
+@media screen and (min-width:100em) { html { font-size: calc(137.5% * .9); } } /* = 123.75%, было 137.5% */
+@media screen and (min-width:125em) { html { font-size: calc(150% * .9); } }   /* = 135%, было 150% */
+
 /* ========================================
    Design Tokens — Music Production Course
    ======================================== */
