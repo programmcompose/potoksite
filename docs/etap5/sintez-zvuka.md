@@ -27,7 +27,7 @@
 
 Сердце Serum — wavetable-движок. Каждая wavetable содержит сотни волновых форм, и вы можете **скроллить** между ними, создавая эволюционирующие звуки.
 
-![Интерфейс Serum](../assets/serum-ui.png)
+![Интерфейс Serum](../assets/serum-ui.jpg)
 
 ### Envelope — ADSR
 
