@@ -122,6 +122,7 @@ extra_css:
   - assets/stylesheets/canvas-viewer.css
   - assets/stylesheets/step-cards.css
   - assets/stylesheets/reading-progress.css
+  - assets/stylesheets/sidebar-rail.css   # фиксированный левый рейл на десктопе (последним — переопределяет ambient.css)
   # - assets/stylesheets/graph-override.css
 
 extra_javascript:

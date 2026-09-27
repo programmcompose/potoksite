@@ -16,10 +16,14 @@
 
 /* Без isolation: isolate — он создавал stacking context, в котором drawer
    (.md-sidebar--primary, z-index 5) оказывался ниже .md-overlay (z-index 5),
-   и затемнение закрывало и открытое меню. */
+   и затемнение закрывало и открытое меню.
+
+   ВАЖНО: здесь НЕ должно быть overflow:hidden — он превращает .md-main в
+   «скролл-контейнер» без скролла и ломает position:sticky у сайдбаров
+   (меню уезжало вверх вместе со статьёй). Клей decorative-элементов не нужно:
+   орбы/шум — position:fixed, фоновые градиенты рисуются в пределах своего бокса. */
 .md-main {
   position: relative;
-  overflow: hidden;
 }
 
 /* Только .md-content поднимается над ambient-орбами (z-index 0).
