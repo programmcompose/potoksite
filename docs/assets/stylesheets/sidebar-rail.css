@@ -63,7 +63,7 @@
      !important: тема Material задаёт margin-left на .md-content__inner
      селектором с большей специфичностью. */
   .md-content > .md-content__inner {
-    max-width: 39.6rem; /* было 36rem, +10% ширины текстовой секции (28.09.2026) */
+    max-width: 36rem;
     margin-left: auto !important;
     margin-right: auto !important;
   }
