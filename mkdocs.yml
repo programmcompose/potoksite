@@ -1,6 +1,6 @@
 site_name: "IY Поток - Обучение, Статьи, WIKI"
 site_description: "Полный курс по созданию музыки: от основ звука до мастеринга"
-site_url: "https://programmcompose.github.io/potoksite"
+site_url: "https://potoksite.compose-ivan.workers.dev"
 docs_dir: "docs"
 # README.md внутри docs/tools/<tool>/ — документация для AI-агентов, не публикуется на сайт
 # plans/ и brainstorms/ — внутренние документы, не публикуются (canvases/ нужен canvas-viewer.js)
