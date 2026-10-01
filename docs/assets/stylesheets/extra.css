@@ -2193,3 +2193,76 @@ html {
 }
 
 @media (max-width: 768px) { .pk-hint { display: none; } }
+
+/* ========================================
+   Article components — «100 фишек продюсера»
+   Переиспользуемые: .source-card, .info-grid/.info-card, .tip-num
+   ======================================== */
+
+/* Hero-вариант для справочных статей (тёплый янтарь, та же семья, что у hero этапов) */
+.hero-section.fishki {
+  background:
+    radial-gradient(ellipse at center, rgba(255, 183, 77, 0.25) 0%, transparent 70%),
+    linear-gradient(135deg, #FFC97A 0%, #F2994A 55%, #E07B39 100%) !important;
+  border: 1px solid rgba(242, 153, 74, 0.35) !important;
+}
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 0.4em;
+  padding: 0.35em 1em; border-radius: 999px; margin-bottom: 1em;
+  background: rgba(255, 255, 255, 0.4); border: 1px solid rgba(255, 255, 255, 0.55);
+  color: #3E2723; font-family: 'JetBrains Mono', monospace;
+  font-size: 0.8em; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+}
+.hero-badge svg { width: 15px; height: 15px; flex-shrink: 0; }
+
+/* Карточка-источник (вместо admonition «Источник») */
+.source-card {
+  display: flex; gap: 14px; align-items: flex-start;
+  background: var(--article-surface); border: 1px solid var(--border-default);
+  border-left: 3px solid var(--accent-orange);
+  border-radius: 12px; padding: 16px 18px; margin: 1.5em 0;
+}
+.source-card .sc-icon {
+  width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--glow-orange-soft); border: 1px solid rgba(242, 153, 74, 0.35);
+  color: var(--accent-orange-hover);
+}
+.source-card .sc-icon svg { width: 20px; height: 20px; }
+.source-card .sc-label {
+  font-family: 'JetBrains Mono', monospace; font-size: 0.7em; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent-orange);
+  margin-bottom: 5px;
+}
+.source-card p { margin: 0; font-size: 0.92em; line-height: 1.6; color: var(--text-secondary); }
+.source-card b, .source-card strong { color: var(--text-main); }
+
+/* Info-сетка «Как читать статью» */
+.info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 1.5em 0; }
+.info-card {
+  background: var(--article-surface); border: 1px solid var(--border-subtle);
+  border-radius: 12px; padding: 16px; transition: border-color 0.2s ease, transform 0.2s ease;
+}
+.info-card:hover { border-color: rgba(242, 153, 74, 0.4); transform: translateY(-2px); }
+.info-card .ic-icon {
+  width: 38px; height: 38px; border-radius: 10px; margin-bottom: 12px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--glow-orange-soft); border: 1px solid rgba(242, 153, 74, 0.35);
+  color: var(--accent-orange-hover);
+}
+.info-card .ic-icon svg { width: 19px; height: 19px; }
+.info-card h4 { margin: 0 0 6px; font-size: 0.98em; font-weight: 700; color: var(--text-heading); }
+.info-card p { margin: 0; font-size: 0.85em; line-height: 1.55; color: var(--text-secondary); }
+
+/* Нумерация фишек в заголовках H3 (круглый бейдж) */
+.md-typeset h3 .tip-num {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 1.75em; height: 1.75em; padding: 0 0.3em; margin-right: 0.45em;
+  border-radius: 999px; background: var(--glow-orange-soft);
+  border: 1px solid rgba(242, 153, 74, 0.45); color: var(--accent-orange-hover);
+  font-family: 'JetBrains Mono', monospace; font-size: 0.68em; font-weight: 700;
+  vertical-align: middle; transform: translateY(-1px);
+}
+
+@media (max-width: 48rem) { .info-grid { grid-template-columns: 1fr; } }
