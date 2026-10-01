@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="500" viewBox="0 0 900 500">
+  <rect width="900" height="500" fill="#0B0F17"/>
+  <g stroke="#161D2A" stroke-width="1">
+    <line x1="0" y1="125" x2="900" y2="125"/><line x1="0" y1="250" x2="900" y2="250"/>
+    <line x1="0" y1="375" x2="900" y2="375"/><line x1="225" y1="0" x2="225" y2="500"/>
+    <line x1="450" y1="0" x2="450" y2="500"/><line x1="675" y1="0" x2="675" y2="500"/>
+  </g>
+  <rect x="48" y="44" width="14" height="14" fill="#F2994A"/>
+  <text x="74" y="58" font-family="Consolas, 'Courier New', monospace" font-size="19" letter-spacing="6" fill="#F2994A">ПОТОК / FEED</text>
+  <rect x="48" y="150" width="130" height="12" fill="#F2994A"/>
+  <text x="46" y="252" font-family="Arial, Helvetica, sans-serif" font-size="76" font-weight="900" letter-spacing="-2" fill="#E5E7EB">НОВОСТИ</text>
+  <text x="46" y="336" font-family="Arial, Helvetica, sans-serif" font-size="76" font-weight="900" letter-spacing="-2" fill="#F2994A">ПОТОКА</text>
+  <text x="48" y="428" font-family="Consolas, 'Courier New', monospace" font-size="18" letter-spacing="3" fill="#6B7280">ДОБРО ПОЖАЛОВАТЬ В ФИД</text>
+</svg>
