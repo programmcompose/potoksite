@@ -160,6 +160,7 @@ hooks:
   # - hooks/clean_graph_names.py
   - hooks/glossary_json.py
   - hooks/link_graph.py
+  - hooks/news_feed.py
 
 markdown_extensions:
   - neoteroi.timeline
