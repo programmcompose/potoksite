@@ -35,6 +35,54 @@
     { id: 'tone', label: 'Тон' }
   ];
 
+  // Lucide-иконки (страницы курса и standalone подключают lucide глобально)
+  function refreshIcons() {
+    try { if (window.lucide && lucide.createIcons) lucide.createIcons(); } catch (e) {}
+  }
+
+  // Упрощённые SVG-сцены для карточек пресетов (вместо фото из макета)
+  var SCENES = {
+    room: '<svg class="prv-scene" viewBox="0 0 120 64" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'
+      + '<rect width="120" height="64" fill="#2A1E14"/>'
+      + '<line x1="0" y1="40" x2="120" y2="40" stroke="#5A4630" stroke-width="1.5"/>'
+      + '<path d="M0 64 L48 40 M120 64 L72 40 M30 64 L52 40 M90 64 L68 40" stroke="#4A3A28" stroke-width="1"/>'
+      + '<rect x="46" y="14" width="28" height="20" fill="#FFC97A" opacity=".5"/>'
+      + '<path d="M60 14 V34 M46 24 H74" stroke="#2A1E14" stroke-width="1.5"/>'
+      + '<circle cx="20" cy="30" r="3" fill="#FFB37A"/><circle cx="20" cy="30" r="8" fill="#FFB37A" opacity=".22"/>'
+      + '<circle cx="100" cy="30" r="3" fill="#FFB37A"/><circle cx="100" cy="30" r="8" fill="#FFB37A" opacity=".22"/>'
+      + '</svg>',
+    hall: '<svg class="prv-scene" viewBox="0 0 120 64" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'
+      + '<rect width="120" height="64" fill="#0E1522"/>'
+      + '<path d="M0 64 L60 34 M120 64 L60 34 M0 0 L60 34 M120 0 L60 34" stroke="#2A3A52" stroke-width="1"/>'
+      + '<path d="M38 64 V22 Q60 8 82 22 V64" fill="none" stroke="#4DA3FF" opacity=".45" stroke-width="1.5"/>'
+      + '<path d="M46 64 V27 Q60 17 74 27 V64" fill="none" stroke="#4DA3FF" opacity=".7" stroke-width="1.5"/>'
+      + '<path d="M53 64 V31 Q60 25 67 31 V64" fill="none" stroke="#8FD0FF" opacity=".9" stroke-width="1.5"/>'
+      + '</svg>',
+    plate: '<svg class="prv-scene" viewBox="0 0 120 64" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'
+      + '<rect width="120" height="64" fill="#0D1320"/>'
+      + '<defs><linearGradient id="prv-plate-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#8FA3BF"/><stop offset=".5" stop-color="#4A5A74"/><stop offset="1" stop-color="#2A3648"/></linearGradient></defs>'
+      + '<ellipse cx="60" cy="47" rx="34" ry="5" fill="#000" opacity=".4"/>'
+      + '<rect x="26" y="16" width="68" height="26" rx="4" fill="url(#prv-plate-g)" stroke="#9FB4D4" stroke-width="1"/>'
+      + '<path d="M32 20 L58 38 M44 18 L74 40" stroke="#C9D8EE" opacity=".5" stroke-width="1.5"/>'
+      + '</svg>',
+    cathedral: '<svg class="prv-scene" viewBox="0 0 120 64" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'
+      + '<rect width="120" height="64" fill="#0D1220"/>'
+      + '<circle cx="60" cy="19" r="8.5" fill="none" stroke="#8FA3FF" opacity=".7" stroke-width="1.5"/>'
+      + '<path d="M60 10.5 V27.5 M51.5 19 H68.5 M54 13 L66 25 M66 13 L54 25" stroke="#8FA3FF" opacity=".5" stroke-width="1"/>'
+      + '<path d="M24 64 V30 Q24 14 42 10 Q52 8 56 18 V64" fill="none" stroke="#4DA3FF" opacity=".5" stroke-width="1.5"/>'
+      + '<path d="M96 64 V30 Q96 14 78 10 Q68 8 64 18 V64" fill="none" stroke="#4DA3FF" opacity=".5" stroke-width="1.5"/>'
+      + '<path d="M42 64 V34 Q42 22 60 18 Q78 22 78 34 V64" fill="none" stroke="#8FD0FF" opacity=".8" stroke-width="1.5"/>'
+      + '</svg>',
+    ambient: '<svg class="prv-scene" viewBox="0 0 120 64" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'
+      + '<rect width="120" height="64" fill="#0B1420"/>'
+      + '<circle cx="92" cy="13" r="5" fill="#DCE8FF" opacity=".8"/>'
+      + '<path d="M0 44 L26 22 L48 40 L70 18 L96 42 L120 30 V64 H0 Z" fill="#1B2A40"/>'
+      + '<path d="M0 52 L30 34 L58 50 L84 32 L120 48 V64 H0 Z" fill="#24374F"/>'
+      + '<rect x="0" y="46" width="120" height="3" fill="#9FC4E8" opacity=".18"/>'
+      + '<rect x="0" y="54" width="120" height="3" fill="#9FC4E8" opacity=".12"/>'
+      + '</svg>'
+  };
+
   // ===== DSP helpers (синтез источников, тот же бит что в delay/compressor) =====
   function biquadCoeffs(type, freq, Q, sr) {
     var w0 = 2 * Math.PI * freq / sr;
@@ -225,6 +273,7 @@
     this.max = opts.max;
     this.log = !!opts.log;
     this.fmt = opts.fmt || function (v) { return String(v); };
+    this.color = opts.color || null;
     this.defaultValue = opts.defaultValue != null ? opts.defaultValue : opts.value;
     this.value = opts.value != null ? opts.value : opts.defaultValue;
     this.onChange = opts.onChange || function () {};
@@ -335,7 +384,7 @@
     var g = s.ctx, w = s.w, h = s.h;
     var cx = w / 2, cy = h / 2;
     var rOuter = Math.min(w, h) / 2 - 2;
-    var accent = cssVar('--accent-orange', '#F2994A');
+    var accent = this.color || cssVar('--accent-orange', '#F2994A');
     var t = this.tOf(this.value);
 
     g.clearRect(0, 0, w, h);
@@ -416,7 +465,7 @@
 
     this.buildDom();
     for (var d in DEFAULTS) this.setParam(d, DEFAULTS[d]);
-    this.drawWaveStatic();
+    this.drawIR();
 
     this._onKey = function (e) {
       if (e.key === 'b' || e.key === 'B') {
@@ -427,7 +476,7 @@
     };
     window.addEventListener('keydown', this._onKey);
 
-    this._onResize = function () { self.drawWaveStatic(); self.drawKnobs(); };
+    this._onResize = function () { self.drawIR(); self.drawKnobs(); };
     window.addEventListener('resize', this._onResize);
   };
 
@@ -437,44 +486,57 @@
     if (this.standalone) root.classList.add('prv--full');
 
     var html = '';
+    // Head (plugin-style): бренд + короткое описание
     html += '<div class="prv-head">';
-    html += '<button type="button" class="prv-btn prv-play"><span class="prv-ic">&#9654;</span><span class="prv-play-label">Play</span></button>';
+    html += '<div class="prv-brand"><span class="prv-brand-ic"><i data-lucide="waves"></i></span><span class="prv-brand-t">Reverb</span><span class="prv-brand-s">Space / Ambience / Depth</span></div>';
+    html += '<p class="prv-desc">Пространство и глубина звука: от сухой комнаты до большой атмосферы. Крути параметры — следи за хвостом реверба.</p>';
+    html += '</div>';
+
+    // Transport: Play + Bypass
+    html += '<div class="prv-transport">';
+    html += '<button type="button" class="prv-btn prv-play"><span class="prv-ic"><i data-lucide="play"></i></span><span class="prv-play-label">Play</span></button>';
     html += '<button type="button" class="prv-bypass" aria-pressed="false" title="Горячая клавиша B"><span class="prv-bypass-t">BYPASS</span><span class="prv-bypass-s">A/B · B</span></button>';
-    html += '<div class="prv-presets">';
+    html += '</div>';
+
+    // MODE: карточки пресетов + SIGNAL (segmented)
+    html += '<div class="prv-mode-row">';
+    html += '<div class="prv-mode-block"><span class="prv-sec-label">Mode</span><div class="prv-presets">';
     for (var i = 0; i < PRESETS.length; i++) {
-      html += '<button type="button" class="prv-preset" data-id="' + PRESETS[i].id + '">' + PRESETS[i].label + '</button>';
+      var shortName = PRESETS[i].label.split(' ')[0];
+      html += '<button type="button" class="prv-preset" data-id="' + PRESETS[i].id + '" title="' + PRESETS[i].label + '">' + SCENES[PRESETS[i].id] + '<span class="prv-preset-label">' + shortName + '</span></button>';
     }
     html += '</div></div>';
-
-    html += '<div class="prv-row">';
-    html += '<span class="prv-row-label">Сигнал</span>';
+    html += '<div class="prv-signal-block"><span class="prv-sec-label">Signal</span><div class="prv-srcseg">';
     for (var s = 0; s < SOURCES.length; s++) {
       html += '<button type="button" class="prv-src' + (SOURCES[s].id === 'beat' ? ' is-active' : '') + '" data-src="' + SOURCES[s].id + '">' + SOURCES[s].label + '</button>';
     }
     if (this.standalone) {
-      html += '<span class="prv-filewrap"><button type="button" class="prv-src" data-src="file">&#128193; Файл</button><input type="file" accept="audio/*"></span>';
-      html += '<button type="button" class="prv-src" data-src="mic">&#127908; Мик</button>';
+      html += '<span class="prv-filewrap"><button type="button" class="prv-src prv-src--icon" title="Загрузить файл"><i data-lucide="folder"></i></button><input type="file" accept="audio/*"></span>';
+      html += '<button type="button" class="prv-src prv-src--icon" data-src="mic" title="Микрофон"><i data-lucide="mic"></i></button>';
     }
+    html += '</div></div>';
     html += '</div>';
 
+    // Визуализация: огибающая импульса (IR decay) + wet-метр
     html += '<div class="prv-viz">';
     html += '<canvas class="prv-wave"></canvas>';
-    html += '<div class="prv-tail-wrap"><div class="prv-tail-bar" style="height: 4px;"></div><div class="prv-tail-label">wet<br><span class="prv-tail-val">0%</span></div></div>';
+    html += '<div class="prv-tail-wrap"><div class="prv-tail-track"><div class="prv-tail-bar" style="height: 4px;"></div></div><div class="prv-tail-label">Wet<br><span class="prv-tail-val">0%</span></div></div>';
     html += '</div>';
 
+    // Кнобы: иконка + подпись, цвет дуги у каждого свой (data-viz)
     var paramsDef = [
-      { key: 'decay',    label: 'Decay',     min: 0.2, max: 12,   log: true,  fmt: function (v) { return v.toFixed(1) + ' s'; } },
-      { key: 'predelay', label: 'Pre-Delay', min: 0,   max: 150,  log: false, fmt: function (v) { return Math.round(v) + ' ms'; } },
-      { key: 'mix',      label: 'Mix / Wet', min: 0,   max: 100,  log: false, fmt: function (v) { return Math.round(v) + '%'; } },
-      { key: 'dry',      label: 'Dry',       min: 0,   max: 100,  log: false, fmt: function (v) { return Math.round(v) + '%'; } },
-      { key: 'hpf',      label: 'HPF (низ)', min: 20,  max: 1000, log: true,  fmt: function (v) { return Math.round(v) + ' Hz'; } },
-      { key: 'lpf',      label: 'LPF (верх)',min: 2000,max: 16000,log: true,  fmt: function (v) { return v >= 1000 ? (v / 1000).toFixed(1) + ' kHz' : Math.round(v) + ' Hz'; } }
+      { key: 'decay',    label: 'Decay',     icon: 'timer',        color: '#FF6B1A', min: 0.2, max: 12,   log: true,  fmt: function (v) { return v.toFixed(1) + ' s'; } },
+      { key: 'predelay', label: 'Pre-Delay', icon: 'clock',        color: '#4DA3FF', min: 0,   max: 150,  log: false, fmt: function (v) { return Math.round(v) + ' ms'; } },
+      { key: 'mix',      label: 'Mix / Wet', icon: 'droplets',     color: '#3DE8FF', min: 0,   max: 100,  log: false, fmt: function (v) { return Math.round(v) + '%'; } },
+      { key: 'dry',      label: 'Dry',       icon: 'volume-x',     color: '#9CA3AF', min: 0,   max: 100,  log: false, fmt: function (v) { return Math.round(v) + '%'; } },
+      { key: 'hpf',      label: 'HPF (низ)', icon: 'activity',     color: '#A78BFA', min: 20,  max: 1000, log: true,  fmt: function (v) { return Math.round(v) + ' Hz'; } },
+      { key: 'lpf',      label: 'LPF (верх)',icon: 'activity',     color: '#E879F9', min: 2000,max: 16000,log: true,  fmt: function (v) { return v >= 1000 ? (v / 1000).toFixed(1) + ' kHz' : Math.round(v) + ' Hz'; } }
     ];
     html += '<div class="prv-params">';
     for (var p = 0; p < paramsDef.length; p++) {
       var d = paramsDef[p];
-      html += '<div class="prv-param" data-key="' + d.key + '">';
-      html += '<span class="prv-plabel">' + d.label + '</span>';
+      html += '<div class="prv-param" data-key="' + d.key + '" style="--knob-c:' + d.color + '">';
+      html += '<span class="prv-plabel"><i data-lucide="' + d.icon + '"></i>' + d.label + '</span>';
       html += '<div class="prv-knob" tabindex="0" role="slider" aria-orientation="vertical" aria-label="' + d.label + '"><canvas class="prv-knob-canvas"></canvas></div>';
       html += '<span class="prv-pval"></span>';
       html += '</div>';
@@ -482,6 +544,7 @@
     html += '</div>';
 
     root.innerHTML = html;
+    refreshIcons();
 
     var self = this;
     this.paramsDef = paramsDef;
@@ -497,6 +560,7 @@
         max: def.max,
         log: def.log,
         fmt: def.fmt,
+        color: def.color,
         defaultValue: DEFAULTS[def.key],
         value: this.params[def.key],
         onChange: (function (key) { return function (v) { self.setParam(key, v); }; })(def.key)
@@ -664,6 +728,7 @@
     this.bypass = !this.bypass;
     this.updateBypassUi();
     if (this.ctx && this.playing) this.applyParams();
+    this.drawIR();
   };
 
   Widget.prototype.updateBypassUi = function () {
@@ -680,7 +745,8 @@
     if (this.playing) return;
     this.playing = true;
     this.elPlay.classList.add('is-playing');
-    this.elPlay.querySelector('.prv-ic').innerHTML = '&#9632;';
+    this.elPlay.querySelector('.prv-ic').innerHTML = '<i data-lucide="pause"></i>';
+    refreshIcons();
     this.elPlay.querySelector('.prv-play-label').textContent = 'Stop';
 
     if (this.bufferSource) {
@@ -691,8 +757,7 @@
         if (this.bufferSource) this.bufferSource.start(0);
       }
     }
-    function loop() { self.drawWaveFrame(loop); }
-    this.drawWaveFrame(loop);
+    this.drawIR();
   };
 
   Widget.prototype.stopInternal = function () {
@@ -706,7 +771,8 @@
   Widget.prototype.stop = function () {
     this.playing = false;
     this.elPlay.classList.remove('is-playing');
-    this.elPlay.querySelector('.prv-ic').innerHTML = '&#9654;';
+    this.elPlay.querySelector('.prv-ic').innerHTML = '<i data-lucide="play"></i>';
+    refreshIcons();
     this.elPlay.querySelector('.prv-play-label').textContent = 'Play';
     clearTimeout(this.irTimer);
     if (this.bufferSource) {
@@ -725,7 +791,7 @@
     if (this.rafId) cancelAnimationFrame(this.rafId);
     // rebuild so next play is clean
     if (this.ctx) this.buildGraph();
-    this.drawWaveStatic();
+    this.drawIR();
   };
 
   Widget.prototype.setSource = function (mode) {
@@ -791,7 +857,7 @@
       else if (key === 'lpf') el.textContent = value >= 1000 ? (value / 1000).toFixed(1) + ' kHz' : Math.round(value) + ' Hz';
     }
     this.applyParams();
-    if (key === 'decay') this.scheduleImpulse();
+    if (key === 'decay') { this.scheduleImpulse(); this.drawIR(); }
   };
 
   Widget.prototype.applyPreset = function (id) {
@@ -813,69 +879,89 @@
     }
   };
 
-  // ===== Visual =====
-  Widget.prototype.drawWaveStatic = function () {
+  // ===== Visual: огибающая импульса (IR decay), как в макете =====
+  function irHash(t, seed) {
+    var x = Math.sin(t * 12.9898 + seed * 78.233) * 43758.5453;
+    return x - Math.floor(x);
+  }
+
+  Widget.prototype.drawIR = function () {
+    if (!this.elWave || !this.params) return;
     var s = setupCanvas(this.elWave);
     if (!s) return;
     var g = s.ctx, w = s.w, h = s.h;
-    g.fillStyle = 'rgba(0,0,0,.25)';
+    var decay = this.params.decay;
+    var tMax = Math.max(1, Math.ceil(decay * 1.25));
+
+    var padL = 6, padR = 6, padT = 10, padB = 20;
+    var pw = w - padL - padR, ph = h - padT - padB;
+    var mid = padT + ph / 2;
+
+    // фон + вертикальная сетка (по секундам)
+    g.fillStyle = 'rgba(0,0,0,.3)';
     g.fillRect(0, 0, w, h);
-    g.strokeStyle = 'rgba(128,128,128,.12)';
-    g.lineWidth = 1;
-    for (var y = 0; y < h; y += 28) {
-      g.beginPath(); g.moveTo(0, y); g.lineTo(w, y); g.stroke();
-    }
-    g.strokeStyle = 'rgba(156,156,176,.5)';
-    g.beginPath(); g.moveTo(0, h / 2); g.lineTo(w, h / 2); g.stroke();
-  };
-
-  Widget.prototype.drawWaveFrame = function (next) {
-    var self = this;
-    if (!this.analyser || !this.playing) return;
-    var s = setupCanvas(this.elWave);
-    if (!s) { this.rafId = requestAnimationFrame(next); return; }
-    var g = s.ctx, w = s.w, h = s.h;
-    var data = new Uint8Array(this.analyser.fftSize);
-    this.analyser.getByteTimeDomainData(data);
-
-    g.fillStyle = 'rgba(0,0,0,.25)';
-    g.fillRect(0, 0, w, h);
-
-    // grid
     g.strokeStyle = 'rgba(128,128,128,.10)';
     g.lineWidth = 1;
-    for (var y = 0; y < h; y += 28) {
-      g.beginPath(); g.moveTo(0, y); g.lineTo(w, y); g.stroke();
+    for (var sec = 1; sec < tMax; sec++) {
+      var gx = padL + (sec / tMax) * pw;
+      g.beginPath(); g.moveTo(gx, padT); g.lineTo(gx, padT + ph); g.stroke();
     }
 
-    var accent = cssVar('--accent-orange', '#F2994A');
+    // огибающая: exp-затухание с детерминированным шумовым текстом
+    // (та же форма, что у makeImpulse: 6/decay + ранние отражения первые 80 мс)
+    var seed = Math.round(decay * 10);
+    var grad = g.createLinearGradient(padL, 0, padL + pw, 0);
+    grad.addColorStop(0, 'rgba(61, 232, 255, .8)');
+    grad.addColorStop(0.45, 'rgba(61, 232, 255, .35)');
+    grad.addColorStop(1, 'rgba(61, 232, 255, .06)');
+
+    var cols = Math.max(64, Math.floor(pw / 2));
+    function ampAt(t) {
+      var env = Math.exp(-t * (6.0 / decay)) * (t < 0.08 ? 1.2 : 1);
+      return env;
+    }
+
     g.beginPath();
-    g.strokeStyle = this.bypass ? 'rgba(156,156,176,.8)' : accent;
-    g.lineWidth = 1.6;
-    var slice = w / data.length;
-    for (var i = 0; i < data.length; i++) {
-      var v = (data[i] / 128) - 1;
-      var yy = h / 2 + v * (h * 0.42);
-      if (i === 0) g.moveTo(0, yy);
-      else g.lineTo(i * slice, yy);
+    for (var i = 0; i <= cols; i++) {
+      var t = (i / cols) * tMax;
+      var n = 0.3 + 0.7 * irHash(t, seed);
+      var x = padL + (i / cols) * pw;
+      if (i === 0) g.moveTo(x, mid - ampAt(t) * n * (ph / 2 - 4));
+      else g.lineTo(x, mid - ampAt(t) * n * (ph / 2 - 4));
     }
-    g.stroke();
-
-    // subtle wet overlay when reverb is active
-    if (!this.bypass && this.params.mix > 5) {
-      g.beginPath();
-      g.strokeStyle = 'rgba(61, 232, 255, 0.35)';
-      g.lineWidth = 1;
-      for (var j = 0; j < data.length; j++) {
-        var v2 = (data[j] / 128) - 1;
-        var y2 = h / 2 + v2 * (h * 0.28) * (this.params.mix / 100);
-        if (j === 0) g.moveTo(0, y2);
-        else g.lineTo(j * slice, y2);
-      }
-      g.stroke();
+    for (var j = cols; j >= 0; j--) {
+      var t2 = (j / cols) * tMax;
+      var n2 = 0.3 + 0.7 * irHash(t2, seed + 5.5);
+      g.lineTo(padL + (j / cols) * pw, mid + ampAt(t2) * n2 * (ph / 2 - 4));
     }
+    g.closePath();
+    g.fillStyle = grad;
+    g.fill();
 
-    this.rafId = requestAnimationFrame(next);
+    // центральная линия
+    g.strokeStyle = 'rgba(156,156,176,.35)';
+    g.lineWidth = 1;
+    g.beginPath(); g.moveTo(padL, mid); g.lineTo(padL + pw, mid); g.stroke();
+
+    // подписи оси времени
+    g.fillStyle = 'rgba(156,156,176,.8)';
+    g.font = '10px "JetBrains Mono", monospace';
+    g.textBaseline = 'bottom';
+    g.textAlign = 'left';
+    g.fillText('0.0 s', padL + 2, h - 4);
+    g.textAlign = 'right';
+    g.fillText(tMax.toFixed(1) + ' s', w - padR - 2, h - 4);
+    g.textAlign = 'left';
+
+    // приглушаем, когда реверб выключен (bypass)
+    if (this.bypass) {
+      g.fillStyle = 'rgba(0,0,0,.55)';
+      g.fillRect(0, 0, w, h);
+      g.fillStyle = 'rgba(156,156,176,.9)';
+      g.font = '11px "JetBrains Mono", monospace';
+      g.textBaseline = 'middle';
+      g.fillText('BYPASS', padL + 8, mid);
+    }
   };
 
   // ===== Публичный API (слепой тест A/B и другие потребители) =====
