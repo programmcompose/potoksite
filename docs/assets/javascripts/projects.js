@@ -24,12 +24,15 @@
       root.dataset.potokInitialized = "1";
 
       const projectId = root.dataset.potokProject;
+      // Маркер data-potok-project стоит на hero-блоке, а чекбоксы «Задание»
+      // и кнопка сброса находятся ниже по странице — ищем их во всём контенте.
+      const scope = document.querySelector(".md-content") || document;
       const state = loadState(projectId);
-      const boxes = [...root.querySelectorAll("[data-project-task]")];
+      const boxes = [...scope.querySelectorAll("[data-project-task]")];
       const fill = root.querySelector("[data-project-fill]");
       const count = root.querySelector("[data-project-count]");
       const percent = root.querySelector("[data-project-percent]");
-      const reset = root.querySelector("[data-project-reset]");
+      const reset = scope.querySelector("[data-project-reset]");
 
       function render() {
         let done = 0;
