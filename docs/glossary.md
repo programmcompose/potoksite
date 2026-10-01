@@ -1,6 +1,13 @@
-# Словарь Терминов
+<div class="hero-section glossary">
+  <div class="hero-badge"><i data-lucide="book-open"></i>Справочник · <span id="gl-count">82</span> термина</div>
+  <h1>Словарь терминов</h1>
+  <p class="hero-subtitle">Ключевые понятия музыкального продакшна — от ADSR до Warp. Короткие определения, ссылки на уроки и фильтры по шести категориям: теория, физика звука, сведение, эффекты, оборудование, DAW.</p>
+  <div class="hero-tags">
+    <span class="hero-tag">Теория музыки</span><span class="hero-tag">Физика звука</span><span class="hero-tag">Сведение и мастеринг</span><span class="hero-tag">Эффекты и синтез</span><span class="hero-tag">Оборудование</span><span class="hero-tag">DAW и продакшн</span>
+  </div>
+</div>
 
-Словарь основных терминов музыкального производства.
+<div id="glossary-filters" data-loading="true"></div>
 
 ## A
 

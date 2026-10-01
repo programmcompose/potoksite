@@ -115,6 +115,7 @@ extra_css:
   - assets/stylesheets/challenge.css
   - assets/stylesheets/eq-mini.css
   - assets/stylesheets/news-feed.css
+  - assets/stylesheets/glossary-page.css
   - css/neoteroi-mkdocs.css
   - assets/stylesheets/compressor.css
   - assets/stylesheets/delay-widget.css
@@ -137,6 +138,7 @@ extra_javascript:
   - assets/javascripts/challenge.js
   - assets/javascripts/eq-mini.js
   - assets/javascripts/news-feed.js
+  - assets/javascripts/glossary-filter.js
 
   - assets/javascripts/etap0-bg.js
   - assets/javascripts/etap1-bg.js
