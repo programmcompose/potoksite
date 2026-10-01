@@ -2199,12 +2199,34 @@ html {
    Переиспользуемые: .source-card, .info-grid/.info-card, .tip-num
    ======================================== */
 
-/* Hero-вариант для справочных статей (тёплый янтарь, та же семья, что у hero этапов) */
+/* Hero-вариант для справочных статей — мягкий тёмный пастельный фиолетовый */
 .hero-section.fishki {
   background:
-    radial-gradient(ellipse at center, rgba(255, 183, 77, 0.25) 0%, transparent 70%),
-    linear-gradient(135deg, #FFC97A 0%, #F2994A 55%, #E07B39 100%) !important;
-  border: 1px solid rgba(242, 153, 74, 0.35) !important;
+    radial-gradient(ellipse at center, rgba(167, 139, 250, 0.18) 0%, transparent 70%),
+    linear-gradient(135deg, #2B2444 0%, #251F3C 55%, #1E1930 100%) !important;
+  border: 1px solid rgba(167, 139, 250, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(124, 92, 246, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+}
+.hero-section.fishki h1 {
+  background: linear-gradient(135deg, #EDE7FF 0%, #C4B5FD 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.hero-section.fishki .hero-subtitle {
+  color: #B9AFD8;
+}
+.hero-section.fishki .hero-tag {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(196, 181, 253, 0.35);
+  color: #D6CCF5;
+}
+.hero-section.fishki .hero-badge {
+  background: rgba(196, 181, 253, 0.12);
+  border-color: rgba(196, 181, 253, 0.4);
+  color: #D6CCF5;
 }
 
 .hero-badge {
