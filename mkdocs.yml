@@ -125,6 +125,7 @@ extra_css:
   - assets/stylesheets/canvas-viewer.css
   - assets/stylesheets/step-cards.css
   - assets/stylesheets/reading-progress.css
+  - assets/stylesheets/projects.css       # проектная система «Проекты»
   - assets/stylesheets/sidebar-rail.css   # фиксированный левый рейл на десктопе (последним — переопределяет ambient.css)
   # - assets/stylesheets/graph-override.css
 
@@ -159,6 +160,7 @@ extra_javascript:
   - assets/javascripts/inline-quiz-widget.js
   - assets/javascripts/link-features.js
   - assets/javascripts/canvas-viewer.js
+  - assets/javascripts/projects.js        # чеклисты проектов (localStorage potok:project:*), после остальных скриптов
   # - assets/javascripts/graph-override.js
 
 hooks:
@@ -218,6 +220,18 @@ markdown_extensions:
 
 nav:
   - "<span class='nav-icon' data-lucide='home'></span> Главная": index.md
+  - "<span class='nav-icon' data-lucide='folder-kanban'></span> Проекты": 
+      - "projects/index.md"
+      - "<span class='nav-icon' data-lucide='settings-2'></span> Этап 0 — Студия готова": "projects/etap0.md"
+      - "<span class='nav-icon' data-lucide='music-2'></span> Этап 1 — First Beat": "projects/etap1.md"
+      - "<span class='nav-icon' data-lucide='sliders-horizontal'></span> Этап 2 — Make It Hit": "projects/etap2.md"
+      - "<span class='nav-icon' data-lucide='flame'></span> Этап 3 — Your Style": "projects/etap3.md"
+      - "<span class='nav-icon' data-lucide='piano'></span> Этап 4 — Music Language": "projects/etap4.md"
+      - "<span class='nav-icon' data-lucide='headphones'></span> Этап 5 — Sound Design Lab": "projects/etap5.md"
+      - "<span class='nav-icon' data-lucide='guitar'></span> Этап 6 — Live Energy": "projects/etap6.md"
+      - "<span class='nav-icon' data-lucide='mic-vocal'></span> Этап 7 — Voice in the Mix": "projects/etap7.md"
+      - "<span class='nav-icon' data-lucide='film'></span> Этап 8 — Score the Picture": "projects/etap8.md"
+      - "<span class='nav-icon' data-lucide='rocket'></span> Этап 9 — Release Ready": "projects/etap9.md"
   - "<span class='nav-icon' data-lucide='newspaper'></span> Новости Потока": news/index.md
   - "<span class='nav-icon' data-lucide='library'></span> Этапы":
       - "<span class='nav-icon' data-lucide='target'></span> Этап №0: Подготовка к продакшну": "etap0/index.md"
