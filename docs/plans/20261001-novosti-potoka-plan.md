@@ -1,6 +1,6 @@
 # Plan: «НОВОСТИ ПОТОКА» — секция новостей/событий
 
-> Status: executing
+> Status: done
 
 ## Problem summary
 
