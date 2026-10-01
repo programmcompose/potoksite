@@ -30,6 +30,60 @@
     { id: 'hat',   label: 'Hat' }
   ];
 
+  // SVG-сцены для карточек пресетов: таймлайн эхо (вместо фото из макета)
+  var SCENES = {
+    slap: { name: 'Slap', svg: '<svg class="pdy-scene" viewBox="0 0 120 64" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'
+      + '<rect width="120" height="64" fill="#241A10"/>'
+      + '<line x1="0" y1="32" x2="120" y2="32" stroke="rgba(156,156,176,.25)" stroke-width="1"/>'
+      + '<path d="M14 52 L20 8 L26 52" fill="none" stroke="#FFB37A" stroke-width="2.5"/>'
+      + '<circle cx="76" cy="32" r="4.5" fill="#FFB37A" opacity=".85"/>'
+      + '</svg>' },
+    snare: { name: 'Snare', svg: '<svg class="pdy-scene" viewBox="0 0 120 64" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'
+      + '<rect width="120" height="64" fill="#0E1522"/>'
+      + '<line x1="0" y1="32" x2="120" y2="32" stroke="rgba(156,156,176,.25)" stroke-width="1"/>'
+      + '<path d="M14 52 L20 8 L26 52" fill="none" stroke="#4DA3FF" stroke-width="2.5"/>'
+      + '<circle cx="52" cy="32" r="5" fill="#4DA3FF" opacity=".9"/>'
+      + '<circle cx="70" cy="32" r="4" fill="#4DA3FF" opacity=".6"/>'
+      + '<circle cx="88" cy="32" r="3" fill="#4DA3FF" opacity=".35"/>'
+      + '</svg>' },
+    eighth: { name: 'Мелодия', svg: '<svg class="pdy-scene" viewBox="0 0 120 64" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'
+      + '<rect width="120" height="64" fill="#0B1420"/>'
+      + '<line x1="0" y1="32" x2="120" y2="32" stroke="rgba(156,156,176,.25)" stroke-width="1"/>'
+      + '<path d="M14 52 L20 8 L26 52" fill="none" stroke="#3DE8FF" stroke-width="2.5"/>'
+      + '<circle cx="48" cy="22" r="4.5" fill="#3DE8FF" opacity=".9"/>'
+      + '<circle cx="66" cy="42" r="4" fill="#3DE8FF" opacity=".7"/>'
+      + '<circle cx="84" cy="24" r="3.5" fill="#3DE8FF" opacity=".5"/>'
+      + '<circle cx="102" cy="40" r="3" fill="#3DE8FF" opacity=".3"/>'
+      + '</svg>' },
+    quarter: { name: '¼ space', svg: '<svg class="pdy-scene" viewBox="0 0 120 64" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'
+      + '<rect width="120" height="64" fill="#141020"/>'
+      + '<line x1="0" y1="32" x2="120" y2="32" stroke="rgba(156,156,176,.25)" stroke-width="1"/>'
+      + '<path d="M14 52 L20 8 L26 52" fill="none" stroke="#A78BFA" stroke-width="2.5"/>'
+      + '<circle cx="60" cy="32" r="5" fill="#A78BFA" opacity=".9"/>'
+      + '<circle cx="96" cy="32" r="3.5" fill="#A78BFA" opacity=".5"/>'
+      + '</svg>' },
+    long: { name: 'Долгий', svg: '<svg class="pdy-scene" viewBox="0 0 120 64" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'
+      + '<rect width="120" height="64" fill="#1A0F1C"/>'
+      + '<line x1="0" y1="32" x2="120" y2="32" stroke="rgba(156,156,176,.25)" stroke-width="1"/>'
+      + '<path d="M14 52 L20 8 L26 52" fill="none" stroke="#E879F9" stroke-width="2.5"/>'
+      + '<circle cx="44" cy="32" r="5" fill="#E879F9" opacity=".9"/>'
+      + '<circle cx="58" cy="32" r="4.5" fill="#E879F9" opacity=".75"/>'
+      + '<circle cx="72" cy="32" r="4" fill="#E879F9" opacity=".6"/>'
+      + '<circle cx="86" cy="32" r="3.5" fill="#E879F9" opacity=".45"/>'
+      + '<circle cx="100" cy="32" r="3" fill="#E879F9" opacity=".3"/>'
+      + '<circle cx="112" cy="32" r="2.5" fill="#E879F9" opacity=".2"/>'
+      + '</svg>' }
+  };
+
+  // Перерисовать lucide-иконки в динамически построенном DOM
+  function refreshIcons() {
+    try {
+      if (window.lucide && lucide.createIcons) {
+        lucide.createIcons({ attrs: { 'stroke-width': 1.8, width: 16, height: 16 } });
+      }
+    } catch (e) { /* */ }
+  }
+
   var SYNC_STEPS = [
     { ms: 94,  label: '1/16' },
     { ms: 188, label: '1/8' },
@@ -182,6 +236,7 @@
     this.max = opts.max;
     this.log = !!opts.log;
     this.fmt = opts.fmt || function (v) { return String(v); };
+    this.color = opts.color || null;
     this.defaultValue = opts.defaultValue != null ? opts.defaultValue : opts.value;
     this.value = opts.value != null ? opts.value : opts.defaultValue;
     this.onChange = opts.onChange || function () {};
@@ -292,7 +347,7 @@
     var g = s.ctx, w = s.w, h = s.h;
     var cx = w / 2, cy = h / 2;
     var rOuter = Math.min(w, h) / 2 - 2;
-    var accent = cssVar('--accent-orange', '#F2994A');
+    var accent = this.color || cssVar('--accent-orange', '#F2994A');
     var t = this.tOf(this.value);
 
     g.clearRect(0, 0, w, h);
@@ -405,21 +460,25 @@
     root.classList.add('pdy');
 
     var html = '';
-    html += '<div class="pdy-head">';
-    html += '<button type="button" class="pdy-btn pdy-play"><span class="pdy-ic">&#9654;</span><span class="pdy-play-label">Play</span></button>';
+    // Transport: Play + Bypass
+    html += '<div class="pdy-transport">';
+    html += '<button type="button" class="pdy-btn pdy-play"><span class="pdy-ic"><i data-lucide="play"></i></span><span class="pdy-play-label">Play</span></button>';
     html += '<button type="button" class="pdy-bypass" aria-pressed="false" title="Горячая клавиша B"><span class="pdy-bypass-t">BYPASS</span><span class="pdy-bypass-s">A/B · B</span></button>';
-    html += '<div class="pdy-presets">';
+    html += '</div>';
+
+    // MODE: карточки пресетов + SIGNAL (segmented)
+    html += '<div class="pdy-mode-row">';
+    html += '<div class="pdy-mode-block"><span class="pdy-sec-label">Mode</span><div class="pdy-presets">';
     for (var i = 0; i < PRESETS.length; i++) {
-      html += '<button type="button" class="pdy-preset" data-id="' + PRESETS[i].id + '">' + PRESETS[i].label + '</button>';
+      var sc = SCENES[PRESETS[i].id];
+      html += '<button type="button" class="pdy-preset" data-id="' + PRESETS[i].id + '" title="' + PRESETS[i].label + '">' + sc.svg + '<span class="pdy-preset-label">' + sc.name + '</span></button>';
     }
     html += '</div></div>';
-
-    html += '<div class="pdy-row">';
-    html += '<span class="pdy-row-label">Сигнал</span>';
+    html += '<div class="pdy-signal-block"><span class="pdy-sec-label">Signal</span><div class="pdy-srcseg">';
     for (var s = 0; s < SOURCES.length; s++) {
       html += '<button type="button" class="pdy-src' + (SOURCES[s].id === 'beat' ? ' is-active' : '') + '" data-src="' + SOURCES[s].id + '">' + SOURCES[s].label + '</button>';
     }
-    html += '<button type="button" class="pdy-toggle" title="Чётные/нечётные повторы влево-вправо">Ping-Pong</button>';
+    html += '</div><div class="pdy-signal-extra"><button type="button" class="pdy-toggle" title="Чётные/нечётные повторы влево-вправо">Ping-Pong</button></div></div>';
     html += '</div>';
 
     html += '<div class="pdy-viz">';
@@ -430,17 +489,17 @@
     var self = this;
 
     var paramsDef = [
-      { key: 'time',     label: 'Time',      min: 1, max: 1000, log: true,  toParam: function (v) { return v; },        fromParam: function (v) { return v; } },
-      { key: 'feedback', label: 'Feedback',  min: 0, max: 95,   log: false, toParam: function (v) { return v / 100; }, fromParam: function (v) { return v * 100; } },
-      { key: 'mix',      label: 'Mix / Wet', min: 0, max: 100,  log: false, toParam: function (v) { return v / 100; }, fromParam: function (v) { return v * 100; } },
-      { key: 'lowcut',   label: 'Low-cut',   min: 20, max: 800, log: false, toParam: function (v) { return v; },        fromParam: function (v) { return v; } },
-      { key: 'highcut',  label: 'High-cut',  min: 2000, max: 16000, log: true, toParam: function (v) { return v; },     fromParam: function (v) { return v; } }
+      { key: 'time',     label: 'Time',      icon: 'timer',    color: '#FF6B1A', min: 1, max: 1000, log: true,  toParam: function (v) { return v; },        fromParam: function (v) { return v; } },
+      { key: 'feedback', label: 'Feedback',  icon: 'repeat',   color: '#4DA3FF', min: 0, max: 95,   log: false, toParam: function (v) { return v / 100; }, fromParam: function (v) { return v * 100; } },
+      { key: 'mix',      label: 'Mix / Wet', icon: 'droplets', color: '#3DE8FF', min: 0, max: 100,  log: false, toParam: function (v) { return v / 100; }, fromParam: function (v) { return v * 100; } },
+      { key: 'lowcut',   label: 'Low-cut',   icon: 'activity', color: '#A78BFA', min: 20, max: 800, log: false, toParam: function (v) { return v; },        fromParam: function (v) { return v; } },
+      { key: 'highcut',  label: 'High-cut',  icon: 'activity', color: '#E879F9', min: 2000, max: 16000, log: true, toParam: function (v) { return v; },     fromParam: function (v) { return v; } }
     ];
     html += '<div class="pdy-params">';
     for (var p = 0; p < paramsDef.length; p++) {
       var d = paramsDef[p];
-      html += '<div class="pdy-param" data-key="' + d.key + '">';
-      html += '<span class="pdy-plabel">' + d.label + '</span>';
+      html += '<div class="pdy-param" data-key="' + d.key + '" style="--knob-c:' + d.color + '">';
+      html += '<span class="pdy-plabel"><i data-lucide="' + d.icon + '"></i>' + d.label + '</span>';
       html += '<div class="pdy-knob" tabindex="0" role="slider" aria-orientation="vertical" aria-label="' + d.label + '"><canvas class="pdy-knob-canvas"></canvas></div>';
       html += '<span class="pdy-pval"></span>';
       if (d.key === 'time') {
@@ -456,6 +515,7 @@
     html += '</div>';
 
     root.innerHTML = html;
+    refreshIcons();
 
     this.paramsDef = paramsDef;
     this.knobs = {};
@@ -470,6 +530,7 @@
         max: def.max,
         log: def.log,
         fmt: (function (key) { return function (v) { return fmtParam(key, v); }; })(def.key),
+        color: def.color,
         defaultValue: def.fromParam(DEFAULTS[def.key]),
         value: def.fromParam(this.params[def.key]),
         onChange: (function (key, toParam) { return function (v) { self.setParam(key, toParam(v)); }; })(def.key, def.toParam)
@@ -671,7 +732,8 @@
     if (this.playing) return;
     this.playing = true;
     this.elPlay.classList.add('is-playing');
-    this.elPlay.querySelector('.pdy-ic').innerHTML = '&#9632;';
+    this.elPlay.querySelector('.pdy-ic').innerHTML = '<i data-lucide="pause"></i>';
+    refreshIcons();
     this.elPlay.querySelector('.pdy-play-label').textContent = 'Stop';
     if (this.bufferSource) {
       try {
@@ -688,7 +750,8 @@
   Widget.prototype.stop = function () {
     this.playing = false;
     this.elPlay.classList.remove('is-playing');
-    this.elPlay.querySelector('.pdy-ic').innerHTML = '&#9654;';
+    this.elPlay.querySelector('.pdy-ic').innerHTML = '<i data-lucide="play"></i>';
+    refreshIcons();
     this.elPlay.querySelector('.pdy-play-label').textContent = 'Play';
     if (this.bufferSource) {
       try { this.bufferSource.stop(); } catch (e) {}

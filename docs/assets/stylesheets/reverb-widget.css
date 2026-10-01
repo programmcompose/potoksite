@@ -169,6 +169,8 @@
 }
 .prv-src:hover { color: var(--prv-text); }
 .prv-src.is-active { background: var(--prv-cyan); color: #04212B; font-weight: 700; }
+.prv-src--file { display: inline-flex; align-items: center; gap: 6px; }
+.prv-src--file svg { width: 14px; height: 14px; flex-shrink: 0; }
 .prv-src--icon { width: 36px; padding: 7px 0; display: inline-flex; align-items: center; justify-content: center; border-left: 1px solid var(--prv-border); }
 .prv-src--icon svg { width: 15px; height: 15px; flex-shrink: 0; }
 

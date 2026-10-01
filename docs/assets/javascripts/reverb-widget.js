@@ -510,8 +510,8 @@
     for (var s = 0; s < SOURCES.length; s++) {
       html += '<button type="button" class="prv-src' + (SOURCES[s].id === 'beat' ? ' is-active' : '') + '" data-src="' + SOURCES[s].id + '">' + SOURCES[s].label + '</button>';
     }
+    html += '<span class="prv-filewrap"><button type="button" class="prv-src prv-src--file" data-src="file" title="Загрузить свой звук"><i data-lucide="upload"></i>Сэмпл</button><input type="file" accept="audio/*"></span>';
     if (this.standalone) {
-      html += '<span class="prv-filewrap"><button type="button" class="prv-src prv-src--icon" title="Загрузить файл"><i data-lucide="folder"></i></button><input type="file" accept="audio/*"></span>';
       html += '<button type="button" class="prv-src prv-src--icon" data-src="mic" title="Микрофон"><i data-lucide="mic"></i></button>';
     }
     html += '</div></div>';
@@ -581,10 +581,8 @@
       })(srcBtns[sb]);
     }
 
-    if (this.standalone) {
-      var fileInput = root.querySelector('.prv-filewrap input');
-      fileInput.addEventListener('change', function () { self.loadFile(fileInput); });
-    }
+    var fileInput = root.querySelector('.prv-filewrap input');
+    if (fileInput) fileInput.addEventListener('change', function () { self.loadFile(fileInput); });
 
     this.elPlay = root.querySelector('.prv-play');
     this.elBypass = root.querySelector('.prv-bypass');

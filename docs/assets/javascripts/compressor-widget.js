@@ -39,6 +39,30 @@
     { id: 'snare', label: 'Snare' }
   ];
 
+  // SVG-сцены для карточек пресетов (вместо фото из макета)
+  var SCENES = {
+    melody: { name: 'Мелодия', svg: '<svg class="pcp-scene" viewBox="0 0 120 64" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'
+      + '<rect width="120" height="64" fill="#2A1E14"/>'
+      + '<line x1="0" y1="32" x2="120" y2="32" stroke="rgba(156,156,176,.25)" stroke-width="1"/>'
+      + '<path d="M6 32 Q 21 8 36 32 T 66 32 T 96 32 T 120 32" fill="none" stroke="#FFB37A" stroke-width="2.5"/>'
+      + '<circle cx="21" cy="14" r="2.5" fill="#FFD9AE"/><circle cx="81" cy="50" r="2.5" fill="#FFD9AE"/>'
+      + '</svg>' },
+    snare: { name: 'Snare', svg: '<svg class="pcp-scene" viewBox="0 0 120 64" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'
+      + '<rect width="120" height="64" fill="#0E1522"/>'
+      + '<line x1="0" y1="32" x2="120" y2="32" stroke="rgba(156,156,176,.25)" stroke-width="1"/>'
+      + '<path d="M14 52 L20 8 L26 52" fill="none" stroke="#4DA3FF" stroke-width="2.5"/>'
+      + '<path d="M40 44 L45 20 L50 44" fill="none" stroke="#4DA3FF" stroke-width="2" opacity=".7"/>'
+      + '<circle cx="68" cy="32" r="3.5" fill="#4DA3FF" opacity=".5"/><circle cx="84" cy="32" r="2.5" fill="#4DA3FF" opacity=".3"/>'
+      + '</svg>' },
+    bus: { name: 'Bus', svg: '<svg class="pcp-scene" viewBox="0 0 120 64" preserveAspectRatio="xMidYMid slice" aria-hidden="true">'
+      + '<rect width="120" height="64" fill="#171225"/>'
+      + '<line x1="0" y1="32" x2="120" y2="32" stroke="rgba(156,156,176,.25)" stroke-width="1"/>'
+      + '<path d="M4 32 Q 19 18 34 32 T 64 32 T 94 32 T 120 32" fill="none" stroke="#A78BFA" stroke-width="2.5"/>'
+      + '<path d="M4 32 Q 19 44 34 32 T 64 32 T 94 32 T 120 32" fill="none" stroke="#A78BFA" stroke-width="2" opacity=".55"/>'
+      + '<path d="M4 32 Q 29 24 54 32 T 104 32" fill="none" stroke="#CDBAFB" stroke-width="1.5" opacity=".4"/>'
+      + '</svg>' }
+  };
+
   function dbToLin(db) { return Math.pow(10, db / 20); }
   function linToDb(x) { x = Math.abs(x); if (x < 1e-7) x = 1e-7; return 20 * Math.log10(x); }
 
@@ -286,6 +310,7 @@
     this.max = opts.max;
     this.log = !!opts.log;
     this.fmt = opts.fmt || function (v) { return String(v); };
+    this.color = opts.color || null;
     this.defaultValue = opts.defaultValue != null ? opts.defaultValue : opts.value;
     this.value = opts.value != null ? opts.value : opts.defaultValue;
     this.onChange = opts.onChange || function () {};
@@ -396,7 +421,7 @@
     var g = s.ctx, w = s.w, h = s.h;
     var cx = w / 2, cy = h / 2;
     var rOuter = Math.min(w, h) / 2 - 2;
-    var accent = cssVar('--accent-orange', '#F2994A');
+    var accent = this.color || cssVar('--accent-orange', '#F2994A');
     var t = this.tOf(this.value);
 
     g.clearRect(0, 0, w, h);
@@ -488,33 +513,36 @@
     if (this.standalone) root.classList.add('pcp--full');
 
     var paramsDef = [
-      { key: 'threshold', label: 'Threshold', min: -40, max: 0,   log: false, fmt: function (v) { return Math.round(v) + ' dB'; } },
-      { key: 'ratio',     label: 'Ratio',     min: 1,   max: 20,  log: true,  fmt: function (v) { return v.toFixed(1) + ' : 1'; } },
-      { key: 'knee',      label: 'Knee',      min: 0,   max: 24,  log: false, fmt: function (v) { return Math.round(v) + ' dB'; } },
-      { key: 'attack',    label: 'Attack',    min: 0.1, max: 100, log: true,  fmt: function (v) { return (v < 10 ? v.toFixed(1) : Math.round(v)) + ' мс'; } },
-      { key: 'release',   label: 'Release',   min: 10,  max: 1000, log: true, fmt: function (v) { return Math.round(v) + ' мс'; } },
-      { key: 'makeup',    label: 'Makeup',    min: -12, max: 12, log: false, fmt: function (v) { return (v >= 0 ? '+' : '') + v.toFixed(1).replace('.0', '') + ' dB'; } },
-      { key: 'mix',       label: 'Dry/Wet',   min: 0,   max: 100, log: false, fmt: function (v) { return Math.round(v) + '%'; } }
+      { key: 'threshold', label: 'Threshold', icon: 'gauge',             color: '#FF6B1A', min: -40, max: 0,   log: false, fmt: function (v) { return Math.round(v) + ' dB'; } },
+      { key: 'ratio',     label: 'Ratio',     icon: 'ratio',             color: '#4DA3FF', min: 1,   max: 20,  log: true,  fmt: function (v) { return v.toFixed(1) + ' : 1'; } },
+      { key: 'knee',      label: 'Knee',      icon: 'corner-down-right', color: '#9CA3AF', min: 0,   max: 24,  log: false, fmt: function (v) { return Math.round(v) + ' dB'; } },
+      { key: 'attack',    label: 'Attack',    icon: 'zap',               color: '#3DE8FF', min: 0.1, max: 100, log: true,  fmt: function (v) { return (v < 10 ? v.toFixed(1) : Math.round(v)) + ' мс'; } },
+      { key: 'release',   label: 'Release',   icon: 'timer',             color: '#34D399', min: 10,  max: 1000, log: true, fmt: function (v) { return Math.round(v) + ' мс'; } },
+      { key: 'makeup',    label: 'Makeup',    icon: 'volume-2',          color: '#E879F9', min: -12, max: 12, log: false, fmt: function (v) { return (v >= 0 ? '+' : '') + v.toFixed(1).replace('.0', '') + ' dB'; } },
+      { key: 'mix',       label: 'Dry/Wet',   icon: 'droplets',          color: '#A78BFA', min: 0,   max: 100, log: false, fmt: function (v) { return Math.round(v) + '%'; } }
     ];
 
     var html = '';
-    html += '<div class="pcp-head">';
+    // Transport: Play + Bypass
+    html += '<div class="pcp-transport">';
     html += '<button type="button" class="pcp-btn pcp-play"><span class="pcp-ic"><i data-lucide="play"></i></span><span class="pcp-play-label">Play</span></button>';
     html += '<button type="button" class="pcp-bypass" aria-pressed="false" title="Клавиша B"><span class="pcp-bypass-t">BYPASS</span><span class="pcp-bypass-s">A/B · B</span></button>';
-    html += '<div class="pcp-presets">';
+    html += '</div>';
+
+    // MODE: карточки пресетов + SIGNAL (segmented)
+    html += '<div class="pcp-mode-row">';
+    html += '<div class="pcp-mode-block"><span class="pcp-sec-label">Mode</span><div class="pcp-presets">';
     for (var i = 0; i < PRESETS.length; i++) {
-      html += '<button type="button" class="pcp-preset" data-preset="' + PRESETS[i].id + '">' + PRESETS[i].label + '</button>';
+      var sc = SCENES[PRESETS[i].id];
+      html += '<button type="button" class="pcp-preset" data-preset="' + PRESETS[i].id + '" title="' + PRESETS[i].label + '">' + sc.svg + '<span class="pcp-preset-label">' + sc.name + '</span></button>';
     }
     html += '</div></div>';
-
-    html += '<div class="pcp-row">';
-    html += '<span class="pcp-row-label">Сигнал</span>';
+    html += '<div class="pcp-signal-block"><span class="pcp-sec-label">Signal</span><div class="pcp-srcseg">';
     for (var s = 0; s < SOURCES.length; s++) {
       html += '<button type="button" class="pcp-src' + (SOURCES[s].id === 'beat' ? ' is-active' : '') + '" data-src="' + SOURCES[s].id + '">' + SOURCES[s].label + '</button>';
     }
     html += '<button type="button" class="pcp-src pcp-src--file" data-src="custom"><i data-lucide="upload"></i>Свой трек</button>';
-    html += '<span class="pcp-trackname" title="Загрузить свой луп (WAV, MP3, OGG) — до 2 минут"></span>';
-    html += '<button type="button" class="pcp-toggle" data-auto="1" title="Компенсировать среднюю громкость">Auto makeup</button>';
+    html += '</div><div class="pcp-signal-extra"><span class="pcp-trackname" title="Загрузить свой луп (WAV, MP3, OGG) — до 2 минут"></span><button type="button" class="pcp-toggle" data-auto="1" title="Компенсировать среднюю громкость">Auto makeup</button></div></div>';
     html += '</div>';
     html += '<input type="file" accept="audio/*,.wav,.mp3,.ogg,.oga,.m4a,.flac,.aiff,.aif" class="pcp-file" hidden>';
 
@@ -528,8 +556,8 @@
     html += '<div class="pcp-params">';
     for (var j = 0; j < paramsDef.length; j++) {
       var d = paramsDef[j];
-      html += '<div class="pcp-param" data-key="' + d.key + '">';
-      html += '<span class="pcp-plabel">' + d.label + '</span>';
+      html += '<div class="pcp-param" data-key="' + d.key + '" style="--knob-c:' + d.color + '">';
+      html += '<span class="pcp-plabel"><i data-lucide="' + d.icon + '"></i>' + d.label + '</span>';
       html += '<div class="pcp-knob" tabindex="0" role="slider" aria-orientation="vertical" aria-label="' + d.label + '"><canvas class="pcp-knob-canvas"></canvas></div>';
       html += '<span class="pcp-pval"></span></div>';
     }
@@ -549,6 +577,7 @@
         max: def.max,
         log: def.log,
         fmt: def.fmt,
+        color: def.color,
         defaultValue: DEFAULTS[def.key],
         value: this.params[def.key],
         onChange: (function (key) { return function (v) { self.setParam(key, v); }; })(def.key)
