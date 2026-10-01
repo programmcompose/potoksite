@@ -311,9 +311,11 @@
   position: relative;
   border-radius: 14px;
   overflow: hidden;
-  border: 1px solid var(--border-default);
-  background: var(--article-surface);
-  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.18);
+  /* Внешняя рамка и «карточный» фон убраны — таблица выглядит
+     с одной системой границ (линии строк), без второй рамки на фоне */
+  border: none;
+  background: transparent;
+  box-shadow: none;
 }
 
 .md-typeset .md-typeset__table::before {

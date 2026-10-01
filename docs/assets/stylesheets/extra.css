@@ -409,21 +409,34 @@ html { font-size: 90%; }
 }
 
 /* ========================================
-   Tables
+   Tables — одна система границ:
+   без внешней рамки Material, одна линия на каждую границу строк.
+   Горизонтальный скролл обеспечивает обёртка .md-typeset__scrollwrap.
    ======================================== */
 .md-typeset table:not([class]) {
-  border-radius: 8px;
-  overflow: hidden;
+  border: none !important; /* внешняя рамка Material — убираем */
+  background-color: transparent !important;
+  border-radius: 0;
+  overflow: visible;
 }
 
+/* Шапка — одна нижняя линия */
 .md-typeset table:not([class]) th {
   background-color: rgba(59, 130, 246, 0.08);
   color: var(--text-heading);
   font-weight: 700;
+  border-bottom: 1px solid var(--border-subtle) !important;
 }
 
+/* Строки — одна линия на границу (двойную убираем: border-top Material + наш border-bottom) */
 .md-typeset table:not([class]) td {
+  border-top: none !important;
   border-bottom: 1px solid var(--border-subtle);
+}
+
+/* Hover-подсветка строки — без дополнительной inset-линии снизу */
+.md-typeset table:not([class]) tbody tr:hover {
+  box-shadow: none !important;
 }
 
 /* ========================================
