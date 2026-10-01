@@ -160,3 +160,63 @@
 @media (max-width: 600px) {
   .potok-project-hero { padding:1.25rem; border-radius:15px; }
 }
+
+/* === Празднование завершения проекта === */
+.potok-confetti {
+  position:fixed; inset:0;
+  pointer-events:none;
+  z-index:10001;
+}
+.potok-celebrate-overlay {
+  position:fixed; inset:0; z-index:10000;
+  display:flex; align-items:center; justify-content:center;
+  padding:1rem;
+  background:rgba(8,12,24,.6);
+  backdrop-filter:blur(4px);
+  opacity:0;
+  transition:opacity .3s ease;
+}
+.potok-celebrate-overlay.is-visible { opacity:1; }
+.potok-celebrate-card {
+  max-width:560px;
+  text-align:center;
+  padding:2.5rem 2rem;
+  border-radius:24px;
+  border:1px solid var(--md-default-fg-color--lightest);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(0,229,255,.16), transparent 60%),
+    var(--md-default-bg-color);
+  box-shadow:0 30px 80px rgba(0,0,0,.45);
+  transform:scale(.7) translateY(14px);
+  opacity:0;
+  animation:potok-celebrate-pop .55s cubic-bezier(.2,1.4,.4,1) forwards;
+}
+@keyframes potok-celebrate-pop {
+  to { transform:scale(1) translateY(0); opacity:1; }
+}
+.potok-celebrate-emoji {
+  display:inline-block;
+  font-size:3.2rem;
+  animation:potok-celebrate-bounce .9s ease-in-out infinite alternate;
+}
+@keyframes potok-celebrate-bounce {
+  from { transform:translateY(0) rotate(-6deg); }
+  to   { transform:translateY(-8px) rotate(6deg); }
+}
+.potok-celebrate-title {
+  margin:.75rem 0 .5rem;
+  font-size:1.35rem;
+  line-height:1.35;
+}
+.potok-celebrate-sub { opacity:.8; margin:0 0 1.25rem; }
+.potok-celebrate-close {
+  border:0; cursor:pointer;
+  font:inherit; font-weight:600;
+  padding:.6rem 1.4rem; border-radius:999px;
+  background:var(--md-accent-fg-color);
+  color:var(--md-accent-bg-color);
+}
+/* Золотая полоса прогресса, когда проект завершён */
+.potok-project-hero.is-complete .potok-project-progress__fill {
+  background:linear-gradient(90deg,#ffd740,#ffab00);
+}
