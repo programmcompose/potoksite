@@ -1,0 +1,576 @@
+/* ========================================
+   «Новости Потока» — фид новостей и событий
+   18 ПОТОК
+   Токены берутся из extra.css (--accent-orange, --bg-card, ...)
+   и адаптируются к тёмной/светлой теме сами.
+   ======================================== */
+
+#news-feed {
+  --nf-accent: var(--accent-orange, #F2994A);
+  --nf-accent-hover: var(--accent-orange-hover, #FFB26B);
+  --nf-card: var(--bg-card, #111827);
+  --nf-text: var(--text-main, #E5E7EB);
+  --nf-muted: var(--text-secondary, #9CA3AF);
+  --nf-heading: var(--text-heading, #F9FAFB);
+  --nf-line: color-mix(in srgb, var(--nf-text) 14%, transparent);
+  --nf-line-strong: color-mix(in srgb, var(--nf-accent) 55%, transparent);
+  --nf-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Courier New", monospace;
+
+  margin-top: 1.75rem;
+}
+
+#news-feed[data-loading] {
+  min-height: 200px;
+}
+
+/* display-правила ниже (.nf-cards {display:grid}) иначе переопределяют [hidden] */
+#news-feed [hidden] {
+  display: none !important;
+}
+
+/* ---------- Кикер (надзаголовок) ---------- */
+
+.nf-kicker {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--nf-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--nf-accent);
+  margin-bottom: 0.9rem;
+}
+
+.nf-kicker::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  background: var(--nf-accent);
+  flex: none;
+}
+
+/* ---------- Блок «Впереди» ---------- */
+
+.nf-upcoming {
+  margin-bottom: 2.5rem;
+}
+
+.nf-up-head {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  border-bottom: 1px solid var(--nf-line);
+  padding-bottom: 0.6rem;
+  margin-bottom: 0.25rem;
+}
+
+.nf-up-title {
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--nf-heading);
+}
+
+.nf-count {
+  font-family: var(--nf-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--nf-accent);
+  border: 1px solid var(--nf-line-strong);
+  padding: 0.1rem 0.5rem;
+}
+
+.nf-up-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.nf-up-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1.1rem;
+  padding: 0.95rem 0.25rem;
+  border-bottom: 1px solid var(--nf-line);
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.nf-up-item:hover {
+  background: color-mix(in srgb, var(--nf-accent) 5%, transparent);
+  transform: translateX(4px);
+}
+
+.nf-up-date {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 62px;
+  padding: 0.45rem 0.5rem;
+  border: 1px solid var(--nf-line);
+  background: var(--nf-card);
+}
+
+.nf-up-day {
+  font-family: var(--nf-mono);
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--nf-heading);
+}
+
+.nf-up-month {
+  font-family: var(--nf-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+  color: var(--nf-accent);
+}
+
+.nf-up-body {
+  min-width: 0;
+}
+
+.nf-up-line1 {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.nf-up-title-text {
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--nf-heading);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nf-up-teaser {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.86rem;
+  color: var(--nf-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nf-countdown {
+  font-family: var(--nf-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--nf-accent);
+  border: 1px solid var(--nf-line-strong);
+  padding: 0.3rem 0.65rem;
+  white-space: nowrap;
+}
+
+/* ---------- Бейджи типов ---------- */
+
+.nf-badge {
+  display: inline-block;
+  font-family: var(--nf-mono);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  padding: 0.18rem 0.5rem;
+  border: 1px solid var(--nf-line-strong);
+  color: var(--nf-accent);
+  background: color-mix(in srgb, var(--nf-accent) 10%, transparent);
+  flex: none;
+}
+
+.nf-badge-этап {
+  background: var(--nf-accent);
+  border-color: var(--nf-accent);
+  color: #0B0F17;
+}
+
+/* ---------- Тулбар: заголовок, фильтры, виды ---------- */
+
+.nf-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  border-top: 2px solid var(--nf-heading);
+  padding-top: 1.1rem;
+  margin-bottom: 1.4rem;
+}
+
+.nf-feed-head {
+  flex: 1 1 auto;
+}
+
+.nf-feed-title {
+  margin: 0;
+  font-size: 1.45rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  color: var(--nf-heading);
+}
+
+.nf-filters {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.nf-chip {
+  font-family: var(--nf-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--nf-muted);
+  background: transparent;
+  border: 1px solid var(--nf-line);
+  padding: 0.38rem 0.8rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.nf-chip:hover {
+  color: var(--nf-text);
+  border-color: var(--nf-accent);
+}
+
+.nf-chip-active,
+.nf-chip-active:hover {
+  background: var(--nf-accent);
+  border-color: var(--nf-accent);
+  color: #0B0F17;
+}
+
+.nf-views {
+  display: flex;
+  border: 1px solid var(--nf-line);
+}
+
+.nf-view-btn {
+  font-family: var(--nf-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--nf-muted);
+  background: transparent;
+  border: none;
+  padding: 0.42rem 0.9rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.nf-view-btn + .nf-view-btn {
+  border-left: 1px solid var(--nf-line);
+}
+
+.nf-view-btn:hover {
+  color: var(--nf-text);
+}
+
+.nf-view-active,
+.nf-view-active:hover {
+  background: var(--nf-card);
+  color: var(--nf-accent);
+  box-shadow: inset 0 -2px 0 var(--nf-accent);
+}
+
+/* ---------- Таймлайн ---------- */
+
+.nf-timeline {
+  position: relative;
+  padding-left: 3.1rem;
+}
+
+.nf-timeline::before {
+  content: "";
+  position: absolute;
+  left: 0.85rem;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: var(--nf-line);
+}
+
+.nf-item {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(230px, 42%) 1fr;
+  gap: 1.5rem;
+  padding: 1.1rem 0 1.6rem;
+  border-bottom: 1px solid var(--nf-line);
+  animation: nf-rise 0.45s ease both;
+}
+
+.nf-item:nth-child(2) { animation-delay: 0.07s; }
+.nf-item:nth-child(3) { animation-delay: 0.14s; }
+.nf-item:nth-child(4) { animation-delay: 0.21s; }
+.nf-item:nth-child(n + 5) { animation-delay: 0.28s; }
+
+@keyframes nf-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nf-item, .nf-card { animation: none !important; }
+}
+
+.nf-num {
+  position: absolute;
+  left: -3.1rem;
+  top: 1.25rem;
+  width: 1.7rem;
+  text-align: center;
+  font-family: var(--nf-mono);
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--nf-accent);
+}
+
+.nf-num::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 1.35rem;
+  width: 9px;
+  height: 9px;
+  transform: translateX(-50%) rotate(45deg);
+  background: var(--nf-card);
+  border: 2px solid var(--nf-accent);
+}
+
+/* ---------- Медиа (обложка) ---------- */
+
+.nf-media,
+.nf-card-media {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--nf-line);
+  background: var(--nf-card);
+  aspect-ratio: 9 / 5;
+}
+
+.nf-media img,
+.nf-card-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+
+.nf-item:hover .nf-media img,
+.nf-card:hover .nf-card-media img {
+  transform: scale(1.035);
+}
+
+.nf-media-empty,
+.nf-card-media.nf-media-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nf-media-ph {
+  font-family: var(--nf-mono);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  color: color-mix(in srgb, var(--nf-text) 22%, transparent);
+}
+
+/* ---------- Контент поста ---------- */
+
+.nf-content {
+  min-width: 0;
+}
+
+.nf-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+}
+
+.nf-meta time {
+  font-family: var(--nf-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.08em;
+  color: var(--nf-muted);
+}
+
+.nf-title {
+  margin: 0 0 0.55rem;
+  font-size: 1.32rem;
+  font-weight: 800;
+  line-height: 1.25;
+  letter-spacing: -0.01em;
+  color: var(--nf-heading);
+}
+
+.nf-teaser {
+  margin: 0 0 0.7rem;
+  font-size: 0.94rem;
+  line-height: 1.55;
+  color: var(--nf-muted);
+}
+
+/* ---------- Раскрытие полного текста ---------- */
+
+.nf-expand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--nf-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--nf-accent);
+  background: none;
+  border: none;
+  padding: 0.2rem 0;
+  cursor: pointer;
+}
+
+.nf-expand:hover {
+  color: var(--nf-accent-hover);
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+
+.nf-body {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed var(--nf-line-strong);
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--nf-text);
+}
+
+.nf-body h1, .nf-body h2, .nf-body h3 {
+  color: var(--nf-heading);
+}
+
+.nf-body a {
+  color: var(--nf-accent);
+}
+
+/* ---------- Карточки ---------- */
+
+.nf-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.3rem;
+}
+
+.nf-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--nf-line);
+  background: var(--nf-card);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  animation: nf-rise 0.45s ease both;
+}
+
+.nf-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--nf-line-strong);
+  box-shadow: 0 10px 30px -18px color-mix(in srgb, #000 70%, transparent);
+}
+
+.nf-card .nf-badge {
+  position: absolute;
+  top: 0.65rem;
+  left: 0.65rem;
+  z-index: 2;
+  background: color-mix(in srgb, #0B0F17 82%, transparent);
+}
+
+.nf-card .nf-badge-этап {
+  background: var(--nf-accent);
+}
+
+.nf-card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 0.95rem 1rem 1.1rem;
+  flex: 1;
+}
+
+.nf-card-body time {
+  font-family: var(--nf-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  color: var(--nf-muted);
+  margin-bottom: 0.45rem;
+}
+
+.nf-card-body .nf-title {
+  font-size: 1.06rem;
+  margin-bottom: 0.45rem;
+}
+
+.nf-card-body .nf-teaser {
+  font-size: 0.87rem;
+  flex: 1;
+}
+
+/* ---------- Пустое состояние ---------- */
+
+.nf-empty {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-family: var(--nf-mono);
+  font-size: 0.85rem;
+  letter-spacing: 0.06em;
+  color: var(--nf-muted);
+  border: 1px dashed var(--nf-line);
+  padding: 2.4rem 1rem;
+}
+
+/* ---------- Мобильная вёрстка ---------- */
+
+@media (max-width: 760px) {
+  .nf-item {
+    grid-template-columns: 1fr;
+    gap: 0.9rem;
+    padding-left: 0;
+  }
+
+  .nf-media {
+    max-width: 100%;
+  }
+
+  .nf-up-item {
+    grid-template-columns: auto 1fr;
+    gap: 0.8rem;
+  }
+
+  .nf-countdown {
+    grid-column: 2;
+    justify-self: start;
+    margin-top: 0.35rem;
+  }
+
+  .nf-up-teaser {
+    white-space: normal;
+  }
+
+  .nf-toolbar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+}
