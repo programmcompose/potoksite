@@ -8,6 +8,7 @@ exclude_docs: |
   tools/**/README.md
   plans/**
   brainstorms/**
+  news/posts/**
 copyright: "© 2026 - 18 ПОТОК - IY BEATS"
 
 theme:
@@ -213,6 +214,7 @@ markdown_extensions:
 
 nav:
   - "<span class='nav-icon' data-lucide='home'></span> Главная": index.md
+  - "<span class='nav-icon' data-lucide='newspaper'></span> Новости Потока": news/index.md
   - "<span class='nav-icon' data-lucide='library'></span> Этапы":
       - "<span class='nav-icon' data-lucide='target'></span> Этап №0: Подготовка к продакшну": "etap0/index.md"
       - "<span class='nav-icon' data-lucide='flame'></span> Этап №1: Первые Биты":

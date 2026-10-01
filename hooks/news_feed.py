@@ -146,27 +146,35 @@ def build_news_json(posts: list[dict[str, Any]]) -> str:
     return raw.replace("<", "\\u003c")
 
 
-def on_page_context(context: dict[str, Any], **kwargs: Any) -> dict[str, Any]:
+def _get_posts(config: Any) -> list[dict[str, Any]]:
+    news_dir = os.path.join(config["docs_dir"], "news")
+    if news_dir in _posts_cache:
+        return _posts_cache[news_dir]
+    posts, warnings = collect_posts(news_dir)
+    for w in warnings:
+        log.warning(w)
+    _posts_cache[news_dir] = posts
+    return posts
+
+
+def on_page_markdown(markdown: str, **kwargs: Any) -> str:
+    """Вставляет <script id="news-data"> с JSON постов в страницу фида.
+
+    Событие срабатывает до markdown-конвертации; тег script — HTML-блок,
+    python-markdown пропускает его как есть. «<» в JSON экранированы,
+    поэтому выйти из тега невозможно.
+    """
     page = kwargs.get("page")
     config = kwargs.get("config")
     if page is None or config is None:
-        return context
-    src_path = ""
+        return markdown
     try:
         src_path = page.file.src_path.replace(os.sep, "/")
     except AttributeError:
-        pass
+        return markdown
     if not src_path.startswith("news/"):
-        return context
+        return markdown
 
-    news_dir = os.path.join(config["docs_dir"], "news")
-    if news_dir in _posts_cache:
-        posts = _posts_cache[news_dir]
-    else:
-        posts, warnings = collect_posts(news_dir)
-        for w in warnings:
-            log.warning(w)
-        _posts_cache[news_dir] = posts
-
-    context["news_feed_json"] = build_news_json(posts)
-    return context
+    posts = _get_posts(config)
+    script_tag = f'<script type="application/json" id="news-data">{build_news_json(posts)}</script>'
+    return markdown.rstrip() + "\n\n" + script_tag + "\n"
