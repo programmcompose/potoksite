@@ -1,0 +1,12 @@
+{
+  "planPath": "docs/plans/20261001-novosti-potoka-plan.md",
+  "completedUnits": [
+    "U1-hook",
+    "U5-demo-content",
+    "U2-page-nav",
+    "U3-js-renderer",
+    "U4-css"
+  ],
+  "updatedAt": "2026-10-01T21:12:24.385Z",
+  "status": "active"
+}
