@@ -63,8 +63,8 @@ theme:
     - search.share
     - search.suggest              # подсказки при вводе в поиск
 
-# repo_name/repo_url убраны (2026-10-03): ссылка на git-репозиторий в шапке не нужна
-edit_uri: "edit/main/docs/"
+# repo_name/repo_url/edit_uri убраны (2026-10-03): ссылки на git-репозиторий в шапке не нужны.
+# ВАЖНО: edit_uri без repo_url ломает strict-сборку ("not a valid URL") — не возвращать по отдельности.
 
 plugins:
   - search:
