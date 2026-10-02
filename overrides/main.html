@@ -2,6 +2,8 @@
 
 {% block site_meta %}
   {{ super() }}
+  <!-- Закрытый курс: не индексировать в поисковых системах -->
+  <meta name="robots" content="noindex, nofollow">
   <!-- Официальный скрипт Telegram Mini Apps -->
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <!-- Наш модуль инициализации Mini App (до всех остальных скриптов) -->
