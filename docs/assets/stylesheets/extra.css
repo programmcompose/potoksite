@@ -187,6 +187,14 @@ html { font-size: 90%; }
   font-weight: 900;
 }
 
+/* Заголовок статьи (H1) — КАПС, чтобы визуально отделять название от подзаголовков.
+   Точка в селекторе важна: только прямой H1 внутри .md-typeset,
+   hero-секции и TOC/бургер-меню (отдельные элементы) не затрагиваются. */
+.md-content .md-typeset > h1 {
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
 /* Heading content — lighter weight */
 .md-typeset h1 + ul,
 .md-typeset h1 + ul li,
