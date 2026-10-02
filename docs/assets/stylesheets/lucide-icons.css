@@ -13,6 +13,15 @@
   transition: color 0.2s ease, opacity 0.2s ease;
 }
 
+/* Ссылка с иконкой: иконка — отдельный flex-элемент «возле» текста,
+   а не часть текстового потока. При переносе на новую строку текст
+   выравнивается под первую букву (hanging indent), а не под иконку.
+   :has() — правило срабатывает только для ссылок, где есть .nav-icon. */
+.md-nav__link .md-ellipsis:has(> .nav-icon) {
+  display: flex;
+  align-items: center;
+}
+
 .md-nav__link:hover .nav-icon {
   color: var(--text-main);
   opacity: 1;
