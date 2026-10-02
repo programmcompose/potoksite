@@ -8,7 +8,7 @@
 #news-feed {
   --nf-accent: var(--accent-orange, #F2994A);
   --nf-accent-hover: var(--accent-orange-hover, #FFB26B);
-  --nf-card: var(--bg-card, #111827);
+  --nf-card: var(--bg-card, #1B1A1F);
   --nf-text: var(--text-main, #E5E7EB);
   --nf-muted: var(--text-secondary, #9CA3AF);
   --nf-heading: var(--text-heading, #F9FAFB);

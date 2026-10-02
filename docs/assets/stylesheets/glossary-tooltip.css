@@ -68,7 +68,7 @@
 
 /* Dark theme overrides */
 [data-md-color-scheme="slate"] .glossary-tooltip__card {
-  background: rgba(17, 24, 39, 0.97);
+  background: rgba(27, 26, 31, 0.97);
   border-color: rgba(255, 255, 255, 0.1);
 }
 

@@ -333,7 +333,8 @@
 }
 
 .md-typeset table:not([class]) th {
-  background: linear-gradient(180deg, rgba(242, 153, 74, 0.22), rgba(17, 24, 39, 0.35));
+  /* графитовая база через var(--bg-card) — работает в обеих темах */
+  background: linear-gradient(180deg, rgba(242, 153, 74, 0.22), color-mix(in srgb, var(--bg-card) 65%, transparent));
   color: var(--text-heading);
   font-weight: 800;
   letter-spacing: 0.01em;

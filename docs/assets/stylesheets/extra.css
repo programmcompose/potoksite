@@ -21,10 +21,11 @@ html { font-size: 90%; }
 /* ---------- Dark theme tokens ---------- */
 [data-md-color-scheme="slate"] {
   /* --- Backgrounds --- */
-  --bg-main: #0B1220;
-  --bg-sidebar: #0F172A;
-  --bg-card: #111827;
-  --bg-hover: #1F2937;
+  /* Графитовая шкала (референс 2026-10-02): main = точный цвет референса */
+  --bg-main: #131215;
+  --bg-sidebar: #17161A;
+  --bg-card: #1B1A1F;
+  --bg-hover: #26252B;
 
   /* --- Text --- */
   --text-main: #E5E7EB;
@@ -45,7 +46,7 @@ html { font-size: 90%; }
   --glow-orange: rgba(242, 153, 74, 0.28);
   --glow-blue: rgba(59, 130, 246, 0.18);
   --glow-orange-soft: rgba(242, 153, 74, 0.10);
-  --article-surface: rgba(17, 24, 39, 0.42);
+  --article-surface: rgba(27, 26, 31, 0.42);
 
   /* --- Map to MkDocs variables --- */
   --md-default-bg-color: var(--bg-main);
@@ -1030,14 +1031,14 @@ html {
 
 /* Dark theme */
 [data-md-color-scheme="slate"] .mermaid {
-  background: rgba(17, 24, 39, 0.95) !important;
+  background: rgba(27, 26, 31, 0.95) !important;
   border: 1px solid var(--border-subtle);
 }
 
 [data-md-color-scheme="slate"] .mermaid svg .node rect,
 [data-md-color-scheme="slate"] .mermaid svg .node > rect,
 [data-md-color-scheme="slate"] .mermaid svg .cluster rect {
-  fill: #1F2937 !important;
+  fill: #26252B !important;
   stroke: #6B7280 !important;
   stroke-width: 2px !important;
 }
@@ -1065,12 +1066,12 @@ html {
 
 [data-md-color-scheme="slate"] .mermaid svg .edgeLabel {
   fill: #F9FAFB !important;
-  background-color: #1F2937 !important;
+  background-color: #26252B !important;
 }
 
 [data-md-color-scheme="slate"] .mermaid .edgeLabel {
   color: #F9FAFB !important;
-  background-color: #1F2937 !important;
+  background-color: #26252B !important;
   padding: 2px 6px !important;
 }
 
@@ -1079,7 +1080,7 @@ html {
 }
 
 [data-md-color-scheme="slate"] .mermaid svg .rect {
-  fill: #1F2937 !important;
+  fill: #26252B !important;
   stroke: #9CA3AF !important;
   stroke-width: 2px !important;
 }
@@ -1093,7 +1094,7 @@ html {
 [data-md-color-scheme="slate"] .mermaid svg .node rect,
 [data-md-color-scheme="slate"] .mermaid svg .node > rect,
 [data-md-color-scheme="slate"] .mermaid svg .cluster rect {
-  fill: #1F2937 !important;
+  fill: #26252B !important;
   stroke: #9CA3AF !important;
   stroke-width: 2px !important;
 }
@@ -1636,7 +1637,7 @@ html {
 [data-md-color-scheme="slate"] .mermaid .node circle,
 [data-md-color-scheme="slate"] .mermaid .node polygon,
 [data-md-color-scheme="slate"] .mermaid .node path {
- fill: #1F2937 !important;
+ fill: #26252B !important;
  stroke: #9CA3AF !important;
  stroke-width: 2px !important;
 }
@@ -1656,7 +1657,7 @@ html {
 [data-md-color-scheme="slate"] .mermaid .edgeLabel {
  fill: #FFFFFF !important;
  color: #FFFFFF !important;
- background-color: #1F2937 !important;
+ background-color: #26252B !important;
 }
 
 [data-md-color-scheme="slate"] .mermaid .edgeLabel .label {
@@ -1684,7 +1685,7 @@ html {
 /* Dark theme - clusters */
 [data-md-color-scheme="slate"] .mermaid .cluster rect,
 [data-md-color-scheme="slate"] .mermaid .cluster path {
- fill: #111827 !important;
+ fill: #1B1A1F !important;
  stroke: #6B7280 !important;
 }
 
