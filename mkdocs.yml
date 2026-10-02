@@ -36,7 +36,6 @@ theme:
     text: Inter
     code: JetBrains Mono
   icon:
-    repo: fontawesome/brands/github
     edit: material/pencil
     view: material/eye
   features:
@@ -64,8 +63,7 @@ theme:
     - search.share
     - search.suggest              # подсказки при вводе в поиск
 
-repo_name: "potoksite"
-repo_url: "https://github.com/programmcompose/potoksite"
+# repo_name/repo_url убраны (2026-10-03): ссылка на git-репозиторий в шапке не нужна
 edit_uri: "edit/main/docs/"
 
 plugins:
