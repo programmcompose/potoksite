@@ -127,6 +127,7 @@ extra_css:
   - assets/stylesheets/reading-progress.css
   - assets/stylesheets/projects.css       # проектная система «Проекты»
   - assets/stylesheets/sidebar-rail.css   # фиксированный левый рейл на десктопе (последним — переопределяет ambient.css)
+  - assets/stylesheets/nav-tree.css       # tree-линии в меню: ствол + веточки у раскрытых разделов
   # - assets/stylesheets/graph-override.css
 
 extra_javascript:
