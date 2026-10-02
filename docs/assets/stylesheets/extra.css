@@ -191,6 +191,7 @@ html { font-size: 90%; }
    Точка в селекторе важна: только прямой H1 внутри .md-typeset,
    hero-секции и TOC/бургер-меню (отдельные элементы) не затрагиваются. */
 .md-content .md-typeset > h1 {
+  color: var(--accent-orange);
   text-transform: uppercase;
   letter-spacing: 0.02em;
 }
