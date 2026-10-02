@@ -130,7 +130,9 @@ extra_css:
   # - assets/stylesheets/graph-override.css
 
 extra_javascript:
-  - https://unpkg.com/lucide@latest
+  # lucide — локальная копия (pinned v1.49.0), НЕ unpkg: CDN-загрузка блокировала
+  # рендер иконок на десятки/сотни мс при каждом полном загрузке страницы.
+  - assets/javascripts/vendor/lucide.min.js
   - assets/javascripts/reading-progress.js
   - assets/javascripts/back-to-top.js
   - assets/javascripts/stage-unlock.js

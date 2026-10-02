@@ -35,7 +35,10 @@
   }
 
   if (typeof document$ !== 'undefined' && document$.subscribe) {
+    // SPA-навигация (navigation.instant): Material меняет содержимое body
+    // и шлёт событие — перерисовываем иконки на новой странице.
     document$.subscribe(function () {
+      if (typeof lucide === 'undefined') return;
       lucide.createIcons({
         attrs: {
           'stroke-width': 1.8,
