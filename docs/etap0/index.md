@@ -15,8 +15,12 @@ DAW (Digital Audio Workstation) — главная программа для с�
 ### FL Studio 25
 Интуитивный шаг-секвенсор и обширная экосистема плагинов. Отлично для электронной музыки, хип-хопа и попа.
 
+![FL Studio: канал-рэк и плейлист с аранжировкой](../assets/images/fl-studio-ui.jpg)
+
 ### Ableton Live 12
 Session View для импровизации и лупинга. Идеальна для живых выступлений и экспериментального продакшна.
+
+![Ableton Live: Session View с клипами и микшером](../assets/images/ableton-live-ui.png)
 
 ### Другие DAW
 Logic Pro, Reaper, Cubase, Studio One. Главное — выбрать одну и углубиться.

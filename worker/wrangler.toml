@@ -1,0 +1,7 @@
+name = "potoksite"
+main = "index.js"
+compatibility_date = "2026-05-14"
+
+# Секреты (не хранятся в файле, задаются командой wrangler secret put):
+#   BOT_TOKEN      — токен @iy_potok_bot (проверка initData + getChatMember)
+#   SESSION_SECRET — случайная строка 32+ символов для подписи сессионных токенов
