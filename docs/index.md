@@ -5,6 +5,7 @@
 </p>
 <p class="home-actions">
   <a class="home-btn home-btn--primary" href="etap0/">Начать с этапа 0</a>
+  <a class="home-btn" href="stats/">Личный профиль</a>
   <a class="home-btn" href="faq/">FAQ и чаты</a>
 </p>
 </div>
