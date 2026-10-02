@@ -1,0 +1,1582 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mix Detective — Интерактивный инструмент</title>
+<script src="../../assets/javascripts/vendor/lucide.min.js"></script>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="../../assets/javascripts/tg-app.js"></script>
+<script src="../../assets/javascripts/personalization.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700;900&display=swap');
+
+:root,
+[data-theme="dark"] {
+  --bg-main: #0B1220;
+  --bg-card: #111827;
+  --bg-hover: #1F2937;
+  --text-main: #E5E7EB;
+  --text-secondary: #9CA3AF;
+  --text-heading: #F9FAFB;
+  --accent: #F2994A;
+  --accent-hover: #FFB26B;
+  --accent-blue: #3B82F6;
+  --border: rgba(255,255,255,0.1);
+  --border-subtle: rgba(255,255,255,0.06);
+  --glow: rgba(242,153,74,0.28);
+  --glow-soft: rgba(242,153,74,0.10);
+  --success: #66bb6a;
+  --danger: #ef5350;
+  --warning: #ffd740;
+  --before: #F2994A;
+  --after: #66bb6a;
+  --radius: 14px;
+  --shadow: 0 12px 40px rgba(0,0,0,0.35);
+}
+
+[data-theme="light"] {
+  --bg-main: #FDFBDF;
+  --bg-card: #efeacd;
+  --bg-hover: #e5e0c0;
+  --text-main: #282828;
+  --text-secondary: #5a5a5a;
+  --text-heading: #1a1a1a;
+  --accent: #E08A3E;
+  --accent-hover: #F2994A;
+  --accent-blue: #2563EB;
+  --border: rgba(0,0,0,0.12);
+  --border-subtle: rgba(0,0,0,0.08);
+  --glow: rgba(224,138,62,0.22);
+  --glow-soft: rgba(224,138,62,0.08);
+  --success: #2e7d32;
+  --danger: #c62828;
+  --warning: #f9a825;
+  --before: #E08A3E;
+  --after: #2e7d32;
+  --shadow: 0 8px 28px rgba(0,0,0,0.08);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: 'Unbounded', system-ui, sans-serif;
+  background: radial-gradient(ellipse at 50% -10%, var(--glow-soft) 0%, transparent 55%), var(--bg-main);
+  color: var(--text-main);
+  min-height: 100vh;
+  padding: 20px 16px 56px;
+  transition: background 0.3s, color 0.3s;
+}
+
+.page { max-width: 900px; margin: 0 auto; }
+
+.topbar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+.back-link {
+  display: inline-flex; align-items: center; gap: 6px;
+  color: var(--accent); text-decoration: none; font-size: 0.8em;
+}
+.back-link:hover { color: var(--accent-hover); }
+.back-link i { width: 16px; height: 16px; }
+
+.theme-toggle {
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid var(--border); background: var(--bg-card);
+  color: var(--text-main); cursor: pointer; display: grid; place-items: center;
+}
+.theme-toggle:hover { background: var(--bg-hover); }
+.theme-toggle i { width: 18px; height: 18px; }
+
+h1 {
+  font-size: 1.55rem; font-weight: 700; color: var(--text-heading);
+  margin-bottom: 6px; display: flex; align-items: center; gap: 10px;
+}
+h1 i { width: 28px; height: 28px; color: var(--accent); }
+
+.subtitle { font-size: 0.82rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 20px; max-width: 700px; }
+
+/* Stats */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 16px; }
+.stat {
+  background: var(--bg-card); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius); padding: 12px 10px; text-align: center;
+}
+.stat-value { font-size: 1.3rem; font-weight: 700; color: var(--text-heading); line-height: 1.1; }
+.stat-label { font-size: 0.62rem; color: var(--text-secondary); margin-top: 4px; letter-spacing: 0.05em; text-transform: uppercase; }
+
+/* Tabs */
+.tabs { display: flex; gap: 8px; margin-bottom: 16px; }
+.tab {
+  flex: 1; display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--bg-card); border: 2px solid transparent; border-radius: 12px;
+  padding: 13px 10px; cursor: pointer; color: var(--text-main);
+  font-family: inherit; font-size: 0.85rem; font-weight: 600; transition: all 0.15s;
+}
+.tab i { width: 17px; height: 17px; }
+.tab:hover { border-color: var(--border); }
+.tab.active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--bg-card));
+}
+
+/* Cards */
+.card {
+  background: var(--bg-card); border: 1px solid var(--border-subtle);
+  border-radius: var(--radius); padding: 16px; margin-bottom: 14px; box-shadow: var(--shadow);
+}
+.card-title {
+  font-size: 0.72rem; color: var(--text-secondary); text-transform: uppercase;
+  letter-spacing: 0.05em; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
+}
+.card-title i { width: 14px; height: 14px; color: var(--accent); }
+
+.hidden { display: none !important; }
+
+/* Case pills */
+.case-pills { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 8px; }
+.case-pill {
+  position: relative; text-align: left; cursor: pointer; font-family: inherit;
+  background: var(--bg-hover); border: 2px solid transparent; border-radius: 12px;
+  padding: 12px; color: var(--text-main); transition: all 0.15s;
+}
+.case-pill:hover { border-color: var(--border); }
+.case-pill.active {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, var(--bg-card));
+}
+.case-pill-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+.case-num { font-size: 0.65rem; color: var(--text-secondary); letter-spacing: 0.1em; }
+.level-chip {
+  font-size: 0.58rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em;
+  padding: 3px 8px; border-radius: 999px;
+}
+.level-beginner { color: var(--success); background: color-mix(in srgb, var(--success) 14%, transparent); }
+.level-intermediate { color: var(--accent-blue); background: color-mix(in srgb, var(--accent-blue) 14%, transparent); }
+.level-advanced { color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, transparent); }
+.case-pill-title { font-size: 0.85rem; font-weight: 600; line-height: 1.3; }
+.case-solved { position: absolute; top: 10px; right: 10px; color: var(--success); display: none; }
+.case-solved i { width: 18px; height: 18px; }
+.case-pill.solved .case-solved { display: block; }
+
+/* Case card */
+.case-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; margin-bottom: 10px; flex-wrap: wrap; }
+.case-head h2 { font-size: 1.15rem; color: var(--text-heading); margin-top: 6px; letter-spacing: -0.01em; }
+.tags span {
+  display: inline-block; font-size: 0.62rem; color: var(--text-secondary);
+  border: 1px solid var(--border); border-radius: 999px; padding: 4px 10px; margin-left: 5px;
+}
+.brief { font-size: 0.83rem; line-height: 1.55; color: var(--text-main); margin-bottom: 14px; }
+
+.player-row { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.play-btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: var(--accent); color: #170B03; border: none; cursor: pointer;
+  font-family: inherit; font-weight: 700; font-size: 0.85rem;
+  padding: 12px 20px; border-radius: 12px; transition: all 0.15s;
+}
+.play-btn:hover { background: var(--accent-hover); }
+.play-btn i { width: 17px; height: 17px; }
+.play-btn.playing { box-shadow: 0 0 0 3px var(--glow); }
+.status-dot-wrap { display: inline-flex; align-items: center; gap: 7px; font-size: 0.7rem; color: var(--text-secondary); min-height: 18px; }
+.status-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--border); display: inline-block; }
+.status-dot.on { background: var(--accent); box-shadow: 0 0 8px var(--glow); animation: pulse 1.2s infinite; }
+@keyframes pulse { 50% { opacity: 0.45; } }
+
+.q-title { font-size: 0.78rem; color: var(--text-heading); margin: 16px 0 9px; letter-spacing: 0.02em; }
+.options { display: grid; gap: 7px; }
+.option {
+  display: flex; align-items: center; gap: 10px; cursor: pointer;
+  background: var(--bg-hover); border: 2px solid transparent; border-radius: 11px;
+  padding: 11px 13px; font-size: 0.8rem; transition: all 0.15s; user-select: none;
+}
+.option:hover { border-color: var(--border); }
+.option input { accent-color: var(--accent); width: 16px; height: 16px; flex-shrink: 0; cursor: pointer; }
+.option.checked { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 12%, var(--bg-card)); }
+
+textarea {
+  width: 100%; min-height: 110px; margin-top: 4px; resize: vertical;
+  background: var(--bg-main); color: var(--text-main);
+  border: 1px solid var(--border); border-radius: 12px; padding: 12px;
+  font-family: inherit; font-size: 0.8rem; line-height: 1.5;
+}
+textarea:focus { outline: none; border-color: var(--accent); }
+
+.check-btn {
+  margin-top: 14px; width: 100%; cursor: pointer;
+  background: linear-gradient(90deg, var(--accent), #FFB26B); color: #170B03;
+  border: none; font-family: inherit; font-weight: 700; font-size: 0.9rem;
+  padding: 14px; border-radius: 12px; transition: filter 0.15s, transform 0.15s;
+}
+.check-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+
+/* Result panel */
+.result { margin-top: 16px; border-radius: 12px; padding: 14px; background: var(--bg-main); border: 1px solid var(--border-subtle); }
+.verdict-line { display: flex; gap: 9px; align-items: flex-start; font-size: 0.8rem; line-height: 1.5; margin-bottom: 9px; }
+.verdict-line i { width: 16px; height: 16px; flex-shrink: 0; margin-top: 2px; color: var(--accent); }
+.v-good b { color: var(--success); }
+.v-ok b { color: var(--warning); }
+.v-bad b { color: var(--danger); }
+.your-answer { font-size: 0.75rem; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.5; }
+.your-answer b { color: var(--text-main); }
+
+.breakdown { margin-top: 14px; padding-top: 13px; border-top: 1px solid var(--border-subtle); }
+.breakdown h4 { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); margin-bottom: 10px; display: flex; align-items: center; gap: 7px; }
+.breakdown h4 i { width: 15px; height: 15px; }
+.step { display: flex; gap: 10px; font-size: 0.78rem; line-height: 1.5; margin-bottom: 9px; }
+.step-num {
+  flex-shrink: 0; width: 20px; height: 20px; border-radius: 50%;
+  background: color-mix(in srgb, var(--accent) 18%, transparent); color: var(--accent);
+  display: grid; place-items: center; font-size: 0.62rem; font-weight: 700; margin-top: 1px;
+}
+
+.ab-row { display: flex; gap: 9px; margin-top: 14px; flex-wrap: wrap; }
+.ab-btn {
+  flex: 1; min-width: 130px; cursor: pointer; font-family: inherit;
+  background: var(--bg-hover); border: 2px solid transparent; border-radius: 11px;
+  padding: 12px; color: var(--text-main); font-size: 0.78rem; font-weight: 600; transition: all 0.15s;
+}
+.ab-btn:hover { border-color: var(--border); }
+.ab-btn.active-before { border-color: var(--before); background: color-mix(in srgb, var(--before) 14%, var(--bg-card)); }
+.ab-btn.active-after { border-color: var(--after); background: color-mix(in srgb, var(--after) 14%, var(--bg-card)); }
+
+.note-card p.small { font-size: 0.75rem; line-height: 1.6; color: var(--text-secondary); }
+.note-card h3 { font-size: 0.85rem; color: var(--text-heading); margin-bottom: 9px; display: flex; align-items: center; gap: 8px; }
+.note-card h3 i { width: 17px; height: 17px; color: var(--accent); }
+
+/* ===== Fix-it mode ===== */
+.transport { display: flex; gap: 9px; margin-bottom: 14px; flex-wrap: wrap; align-items: center; }
+.t-btn {
+  display: inline-flex; align-items: center; gap: 8px; cursor: pointer; font-family: inherit;
+  background: var(--bg-hover); border: 2px solid transparent; border-radius: 11px;
+  padding: 11px 16px; color: var(--text-main); font-size: 0.78rem; font-weight: 600; transition: all 0.15s;
+}
+.t-btn i { width: 16px; height: 16px; }
+.t-btn:hover { border-color: var(--border); }
+.t-btn.primary { background: var(--accent); color: #170B03; }
+.t-btn.primary:hover { background: var(--accent-hover); }
+.t-btn.playing { box-shadow: 0 0 0 3px var(--glow); }
+.t-btn.ref-on { border-color: var(--after); background: color-mix(in srgb, var(--after) 14%, var(--bg-card)); }
+
+.strips { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-bottom: 14px; }
+@media (max-width: 680px) { .strips { grid-template-columns: 1fr; } }
+.strip { background: var(--bg-main); border: 1px solid var(--border-subtle); border-radius: 12px; padding: 13px; }
+.strip-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 11px; }
+.strip-name { font-size: 0.78rem; font-weight: 700; letter-spacing: 0.08em; color: var(--text-heading); }
+.strip-freq { font-size: 0.62rem; color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent); padding: 3px 8px; border-radius: 999px; }
+
+.ctl { display: grid; grid-template-columns: 62px 1fr 52px; align-items: center; gap: 9px; margin-bottom: 9px; }
+.ctl:last-child { margin-bottom: 0; }
+.ctl-name { font-size: 0.6rem; color: var(--text-secondary); letter-spacing: 0.07em; text-transform: uppercase; }
+.ctl-val { font-size: 0.65rem; color: var(--text-main); text-align: right; font-variant-numeric: tabular-nums; }
+
+input[type="range"] { -webkit-appearance: none; appearance: none; width: 100%; height: 4px; border-radius: 2px; background: var(--border); cursor: pointer; }
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none; width: 15px; height: 15px; border-radius: 50%;
+  background: var(--accent); box-shadow: 0 0 8px var(--glow); cursor: pointer; border: none;
+}
+input[type="range"]::-moz-range-thumb {
+  width: 15px; height: 15px; border-radius: 50%; background: var(--accent);
+  box-shadow: 0 0 8px var(--glow); cursor: pointer; border: none;
+}
+
+.metrics { margin-bottom: 14px; }
+.metric { display: grid; grid-template-columns: 130px 1fr 52px; align-items: center; gap: 10px; margin-bottom: 10px; }
+.m-label { font-size: 0.68rem; color: var(--text-secondary); letter-spacing: 0.04em; text-transform: uppercase; }
+.m-bar { height: 9px; border-radius: 5px; background: var(--bg-main); overflow: hidden; border: 1px solid var(--border-subtle); }
+.m-bar i { display: block; height: 100%; width: 0%; border-radius: 5px; transition: width 0.3s ease, background 0.3s; }
+.m-val { font-size: 0.78rem; font-weight: 700; text-align: right; font-variant-numeric: tabular-nums; }
+.total-row { display: flex; align-items: center; justify-content: space-between; margin-top: 13px; padding-top: 12px; border-top: 1px solid var(--border-subtle); }
+.total-label { font-size: 0.7rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.06em; }
+.total-val { font-size: 1.5rem; font-weight: 900; color: var(--accent); }
+
+.hints { margin-top: 4px; }
+.hint-line { display: flex; gap: 8px; align-items: flex-start; font-size: 0.73rem; line-height: 1.5; margin-bottom: 8px; color: var(--text-main); }
+.hint-line i { width: 14px; height: 14px; flex-shrink: 0; margin-top: 2px; color: var(--accent); }
+
+.footer-hint { margin-top: 26px; font-size: 0.65rem; color: var(--text-secondary); text-align: center; letter-spacing: 0.04em; line-height: 1.7; }
+kbd { background: var(--bg-hover); border: 1px solid var(--border); border-radius: 5px; padding: 1px 6px; font-size: 0.9em; }
+
+/* Toast */
+#toast {
+  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px);
+  background: var(--bg-card); border: 1px solid var(--accent); color: var(--text-main);
+  padding: 12px 20px; border-radius: 12px; font-size: 0.78rem; z-index: 999;
+  opacity: 0; transition: all 0.3s ease; box-shadow: var(--shadow); max-width: 90vw; text-align: center;
+}
+#toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+@media (max-width: 640px) {
+  .stats { grid-template-columns: repeat(3, 1fr); gap: 7px; }
+  .stat-value { font-size: 1.05rem; }
+}
+</style>
+</head>
+<body>
+
+<div class="page">
+  <div class="topbar">
+    <a href="../index.html" class="back-link"><i data-lucide="arrow-left"></i>К инструментам</a>
+    <button id="themeToggle" class="theme-toggle" title="Сменить тему"><i data-lucide="moon"></i></button>
+  </div>
+
+  <h1><i data-lucide="ear"></i>Mix Detective</h1>
+  <p class="subtitle">Ты — инженер сведения. Послушай проблемный микс, найди главную проблему, выбери первый инструмент и объясни решение. После проверки — разбор инженера по шагам и сравнение Bad / Fixed. Во втором режиме сводишь микс сам в мини-DAW.</p>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-value" id="statCases">0/5</div><div class="stat-label">Кейсы пройдено</div></div>
+    <div class="stat"><div class="stat-value" id="statFixit">—</div><div class="stat-label">Лучший микс</div></div>
+    <div class="stat"><div class="stat-value" id="statAttempts">0</div><div class="stat-label">Попыток</div></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="cases"><i data-lucide="search"></i>Кейсы</button>
+    <button class="tab" data-tab="fixit"><i data-lucide="sliders-horizontal"></i>Почини сам</button>
+  </div>
+
+  <!-- ==================== CASES ==================== -->
+  <section id="panel-cases">
+    <div class="card">
+      <div class="card-title"><i data-lucide="folder-open"></i>Выбери кейс</div>
+      <div class="case-pills" id="casePills"></div>
+    </div>
+
+    <div class="card" id="caseCard">
+      <div class="case-head">
+        <div>
+          <span class="level-chip" id="caseLevel"></span>
+          <h2 id="caseTitle"></h2>
+        </div>
+        <div class="tags" id="caseTags"></div>
+      </div>
+      <p class="brief" id="caseBrief"></p>
+
+      <div class="player-row">
+        <button class="play-btn" id="badPlayBtn"><i data-lucide="play"></i><span>Bad Mix</span></button>
+        <span class="status-dot-wrap"><span class="status-dot" id="playDot"></span><span id="playStatusText"></span></span>
+      </div>
+
+      <h3 class="q-title">1. Что является главной проблемой?</h3>
+      <div class="options" id="problemOptions"></div>
+
+      <h3 class="q-title">2. Каким инструментом начнёшь исправление?</h3>
+      <div class="options" id="toolOptions"></div>
+
+      <h3 class="q-title">3. Объясни своё решение</h3>
+      <textarea id="answerText" placeholder="Например: вокал объективно тише бита — подниму уровень на 4 дБ и сделаю automation по фразам, потом добавлю присутствие в 3–5 кГц..."></textarea>
+
+      <button class="check-btn" id="checkBtn">Проверить решение</button>
+      <div id="resultPanel" class="result hidden"></div>
+    </div>
+
+    <div class="card note-card">
+      <h3><i data-lucide="lightbulb"></i>Как думает инженер</h3>
+      <p class="small">В сведении часто нет единственного правильного ответа. Главное — чтобы решение было связано с проблемой и ты мог объяснить последовательность: сначала баланс громкости, потом конфликты частот, динамика и «красивости» — уже после.</p>
+    </div>
+  </section>
+
+  <!-- ==================== FIX IT ==================== -->
+  <section id="panel-fixit" class="hidden">
+    <div class="card">
+      <div class="case-head">
+        <div>
+          <span class="level-chip level-advanced">Практика</span>
+          <h2>Почини сам — сведи микс</h2>
+        </div>
+        <div class="tags"><span>4 трека</span><span>EQ · Comp · Reverb · Volume</span></div>
+      </div>
+      <p class="brief">Перед тобой несведённый микс: вокал тонет, середина грязная, реверб размыт. Крути ручки на каждом треке и следи за метриками. Когда считаешь, что готов — жми «Показать разбор» и сравни со звуком эталона.</p>
+
+      <div class="transport">
+        <button class="t-btn primary" id="fixPlayBtn"><i data-lucide="play"></i><span>Играть</span></button>
+        <button class="t-btn" id="fixRefBtn"><i data-lucide="target"></i>Эталон A/B</button>
+        <button class="t-btn" id="fixResetBtn"><i data-lucide="rotate-ccw"></i>Сбросить</button>
+      </div>
+
+      <div class="strips" id="strips"></div>
+
+      <div class="metrics">
+        <div class="metric"><span class="m-label">Vocal presence</span><div class="m-bar"><i id="barVP"></i></div><b class="m-val" id="valVP">—</b></div>
+        <div class="metric"><span class="m-label">Low balance</span><div class="m-bar"><i id="barLB"></i></div><b class="m-val" id="valLB">—</b></div>
+        <div class="metric"><span class="m-label">Clarity</span><div class="m-bar"><i id="barCL"></i></div><b class="m-val" id="valCL">—</b></div>
+        <div class="total-row"><span class="total-label">Итог микса</span><span class="total-val" id="fixTotal">—</span></div>
+      </div>
+
+      <button class="check-btn" id="fixDoneBtn">Показать разбор</button>
+      <div id="fixHints" class="hints hidden"></div>
+    </div>
+  </section>
+
+  <p class="footer-hint"><kbd>Пробел</kbd> — play/stop · <kbd>Enter</kbd> — проверить (в кейсах) · Все звуки синтезируются в браузере, файлы не загружаются</p>
+</div>
+
+<div id="toast"></div>
+
+<script src="../../assets/javascripts/vendor/lucide.min.js"></script>
+<script>if (window.lucide) lucide.createIcons({ attrs: { 'stroke-width': 1.8 } });</script>
+<script>
+
+/* ============================================================
+   MIX DETECTIVE — тренажёр инженерного мышления в сведении
+   Часть 1: конфигурация, данные кейсов, синтез источников
+   ============================================================ */
+(function () {
+'use strict';
+
+// ---------- КОНФИГУРАЦИЯ ----------
+var SR = 44100;
+var BPM = 84;
+var BEAT = 60 / BPM;          // ~0.714 s
+var STEPS = 32;               // 2 такта по 16-м
+var STEP = BEAT / 4;          // ~0.179 s
+var LOOP_SEC = STEPS * STEP;  // ~5.714 s
+var TAIL_SEC = 0.9;           // хвост реверба после паттерна (бесшовный луп)
+var N_TOTAL = Math.round((LOOP_SEC + TAIL_SEC) * SR);
+
+// Частоты peaking-фильтров на треках в режиме «Почини сам»
+var PEAK_FREQ = { vocal: 3200, bass: 80, drums: 6000, synth: 400 };
+var TRACK_ORDER = ['vocal', 'bass', 'drums', 'synth'];
+
+// Калибровка метрик (см. README.md — тюнинг после прослушивания)
+// Калибровка метрик (см. README.md → «Калибровка»): подогнана под синтезированные источники
+var CAL = {
+  vpGood: 0.70, vpBad: 0.25,      // доля вокала в полосе 2–8 кГц микса: больше — лучше
+  mudBad: 0.19, mudGood: 0.06,    // «грязь» инструментала E(150–800 Гц)/E(total): меньше — лучше
+  clGood: 0.0055, clBad: 0.0015   // доля полосы 3–8 кГц в общей энергии микса: больше — лучше
+};
+
+var STORE_KEY = 'mix-detective-v1';
+
+// ---------- БАЗОВЫЙ (ХОРОШИЙ) МИКС ----------
+// levelDb — уровень трека; hpfHz — highpass; peakDb — пик на PEAK_FREQ[track];
+// comp: null | {thr, ratio}; reverbSend: 0..1
+var BASE_MIX = {
+  vocal: { levelDb: -3, hpfHz: 120, peakDb: 0, comp: null, reverbSend: 0.25 },
+  bass:  { levelDb: -4, hpfHz: 30,  peakDb: 0, comp: null, reverbSend: 0 },
+  drums: { levelDb: -5, hpfHz: 20,  peakDb: 0, comp: null, reverbSend: 0 },
+  synth: { levelDb: -9, hpfHz: 150, peakDb: 0, comp: null, reverbSend: 0.3 }
+};
+
+function cloneMix(m) {
+  var out = {};
+  TRACK_ORDER.forEach(function (t) {
+    out[t] = { levelDb: m[t].levelDb, hpfHz: m[t].hpfHz, peakDb: m[t].peakDb, comp: m[t].comp, reverbSend: m[t].reverbSend };
+  });
+  return out;
+}
+
+// ---------- ДАННЫЕ КЕЙСОВ ----------
+var CASES = [
+  {
+    id: 'vocal-too-low',
+    level: 'beginner',
+    title: 'Тихий вокал',
+    tags: ['Hip-Hop', BPM + ' BPM', 'Вокал + бит'],
+    brief: 'Вокалист говорит, что его не слышно в миксе. Послушай Bad Mix и определи главную проблему.',
+    problemOptions: [
+      { id: 'vocal', label: 'Вокал тонет в инструментале' },
+      { id: 'bass', label: 'Бас конфликтует с киком' },
+      { id: 'reverb', label: 'Слишком много пространства / reverb' },
+      { id: 'dynamic', label: 'Нет динамики, микс плоский' }
+    ],
+    correctProblem: 'vocal',
+    toolOptions: [
+      { id: 'eq', label: 'EQ' },
+      { id: 'compressor', label: 'Compressor' },
+      { id: 'volume', label: 'Volume / automation' },
+      { id: 'reverb', label: 'Reverb settings' }
+    ],
+    bestTool: 'volume',
+    acceptableTools: {
+      eq: 'EQ с присутствием (3–5 кГц) поможет, но если вокал объективно тише бита — первым шагом идёт громкость.',
+      compressor: 'Компрессор выровняет динамику вокала, но не решит проблему уровня как первый шаг.'
+    },
+    keywords: ['громкост', 'уровен', 'volume', 'automation', 'автоматизац', 'поднять', '+ дб', 'тише'],
+    breakdown: [
+      'Проверь баланс громкости: в куплете вокал обычно на 2–6 дБ выше бита. Если тише — подними уровень.',
+      'Сделай automation уровня по фразам: тихие места чуть выше, припевы — по аранжировке.',
+      'Потом EQ: режь грязь в ~200–400 Гц и добавляй присутствие в 3–5 кГц.',
+      'Компрессор — на последнем этапе, чтобы выровнять оставшиеся скачки громкости.'
+    ],
+    mixBad: (function () { var m = cloneMix(BASE_MIX); m.vocal.levelDb = -12; return m; })(),
+    mixFixed: BASE_MIX
+  },
+  {
+    id: 'muddy-mix',
+    level: 'beginner',
+    title: 'Грязная середина',
+    tags: ['Hip-Hop', BPM + ' BPM', 'Мутный низ'],
+    brief: 'Микс звучит мутно и «бумажно», особенно на маленьких колонках. Что происходит с частотами?',
+    problemOptions: [
+      { id: 'mud', label: 'Слишком много энергии в низких средних (200–500 Гц)' },
+      { id: 'vocal', label: 'Вокал слишком тихий' },
+      { id: 'harsh', label: 'Верхние частоты режут ухо' },
+      { id: 'dynamic', label: 'Нет динамики, микс плоский' }
+    ],
+    correctProblem: 'mud',
+    toolOptions: [
+      { id: 'eq', label: 'EQ (highpass / срез)' },
+      { id: 'volume', label: 'Volume / automation' },
+      { id: 'compressor', label: 'Compressor' },
+      { id: 'reverb', label: 'Reverb settings' }
+    ],
+    bestTool: 'eq',
+    acceptableTools: {
+      volume: 'Снижение уровня синтеза тоже уменьшит грязь, но EQ убирает конфликт частот точнее.',
+      compressor: 'Мультiband-компрессор мог бы помочь, но первым шагом — обычный EQ.'
+    },
+    keywords: ['300', '400', '250', 'гц', 'hpf', 'highpass', 'низкочастотн', 'срез', 'муд', 'mud', 'гряз'],
+    breakdown: [
+      'Найди источник грязи: solo по трекам — обычно это синтез/гитара с энергией в 200–500 Гц.',
+      'Поставь highpass на всём, что не несёт низ (синтез → 120–150 Гц).',
+      'Точечно срежь конфликт: −4…−6 дБ в 300–400 Гц на инструменте, который «спорит» с басом.',
+      'Проверь на малых колонках — мутность должна уйти.'
+    ],
+    mixBad: (function () {
+      var m = cloneMix(BASE_MIX);
+      m.synth.hpfHz = 20; m.synth.peakDb = 6; m.synth.levelDb = -7;
+      m.bass.peakDb = 4;
+      return m;
+    })(),
+    mixFixed: BASE_MIX
+  },
+  {
+    id: 'weak-kick',
+    level: 'intermediate',
+    title: 'Кик тонет в басу',
+    tags: ['Hip-Hop', BPM + ' BPM', 'Низ частот'],
+    brief: 'Бас слышен, но кик стал мягким и «ватным». На сабвуфере всё нормально, на мониторах — нет.',
+    problemOptions: [
+      { id: 'conflict', label: 'Бас маскирует кик в зоне 60–100 Гц' },
+      { id: 'kickweak', label: 'Кику не хватает атаки (transient)' },
+      { id: 'basslow', label: 'Бас слишком тихий' },
+      { id: 'reverb', label: 'Слишком много reverb на барабанах' }
+    ],
+    correctProblem: 'conflict',
+    toolOptions: [
+      { id: 'eq', label: 'EQ (carve / срез)' },
+      { id: 'compressor', label: 'Compressor / sidechain' },
+      { id: 'volume', label: 'Volume / automation' },
+      { id: 'reverb', label: 'Reverb settings' }
+    ],
+    bestTool: 'eq',
+    acceptableTools: {
+      compressor: 'Sidechain-компрессор (ducking баса от кика) — классический приём, особенно в EDM/hip-hop. Работает, но EQ-carve обычно делают первым.',
+      volume: 'Снижение уровня баса поможет, но грубо: конфликт частот останется.'
+    },
+    keywords: ['60', '80', '90', 'гц', 'sidechain', 'сайдчейн', 'ducking', 'карв', 'carve', 'срез'],
+    breakdown: [
+      'Определи зону конфликта: пик кика обычно в 50–90 Гц.',
+      'Срежь у баса −3…−6 дБ в этой зоне (peaking, Q ~1).',
+      'Если нужно больше — sidechain: бас «уходит» на 1–2 дБ на каждый кик.',
+      'Проверь атаку кика: при необходимости добавь транзиент, но не перегружай суб.'
+    ],
+    mixBad: (function () {
+      var m = cloneMix(BASE_MIX);
+      m.drums.levelDb = -9;
+      m.bass.levelDb = -1; m.bass.peakDb = 8;
+      return m;
+    })(),
+    mixFixed: BASE_MIX
+  },
+  {
+    id: 'harsh-vocal',
+    level: 'intermediate',
+    title: 'Резкий вокал',
+    tags: ['Pop', BPM + ' BPM', 'Верх середины'],
+    brief: 'Вокал громкий и впереди, но через минуту слушать становится неприятно. Что случилось?',
+    problemOptions: [
+      { id: 'harsh', label: 'Построение в 2–4 кГц (+ свист на 5–7 кГц)' },
+      { id: 'loud', label: 'Вокал просто слишком громкий' },
+      { id: 'mud', label: 'Слишком много низких средних' },
+      { id: 'reverb', label: 'Не хватает реверберации' }
+    ],
+    correctProblem: 'harsh',
+    toolOptions: [
+      { id: 'eq', label: 'EQ (срез / de-ess)' },
+      { id: 'compressor', label: 'Compressor / de-esser' },
+      { id: 'volume', label: 'Volume / automation' },
+      { id: 'reverb', label: 'Reverb settings' }
+    ],
+    bestTool: 'eq',
+    acceptableTools: {
+      compressor: 'Компрессор/de-esser с быстрым attack приглушит пики, но сначала найди частоту в EQ.',
+      volume: 'Снижение уровня снимает неприятность, но не убирает резкость — она вернётся при автоматизации.'
+    },
+    keywords: ['2', '3', 'кГц', 'khz', 'свист', 'sibilan', 'deess', 'деэссер', 'резк'],
+    breakdown: [
+      'Найди частоту резкости: sweep peaking EQ по 2–4 кГц, ищи «металл».',
+      'Срежь пик −3…−6 дБ (Q ~1–2), не вырезай широкую полосу — потеряешь разборчивость.',
+      'Отдельно обработай свист: de-esser или динамический срез в 5–7 кГц.',
+      'Проверь, что вокал остался «впереди», а не стал глухим.'
+    ],
+    mixBad: (function () {
+      var m = cloneMix(BASE_MIX);
+      m.vocal.levelDb = -1; m.vocal.peakDb = 7; m.vocal.reverbSend = 0.2;
+      return m;
+    })(),
+    mixFixed: BASE_MIX
+  },
+  {
+    id: 'overcompressed',
+    level: 'advanced',
+    title: 'Плоский микс',
+    tags: ['Electronic', BPM + ' BPM', 'Динамика'],
+    brief: 'Все треки на месте, баланс нормальный, но микс звучит плоско и утомляет. Что не так?',
+    problemOptions: [
+      { id: 'flat', label: 'Переконтроль динамики: транзиенты срезаны, нет «дыхания»' },
+      { id: 'mud', label: 'Слишком много низких средних' },
+      { id: 'reverb', label: 'Не хватает пространства' },
+      { id: 'level', label: 'Микс слишком тихий в целом' }
+    ],
+    correctProblem: 'flat',
+    toolOptions: [
+      { id: 'compressor', label: 'Compressor (GR / attack)' },
+      { id: 'volume', label: 'Volume automation' },
+      { id: 'eq', label: 'EQ' },
+      { id: 'reverb', label: 'Reverb settings' }
+    ],
+    bestTool: 'compressor',
+    acceptableTools: {
+      volume: 'Automation громкости — часть решения: «дыхание» микса часто делают руками. Но первично — убрать пересжатие.',
+      eq: 'EQ-«воздух» (high shelf выше 10 кГц) добавит жизни, но плоскость от компрессии EQ не лечит.'
+    },
+    keywords: ['attack', 'атак', 'порог', 'threshold', 'gr', 'gain reduction', 'динамик', 'automation', 'автоматизац'],
+    breakdown: [
+      'Проверь GR на каждом треке: если компрессор давит постоянно (>6–8 дБ) — это переконтроль.',
+      'Подними порог / уменьши ratio, замедли attack (30–50 мс), чтобы транзиенты проходили.',
+      'Верни динамику руками: automation громкости на припевах и паузы перед ключевыми фразами.',
+      'Только потом — EQ-«воздух» (high shelf +2–3 дБ выше 10 кГц) для жизни.'
+    ],
+    mixBad: (function () {
+      var m = cloneMix(BASE_MIX);
+      TRACK_ORDER.forEach(function (t) { m[t].comp = { thr: -40, ratio: 8 }; });
+      m.vocal.levelDb = -1; m.bass.levelDb = -3; m.drums.levelDb = -4; m.synth.levelDb = -8;
+      return m;
+    })(),
+    mixFixed: BASE_MIX
+  }
+];
+
+// ---------- СЦЕНАРИЙ «ПОЧИНИ САМ» ----------
+var FIX_START = {
+  vocal: { levelDb: -9, hpfHz: 60, peakDb: 2, comp: null, reverbSend: 0.7 },
+  bass:  { levelDb: -2, hpfHz: 25, peakDb: 4, comp: null, reverbSend: 0 },
+  drums: { levelDb: -3, hpfHz: 20, peakDb: 0, comp: null, reverbSend: 0 },
+  synth: { levelDb: -4, hpfHz: 20, peakDb: 8, comp: null, reverbSend: 0.5 }
+};
+var FIX_IDEAL = BASE_MIX;
+
+// ---------- DSP-ПОМОЩНИКИ (JS biquad для синтеза) ----------
+function dbToLin(db) { return Math.pow(10, db / 20); }
+
+// RBJ cookbook: lowpass / highpass / bandpass (для генерации источников)
+function makeBiquad(type, freq, q) {
+  var w0 = 2 * Math.PI * freq / SR;
+  var cosw = Math.cos(w0), sinw = Math.sin(w0);
+  var b0, b1, b2, a0, a1, a2, alpha;
+  if (type === 'lowpass') {
+    alpha = sinw / (2 * q);
+    b0 = (1 - cosw) / 2; b1 = 1 - cosw; b2 = (1 - cosw) / 2;
+    a0 = 1 + alpha; a1 = -2 * cosw; a2 = 1 - alpha;
+  } else if (type === 'highpass') {
+    alpha = sinw / (2 * q);
+    b0 = (1 + cosw) / 2; b1 = -(1 + cosw); b2 = (1 + cosw) / 2;
+    a0 = 1 + alpha; a1 = -2 * cosw; a2 = 1 - alpha;
+  } else { // bandpass
+    alpha = sinw / q;
+    b0 = sinw; b1 = 0; b2 = -sinw;
+    a0 = 1 + alpha; a1 = -2 * cosw; a2 = 1 - alpha;
+  }
+  var x1 = 0, x2 = 0, y1 = 0, y2 = 0;
+  return {
+    process: function (x) {
+      var y = (b0 * x + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2) / a0;
+      x2 = x1; x1 = x; y2 = y1; y1 = y;
+      return y;
+    }
+  };
+}
+
+// ---------- СИНТЕЗ ИСТОЧНИКОВ (один раз, в raw-массивах) ----------
+var TRACKS = null; // { vocal: Float32Array, bass: ..., drums: ..., synth: ... }
+
+function normalizeArr(arr, peakDb) {
+  var peak = 0;
+  for (var i = 0; i < arr.length; i++) { var a = Math.abs(arr[i]); if (a > peak) peak = a; }
+  if (peak < 1e-9) return;
+  var g = dbToLin(peakDb) / peak;
+  for (var j = 0; j < arr.length; j++) arr[j] *= g;
+}
+
+function synthDrums() {
+  var d = new Float32Array(N_TOTAL);
+  var kicks = [0, 10, 16, 27], snares = [8, 24];
+  function kick(t0) {
+    var n0 = Math.floor(t0 * SR), dur = 0.3;
+    var ph = 0;
+    for (var i = 0; i < dur * SR && n0 + i < N_TOTAL; i++) {
+      var t = i / SR;
+      var f = 48 + (150 - 48) * Math.exp(-t / 0.045);
+      ph += 2 * Math.PI * f / SR;
+      var s = Math.sin(ph) * Math.exp(-t / 0.09) * 0.9;
+      if (t < 0.012) s += (Math.random() * 2 - 1) * Math.exp(-t / 0.004) * 0.35; // клик
+      d[n0 + i] += s;
+    }
+  }
+  function snare(t0) {
+    var n0 = Math.floor(t0 * SR), dur = 0.2, ph = 0;
+    var bp = makeBiquad('bandpass', 1800, 1);
+    for (var i = 0; i < dur * SR && n0 + i < N_TOTAL; i++) {
+      var t = i / SR;
+      ph += 2 * Math.PI * 196 / SR;
+      var cyc = (ph / (2 * Math.PI)) % 1;
+      var tri = cyc < 0.5 ? 4 * cyc - 1 : 3 - 4 * cyc;
+      var s = (tri + bp.process(Math.random() * 2 - 1) * 1.6) * Math.exp(-t / 0.05);
+      d[n0 + i] += s * 0.8;
+    }
+  }
+  function hat(t0, accent, open) {
+    var n0 = Math.floor(t0 * SR), dur = open ? 0.3 : 0.07;
+    var hp = makeBiquad('highpass', 7500, 0.7);
+    for (var i = 0; i < dur * SR && n0 + i < N_TOTAL; i++) {
+      var t = i / SR;
+      d[n0 + i] += hp.process(Math.random() * 2 - 1) * Math.exp(-t / (open ? 0.045 : 0.013)) * (accent ? 0.7 : 0.45);
+    }
+  }
+  kicks.forEach(function (s) { kick(s * STEP); });
+  snares.forEach(function (s) { snare(s * STEP); });
+  for (var s = 0; s < STEPS; s += 2) hat(s * STEP, s % 8 === 0, false);
+  for (var s2 = 4; s2 < STEPS; s2 += 8) hat(s2 * STEP, true, true); // open hats — воздух в presence/air
+  normalizeArr(d, -12);
+  return d;
+}
+
+function synthBass() {
+  var b = new Float32Array(N_TOTAL);
+  // Am → F: A1=55 Гц, C2=65.41, F1=43.65
+  var notes = [
+    [0, 7, 55], [8, 3, 65.41], [12, 4, 55],
+    [16, 7, 43.65], [24, 4, 55], [28, 4, 43.65]
+  ];
+  notes.forEach(function (n) {
+    var t0 = n[0] * STEP, dur = n[1] * STEP, f = n[2];
+    var n0 = Math.floor(t0 * SR), ns = Math.min(Math.floor(dur * SR), N_TOTAL - n0);
+    for (var i = 0; i < ns; i++) {
+      var t = i / SR;
+      var env = Math.min(1, t / 0.008) * Math.min(1, (dur - t) / 0.04) * 0.9;
+      var x = Math.sin(2 * Math.PI * f * t) + 0.45 * Math.sin(2 * Math.PI * f * 2 * t) + 0.18 * Math.sin(2 * Math.PI * f * 3 * t);
+      b[n0 + i] += (Math.tanh(x * 1.6) / Math.tanh(1.6)) * env * 0.5;
+    }
+  });
+  normalizeArr(b, -12);
+  return b;
+}
+
+function synthPad() {
+  var p = new Float32Array(N_TOTAL);
+  // Am add9 → Fmaj7, по одному аккорду на такт
+  var chords = [
+    [220.0, 261.63, 329.63, 493.88],
+    [174.61, 220.0, 261.63, 329.63]
+  ];
+  var barSec = 16 * STEP;
+  chords.forEach(function (chord, bi) {
+    var t0 = bi * barSec, dur = barSec;
+    var n0 = Math.floor(t0 * SR), ns = Math.min(Math.floor(dur * SR), N_TOTAL - n0);
+    var phases = chord.map(function () { return 0; });
+    for (var i = 0; i < ns; i++) {
+      var t = i / SR;
+      var env = Math.min(1, t / 0.1) * Math.min(1, (dur - t) / 0.25);
+      var s = 0;
+      for (var k = 0; k < chord.length; k++) {
+        var f = chord[k];
+        phases[k] += f / SR; if (phases[k] >= 1) phases[k] -= 1;
+        var sawA = 2 * phases[k] - 1;
+        phases[k] += f * Math.pow(2, 5 / 1200) / SR; if (phases[k] >= 1) phases[k] -= 1;
+        var sawB = 2 * phases[k] - 1;
+        s += (sawA + sawB) * 0.5;
+      }
+      p[n0 + i] += s / chord.length * env * 0.6;
+    }
+  });
+  // LPF, чтобы пэд не был резким
+  var lpf = makeBiquad('lowpass', 2800, 0.7); // до presence/air — чтобы микс не был «тёмным»
+  for (var j = 0; j < p.length; j++) p[j] = lpf.process(p[j]);
+  normalizeArr(p, -12);
+  return p;
+}
+
+function synthVocal() {
+  var v = new Float32Array(N_TOTAL);
+  // Мелодическая фраза: [stepStart, stepDur, freq]
+  var notes = [
+    [0, 2, 220.0], [4, 2, 261.63], [8, 3, 329.63], [12, 2, 293.66],
+    [16, 2, 261.63], [20, 2, 220.0], [24, 3, 196.0], [28, 3, 293.66]
+  ];
+  // Форманты «а/о»: F1~500, F2~1400, F3~2500
+  // Форманты «а/о» (подняты: меньше грязи в 150–800 Гц, больше presence)
+  var FORM = [[700, 8, 0.9], [1600, 9, 0.6], [2800, 10, 0.45]];
+  notes.forEach(function (n) {
+    var t0 = n[0] * STEP, dur = n[1] * STEP - 0.03, f0 = n[2];
+    if (dur < 0.15) return;
+    var n0 = Math.floor(t0 * SR), ns = Math.min(Math.floor(dur * SR), N_TOTAL - n0);
+    var bps = FORM.map(function (f) { return makeBiquad('bandpass', f[0], f[1]); });
+    var ph = 0;
+    for (var i = 0; i < ns; i++) {
+      var t = i / SR;
+      var vibRamp = Math.max(0, Math.min(1, (t - 0.12) / 0.15));
+      var f = f0 * (1 + 0.006 * vibRamp * Math.sin(2 * Math.PI * 5.5 * t));
+      ph += f / SR; if (ph >= 1) ph -= 1;
+      var saw = 2 * ph - 1;
+      var env = Math.min(1, t / 0.025) * Math.min(1, (dur - t) / 0.08) * 0.75;
+      var s = 0;
+      for (var k = 0; k < FORM.length; k++) s += bps[k].process(saw) * FORM[k][2];
+      s += Math.sin(2 * Math.PI * f0 * t) * 0.25; // тело
+      v[n0 + i] += s * env * 0.6;
+    }
+  });
+  normalizeArr(v, -9);
+  return v;
+}
+
+function buildTracks() {
+  if (TRACKS) return TRACKS;
+  TRACKS = { drums: synthDrums(), bass: synthBass(), synth: synthPad(), vocal: synthVocal() };
+  return TRACKS;
+}
+
+
+// ---------- РЕНДЕР МИКСА (OfflineAudioContext) ----------
+var SHAPER_CURVE = (function () {
+  var n = 1024, c = new Float32Array(n);
+  for (var i = 0; i < n; i++) {
+    var x = (i / (n - 1)) * 2 - 1;
+    c[i] = Math.tanh(1.3 * x) / Math.tanh(1.3);
+  }
+  return c;
+})();
+
+function makeImpulse(ctx, dur) {
+  var len = Math.max(64, Math.floor(dur * SR));
+  var buf = ctx.createBuffer(2, len, SR);
+  for (var ch = 0; ch < 2; ch++) {
+    var d = buf.getChannelData(ch);
+    for (var i = 0; i < len; i++) {
+      var t = i / len;
+      d[i] = (Math.random() * 2 - 1) * Math.pow(1 - t, 3.0) * (ch === 0 ? 1 : 0.94);
+    }
+  }
+  return buf;
+}
+
+// params: {vocal:{...}, bass:{...}, drums:{...}, synth:{...}}
+// onlyTrack: null | 'vocal' — для анализа вклада вокала (остальные треки заглушены)
+function renderMix(params, onlyTrack) {
+  buildTracks();
+  var octx = new OfflineAudioContext(2, N_TOTAL, SR);
+
+  var master = octx.createGain(); master.gain.value = 0.9;
+  var shaper = octx.createWaveShaper(); shaper.curve = SHAPER_CURVE; shaper.oversample = '2x';
+  master.connect(shaper); shaper.connect(octx.destination);
+
+  var conv = octx.createConvolver(); conv.buffer = makeImpulse(octx, TAIL_SEC * 0.85);
+  var wet = octx.createGain(); wet.gain.value = 0.9;
+  conv.connect(wet); wet.connect(master);
+
+  TRACK_ORDER.forEach(function (t) {
+    var p = params[t];
+    var src = octx.createBufferSource();
+    var buf = octx.createBuffer(1, N_TOTAL, SR);
+    buf.copyToChannel(TRACKS[t], 0);
+    src.buffer = buf;
+
+    var hpf = octx.createBiquadFilter();
+    hpf.type = 'highpass'; hpf.frequency.value = p.hpfHz; hpf.Q.value = 0.71;
+    var peak = octx.createBiquadFilter();
+    peak.type = 'peaking'; peak.frequency.value = PEAK_FREQ[t]; peak.gain.value = p.peakDb; peak.Q.value = 1.2;
+
+    src.connect(hpf); hpf.connect(peak);
+    var node = peak;
+    if (p.comp) {
+      var c = octx.createDynamicsCompressor();
+      c.threshold.value = p.comp.thr; c.ratio.value = p.comp.ratio;
+      c.knee.value = 8; c.attack.value = 0.004; c.release.value = 0.16;
+      node.connect(c); node = c;
+    }
+    var vol = octx.createGain();
+    vol.gain.value = dbToLin(p.levelDb) * (onlyTrack && onlyTrack !== t ? 0 : 1);
+    node.connect(vol);
+    vol.connect(master);
+    if (p.reverbSend > 0) {
+      var send = octx.createGain(); send.gain.value = p.reverbSend * 0.9;
+      vol.connect(send); send.connect(conv);
+    }
+    src.start(0);
+  });
+
+  return octx.startRendering();
+}
+
+// ---------- АНАЛИЗ: FFT + полосовые энергии ----------
+var HANN_N = null, FFT_N = 4096;
+
+function hannWindow(n) {
+  if (HANN_N === n && window.__hannCache) return window.__hannCache;
+  var w = new Float32Array(n);
+  for (var i = 0; i < n; i++) w[i] = 0.5 * (1 - Math.cos(2 * Math.PI * i / n));
+  window.__hannCache = w; HANN_N = n;
+  return w;
+}
+
+function fft(re, im) {
+  var n = re.length, i, j, bit, len, ang, wr, wi, k, cr, ci, ur, ui, vr, vi, ncr;
+  for (i = 1, j = 0; i < n; i++) {
+    bit = n >> 1;
+    for (; j & bit; bit >>= 1) j ^= bit;
+    j ^= bit;
+    if (i < j) { var tr = re[i]; re[i] = re[j]; re[j] = tr; var ti = im[i]; im[i] = im[j]; im[j] = ti; }
+  }
+  for (len = 2; len <= n; len <<= 1) {
+    ang = -2 * Math.PI / len; wr = Math.cos(ang); wi = Math.sin(ang);
+    for (i = 0; i < n; i += len) {
+      cr = 1; ci = 0;
+      for (k = 0; k < len >> 1; k++) {
+        ur = re[i + k]; ui = im[i + k];
+        vr = re[i + k + (len >> 1)] * cr - im[i + k + (len >> 1)] * ci;
+        vi = re[i + k + (len >> 1)] * ci + im[i + k + (len >> 1)] * cr;
+        re[i + k] = ur + vr; im[i + k] = ui + vi;
+        re[i + k + (len >> 1)] = ur - vr; im[i + k + (len >> 1)] = ui - vi;
+        ncr = cr * wr - ci * wi; ci = cr * wi + ci * wr; cr = ncr;
+      }
+    }
+  }
+}
+
+// Периодограмма средней части паттерна → энергии полос
+function analyzeBuffer(buf) {
+  var ch0 = buf.getChannelData(0);
+  var ch1 = buf.numberOfChannels > 1 ? buf.getChannelData(1) : null;
+  var start = Math.floor(SR * 1.2), end = Math.min(ch0.length, Math.floor(SR * 4.8));
+  if (end - start < FFT_N) return null;
+
+  var win = hannWindow(FFT_N);
+  var re = new Float32Array(FFT_N), im = new Float32Array(FFT_N);
+  var P = new Float32Array(FFT_N / 2);
+  var frames = 0, hop = FFT_N >> 1;
+
+  for (var s = start; s + FFT_N <= end; s += hop) {
+    for (var i = 0; i < FFT_N; i++) {
+      re[i] = (ch0[s + i] + (ch1 ? ch1[s + i] : 0)) * 0.5 * win[i];
+      im[i] = 0;
+    }
+    fft(re, im);
+    for (var k2 = 0; k2 < FFT_N / 2; k2++) P[k2] += re[k2] * re[k2] + im[k2] * im[k2];
+    frames++;
+  }
+  if (!frames) return null;
+
+  var binHz = SR / FFT_N;
+  function band(lo, hi) {
+    var a = Math.max(1, Math.round(lo / binHz)), b = Math.min(FFT_N / 2 - 1, Math.round(hi / binHz));
+    var sum = 0;
+    for (var k3 = a; k3 <= b; k3++) sum += P[k3];
+    return sum / frames;
+  }
+  var total = 0;
+  for (var t2 = Math.round(20 / binHz); t2 < FFT_N / 2; t2++) total += P[t2];
+
+  return {
+    sub: band(30, 90),
+    lowmid: band(150, 400),
+    mud: band(150, 800),   // «грязная» зона для метрики Low balance
+    pres: band(2000, 8000),
+    high: band(3000, 8000),
+    total: total / frames
+  };
+}
+
+function clamp01(x) { return x < 0 ? 0 : (x > 1 ? 1 : x); }
+
+// Метрики из двух рендеров: mixBuf (весь микс) и vocalBuf (только вокал с его ревербом)
+function computeMetrics(mixBuf, vocalBuf) {
+  var m = analyzeBuffer(mixBuf), v = analyzeBuffer(vocalBuf);
+  if (!m || !v || m.total < 1e-9) return null;
+
+  // Инструментал = микс минус вокал (форманты вокала — не «грязь» для Low balance)
+  var mc = mixBuf.getChannelData(0), vc = vocalBuf.getChannelData(0);
+  var instLen = Math.min(mc.length, vc.length);
+  var inst = new Float32Array(instLen);
+  for (var i = 0; i < instLen; i++) inst[i] = mc[i] - vc[i];
+  var mi = analyzeBuffer({ numberOfChannels: 1, getChannelData: function () { return inst; } });
+
+  // Vocal presence: доля вокала в полосе присутствия 2–8 кГц микса
+  var vp = m.pres > 1e-9 ? clamp01(v.pres / m.pres) : 0;
+  // Low balance: «грязь» инструментала E(150–800 Гц)/E(total) — меньше чище
+  var mud = (mi && mi.total > 1e-9) ? (mi.mud || 0) / mi.total : CAL.mudBad;
+  // Clarity: доля высоких в общей энергии микса
+  var cl = m.high / m.total;
+
+  return {
+    vp: Math.round(clamp01((vp - CAL.vpBad) / (CAL.vpGood - CAL.vpBad)) * 100),
+    lb: Math.round(clamp01((CAL.mudBad - mud) / (CAL.mudBad - CAL.mudGood)) * 100),
+    cl: Math.round(clamp01((cl - CAL.clBad) / (CAL.clGood - CAL.clBad)) * 100),
+    raw: { vpShare: vp, mudShare: mud, highShare: cl }
+  };
+}
+
+// ---------- ПЛЕЕР (луп с кроссфейдом при перерендере) ----------
+var player = {
+  ctx: null, src: null, gain: null, buffer: null,
+  playing: false, startedAt: 0, label: ''
+};
+
+function ensureCtx() {
+  if (!player.ctx) {
+    var AC = window.AudioContext || window.webkitAudioContext;
+    player.ctx = new AC();
+    player.gain = player.ctx.createGain();
+    player.gain.connect(player.ctx.destination);
+  }
+  if (player.ctx.state === 'suspended') player.ctx.resume();
+  return player.ctx;
+}
+
+function stopPlayback(fadeMs) {
+  fadeMs = fadeMs || 0;
+  if (!player.src) return;
+  var src = player.src, g = player.gain, ctx = player.ctx;
+  player.src = null; player.playing = false;
+  try {
+    if (fadeMs > 0 && ctx.state === 'running') {
+      var t = ctx.currentTime;
+      g.gain.setValueAtTime(g.gain.value, t);
+      g.gain.linearRampToValueAtTime(0.0001, t + fadeMs / 1000);
+      src.stop(t + fadeMs / 1000 + 0.02);
+    } else {
+      src.stop();
+      g.gain.value = 1;
+    }
+  } catch (e) {}
+}
+
+// buffer: AudioBuffer; label — подпись статуса
+function playBuffer(buffer, label) {
+  var ctx = ensureCtx();
+  // кроссфейд: новый источник с того же offset (общий gain-узел даёт мягкий dip)
+  if (player.playing && player.buffer === buffer) return;
+
+  var offset = 0;
+  if (player.playing && player.ctx) {
+    offset = ((ctx.currentTime - player.startedAt) % buffer.duration + buffer.duration) % buffer.duration;
+  }
+  stopPlayback(player.playing ? 120 : 0);
+
+  var src = ctx.createBufferSource();
+  src.buffer = buffer; src.loop = true;
+  src.connect(player.gain);
+  player.gain.gain.setValueAtTime(0.0001, ctx.currentTime);
+  player.gain.gain.linearRampToValueAtTime(1, ctx.currentTime + 0.12);
+  src.start(0, offset);
+  player.src = src; player.buffer = buffer; player.playing = true;
+  player.startedAt = ctx.currentTime - offset;
+  player.label = label || '';
+}
+
+function togglePlay(buffer, label) {
+  if (player.playing && player.buffer === buffer) { stopPlayback(120); updatePlayerUI(); return false; }
+  playBuffer(buffer, label);
+  updatePlayerUI();
+  return true;
+}
+
+
+// ---------- ПРОГРЕСС (localStorage) ----------
+var progress = { solved: {}, attempts: 0, fixitBest: null };
+
+function loadProgress() {
+  try {
+    var raw = localStorage.getItem(STORE_KEY);
+    if (raw) {
+      var p = JSON.parse(raw);
+      if (p && typeof p === 'object') {
+        progress.solved = p.solved || {};
+        progress.attempts = p.attempts || 0;
+        progress.fixitBest = (typeof p.fixitBest === 'number') ? p.fixitBest : null;
+      }
+    }
+  } catch (e) {}
+}
+
+function saveProgress() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(progress)); } catch (e) {}
+}
+
+function solvedCount() {
+  var n = 0;
+  CASES.forEach(function (c) { if (progress.solved[c.id]) n++; });
+  return n;
+}
+
+function updateStatsUI() {
+  document.getElementById('statCases').textContent = solvedCount() + '/' + CASES.length;
+  document.getElementById('statFixit').textContent = progress.fixitBest == null ? '—' : progress.fixitBest + '%';
+  document.getElementById('statAttempts').textContent = String(progress.attempts);
+}
+
+// ---------- TOAST ----------
+var toastTimer = null;
+function showToast(msg) {
+  var el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(function () { el.classList.remove('show'); }, 2600);
+}
+
+// ---------- UI-ПОМОЩНИКИ ----------
+function refreshIcons() { if (window.lucide) lucide.createIcons({ attrs: { 'stroke-width': 1.8 } }); }
+
+var activeTab = 'cases';
+
+function updatePlayerUI() {
+  // Кейсы: кнопка Bad Mix + статус
+  var badBtn = document.getElementById('badPlayBtn');
+  var isBadPlaying = player.playing && player.label === 'Bad Mix';
+  badBtn.classList.toggle('playing', isBadPlaying);
+  badBtn.innerHTML = '<i data-lucide="' + (isBadPlaying ? 'pause' : 'play') + '"></i><span>' + (isBadPlaying ? 'Стоп' : 'Bad Mix') + '</span>';
+
+  var dot = document.getElementById('playDot');
+  var stText = document.getElementById('playStatusText');
+  if (player.playing) {
+    dot.classList.add('on');
+    stText.textContent = player.label;
+  } else {
+    dot.classList.remove('on');
+    stText.textContent = '';
+  }
+
+  // Fix-it: кнопка play + эталон
+  var fixBtn = document.getElementById('fixPlayBtn');
+  var isFixPlaying = player.playing && (player.label === 'Твой микс' || player.label === 'Эталон');
+  fixBtn.classList.toggle('playing', isFixPlaying);
+  fixBtn.innerHTML = '<i data-lucide="' + (isFixPlaying ? 'pause' : 'play') + '"></i><span>' + (isFixPlaying ? 'Стоп' : 'Играть') + '</span>';
+  var refBtn = document.getElementById('fixRefBtn');
+  refBtn.classList.toggle('ref-on', player.playing && player.label === 'Эталон');
+
+  refreshIcons();
+}
+
+// ---------- КЕЙСЫ (DETECTIVE) ----------
+var currentCaseId = CASES[0].id;
+var caseCache = {};
+var audioCache = {};
+
+function getCase(c) { return CASES.filter(function (x) { return x.id === c; })[0]; }
+
+function getCaseBuffer(c, which) {
+  var key = c.id + '|' + which;
+  if (c.audio && c.audio[which]) {
+    // Хук для реальных записей: cases/<id>/bad.wav, fixed.wav (см. README.md)
+    if (!audioCache[key]) {
+      audioCache[key] = fetch(c.audio[which]).then(function (r) { return r.arrayBuffer(); })
+        .then(function (ab) { return ensureCtx().decodeAudioData(ab); });
+    }
+    return audioCache[key];
+  }
+  if (!caseCache[key]) caseCache[key] = renderMix(which === 'bad' ? c.mixBad : c.mixFixed, null);
+  return caseCache[key];
+}
+
+function buildCasePills() {
+  var wrap = document.getElementById('casePills');
+  wrap.innerHTML = '';
+  CASES.forEach(function (c, i) {
+    var b = document.createElement('button');
+    b.className = 'case-pill' + (progress.solved[c.id] ? ' solved' : '') + (c.id === currentCaseId ? ' active' : '');
+    b.setAttribute('data-case', c.id);
+    b.innerHTML =
+      '<div class="case-pill-top"><span class="case-num">КЕЙС 0' + (i + 1) + '</span>' +
+      '<span class="level-chip level-' + c.level + '">' + c.level + '</span></div>' +
+      '<div class="case-pill-title">' + c.title + '</div>' +
+      '<span class="case-solved"><i data-lucide="check"></i></span>';
+    b.addEventListener('click', function () { selectCase(c.id); });
+    wrap.appendChild(b);
+  });
+}
+
+function renderOptions(containerId, options, name) {
+  var wrap = document.getElementById(containerId);
+  wrap.innerHTML = '';
+  options.forEach(function (o) {
+    var label = document.createElement('label');
+    label.className = 'option';
+    label.innerHTML = '<input type="radio" name="' + name + '" value="' + o.id + '"><span>' + o.label + '</span>';
+    label.querySelector('input').addEventListener('change', function () {
+      wrap.querySelectorAll('.option').forEach(function (el) { el.classList.remove('checked'); });
+      label.classList.add('checked');
+    });
+    wrap.appendChild(label);
+  });
+}
+
+function selectCase(id) {
+  currentCaseId = id;
+  stopPlayback(120);
+  var c = getCase(id);
+  document.getElementById('caseLevel').className = 'level-chip level-' + c.level;
+  document.getElementById('caseLevel').textContent = c.level;
+  document.getElementById('caseTitle').textContent = c.title;
+  document.getElementById('caseTags').innerHTML = c.tags.map(function (t) { return '<span>' + t + '</span>'; }).join('');
+  document.getElementById('caseBrief').textContent = c.brief;
+  renderOptions('problemOptions', c.problemOptions, 'md-problem');
+  renderOptions('toolOptions', c.toolOptions, 'md-tool');
+  document.getElementById('answerText').value = '';
+  var rp = document.getElementById('resultPanel');
+  rp.className = 'result hidden';
+  rp.innerHTML = '';
+  buildCasePills();
+  updatePlayerUI();
+}
+
+function selectedValue(name) {
+  var el = document.querySelector('input[name="' + name + '"]:checked');
+  return el ? el.value : null;
+}
+
+function labelOf(c, list, id) {
+  for (var i = 0; i < c[list].length; i++) if (c[list][i].id === id) return c[list][i].label;
+  return id;
+}
+
+function checkAnswer() {
+  var c = getCase(currentCaseId);
+  var pSel = selectedValue('md-problem');
+  var tSel = selectedValue('md-tool');
+  var text = document.getElementById('answerText').value.trim();
+
+  if (!pSel || !tSel) { showToast('Выбери проблему и инструмент'); return; }
+
+  progress.attempts++;
+  saveProgress(); updateStatsUI();
+
+  var vProblem = pSel === c.correctProblem ? 'good' : 'bad';
+  var vTool = tSel === c.bestTool ? 'best' : (c.acceptableTools[tSel] ? 'ok' : 'bad');
+
+  // Мягкий анализ текста: ключевые слова + объём
+  var lower = text.toLowerCase();
+  var hits = 0;
+  c.keywords.forEach(function (k) { if (lower.indexOf(k) !== -1) hits++; });
+  var vText;
+  if (!text || text.length < 40) vText = 'bad';
+  else if (hits >= 2) vText = 'good';
+  else if (hits === 1) vText = 'ok';
+  else vText = 'neutral';
+
+  var passed = vProblem === 'good' && (vTool === 'best' || vTool === 'ok');
+  if (passed && !progress.solved[c.id]) {
+    progress.solved[c.id] = true;
+    saveProgress(); updateStatsUI(); buildCasePills();
+    showToast('Кейс пройден: «' + c.title + '»');
+  }
+
+  var iconFor = { good: 'check', best: 'check', ok: 'alert-triangle', neutral: 'lightbulb', bad: 'x' };
+  var clsFor = { good: 'v-good', best: 'v-good', ok: 'v-ok', neutral: 'v-ok', bad: 'v-bad' };
+
+  var h = '';
+  h += '<div class="your-answer">Твой ответ: <b>' + labelOf(c, 'problemOptions', pSel) + '</b> → <b>' + labelOf(c, 'toolOptions', tSel) + '</b></div>';
+
+  if (vProblem === 'good') {
+    h += '<div class="verdict-line ' + clsFor.good + '"><i data-lucide="' + iconFor.good + '"></i><span><b>Проблема найдена.</b> Ты правильно определил главную проблему микса.</span></div>';
+  } else {
+    h += '<div class="verdict-line ' + clsFor.bad + '"><i data-lucide="' + iconFor.bad + '"></i><span><b>Не совсем.</b> Послушай ещё раз и подумай, что бросается в уши первым — а не что «просто так» звучит странно. Разбор ниже подскажет направление.</span></div>';
+  }
+
+  if (vTool === 'best') {
+    h += '<div class="verdict-line ' + clsFor.best + '"><i data-lucide="' + iconFor.best + '"></i><span><b>Отличный первый шаг.</b> Этот инструмент — типичная первая проверка при такой проблеме.</span></div>';
+  } else if (vTool === 'ok') {
+    h += '<div class="verdict-line ' + clsFor.ok + '"><i data-lucide="' + iconFor.ok + '"></i><span><b>Работает, но не первым шагом.</b> ' + c.acceptableTools[tSel] + '</span></div>';
+  } else {
+    h += '<div class="verdict-line ' + clsFor.bad + '"><i data-lucide="' + iconFor.bad + '"></i><span><b>Инструмент не по задаче.</b> Подумай, что проверяют первым при этой проблеме — последовательность в разборе ниже.</span></div>';
+  }
+
+  if (vText === 'good') {
+    h += '<div class="verdict-line ' + clsFor.good + '"><i data-lucide="' + iconFor.good + '"></i><span><b>Сильное объяснение:</b> ты привязал решение к конкретным частотам/параметрам. Так и на реальных сессиях.</span></div>';
+  } else if (vText === 'ok') {
+    h += '<div class="verdict-line ' + clsFor.ok + '"><i data-lucide="' + iconFor.ok + '"></i><span>Есть объяснение. Попробуй добавить конкретики: частоты, дБ, параметры.</span></div>';
+  } else if (vText === 'neutral') {
+    h += '<div class="verdict-line ' + clsFor.neutral + '"><i data-lucide="' + iconFor.neutral + '"></i><span>Объяснение есть, но без конкретики. Инженер говорит цифрами: «срезал 350 Гц на −4 дБ», а не «поправил EQ».</span></div>';
+  } else {
+    h += '<div class="verdict-line ' + clsFor.bad + '"><i data-lucide="' + iconFor.bad + '"></i><span>Добавь объяснение: что именно меняешь и почему. Это главное в работе инженера.</span></div>';
+  }
+
+  // Разбор инженера — всегда показываем
+  h += '<div class="breakdown"><h4><i data-lucide="brain"></i>Инженерский разбор</h4>';
+  c.breakdown.forEach(function (s, i) {
+    h += '<div class="step"><span class="step-num">' + (i + 1) + '</span><span>' + s + '</span></div>';
+  });
+  h += '</div>';
+
+  // A/B: bad / fixed
+  h += '<div class="ab-row">';
+  h += '<button class="ab-btn" data-ab="bad">Bad Mix</button>';
+  h += '<button class="ab-btn" data-ab="fixed"><b>Fixed Mix</b></button>';
+  h += '</div>';
+
+  var rp = document.getElementById('resultPanel');
+  rp.className = 'result';
+  rp.innerHTML = h;
+  refreshIcons();
+
+  rp.querySelectorAll('[data-ab]').forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      getCaseBuffer(c, btn.getAttribute('data-ab')).then(function (buf) {
+        playBuffer(buf, btn.getAttribute('data-ab') === 'bad' ? 'Bad Mix' : 'Fixed Mix');
+        rp.querySelectorAll('[data-ab]').forEach(function (b2) { b2.className = 'ab-btn'; });
+        btn.className = 'ab-btn ' + (btn.getAttribute('data-ab') === 'bad' ? 'active-before' : 'active-after');
+        updatePlayerUI();
+      });
+    });
+  });
+
+  rp.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+// ---------- ПОЧИНИ САМ (FIX-IT) ----------
+var fixState = { params: cloneMix(FIX_START), mixBuf: null, vocalBuf: null, metrics: null, rendering: false, dirty: false };
+var refBufPromise = null;
+var fixTimer = null;
+
+function hpfFromSlider(v) { return 20 * Math.pow(500 / 20, v / 100); }
+function sliderFromHpf(hz) { return 100 * Math.log(hz / 20) / Math.log(500 / 20); }
+
+var FIX_CONTROLS = [
+  { key: 'levelDb', name: 'Volume', min: -12, max: 6, step: 0.5, fmt: function (v) { return v.toFixed(1) + ' дБ'; }, apply: function (t, p, v) { p.levelDb = v; } },
+  { key: 'hpfHz', name: 'HPF', min: 0, max: 100, step: 1, fmt: function (v) { return Math.round(hpfFromSlider(v)) + ' Гц'; }, apply: function (t, p, v) { p.hpfHz = hpfFromSlider(v); } },
+  { key: 'peakDb', name: 'Peak', min: -12, max: 6, step: 0.5, fmt: function (v) { return (v > 0 ? '+' : '') + v.toFixed(1) + ' дБ'; }, apply: function (t, p, v) { p.peakDb = v; } },
+  { key: 'comp', name: 'Comp', min: 0, max: 100, step: 5, fmt: function (v) { return v === 0 ? 'выкл' : v + '%'; }, apply: function (t, p, v) { p.comp = v === 0 ? null : { thr: -52 + v * 0.32, ratio: 1 + (v / 100) * 6 }; } },
+  { key: 'reverbSend', name: 'Reverb', min: 0, max: 100, step: 5, fmt: function (v) { return v + '%'; }, apply: function (t, p, v) { p.reverbSend = v / 100; } }
+];
+
+function sliderValueFor(ctrl, trackParams) {
+  if (ctrl.key === 'hpfHz') return Math.round(sliderFromHpf(trackParams.hpfHz));
+  if (ctrl.key === 'comp') return trackParams.comp ? Math.round((trackParams.comp.ratio - 1) / 6 * 100) : 0;
+  if (ctrl.key === 'reverbSend') return Math.round(trackParams.reverbSend * 100);
+  return trackParams[ctrl.key];
+}
+
+function buildStrips() {
+  var wrap = document.getElementById('strips');
+  wrap.innerHTML = '';
+  TRACK_ORDER.forEach(function (t) {
+    var strip = document.createElement('div');
+    strip.className = 'strip';
+    var freqLabel = PEAK_FREQ[t] >= 1000 ? (PEAK_FREQ[t] / 1000).toFixed(1).replace('.0', '') + ' кГц' : PEAK_FREQ[t] + ' Гц';
+    var h = '<div class="strip-head"><span class="strip-name">' + t.toUpperCase() + '</span><span class="strip-freq">peak ' + freqLabel + '</span></div>';
+    FIX_CONTROLS.forEach(function (ctrl) {
+      h += '<label class="ctl"><span class="ctl-name">' + ctrl.name + '</span>' +
+        '<input type="range" min="' + ctrl.min + '" max="' + ctrl.max + '" step="' + ctrl.step + '" data-track="' + t + '" data-param="' + ctrl.key + '">' +
+        '<b class="ctl-val"></b></label>';
+    });
+    strip.innerHTML = h;
+    wrap.appendChild(strip);
+
+    strip.querySelectorAll('input[type="range"]').forEach(function (inp) {
+      var track = inp.getAttribute('data-track');
+      var param = inp.getAttribute('data-param');
+      var ctrl = FIX_CONTROLS.filter(function (x) { return x.key === param; })[0];
+      function refreshVal() {
+        var val = parseFloat(inp.value);
+        strip.querySelector('input[data-param="' + param + '"] + .ctl-val').textContent = ctrl.fmt(val);
+      }
+      inp.addEventListener('input', function () {
+        var val = parseFloat(inp.value);
+        ctrl.apply(track, fixState.params[track], val);
+        refreshVal();
+        document.getElementById('fixHints').classList.add('hidden');
+        scheduleFixRender();
+      });
+    });
+  });
+  syncStripSliders();
+}
+
+function syncStripSliders() {
+  var wrap = document.getElementById('strips');
+  TRACK_ORDER.forEach(function (t) {
+    FIX_CONTROLS.forEach(function (ctrl) {
+      var inp = wrap.querySelector('input[data-track="' + t + '"][data-param="' + ctrl.key + '"]');
+      if (!inp) return;
+      inp.value = sliderValueFor(ctrl, fixState.params[t]);
+      inp.dispatchEvent(new Event('input'));
+    });
+  });
+}
+
+function scheduleFixRender() {
+  clearTimeout(fixTimer);
+  fixTimer = setTimeout(doFixRender, 180);
+}
+
+function doFixRender() {
+  if (fixState.rendering) { fixState.dirty = true; return; }
+  fixState.rendering = true;
+  if (!player.playing) document.getElementById('playStatusText').textContent = 'Рендер…';
+  renderMix(fixState.params, null).then(function (mixBuf) {
+    return renderMix(fixState.params, 'vocal').then(function (vocalBuf) {
+      fixState.mixBuf = mixBuf;
+      fixState.vocalBuf = vocalBuf;
+      fixState.metrics = computeMetrics(mixBuf, vocalBuf);
+      updateFixMetricsUI();
+      if (player.playing && player.label === 'Твой микс') playBuffer(mixBuf, 'Твой микс');
+    });
+  }).then(function () {
+    fixState.rendering = false;
+    updatePlayerUI();
+    if (fixState.dirty) { fixState.dirty = false; doFixRender(); }
+  });
+}
+
+function barColor(v) { return v >= 85 ? 'var(--success)' : (v >= 50 ? 'var(--warning)' : 'var(--danger)'); }
+
+function updateFixMetricsUI() {
+  var m = fixState.metrics;
+  if (!m) return;
+  [['VP', m.vp], ['LB', m.lb], ['CL', m.cl]].forEach(function (pair) {
+    document.getElementById('bar' + pair[0]).style.width = pair[1] + '%';
+    document.getElementById('bar' + pair[0]).style.background = barColor(pair[1]);
+    document.getElementById('val' + pair[0]).textContent = pair[1] + '%';
+  });
+  var total = Math.round((m.vp + m.lb + m.cl) / 3);
+  document.getElementById('fixTotal').textContent = total + '%';
+  if (progress.fixitBest == null || total > progress.fixitBest) {
+    progress.fixitBest = total;
+    saveProgress(); updateStatsUI();
+  }
+}
+
+var FIX_HINTS = {
+  vp: 'Вокал теряется в присутствии-диапазоне (2–8 кГц): подними его уровень, срежь грязь на синтезе (HPF ~120–150 Гц) и убери лишнюю реверберацию.',
+  lb: 'Слишком много энергии 150–400 Гц относительно суба: HPF на синтезе + точечный срез 300–400 Гц. Не вырезай суб у баса — низ должны держать кик и бас.',
+  cl: 'Мало «воздуха»: presence-пик вокала (3.2 кГц), air на барабанах (6 кГц) и меньше грязи в середине освободят высокие частоты.'
+};
+
+function showFixBreakdown() {
+  var m = fixState.metrics;
+  if (!m) { showToast('Подожди, пока микс отрендерится'); return; }
+  var h = '';
+  [['vp', 'Vocal presence'], ['lb', 'Low balance'], ['cl', 'Clarity']].forEach(function (pair) {
+    var v = m[pair[0]];
+    if (v < 100) {
+      h += '<div class="hint-line"><i data-lucide="alert-triangle"></i><span><b>' + pair[1] + ': ' + v + '%.</b> ' + FIX_HINTS[pair[0]] + '</span></div>';
+    } else {
+      h += '<div class="hint-line"><i data-lucide="check"></i><span><b>' + pair[1] + ': ' + v + '%</b> — отлично.</span></div>';
+    }
+  });
+  if (m.vp >= 100 && m.lb >= 100 && m.cl >= 100) {
+    h += '<div class="hint-line"><i data-lucide="trophy"></i><span>Отличный баланс! Включи «Эталон A/B» и сравни — твой микс должен звучать близко к референсу.</span></div>';
+  } else {
+    h += '<div class="hint-line"><i data-lucide="headphones"></i><span>Включи «Эталон A/B», чтобы услышать цель, и возвращайся к ручкам. Метрики обновляются на лету.</span></div>';
+  }
+  var el = document.getElementById('fixHints');
+  el.innerHTML = h;
+  el.classList.remove('hidden');
+  refreshIcons();
+}
+
+function getRefBuffer() {
+  if (!refBufPromise) refBufPromise = renderMix(FIX_IDEAL, null);
+  return refBufPromise;
+}
+
+// ---------- ВКЛАДКИ / ТЕМА / КЛАВИАТУРА ----------
+function switchTab(tab) {
+  activeTab = tab;
+  stopPlayback(120);
+  document.querySelectorAll('.tab').forEach(function (t) { t.classList.toggle('active', t.getAttribute('data-tab') === tab); });
+  document.getElementById('panel-cases').classList.toggle('hidden', tab !== 'cases');
+  document.getElementById('panel-fixit').classList.toggle('hidden', tab !== 'fixit');
+  updatePlayerUI();
+}
+
+function initTheme() {
+  var saved = null;
+  try { saved = localStorage.getItem('tools-theme'); } catch (e) {}
+  applyTheme(saved || 'dark');
+  document.getElementById('themeToggle').addEventListener('click', function () {
+    var next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    try { localStorage.setItem('tools-theme', next); } catch (e) {}
+    applyTheme(next);
+  });
+}
+
+function applyTheme(theme) {
+  document.documentElement.setAttribute('data-theme', theme);
+  var btn = document.getElementById('themeToggle');
+  btn.innerHTML = '<i data-lucide="' + (theme === 'dark' ? 'moon' : 'sun') + '"></i>';
+  refreshIcons();
+}
+
+function onKey(e) {
+  if (e.target && (e.target.tagName === 'TEXTAREA' || e.target.tagName === 'INPUT')) return;
+  if (e.code === 'Space') {
+    e.preventDefault();
+    if (activeTab === 'cases') {
+      var c = getCase(currentCaseId);
+      getCaseBuffer(c, 'bad').then(function (buf) { togglePlay(buf, 'Bad Mix'); });
+    } else {
+      if (!fixState.mixBuf) { showToast('Подожди первый рендер микса'); return; }
+      togglePlay(fixState.mixBuf, 'Твой микс');
+    }
+  } else if (e.key === 'Enter' && activeTab === 'cases') {
+    e.preventDefault();
+    checkAnswer();
+  }
+}
+
+// ---------- BOOT ----------
+function boot() {
+  loadProgress();
+  initTheme();
+  buildCasePills();
+  selectCase(currentCaseId);
+  buildStrips();
+  updateStatsUI();
+
+  document.getElementById('checkBtn').addEventListener('click', checkAnswer);
+  document.getElementById('badPlayBtn').addEventListener('click', function () {
+    var c = getCase(currentCaseId);
+    getCaseBuffer(c, 'bad').then(function (buf) { togglePlay(buf, 'Bad Mix'); });
+  });
+
+  document.querySelectorAll('.tab').forEach(function (t) {
+    t.addEventListener('click', function () { switchTab(t.getAttribute('data-tab')); });
+  });
+
+  document.getElementById('fixPlayBtn').addEventListener('click', function () {
+    if (!fixState.mixBuf) { showToast('Подожди первый рендер микса'); return; }
+    togglePlay(fixState.mixBuf, 'Твой микс');
+  });
+  document.getElementById('fixRefBtn').addEventListener('click', function () {
+    getRefBuffer().then(function (buf) {
+      if (player.playing && player.label === 'Эталон') { stopPlayback(120); }
+      else playBuffer(buf, 'Эталон');
+      updatePlayerUI();
+    });
+  });
+  document.getElementById('fixResetBtn').addEventListener('click', function () {
+    fixState.params = cloneMix(FIX_START);
+    syncStripSliders();
+    document.getElementById('fixHints').classList.add('hidden');
+    showToast('Параметры сброшены');
+  });
+  document.getElementById('fixDoneBtn').addEventListener('click', showFixBreakdown);
+
+  document.addEventListener('keydown', onKey);
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot);
+else boot();
+
+})();
+</script>
+</body>
+</html>

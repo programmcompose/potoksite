@@ -1,0 +1,116 @@
+/* ========================================
+   Tree-линии в боковом меню (nav tree)
+
+   Когда раздел раскрыт, под ним рисуется вертикальный «ствол»,
+   а к каждому прямому подразделу — короткая горизонтальная
+   «веточка». Визуально понятно, какие пункты принадлежат ветке:
+
+       📚 Этапы
+        │
+        ├─ 🎯 Этап 0 ...
+        ├─ 🔥 Этап 1 ...
+        └─ 🎛️ Этап 2 ...
+
+   Как устроено (чистый CSS, без JS):
+   - вложенные списки (.md-nav__item > .md-nav > .md-nav__list) получают
+     увеличенный padding-left (--tree-indent), чтобы между уровнями
+     появилась «граница» под линии;
+   - ствол — ::before на вложенном списке. Список всегда overflow:hidden,
+     а при сворачивании Material схлопывает его (grid-template-rows: 0fr +
+     visibility:collapse) → линии автоматически исчезают вместе с разделом;
+   - веточки — ::before на каждом прямом .md-nav__item внутри списка.
+
+   Геометрия (проверена getBoundingClientRect на собранном сайте):
+   - десктоп-рейл: у .md-nav__link НЕТ padding'а (правило с .6rem/.8rem
+     действует только в drawer, max-width 76.234375em) → иконка пункта
+     начинается ровно с левого края li;
+   - поэтому ствол ставится по СЕРЕДИНЕ границы между уровнями
+     (--tree-trunk-x = --tree-indent / 2 ≈ 9px), что на десктопе совпадает
+     с центром иконки родителя (иконка 18px → центр в 9px);
+   - веточка идёт от ствола до края контента пункта, минус зазор.
+
+   Активная ветка подсвечивается оранжевым: Material вешает класс
+   md-toggle--indeterminate на чекбокс-предка, когда текущая страница
+   находится внутри раздела → ловим его через ~ и красим ствол.
+   ======================================== */
+
+.md-nav--primary {
+  /* Отступ вложенных списков (штатный .6rem). Больше отступ = больше
+     места для ствола и веточек между уровнями. */
+  --tree-indent: 1.3rem;
+  /* Ось ствола относительно левого края вложенного списка (= левый край
+     пункта-родителя). Десктоп: середина границы ≈ центр иконки родителя. */
+  --tree-trunk-x: calc(var(--tree-indent) / 2);
+  /* Конец веточки, отсчитанный от левого края ПУНКТА (на десктопе контент
+     начинается с края li → веточка заканчивается за 2px до него). */
+  --tree-elbow-end: -2px;
+  /* Вертикаль веточки — по центру иконки пункта (десктоп: иконка в самом
+     верху строки, без padding'а ссылки; для многострочных пунктов это
+     важнее, чем середина всей строки). */
+  --tree-elbow-y: calc(9px - 1px);
+  /* Цвет линий — приглушённый, в тон вторичному тексту обеих тем */
+  --tree-line: color-mix(in srgb, var(--text-secondary) 40%, transparent);
+  --tree-line-active: color-mix(in srgb, var(--accent-orange) 60%, transparent);
+}
+
+/* Drawer (мобилка/планшет): там у ссылок padding .8rem → иконки смещены.
+   Ствол ставим точно под центр иконки родителя, веточку — до иконки пункта. */
+@media screen and (max-width: 76.234375em) {
+  .md-nav--primary {
+    --tree-trunk-x: calc(0.8rem + 9px);
+    --tree-elbow-end: calc(0.8rem - 2px);
+    --tree-elbow-y: calc(0.6rem + 9px - 1px);
+  }
+}
+
+/* Вложенные списки — шире отступ слева (граница для линий).
+   Топ-уровень не трогаем: только списки внутри пунктов. */
+.md-nav--primary .md-nav__item > .md-nav:not(.md-nav--secondary) > .md-nav__list {
+  padding-left: var(--tree-indent);
+}
+
+/* Ствол — вертикальная линия на всю высоту вложенного списка,
+   от нижнего края родителя до нижнего края последнего пункта. */
+.md-nav--primary .md-nav__item > .md-nav:not(.md-nav--secondary) > .md-nav__list {
+  position: relative;
+}
+
+.md-nav--primary .md-nav__item > .md-nav:not(.md-nav--secondary) > .md-nav__list::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0.4rem; /* до нижнего края последнего пункта (padding-bottom списка) */
+  left: var(--tree-trunk-x);
+  width: 2px;
+  margin-left: -1px; /* центрируем линию на оси */
+  background-color: var(--tree-line);
+  pointer-events: none;
+}
+
+/* Ветка — горизонтальная линия от ствола к каждому прямому пункту,
+   по вертикальному центру строки (там же, где иконка). */
+.md-nav--primary .md-nav__item > .md-nav:not(.md-nav--secondary) > .md-nav__list > .md-nav__item {
+  position: relative;
+}
+
+.md-nav--primary .md-nav__item > .md-nav:not(.md-nav--secondary) > .md-nav__list > .md-nav__item::before {
+  content: "";
+  position: absolute;
+  top: var(--tree-elbow-y);
+  /* координаты относительно пункта (его левый край = начало отступа списка):
+     ствол лежит на --tree-trunk-x от края списка, т.е. на
+     (--tree-trunk-x − --tree-indent) от края пункта */
+  left: calc(var(--tree-trunk-x) - var(--tree-indent));
+  width: calc(var(--tree-elbow-end) - (var(--tree-trunk-x) - var(--tree-indent)));
+  height: 2px;
+  background-color: var(--tree-line);
+  pointer-events: none;
+}
+
+/* Активная ветка — ствол оранжевый, если текущая страница внутри раздела.
+   Material при сборке вешает md-nav__item--active и на сам пункт, и на всех
+   его предков → :has() ловит любой список, содержащий активный пункт. */
+.md-nav--primary .md-nav__item > .md-nav:not(.md-nav--secondary) > .md-nav__list:has(> .md-nav__item.md-nav__item--active)::before,
+.md-nav--primary .md-nav__item > .md-nav__toggle.md-toggle--indeterminate ~ .md-nav:not(.md-nav--secondary) > .md-nav__list::before {
+  background-color: var(--tree-line-active);
+}

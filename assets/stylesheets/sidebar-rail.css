@@ -1,0 +1,71 @@
+/* ========================================
+   Фиксированный левый рейл (десктоп ≥ 76.25em / 1220px)
+
+   Меню прижато к левому краю экрана: панель на всю высоту от хедера до
+   низа вьюпорта, со своим скроллбаром. Статья справа скроллится отдельно —
+   как на victorpainer.com/tools/. Мобилка (< 76.25em) не трогается:
+   там работает штатный drawer Material.
+
+   Файл подключается ПОСЛЕДНИМ в extra_css, чтобы переопределять
+   «плавающее окошко» из ambient.css при равной специфичности.
+   ======================================== */
+
+@media screen and (min-width: 76.25em) {
+
+  /* Контентная область — на всю ширину окна (больше не центрированная
+     сетка 61rem), чтобы рейл мог прижаться к самому краю вьюпорта,
+     а под фиксированный рейл зарезервировано место отступом слева. */
+  .md-main__inner {
+    max-width: none;
+    padding-left: calc(12.1rem + 0.8rem); /* ширина рейла + зазор до статьи */
+  }
+
+  /* Левое меню — фиксированная панель у левого края, от хедера до низа.
+     top:49px = высота хедера (JS Material дополнительно шьёт это значение
+     инлайн — оно совпадает). z-index 3: ниже хедера (z-4), выше контента. */
+  .md-sidebar--primary {
+    position: fixed;
+    top: 49px;
+    left: 0;
+    bottom: 0;
+    height: calc(100vh - 49px); /* иначе базовое .md-sidebar{height:0} схлопнет рейл */
+    width: 12.1rem;
+    margin: 0;
+    padding: 0;
+    z-index: 3;
+  }
+
+  /* Скролл-область меню — на всю высоту рейла, со своим скроллбаром.
+     height/max-height с !important: JS Material шьёт height инлайн,
+     а ambient.css ограничивал max-height (100vh - 122px). */
+  .md-sidebar--primary .md-sidebar__scrollwrap {
+    height: calc(100vh - 49px) !important;
+    max-height: none !important;
+    margin: 0;
+    border-radius: 0; /* больше не «плавающее окошко» — цельная панель */
+    box-shadow: none;
+    border-left: none;
+    border-top: none;
+    border-bottom: none;
+    scrollbar-gutter: stable;
+  }
+
+  /* Тонкая линия разделения рейла и статьи (правый край панели) */
+  [data-md-color-scheme="slate"] .md-sidebar--primary .md-sidebar__scrollwrap {
+    border-right: 1px solid var(--border-subtle);
+  }
+
+  [data-md-color-scheme="default"] .md-sidebar--primary .md-sidebar__scrollwrap {
+    border-right: 1px solid var(--border-subtle);
+  }
+
+  /* Статья — комфортная ширина строки, по центру между рейлом и TOC.
+     !important: тема Material задаёт margin-left на .md-content__inner
+     селектором с большей специфичностью. */
+  .md-content > .md-content__inner {
+    max-width: 36rem;
+    margin-left: auto !important;
+    margin-right: auto !important;
+  }
+
+}
