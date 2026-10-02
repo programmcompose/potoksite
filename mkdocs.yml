@@ -234,8 +234,8 @@ nav:
       - "<span class='nav-icon' data-lucide='rocket'></span> Этап 9 — Release Ready": "projects/etap9.md"
   - "<span class='nav-icon' data-lucide='newspaper'></span> Новости Потока": news/index.md
   - "<span class='nav-icon' data-lucide='library'></span> Этапы":
-      - "<span class='nav-icon' data-lucide='target'></span> Этап №0: Подготовка к продакшну": "etap0/index.md"
-      - "<span class='nav-icon' data-lucide='flame'></span> Этап №1: Первые Биты":
+      - "<span class='nav-icon' data-lucide='target'></span> Этап 0 - Подготовка к продакшну": "etap0/index.md"
+      - "<span class='nav-icon' data-lucide='flame'></span> Этап 1 - Первые Биты":
           - "etap1/index.md"
           - "<span class='nav-icon' data-lucide='music-2'></span> Что такое сэмпл": "etap1/che-takoe-sampl.md"
           - "<span class='nav-icon' data-lucide='drumstick'></span> Драмка и построение бита": "etap1/drumka.md"
@@ -248,7 +248,7 @@ nav:
           - "<span class='nav-icon' data-lucide='square'></span> Бит в FL Studio": "etap1/bit-v-fl-studio.md"
           - "<span class='nav-icon' data-lucide='circle'></span> Бит в Ableton": "etap1/bit-v-ableton.md"
           - "<span class='nav-icon' data-lucide='circle-check'></span> Финал этапа": "etap1/final-etap1.md"
-      - "<span class='nav-icon' data-lucide='mixer-vertical'></span> Этап №2: Сведение и VST Плагины":
+      - "<span class='nav-icon' data-lucide='mixer-vertical'></span> Этап 2 - Сведение и VST Плагины":
           - "etap2/index.md"
           - "<span class='nav-icon' data-lucide='book-open'></span> Основные понятия": "etap2/osnovnye-ponyatiya.md"
           - "<span class='nav-icon' data-lucide='sliders-horizontal'></span> EQ / Эквализация": "etap2/eq-ekvalizatsiya.md"
@@ -268,7 +268,7 @@ nav:
           - "<span class='nav-icon' data-lucide='brain'></span> Психоакустика": "etap2/psychoacoustics.md"
           - "<span class='nav-icon' data-lucide='shuffle'></span> Сведение (mixing)": "etap2/mixing.md"
           - "<span class='nav-icon' data-lucide='disc-2'></span> Мастеринг": "etap2/mastering.md"
-      - "<span class='nav-icon' data-lucide='flame'></span> Этап №3: Усложненные биты":
+      - "<span class='nav-icon' data-lucide='flame'></span> Этап 3 - Усложненные биты":
           - "etap3/index.md"
           - "<span class='nav-icon' data-lucide='music-2'></span> Первая мелодия": "etap3/pervaya-melodiya.md"
           - "<span class='nav-icon' data-lucide='piano'></span> VST Синтезаторы": "etap3/vst-sintezatory.md"
@@ -286,7 +286,7 @@ nav:
           - "<span class='nav-icon' data-lucide='zap'></span> Фишки для спидрана": "etap3/speedran-fishki.md"
           - "<span class='nav-icon' data-lucide='mixer-vertical'></span> Мастеринг": "etap3/mastering-etap3.md"
           - "<span class='nav-icon' data-lucide='circle-check'></span> Финал этапа": "etap3/final-etap3.md"
-      - "<span class='nav-icon' data-lucide='piano'></span> Этап №4: Теория музыки и Аккорды":
+      - "<span class='nav-icon' data-lucide='piano'></span> Этап 4 - Теория музыки и Аккорды":
           - "etap4/index.md"
           - "<span class='nav-icon' data-lucide='music-2'></span> Ноты": "etap4/noty.md"
           - "<span class='nav-icon' data-lucide='ruler'></span> Интервалы": "etap4/intervaly.md"
@@ -302,7 +302,7 @@ nav:
           - "<span class='nav-icon' data-lucide='bar-chart-3'></span> Работа с референсами": "etap4/rabota-s-referensami.md"
           - "<span class='nav-icon' data-lucide='target'></span> Применение в битах": "etap4/primenenie-v-bitakh.md"
           - "<span class='nav-icon' data-lucide='circle-check'></span> Финал этапа": "etap4/final-etap4.md"
-      - "<span class='nav-icon' data-lucide='headphones'></span> Этап №5: EDM и Саунд-дизайн":
+      - "<span class='nav-icon' data-lucide='headphones'></span> Этап 5 - EDM и Саунд-дизайн":
           - "etap5/index.md"
           - "<span class='nav-icon' data-lucide='sliders-horizontal'></span> Синтез Звука": "etap5/sintez-zvuka.md"
           - "<span class='nav-icon' data-lucide='scissors'></span> Сэмплирование Slice и Chop": "etap5/samplirovanie.md"
@@ -316,7 +316,7 @@ nav:
           - "<span class='nav-icon' data-lucide='mixer-vertical'></span> Фишки сведения и Мастер": "etap5/fishki-svedeniya.md"
           - "<span class='nav-icon' data-lucide='repeat'></span> Ремиксы треков": "etap5/remiksy.md"
           - "<span class='nav-icon' data-lucide='circle-check'></span> Финал этапа": "etap5/final-etap5.md"
-      - "<span class='nav-icon' data-lucide='guitar'></span> Этап №6: Живая Музыка":
+      - "<span class='nav-icon' data-lucide='guitar'></span> Этап 6 - Живая Музыка":
           - "etap6/index.md"
           - "<span class='nav-icon' data-lucide='guitar'></span> Рок — Основные инструменты": "etap6/rock-osnovnye-instrumenty.md"
           - "<span class='nav-icon' data-lucide='pen-line'></span> Рок — Написание с нуля": "etap6/rock-napisanie-s-nulya.md"
@@ -339,7 +339,7 @@ nav:
           - "<span class='nav-icon' data-lucide='horn'></span> Джаз — Вариации жанра": "etap6/jazz-variatsii-zhandra.md"
           - "<span class='nav-icon' data-lucide='mic'></span> Работа с реальными инструментами": "etap6/real-instruments-zapish.md"
           - "<span class='nav-icon' data-lucide='circle-check'></span> Финал этапа": "etap6/final-etap6.md"
-      - "<span class='nav-icon' data-lucide='mic-vocal'></span> Этап №7: Сведение Вокала и Мастеринг":
+      - "<span class='nav-icon' data-lucide='mic-vocal'></span> Этап 7 - Сведение Вокала и Мастеринг":
           - "etap7/index.md"
           - "<span class='nav-icon' data-lucide='mic'></span> Запись вокала": "etap7/zapis-vokala.md"
           - "<span class='nav-icon' data-lucide='scissors'></span> Редакция вокала": "etap7/redaktsiya-vokala.md"
@@ -350,7 +350,7 @@ nav:
           - "<span class='nav-icon' data-lucide='bar-chart-3'></span> Финальный чек микса": "etap7/final-chek-miksa.md"
           - "<span class='nav-icon' data-lucide='radio'></span> Работа с референсами": "etap7/referensy-i-stream.md"
           - "<span class='nav-icon' data-lucide='square'></span> FL Studio и Ableton": "etap7/fl-ableton-vokal.md"
-      - "<span class='nav-icon' data-lucide='film'></span> Этап №8: Саундтреки и Эмбиент":
+      - "<span class='nav-icon' data-lucide='film'></span> Этап 8 - Саундтреки и Эмбиент":
           - "etap8/index.md"
           - "<span class='nav-icon' data-lucide='book-open'></span> Библиотеки Kontakt": "etap8/kontakt-biblioteki.md"
           - "<span class='nav-icon' data-lucide='music'></span> Оркестровка и инструменты": "etap8/orkeastrovka-instrumenty.md"
@@ -364,7 +364,7 @@ nav:
           - "<span class='nav-icon' data-lucide='headphones'></span> Сведение и Мастер": "etap8/svedenie-master.md"
           - "<span class='nav-icon' data-lucide='cloud-fog'></span> Эмбиент треки": "etap8/ambient-traki.md"
           - "<span class='nav-icon' data-lucide='settings'></span> Работа с видеорядом": "etap8/rabota-s-video.md"
-      - "<span class='nav-icon' data-lucide='rocket'></span> Этап №9: Продвижение и Заработок":
+      - "<span class='nav-icon' data-lucide='rocket'></span> Этап 9 - Продвижение и Заработок":
           - "etap9/index.md"
           - "<span class='nav-icon' data-lucide='target'></span> Цель пиара и музыки": "etap9/cel-prodvizheniya.md"
           - "<span class='nav-icon' data-lucide='share-2'></span> Социальные сети": "etap9/socseti.md"
