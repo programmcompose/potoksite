@@ -1583,8 +1583,8 @@
         '<div class="potok-pers-rec__body">' +
           '<div class="potok-pers-rec__title">' + esc(r.title) + '</div>' +
           '<div class="potok-pers-rec__desc">' + esc(r.description) + '</div>' +
+          (r.actionUrl ? '<a class="potok-pers-rec__action" href="' + esc(/^https?:\/\//.test(r.actionUrl) ? r.actionUrl : ASSET_BASE + r.actionUrl) + '">' + esc(r.actionLabel || 'Перейти') + '</a>' : '') +
         '</div>' +
-        (r.actionUrl ? '<a class="potok-pers-rec__action" href="' + esc(/^https?:\/\//.test(r.actionUrl) ? r.actionUrl : ASSET_BASE + r.actionUrl) + '">' + esc(r.actionLabel || 'Перейти') + '</a>' : '') +
       '</div>';
     }
     container.innerHTML = html;

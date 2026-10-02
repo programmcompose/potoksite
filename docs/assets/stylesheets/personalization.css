@@ -362,8 +362,10 @@
   color: var(--text-secondary);
 }
 
+/* Кнопка действия — под текстом внутри карточки (не справа) */
 .potok-pers-rec__action {
-  flex-shrink: 0;
+  display: inline-block;
+  margin-top: 10px;
   padding: 7px 12px;
   font-size: 0.78rem;
   font-weight: 600;
@@ -461,23 +463,10 @@
   border-radius: 12px;
 }
 
-/* ---------- Двухколоночная сетка (радар + рекомендации) ---------- */
-
-.potok-pers-duo {
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-  gap: 16px;
-  align-items: start;
-}
-
 /* ---------- Адаптив ---------- */
-
-@media (max-width: 900px) {
-  .potok-pers-duo { grid-template-columns: 1fr; }
-}
 
 @media (max-width: 600px) {
   .potok-pers-profile { gap: 12px; }
-  .potok-pers-rec, .potok-pers-chal { flex-wrap: wrap; }
-  .potok-pers-rec__action, .potok-pers-chal__reward { width: auto; }
+  .potok-pers-chal { flex-wrap: wrap; }
+  .potok-pers-chal__reward { width: auto; }
 }
