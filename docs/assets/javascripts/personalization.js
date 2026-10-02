@@ -159,8 +159,22 @@
         window.Telegram.WebApp.initDataUnsafe.user;
     } catch (e) { /* не в Telegram */ }
 
+    // Браузерный вход через воркер (Telegram Login Widget): сервер уже
+    // проверил членство в чате курса и положил данные пользователя сюда.
+    var potokUser = null;
+    try { potokUser = window.POTOK_USER; } catch (e) {}
+
     if (tgUser && tgUser.id) {
       identity = { id: String(tgUser.id), isGuest: false, user: tgUser };
+    } else if (potokUser && potokUser.id) {
+      var pu = {
+        id: Number(potokUser.id),
+        first_name: potokUser.first_name || 'Ученик',
+        username: potokUser.username || undefined,
+        last_name: potokUser.last_name || undefined,
+        photo_url: potokUser.photo_url || undefined
+      };
+      identity = { id: String(pu.id), isGuest: false, user: pu };
     } else {
       var guestId = null;
       try { guestId = localStorage.getItem('potok_guest_id'); } catch (e) {}
@@ -475,6 +489,27 @@
     S.challenges = migrate('challenges', rawChallenges);
     S.portfolio = migrate('portfolio', rawPortfolio);
     S.activity = migrate('activity', rawActivity);
+
+    // Первый вход с реальным Telegram ID после гостевого периода:
+    // переносим прогресс со старого гостевого ID в пустые слоты.
+    if (!getIdentity().isGuest) {
+      var gid = null;
+      try { gid = localStorage.getItem('potok_guest_id'); } catch (e) {}
+      if (gid && gid !== getIdentity().id) {
+        for (var gn in KEYS) {
+          if (!KEYS.hasOwnProperty(gn)) continue;
+          if (hadLocal[gn]) continue; // реальные данные уже есть — не трогаем
+          var graw = null;
+          try { graw = localStorage.getItem('tg_' + gid + '_' + KEYS[gn]); } catch (e) {}
+          if (!graw) continue;
+          try {
+            S[gn] = migrate(gn, JSON.parse(graw));
+            hadLocal[gn] = true;
+            lsWrite(KEYS[gn], S[gn]);
+          } catch (e) { /* повреждённые данные — пропускаем */ }
+        }
+      }
+    }
 
     // Профиль из Telegram (имя, фото) — обновляем при каждом входе
     var u = getIdentity().user;
