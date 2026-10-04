@@ -50,13 +50,65 @@
     scrollbar-gutter: stable;
   }
 
-  /* Тонкая линия разделения рейла и статьи (правый край панели) */
+  /* Стеклянный шов между рейлом и статьёй (правый край панели):
+     светлая кромка «стекла» на стороне меню + чёткая линия границы +
+     полупрозрачная полоса-вея, уходящая в зону статьи.
+     Псевдоэлементы — на .md-sidebar--primary (position:fixed, не скроллится),
+     а НЕ на scrollwrap: иначе шов уехал бы при прокрутке меню. */
+
+  /* Чёткая линия границы (была 1px --border-subtle ≈ невидимая) */
   [data-md-color-scheme="slate"] .md-sidebar--primary .md-sidebar__scrollwrap {
-    border-right: 1px solid var(--border-subtle);
+    border-right: 1px solid rgba(255, 255, 255, 0.16);
   }
 
   [data-md-color-scheme="default"] .md-sidebar--primary .md-sidebar__scrollwrap {
-    border-right: 1px solid var(--border-subtle);
+    border-right: 1px solid rgba(0, 0, 0, 0.18);
+  }
+
+  /* Светлая кромка «стекла» на стороне меню (внутри панели) */
+  [data-md-color-scheme="slate"] .md-sidebar--primary::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 1px; /* вплотную к линии границы, со стороны меню */
+    width: 1rem;
+    pointer-events: none;
+    background: linear-gradient(270deg, rgba(255, 255, 255, 0.08), transparent);
+  }
+
+  [data-md-color-scheme="default"] .md-sidebar--primary::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 1px;
+    width: 1rem;
+    pointer-events: none;
+    background: linear-gradient(270deg, rgba(255, 255, 255, 0.55), transparent);
+  }
+
+  /* Полупрозрачная полоса-вея в зоне статьи (сразу за правым краем панели) */
+  [data-md-color-scheme="slate"] .md-sidebar--primary::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 100%; /* за правым краём панели — в сторону статьи */
+    width: 2rem;
+    pointer-events: none;
+    background: linear-gradient(90deg, rgba(10, 14, 26, 0.5), transparent);
+  }
+
+  [data-md-color-scheme="default"] .md-sidebar--primary::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 100%;
+    width: 2rem;
+    pointer-events: none;
+    background: linear-gradient(90deg, rgba(74, 56, 24, 0.16), transparent);
   }
 
   /* Статья — комфортная ширина строки, по центру между рейлом и TOC.
