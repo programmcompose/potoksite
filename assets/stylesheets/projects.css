@@ -1,0 +1,222 @@
+
+/* IY Поток — project system */
+.potok-project-hero {
+  margin: 1rem 0 2rem;
+  padding: 2rem;
+  border: 1px solid var(--md-default-fg-color--lightest);
+  border-radius: 20px;
+  background:
+    radial-gradient(circle at 90% 10%, rgba(0, 188, 212, .12), transparent 32%),
+    var(--md-default-bg-color);
+}
+.potok-project-kicker {
+  font-size: .78rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--md-accent-fg-color);
+}
+.potok-project-hero h1 { margin: .25rem 0 .5rem; }
+.potok-project-subtitle {
+  font-size: 1.05rem;
+  opacity: .82;
+  max-width: 760px;
+}
+.potok-project-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .55rem;
+  margin-top: 1rem;
+}
+.potok-project-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .4rem .7rem;
+  border-radius: 999px;
+  background: var(--md-code-bg-color);
+  font-size: .82rem;
+}
+.potok-project-progress {
+  margin-top: 1.25rem;
+}
+.potok-project-progress__row {
+  display:flex; justify-content:space-between; gap:1rem;
+  font-size:.82rem; opacity:.8; margin-bottom:.35rem;
+}
+.potok-project-progress__bar {
+  height: 8px; border-radius: 999px;
+  background: var(--md-default-fg-color--lightest);
+  overflow:hidden;
+}
+.potok-project-progress__fill {
+  height:100%; width:0; border-radius:999px;
+  background: var(--md-accent-fg-color);
+  transition: width .2s ease;
+}
+.potok-project-grid {
+  display:grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap:1rem;
+  margin:1rem 0 2rem;
+}
+.potok-project-card {
+  display:block;
+  padding:1.15rem;
+  border:1px solid var(--md-default-fg-color--lightest);
+  border-radius:16px;
+  text-decoration:none !important;
+  color:inherit !important;
+  background:var(--md-default-bg-color);
+  transition:transform .15s ease, border-color .15s ease, box-shadow .15s ease;
+}
+.potok-project-card:hover {
+  transform:translateY(-2px);
+  border-color:var(--md-accent-fg-color);
+  box-shadow:0 8px 30px rgba(0,0,0,.08);
+}
+.potok-project-card__top {
+  display:flex; justify-content:space-between; gap:.75rem;
+  align-items:flex-start;
+}
+.potok-project-card__number {
+  font-size:.75rem; font-weight:800; opacity:.6;
+}
+.potok-project-card h3 { margin:.25rem 0 .4rem; }
+.potok-project-card p { margin:0; opacity:.75; font-size:.9rem; }
+.potok-project-card__footer {
+  display:flex; justify-content:space-between; gap:.5rem;
+  margin-top:1rem; font-size:.78rem; opacity:.7;
+}
+.potok-project-tasklist {
+  display:grid;
+  gap:.55rem;
+  margin:1rem 0 1.5rem;
+}
+.potok-project-task {
+  display:flex;
+  align-items:flex-start;
+  gap:.7rem;
+  padding:.75rem .85rem;
+  border:1px solid var(--md-default-fg-color--lightest);
+  border-radius:12px;
+  cursor:pointer;
+  background:color-mix(in srgb, var(--md-default-bg-color) 94%, var(--md-accent-fg-color));
+}
+.potok-project-task:hover { border-color:var(--md-accent-fg-color); }
+.potok-project-task input {
+  margin-top:.2rem;
+  width:1.05rem; height:1.05rem;
+  accent-color:var(--md-accent-fg-color);
+  flex:0 0 auto;
+}
+.potok-project-task__text { line-height:1.45; }
+.potok-project-task.is-done .potok-project-task__text {
+  text-decoration:line-through;
+  opacity:.55;
+}
+.potok-project-callout {
+  padding:1rem 1.1rem;
+  border-left:4px solid var(--md-accent-fg-color);
+  border-radius:0 12px 12px 0;
+  background:var(--md-code-bg-color);
+  margin:1rem 0;
+}
+.potok-project-deliverables {
+  display:grid;
+  gap:.55rem;
+  margin:1rem 0;
+}
+.potok-project-deliverable {
+  display:flex; gap:.65rem; align-items:flex-start;
+}
+.potok-project-deliverable strong { display:block; }
+.potok-project-links {
+  display:flex; flex-wrap:wrap; gap:.55rem; margin:1rem 0 1.5rem;
+}
+.potok-project-link {
+  display:inline-flex; align-items:center; gap:.35rem;
+  padding:.55rem .8rem; border-radius:10px;
+  border:1px solid var(--md-default-fg-color--lightest);
+  text-decoration:none !important;
+}
+.potok-project-link--primary {
+  background:var(--md-accent-fg-color);
+  color:var(--md-accent-bg-color) !important;
+  border-color:transparent;
+}
+.potok-project-reset {
+  border:0; background:none; cursor:pointer;
+  color:var(--md-default-fg-color--lighter);
+  text-decoration:underline; padding:0;
+  font:inherit; font-size:.8rem;
+}
+.potok-project-index-note {
+  margin:1rem 0 2rem;
+  padding:1rem 1.1rem;
+  border-radius:14px;
+  background:var(--md-code-bg-color);
+}
+@media (max-width: 600px) {
+  .potok-project-hero { padding:1.25rem; border-radius:15px; }
+}
+
+/* === Празднование завершения проекта === */
+.potok-confetti {
+  position:fixed; inset:0;
+  pointer-events:none;
+  z-index:10001;
+}
+.potok-celebrate-overlay {
+  position:fixed; inset:0; z-index:10000;
+  display:flex; align-items:center; justify-content:center;
+  padding:1rem;
+  background:rgba(8,12,24,.6);
+  backdrop-filter:blur(4px);
+  opacity:0;
+  transition:opacity .3s ease;
+}
+.potok-celebrate-overlay.is-visible { opacity:1; }
+.potok-celebrate-card {
+  max-width:560px;
+  text-align:center;
+  padding:2.5rem 2rem;
+  border-radius:24px;
+  border:1px solid var(--md-default-fg-color--lightest);
+  background:
+    radial-gradient(circle at 50% 0%, rgba(0,229,255,.16), transparent 60%),
+    var(--md-default-bg-color);
+  box-shadow:0 30px 80px rgba(0,0,0,.45);
+  transform:scale(.7) translateY(14px);
+  opacity:0;
+  animation:potok-celebrate-pop .55s cubic-bezier(.2,1.4,.4,1) forwards;
+}
+@keyframes potok-celebrate-pop {
+  to { transform:scale(1) translateY(0); opacity:1; }
+}
+.potok-celebrate-emoji {
+  display:inline-block;
+  font-size:3.2rem;
+  animation:potok-celebrate-bounce .9s ease-in-out infinite alternate;
+}
+@keyframes potok-celebrate-bounce {
+  from { transform:translateY(0) rotate(-6deg); }
+  to   { transform:translateY(-8px) rotate(6deg); }
+}
+.potok-celebrate-title {
+  margin:.75rem 0 .5rem;
+  font-size:1.35rem;
+  line-height:1.35;
+}
+.potok-celebrate-sub { opacity:.8; margin:0 0 1.25rem; }
+.potok-celebrate-close {
+  border:0; cursor:pointer;
+  font:inherit; font-weight:600;
+  padding:.6rem 1.4rem; border-radius:999px;
+  background:var(--md-accent-fg-color);
+  color:var(--md-accent-bg-color);
+}
+/* Золотая полоса прогресса, когда проект завершён */
+.potok-project-hero.is-complete .potok-project-progress__fill {
+  background:linear-gradient(90deg,#ffd740,#ffab00);
+}

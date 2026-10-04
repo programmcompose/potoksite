@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Карта частот — Инструменты курса</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap');
+  :root {
+    --bg: #14141F;
+    --bg-light: #20202E;
+    --bg-lighter: #28283C;
+    --line: #35354B;
+    --text: #F5F5FA;
+    --muted: #9C9CB0;
+    --accent: #3DE8FF;
+    --purple: #ab47bc;
+    --orange: #ff7043;
+    --radius: 12px;
+    --shadow: 0 4px 16px rgba(0,0,0,0.4);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Inter', system-ui, sans-serif;
+    background-color: var(--bg);
+    background-image:
+      radial-gradient(ellipse at 50% -12%, rgba(255, 190, 84, .13) 0%, transparent 55%),
+      radial-gradient(circle, rgba(255, 255, 255, .035) 1px, transparent 1.4px);
+    background-size: auto, 28px 28px;
+    color: var(--text);
+    min-height: 100vh;
+    padding: 24px 16px;
+    -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  }
+
+  .container { max-width: 1100px; margin: 0 auto; }
+
+  .back-link {
+    display: inline-block;
+    color: var(--accent);
+    text-decoration: none;
+    margin-bottom: 20px;
+    font-size: 14px;
+    transition: opacity 0.2s;
+  }
+  .back-link:hover { opacity: 0.8; }
+
+  h1 {
+    font-size: clamp(30px, 5vw, 42px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+    margin-bottom: 10px;
+  }
+
+  .subtitle {
+    color: var(--muted);
+    font-size: 17px;
+    max-width: 720px;
+    margin-bottom: 24px;
+    line-height: 1.65;
+  }
+
+  h1 .title-icon { width: .8em; height: .8em; color: var(--orange); vertical-align: -.07em; margin-right: .3em; }
+
+  /* Фильтры групп — пилюли с иконками (макет «карта частот») */
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 20px;
+  }
+
+  .chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 9px 16px; border-radius: 999px; cursor: pointer;
+    font-family: inherit; font-size: 14px; font-weight: 600; color: #fff;
+    background: var(--c-soft, rgba(255,255,255,.08));
+    border: 1px solid var(--c-line, rgba(255,255,255,.35));
+    transition: all .18s ease; user-select: none;
+  }
+  .chip svg { width: 16px; height: 16px; color: var(--c, #fff); flex-shrink: 0; }
+  .chip:hover { transform: translateY(-1px); background: var(--c-hover, rgba(255,255,255,.14)); }
+  .chip.active { box-shadow: 0 0 14px var(--c-glow, rgba(255,255,255,.18)); }
+  .chip:not(.active) { opacity: .45; filter: saturate(.6); }
+
+  .chart-area {
+    background: var(--bg-light);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    overflow-x: auto;
+  }
+
+  canvas { display: block; width: 100%; cursor: pointer; }
+
+  .freq-label {
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: .06em;
+    color: var(--muted);
+    margin-top: 10px;
+  }
+
+  .info-panel {
+    margin-top: 20px;
+    background: var(--bg-light);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .info-panel h3 {
+    font-size: 17px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    color: var(--accent);
+  }
+
+  .info-panel p {
+    font-size: 16px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  .tooltip {
+    position: absolute;
+    background: #28283C;
+    border: 1px solid var(--accent);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 14px;
+    pointer-events: none;
+    display: none;
+    z-index: 10;
+    max-width: 260px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+  }
+
+  .tooltip .tt-name { font-weight: 700; margin-bottom: 4px; }
+  .tooltip .tt-range { color: var(--accent); }
+  .tooltip .tt-desc { color: var(--muted); font-size: 13px; margin-top: 4px; }
+
+  /* Зоны частот — HTML-заголовки над графиком (вместо подписей на canvas) */
+  .zone-heads { position: relative; height: 54px; }
+  .zone-head { position: absolute; top: 8px; transform: translateX(-50%); white-space: nowrap; text-align: center; }
+  .zone-name { display: flex; align-items: center; justify-content: center; gap: 7px; font-size: 13.5px; font-weight: 800; letter-spacing: .09em; }
+  .zone-name svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .zone-sub { margin-top: 2px; font-size: 11.5px; color: var(--muted); }
+
+  /* Легенда — карточки «Основные диапазоны» (макет) */
+  .legend-title { margin-top: 30px; font-size: 19px; font-weight: 700; letter-spacing: -.01em; }
+  .legend-title span { color: var(--muted); font-weight: 500; font-size: 14px; }
+
+  .legend-section {
+    margin-top: 14px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(235px, 1fr));
+    gap: 10px;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--c-soft, rgba(255,255,255,.04));
+    border: 1px solid var(--c-line, var(--line));
+    border-radius: 10px;
+    padding: 11px 14px;
+    cursor: pointer;
+    transition: all .18s ease;
+    user-select: none;
+  }
+
+  .legend-item:hover { background: var(--c-hover, var(--bg-lighter)); transform: translateY(-1px); }
+  .legend-item.disabled { opacity: .3; filter: saturate(.5); pointer-events: none; }
+
+  .legend-icon {
+    width: 38px; height: 38px; border-radius: 9px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--c-hover, rgba(255,255,255,.1)); color: var(--c, #fff);
+  }
+  .legend-icon svg { width: 19px; height: 19px; }
+
+  .legend-text { font-size: 14.5px; font-weight: 600; line-height: 1.3; }
+  .legend-range { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .legend-play {
+    margin-left: auto; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--c-hover, rgba(255,255,255,.1)); color: var(--c, #fff);
+    opacity: 0; transition: opacity .18s ease;
+  }
+  .legend-play svg { width: 13px; height: 13px; }
+  .legend-item:hover .legend-play, .legend-item.playing .legend-play { opacity: 1; }
+  .legend-item.playing { background: var(--c-hover); box-shadow: 0 0 0 1px var(--c-line), 0 0 16px var(--c-glow, transparent); }
+
+  .playing-indicator { position: fixed; bottom: 20px; right: 20px; display: none; align-items: center; gap: 8px; background: var(--accent); color: #000; padding: 9px 16px; border-radius: 20px; font-size: 12.5px; font-weight: 700; z-index: 100; box-shadow: 0 4px 20px rgba(0,188,212,.4); }
+  .pi-dot { width: 8px; height: 8px; border-radius: 50%; background: #fff; animation: piPulse 1s ease-in-out infinite; }
+  @keyframes piPulse { 0%,100% { opacity: 1; transform: scale(1); } 50% { opacity: .45; transform: scale(.72); } }
+
+  @media (max-width: 600px) {
+    h1 { font-size: 22px; }
+    .chart-area { padding: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <a href="../../index.html" class="back-link">← На главную курса</a>
+  <a href="../index.html" class="back-link" style="margin-left:12px;">← К инструментам</a>
+
+  <h1><i data-lucide="bar-chart-3" class="title-icon"></i>Карта частот инструментов</h1>
+  <p class="subtitle">Интерактивная карта, показывающая частотные диапазоны основных инструментов и элементов в музыкальном продакшене. Нажимайте на полосу инструмента или элемент легенды, чтобы услышать пример звука. Нажимайте на группы, чтобы показать/скрыть.</p>
+
+  <div class="controls" id="controls"></div>
+
+  <div class="chart-area" style="position:relative;">
+    <div class="zone-heads" id="zoneHeads"></div>
+    <canvas id="freqChart"></canvas>
+    <div class="tooltip" id="tooltip">
+      <div class="tt-name"></div>
+      <div class="tt-range"></div>
+      <div class="tt-desc"></div>
+    </div>
+  </div>
+  <p class="freq-label">Частотный диапазон: 20 Гц — 20 000 Гц (логарифмическая шкала)</p>
+
+  <h2 class="legend-title">Основные диапазоны <span>(для ориентира — кликните, чтобы услышать)</span></h2>
+  <div class="legend-section" id="legend"></div>
+
+  <div class="playing-indicator" id="playingIndicator"><span class="pi-dot"></span><span id="playingName"></span></div>
+
+  <div class="info-panel">
+    <h3><i data-lucide="book-open" class="title-icon"></i>Как читать карту</h3>
+    <p>
+      Каждая полоса показывает основной частотный диапазон инструмента или элемента микса.
+      Нижняя граница — это фундаментальный тон (базовая частота), верхняя — важные обертоны
+      и гармонические составляющие. Пересечения полос показывают, где инструменты конкурируют
+      за одно частотное пространство — именно там нужна эквализация.
+      Яркость полосы показывает, где инструмент звучит сильнее всего: к середине своего диапазона он плотнее и громче, а к краям — тише. Полоса не означает, что инструмент равномерно заполняет весь свой диапазон.
+      Зоны «Низкие / Средние / Верхние» вверху графика помогают запомнить ассоциации: низкие — мощь и фундамент (бас, бочка), средние — голос и характер (вокал, гитары), верхние — свет и воздух (хэты, щелчки).
+      Наведите курсор на полосу, чтобы увидеть подробности. Кликните на полосу или элемент легенды, чтобы воспроизвести пример звука этого инструмента.
+    </p>
+  </div>
+</div>
+
+<script src="../../assets/javascripts/vendor/lucide.min.js"></script>
+<script>
+const instruments = [
+  // === Барабаны ===
+  { name: "Kick (бочка)",       low: 40,  high: 200,  group: "drums", color: "#e53935", desc: "Фундамент бита. Базовая частота 40–80 Гц, клик атаки до 5–10 кГц", sample: "samples/kick.ogg" },
+  { name: "Snare (малый)",     low: 150, high: 5000, group: "drums", color: "#e53935", desc: "Корпус 150–250 Гц, щелчок 2–5 кГц", sample: "samples/snare.ogg" },
+  { name: "Clap (хлопок)",      low: 200, high: 6000, group: "drums", color: "#e53935", desc: "Основной диапазон 200–6000 Гц", sample: "samples/clap.ogg" },
+  { name: "Hi-Hat (хэт)",      low: 500, high: 15000,group: "drums", color: "#e53935", desc: "Closed: 2–8 кГц, Open: 500 Гц – 15 кГц (свист в верхах)", sample: "samples/hihat.ogg" },
+  { name: "Перкуссия / FX",    low: 100, high: 8000, group: "drums", color: "#e53935", desc: "Шейкеры, конги, бонго, креши", sample: "samples/percussion.ogg" },
+
+  // === Бас ===
+  { name: "808 бас",           low: 30,  high: 300,  group: "bass",  color: "#1e88e5", desc: "Суб-бас 30–60 Гц, тело 60–200 Гц", sample: "samples/bass_808.ogg" },
+  { name: "Синт-бас",          low: 40,  high: 800,  group: "bass",  color: "#1e88e5", desc: "Основной диапазон 40–800 Гц", sample: "samples/bass_synth.ogg" },
+  { name: "Риз-бас (808 slide)",low:30,  high: 500,  group: "bass",  color: "#1e88e5", desc: "Длинный басовый слайд 30–500 Гц", sample: "samples/bass_rise.ogg" },
+  { name: "Бас-гитара",        low: 40,  high: 1000, group: "bass",  color: "#1e88e5", desc: "Ноты E1–E2: 41–124 Гц, обертоны до 1 кГц", sample: "samples/bass_guitar.ogg" },
+
+  // === Гитары ===
+  { name: "Акустическая гитара",low:80,  high: 5000, group: "guitar",color: "#43a047", desc: "Корпус 80–400 Гц, обертоны до 5 кГц", sample: "samples/guitar_acoustic.ogg" },
+  { name: "Электрогитара (чистая)",low:80,high:5000,group: "guitar",color: "#43a047", desc: "Чистый звук: 80 Гц – 5 кГц", sample: "samples/guitar_clean.ogg" },
+  { name: "Электрогитара (овердрайв)",low:100,high:8000,group:"guitar",color:"#43a047",desc:"Дисторшн добавляет обертоны до 8 кГц", sample: "samples/guitar_overdrive.ogg" },
+
+  // === Синтезаторы ===
+  { name: "Лид-синт",          low: 200, high: 6000, group: "synth", color: "#ab47bc", desc: "Соло-мелодия: 200 Гц – 6 кГц", sample: "samples/synth_lead.ogg" },
+  { name: "Пэд (pad)",         low: 80,  high: 4000, group: "synth", color: "#ab47bc", desc: "Фоновый аккордовый пэд: 80 Гц – 4 кГц", sample: "samples/synth_pad.ogg" },
+  { name: "Арпеджиатор",       low: 300, high: 8000, group: "synth", color: "#ab47bc", desc: "Быстрые повторяющиеся ноты: 300 Гц – 8 кГц", sample: "samples/synth_arp.ogg" },
+  { name: "Сэмпл-мелодия",     low: 100, high: 6000, group: "synth", color: "#ab47bc", desc: "Сэмплированные мелодии: 100 Гц – 6 кГц", sample: "samples/synth_melody.ogg" },
+
+  // === Вокал ===
+  { name: "Вокал (мужской)",   low: 85,  high: 4000, group: "vocal", color: "#ff7043", desc: "Область: E2–G4, 85–400 Гц, присутствие до 4 кГц", sample: "samples/vocal_male.ogg" },
+  { name: "Вокал (женский)",   low: 165, high: 6000, group: "vocal", color: "#ff7043", desc: "Область: E3–C6, 165–1050 Гц, присутствие до 6 кГц", sample: "samples/vocal_female.ogg" },
+  { name: "Речитатив / рэп",   low: 80,  high: 5000, group: "vocal", color: "#ff7043", desc: "Широкий диапазон речи 80 Гц – 5 кГц", sample: "samples/vocal_rap.ogg" },
+  { name: "Бэки / бэк-вокал",  low: 100, high: 4000, group: "vocal", color: "#ff7043", desc: "Фоновый вокал: 100 Гц – 4 кГц", sample: "samples/vocal_backing.ogg" },
+
+  // === Живые инструменты ===
+  { name: "Фортепиано",        low: 60,  high: 8000, group: "live",  color: "#fdd835", desc: "A0–C8, рабочий от 60 Гц до 8 кГц+", sample: "samples/piano.ogg" },
+  { name: "Струнные (скрипка)",low:196, high:8000,  group: "live",  color: "#fdd835", desc: "G3–C7: 196 Гц – 8 кГц", sample: "samples/strings.ogg" },
+  { name: "Саксофон",          low: 140, high: 5000, group: "live",  color: "#fdd835", desc: "Основной диапазон: 140 Гц – 5 кГц", sample: "samples/saxophone.ogg" },
+  { name: "Труба",             low: 130, high: 6000, group: "live",  color: "#fdd835", desc: "Основной диапазон: 130 Гц – 6 кГц", sample: "samples/trumpet.ogg" },
+];
+
+// Lucide-иконки для карточек легенды (по сэмплу)
+const ICONS = {
+  "samples/kick.ogg": "drum", "samples/snare.ogg": "drum", "samples/clap.ogg": "hand",
+  "samples/hihat.ogg": "disc-3", "samples/percussion.ogg": "sparkles",
+  "samples/bass_808.ogg": "audio-lines", "samples/bass_synth.ogg": "audio-lines",
+  "samples/bass_rise.ogg": "audio-lines", "samples/bass_guitar.ogg": "guitar",
+  "samples/guitar_acoustic.ogg": "guitar", "samples/guitar_overdrive.ogg": "zap",
+  "samples/synth_lead.ogg": "piano", "samples/synth_pad.ogg": "cloud",
+  "samples/synth_arp.ogg": "repeat", "samples/synth_melody.ogg": "music-2",
+  "samples/vocal_male.ogg": "mic", "samples/vocal_female.ogg": "mic-vocal",
+  "samples/vocal_rap.ogg": "mic-vocal", "samples/vocal_backing.ogg": "users",
+  "samples/piano.ogg": "piano", "samples/strings.ogg": "music-2",
+  "samples/saxophone.ogg": "wind", "samples/trumpet.ogg": "music"
+};
+instruments.forEach(i => { i.icon = ICONS[i.sample] || "music"; });
+
+const groups = [
+  { key: "all",   label: "Все",               color: "#ffffff", icon: null },
+  { key: "drums", label: "Барабаны",          color: "#e53935", icon: "drum" },
+  { key: "bass",  label: "Бас",               color: "#1e88e5", icon: "audio-lines" },
+  { key: "guitar",label: "Гитары",            color: "#43a047", icon: "guitar" },
+  { key: "synth", label: "Синтезаторы",       color: "#ab47bc", icon: "piano" },
+  { key: "vocal", label: "Вокал",             color: "#ff7043", icon: "mic" },
+  { key: "live",  label: "Живые инструменты", color: "#fdd835", icon: "music-2" },
+];
+
+let hiddenGroups = new Set();
+let hoveredInstrument = null;
+
+const logMin = Math.log10(20);
+const logMax = Math.log10(20000);
+
+function freqToX(freq) {
+  const log = Math.log10(freq);
+  return (log - logMin) / (logMax - logMin);
+}
+
+// Общие отступы графика — используются и в draw(), и при hit-testing
+// (PAD_T уменьшен: подписи зон теперь HTML-заголовки над canvas)
+const PAD_L = 10, PAD_R = 10, PAD_T = 20, PAD_B = 30;
+
+// Частотные зоны с ассоциациями (чтобы запоминалось) — заголовки рисуются в HTML над графиком
+const bands = [
+  { name: "НИЗКИЕ",   icon: "waves",       sub: "Мощь и фундамент — бас, бочка",     from: 20,   to: 250,   color: "#ffb26b" },
+  { name: "СРЕДНИЕ",  icon: "audio-lines", sub: "Голос и характер — вокал, гитары",  from: 250,  to: 4000,  color: "#7fb4ff" },
+  { name: "ВЕРХНИЕ",  icon: "activity",    sub: "Свет и воздух — хэты, щелчки",      from: 4000, to: 20000, color: "#c9a6ff" },
+];
+
+function hexToRgba(hex, a) {
+  const h = hex.replace("#", "");
+  const r = parseInt(h.substring(0, 2), 16);
+  const g = parseInt(h.substring(2, 4), 16);
+  const b = parseInt(h.substring(4, 6), 16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+// Анимация воспроизведения (бегущий свет + пульс по полосе)
+let playAnim = { index: null, start: 0 };
+let rafId = null;
+function startPlayAnim() {
+  if (rafId) return;
+  const loop = () => { draw(); rafId = requestAnimationFrame(loop); };
+  rafId = requestAnimationFrame(loop);
+}
+function stopPlayAnim() {
+  if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+  draw();
+}
+
+// CSS-переменные цвета группы для чипов и карточек легенды
+function colorVars(color) {
+  return `--c:${color};--c-soft:${hexToRgba(color, .12)};--c-line:${hexToRgba(color, .5)};--c-hover:${hexToRgba(color, .24)};--c-glow:${hexToRgba(color, .35)}`;
+}
+
+function buildControls() {
+  const el = document.getElementById("controls");
+  groups.forEach(g => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "chip active";
+    btn.style.cssText = colorVars(g.color);
+    if (g.icon) btn.innerHTML = `<i data-lucide="${g.icon}"></i>`;
+    btn.appendChild(document.createTextNode(g.label));
+    btn.dataset.group = g.key;
+    btn.addEventListener("click", () => {
+      if (g.key === "all") {
+        if (hiddenGroups.size === 0) {
+          groups.filter(gr => gr.key !== "all").forEach(gr => hiddenGroups.add(gr.key));
+        } else {
+          hiddenGroups.clear();
+        }
+      } else {
+        if (hiddenGroups.has(g.key)) hiddenGroups.delete(g.key);
+        else hiddenGroups.add(g.key);
+      }
+      updateUI();
+    });
+    el.appendChild(btn);
+  });
+}
+
+function buildLegend() {
+  const el = document.getElementById("legend");
+  instruments.forEach((inst, i) => {
+    const item = document.createElement("div");
+    item.className = "legend-item";
+    item.dataset.index = i;
+    item.style.cssText = colorVars(inst.color);
+    item.innerHTML = `
+      <div class="legend-icon"><i data-lucide="${inst.icon}"></i></div>
+      <div style="min-width:0">
+        <div class="legend-text">${inst.name}</div>
+        <div class="legend-range">${inst.low} – ${inst.high} Гц</div>
+      </div>
+      <span class="legend-play"><i data-lucide="play"></i></span>`;
+    el.appendChild(item);
+  });
+}
+
+// HTML-заголовки зон над графиком, выровненные по логарифмической шкале
+function buildZoneHeads() {
+  const el = document.getElementById("zoneHeads");
+  el.innerHTML = "";
+  bands.forEach(b => {
+    const mid = (freqToX(b.from) + freqToX(b.to)) / 2 * 100;
+    const d = document.createElement("div");
+    d.className = "zone-head";
+    d.style.left = mid + "%";
+    d.innerHTML = `
+      <div class="zone-name" style="color:${b.color}"><i data-lucide="${b.icon}"></i>${b.name}</div>
+      <div class="zone-sub">${b.sub}</div>`;
+    el.appendChild(d);
+  });
+}
+
+function updateUI() {
+  document.querySelectorAll("#controls .chip").forEach(btn => {
+    const g = btn.dataset.group;
+    if (g === "all") {
+      btn.classList.toggle("active", hiddenGroups.size === 0);
+    } else {
+      btn.classList.toggle("active", !hiddenGroups.has(g));
+    }
+  });
+  document.querySelectorAll(".legend-item").forEach(item => {
+    const inst = instruments[item.dataset.index];
+    item.classList.toggle("disabled", hiddenGroups.has(inst.group));
+  });
+  draw();
+}
+
+function draw() {
+  const canvas = document.getElementById("freqChart");
+  const dpr = window.devicePixelRatio || 1;
+  const rect = canvas.parentElement.getBoundingClientRect();
+  // Минимальная ширина, чтобы подписи зон не ломались на мобильных (остальное — горизонтальный скролл)
+  const w = Math.max(rect.width - 40, 720);
+  const h = Math.max(420, instruments.length * 30 + 96);
+  canvas.style.width = w + "px";
+  canvas.width = w * dpr;
+  canvas.height = h * dpr;
+  canvas.style.height = h + "px";
+  const ctx = canvas.getContext("2d");
+  ctx.scale(dpr, dpr);
+  ctx.clearRect(0, 0, w, h);
+
+  const chartW = w - PAD_L - PAD_R;
+  const rowH = (h - PAD_T - PAD_B) / instruments.length;
+
+  // === Зоны частот: низкие / средние / верхние с ассоциациями ===
+  bands.forEach(b => {
+    const bx1 = PAD_L + freqToX(b.from) * chartW;
+    const bx2 = PAD_L + freqToX(b.to) * chartW;
+    ctx.fillStyle = hexToRgba(b.color, 0.045);
+    ctx.fillRect(bx1, PAD_T, bx2 - bx1, h - PAD_B - PAD_T);
+  });
+  [250, 4000].forEach(f => {
+    const x = PAD_L + freqToX(f) * chartW;
+    ctx.save();
+    ctx.setLineDash([4, 4]);
+    ctx.strokeStyle = "rgba(255,255,255,0.14)";
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(x, PAD_T); ctx.lineTo(x, h - PAD_B); ctx.stroke();
+    ctx.restore();
+  });
+  // Подписи зон (НИЗКИЕ/СРЕДНИЕ/ВЕРХНИЕ) теперь HTML-заголовки над canvas —
+  // здесь остаётся только тонировка фона и пунктирные разделители.
+  document.getElementById("zoneHeads").style.width = w + "px";
+
+  // Frequency grid lines and labels (нижняя ось)
+  const freqMarks = [20, 50, 100, 200, 500, 1000, 2000, 5000, 10000, 20000];
+  ctx.font = "12px 'Inter', sans-serif";
+  ctx.textAlign = "center";
+  freqMarks.forEach(f => {
+    const x = PAD_L + freqToX(f) * chartW;
+    ctx.strokeStyle = "rgba(255,255,255,0.07)";
+    ctx.beginPath(); ctx.moveTo(x, PAD_T); ctx.lineTo(x, h - PAD_B); ctx.stroke();
+    ctx.fillStyle = "#8A8AA0";
+    ctx.fillText(f >= 1000 ? (f/1000)+"k" : f, x, h - 8);
+  });
+
+  // Draw instrument bars — градиент: ярче к середине диапазона, тусклее к краям
+  const disabledIndices = new Set();
+  document.querySelectorAll(".legend-item.disabled").forEach(item => {
+    disabledIndices.add(+item.dataset.index);
+  });
+
+  instruments.forEach((inst, i) => {
+    if (hiddenGroups.has(inst.group) || disabledIndices.has(i)) return;
+
+    const x1 = PAD_L + freqToX(inst.low) * chartW;
+    const x2 = PAD_L + freqToX(inst.high) * chartW;
+    const y = PAD_T + i * rowH + rowH * 0.15;
+    const barH = rowH * 0.7;
+
+    const isHovered = hoveredInstrument === i;
+    const isPlaying = playAnim.index === i;
+    const boost = (isHovered || isPlaying) ? 1 : 0.82;
+
+    if (isHovered || isPlaying) {
+      ctx.save();
+      ctx.shadowColor = hexToRgba(inst.color, 0.9);
+      ctx.shadowBlur = isPlaying ? 14 : 10;
+    }
+
+    const grad = ctx.createLinearGradient(x1, 0, x2, 0);
+    [[0, 0.35], [0.18, 0.62], [0.5, 1], [0.82, 0.62], [1, 0.35]].forEach(([p, a]) => {
+      grad.addColorStop(p, hexToRgba(inst.color, Math.min(1, a * boost)));
+    });
+    ctx.fillStyle = grad;
+    roundRect(ctx, x1, y, x2 - x1, barH, 4);
+    ctx.fill();
+
+    if (isHovered || isPlaying) { ctx.restore(); }
+
+    if (isHovered && !isPlaying) {
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 2;
+      roundRect(ctx, x1, y, x2 - x1, barH, 4);
+      ctx.stroke();
+    }
+
+    // Анимация при воспроизведении: бегущий свет + пульсирующее свечение
+    if (isPlaying) {
+      const t = (performance.now() - playAnim.start) / 1000;
+      const span = x2 - x1;
+      ctx.save();
+      roundRect(ctx, x1, y, span, barH, 4);
+      ctx.clip();
+      const bw = Math.max(36, span * 0.25);
+      const sx = x1 + ((t * 0.8) % 1) * span;
+      const sg = ctx.createLinearGradient(sx - bw / 2, 0, sx + bw / 2, 0);
+      sg.addColorStop(0, "rgba(255,255,255,0)");
+      sg.addColorStop(0.5, "rgba(255,255,255,0.38)");
+      sg.addColorStop(1, "rgba(255,255,255,0)");
+      ctx.fillStyle = sg;
+      ctx.fillRect(x1, y, span, barH);
+      ctx.restore();
+
+      const pulse = 0.5 + 0.5 * Math.sin(t * 5);
+      ctx.save();
+      ctx.shadowColor = hexToRgba(inst.color, 0.9);
+      ctx.shadowBlur = 8 + 16 * pulse;
+      ctx.strokeStyle = hexToRgba("#ffffff", 0.45 + 0.35 * pulse);
+      ctx.lineWidth = 2;
+      roundRect(ctx, x1, y, span, barH, 4);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    // Label
+    ctx.fillStyle = "#fff";
+    ctx.font = `${isHovered || isPlaying ? "bold " : ""}13px 'Inter', sans-serif`;
+    ctx.textAlign = "left";
+    const labelX = x1 + 8;
+    if (x2 - x1 > 60) {
+      ctx.fillText(inst.name, labelX, y + barH / 2 + 4);
+    } else {
+      // Draw label to the left if bar is too narrow
+      ctx.fillStyle = "#ccc";
+      ctx.fillText(inst.name, PAD_L, y + barH / 2 + 4);
+    }
+  });
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
+// Tooltip on hover
+const tooltip = document.getElementById("tooltip");
+const canvas = document.getElementById("freqChart");
+
+canvas.addEventListener("mousemove", (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  const rowH = (canvas.height / dpr - PAD_T - PAD_B) / instruments.length;
+
+  let found = null;
+  for (let i = 0; i < instruments.length; i++) {
+    const inst = instruments[i];
+    if (hiddenGroups.has(inst.group)) continue;
+    const y = PAD_T + i * rowH;
+    // Вся строка кликабельна/подсветывается — не нужно попадать точно в полосу
+    if (my >= y && my < y + rowH) {
+      found = i;
+      break;
+    }
+  }
+
+  if (found !== null) {
+    hoveredInstrument = found;
+    const inst = instruments[found];
+    tooltip.querySelector(".tt-name").textContent = inst.name;
+    tooltip.querySelector(".tt-range").textContent = `${inst.low} – ${inst.high} Гц`;
+    tooltip.querySelector(".tt-desc").textContent = inst.desc;
+    tooltip.style.display = "block";
+    tooltip.style.left = (e.clientX - rect.left + 16) + "px";
+    tooltip.style.top = (e.clientY - rect.top - 10) + "px";
+    draw();
+  } else {
+    hoveredInstrument = null;
+    tooltip.style.display = "none";
+    draw();
+  }
+});
+
+canvas.addEventListener("mouseleave", () => {
+  hoveredInstrument = null;
+  tooltip.style.display = "none";
+  draw();
+});
+
+window.addEventListener("resize", draw);
+buildControls();
+buildLegend();
+buildZoneHeads();
+if (window.lucide) lucide.createIcons();
+draw();
+
+// === Audio Playback System (один переиспользуемый <audio> — работает на сайте, file:// и мобильных) ===
+const audioEl = document.createElement("audio");
+audioEl.volume = 0.8;
+let currentAudio = null;      // элемент, который сейчас играет (или null)
+let endedHandler = null;      // его обработчик 'ended'
+let errorTimer = null;
+const playingIndicator = document.getElementById("playingIndicator");
+const playingName = document.getElementById("playingName");
+
+function stopCurrentAudio() {
+  if (currentAudio) {
+    try { currentAudio.pause(); } catch (e) {}
+    if (endedHandler) {
+      currentAudio.removeEventListener("ended", endedHandler);
+      endedHandler = null;
+    }
+    currentAudio = null;
+  }
+}
+
+function flashError(msg) {
+  clearTimeout(errorTimer);
+  playingName.textContent = msg;
+  playingIndicator.style.display = "block";
+  errorTimer = setTimeout(() => { playingIndicator.style.display = "none"; }, 2500);
+}
+
+async function playSample(index) {
+  const inst = instruments[index];
+  if (!inst || !inst.sample) return;
+
+  // Сброс анимации предыдущего воспроизведения
+  playAnim.index = null;
+  stopPlayAnim();
+
+  // Stop any currently playing audio first
+  stopCurrentAudio();
+  clearTimeout(errorTimer);
+  playingIndicator.style.display = "none";
+  document.querySelectorAll(".legend-item.playing").forEach(el => el.classList.remove("playing"));
+  hoveredInstrument = null;
+  draw();
+
+  if (audioEl.getAttribute("src") !== inst.sample) {
+    audioEl.src = inst.sample;
+  } else {
+    audioEl.currentTime = 0; // повтор того же сэмпла — мгновенно из кэша
+  }
+  currentAudio = audioEl;
+  try {
+    await audioEl.play();
+  } catch (e) {
+    console.warn("Playback failed:", inst.sample, e);
+    flashError("Не удалось воспроизвести звук — попробуйте ещё раз");
+    return;
+  }
+
+  // Visual feedback + анимация полосы на время воспроизведения
+  playingName.textContent = inst.name;
+  playingIndicator.style.display = "block";
+  playAnim.index = index;
+  playAnim.start = performance.now();
+  startPlayAnim();
+  highlightInstrument(index);
+
+  endedHandler = () => {
+    audioEl.removeEventListener("ended", endedHandler);
+    endedHandler = null;
+    if (currentAudio === audioEl) currentAudio = null;
+    playingIndicator.style.display = "none";
+    playAnim.index = null;
+    stopPlayAnim();
+    unhighlightInstrument(index);
+  };
+  audioEl.addEventListener("ended", endedHandler);
+}
+
+function highlightInstrument(index) {
+  const item = document.querySelector(`.legend-item[data-index="${index}"]`);
+  if (item) item.classList.add("playing");
+  hoveredInstrument = index;
+  draw();
+}
+
+function unhighlightInstrument(index) {
+  const item = document.querySelector(`.legend-item[data-index="${index}"]`);
+  if (item) item.classList.remove("playing");
+  hoveredInstrument = null;
+  draw();
+}
+
+// Add play icon to legend items
+document.querySelectorAll(".legend-item").forEach(item => {
+  const idx = +item.dataset.index;
+  const inst = instruments[idx];
+  if (inst && inst.sample) {
+    const icon = document.createElement("span");
+    icon.className = "play-icon";
+    icon.textContent = "▶";
+    item.querySelector(".legend-text").appendChild(icon);
+
+    item.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      await playSample(idx);
+    });
+  }
+});
+
+// Click on chart bars to play
+canvas.addEventListener("click", async (e) => {
+  const rect = canvas.getBoundingClientRect();
+  const dpr = window.devicePixelRatio || 1;
+  const mx = e.clientX - rect.left;
+  const my = e.clientY - rect.top;
+
+  const rowH = (canvas.height / dpr - PAD_T - PAD_B) / instruments.length;
+
+  for (let i = 0; i < instruments.length; i++) {
+    const inst = instruments[i];
+    if (hiddenGroups.has(inst.group)) continue;
+    const y = PAD_T + i * rowH;
+    // Клик по любой точке строки запускает звук этого инструмента
+    if (my >= y && my < y + rowH) {
+      await playSample(i);
+      break;
+    }
+  }
+});
+
+</script>
+
+</body>
+</html>

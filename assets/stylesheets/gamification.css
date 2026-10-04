@@ -1,0 +1,529 @@
+/* ========================================
+   Gamification — Стили геймификации
+   Design tokens, blue accents, card system
+   ======================================== */
+
+/* ---------- Level panel ---------- */
+.potok-level-panel {
+  margin: 0 0 1rem;
+  padding: 1rem;
+  border-radius: 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  animation: potok-gam-fade-in 0.5s ease both;
+}
+
+.potok-level-panel__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.potok-level-panel__level {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.potok-level-panel__level-icon {
+  font-size: 1.4rem;
+}
+
+.potok-level-panel__level-num {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--accent-blue);
+  line-height: 1;
+}
+
+.potok-level-panel__level-label {
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.potok-level-panel__xp {
+  display: flex;
+  align-items: baseline;
+  gap: 0.3rem;
+}
+
+.potok-level-panel__xp-val {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-heading);
+  font-variant-numeric: tabular-nums;
+}
+
+.potok-level-panel__xp-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* Level progress track — blue gradient */
+.potok-level-panel__track {
+  position: relative;
+  width: 100%;
+  height: 10px;
+  border-radius: 5px;
+  background-color: var(--bg-hover);
+  overflow: hidden;
+  margin-bottom: 0.4rem;
+}
+
+.potok-level-panel__fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0%;
+  border-radius: 5px;
+  background: linear-gradient(90deg, #3B82F6, #60A5FA);
+  transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.3);
+}
+
+.potok-level-panel__progress-text {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+.potok-level-panel__ach-count {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  text-align: center;
+  margin-top: 0.3rem;
+}
+
+.potok-level-panel__ach-count svg {
+  width: 12px;
+  height: 12px;
+  vertical-align: -2px;
+  margin-right: 3px;
+}
+
+/* ---------- Stats cards ---------- */
+.potok-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.potok-stats-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1.2rem;
+  border-radius: 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  transition: all 0.3s ease;
+  animation: potok-gam-fade-in 0.4s ease both;
+}
+
+.potok-stats-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+}
+
+.potok-stats-card__icon {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.potok-stats-card__value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--accent-blue);
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 0.2rem;
+}
+
+.potok-stats-card__label {
+  font-size: 0.82rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.potok-stats-card__track {
+  width: 80%;
+  height: 6px;
+  border-radius: 3px;
+  background-color: var(--bg-hover);
+  overflow: hidden;
+  margin-bottom: 0.3rem;
+}
+
+.potok-stats-card__fill {
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, #3B82F6, #60A5FA);
+  transition: width 0.6s ease;
+}
+
+.potok-stats-card__sub {
+  font-size: 0.72rem;
+  color: var(--text-secondary);
+}
+
+/* ---------- Action history ---------- */
+.potok-stats-history {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-radius: 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+}
+
+.potok-stats-history h3 {
+  font-size: 1rem;
+  margin-bottom: 0.8rem;
+  color: var(--text-heading);
+}
+
+.potok-stats-history__list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.potok-stats-history__item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.82rem;
+  gap: 0.5rem;
+}
+
+.potok-stats-history__item:last-child {
+  border-bottom: none;
+}
+
+.potok-stats-history__xp {
+  font-weight: 700;
+  color: var(--accent-blue);
+  white-space: nowrap;
+}
+
+.potok-stats-history__reason {
+  color: var(--text-main);
+  flex: 1;
+  text-align: center;
+}
+
+.potok-stats-history__time {
+  color: var(--text-secondary);
+  font-size: 0.72rem;
+  white-space: nowrap;
+}
+
+.potok-stats-empty {
+  color: var(--text-secondary);
+  font-style: italic;
+  text-align: center;
+  padding: 1rem;
+}
+
+/* ---------- Info panel ---------- */
+.potok-stats-info {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-radius: 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.8;
+}
+
+.potok-stats-info strong {
+  color: var(--text-heading);
+}
+
+/* ---------- Action buttons ---------- */
+.potok-stats-actions {
+  display: flex;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+}
+
+.potok-stats-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-main);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.potok-stats-btn:hover {
+  background-color: var(--bg-hover);
+  border-color: var(--accent-blue);
+  color: var(--accent-blue);
+}
+
+.potok-stats-btn--reset {
+  color: #ef5350;
+  border-color: rgba(239, 83, 80, 0.25);
+}
+
+.potok-stats-btn--reset:hover {
+  background-color: rgba(239, 83, 80, 0.1);
+  border-color: #ef5350;
+}
+
+/* ---------- Toast (base) ---------- */
+.potok-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  padding: 0.7rem 1.4rem;
+  border-radius: 10px;
+  background-color: var(--bg-card);
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  font-size: 0.9rem;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.potok-toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ---------- Level-up toast ---------- */
+.potok-levelup-toast {
+  background: linear-gradient(135deg, var(--accent-blue), var(--accent-blue-hover));
+  font-size: 1rem;
+  padding: 0.8rem 1.5rem;
+  color: #fff;
+  animation: potok-levelup-pulse 0.5s ease;
+}
+
+/* ---------- Streak card ---------- */
+.potok-stats-card--streak .potok-stats-card__value {
+  color: var(--accent-orange);
+}
+
+/* ---------- Heatmap panel ---------- */
+.potok-heatmap-panel,
+.potok-sections-panel {
+  margin-bottom: 1.5rem;
+  padding: 1rem;
+  border-radius: 14px;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+}
+
+.potok-heatmap-panel h3,
+.potok-sections-panel h3 {
+  font-size: 1rem;
+  margin-bottom: 0.8rem;
+  color: var(--text-heading);
+}
+
+.potok-heatmap__grid {
+  display: grid;
+  grid-template-columns: auto repeat(var(--weeks), 12px);
+  gap: 3px;
+  align-items: center;
+}
+
+.potok-heatmap__corner {
+  grid-row: 1;
+  grid-column: 1;
+}
+
+.potok-heatmap__month {
+  grid-row: 1;
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  line-height: 12px;
+}
+
+.potok-heatmap__dow {
+  grid-column: 1;
+  font-size: 0.65rem;
+  color: var(--text-secondary);
+  line-height: 12px;
+}
+
+.potok-heatmap__cell {
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+}
+
+.potok-heatmap__cell--lvl0 {
+  background-color: var(--bg-hover);
+}
+
+.potok-heatmap__cell--lvl1 {
+  background-color: rgba(242, 153, 74, 0.25);
+}
+
+.potok-heatmap__cell--lvl2 {
+  background-color: rgba(242, 153, 74, 0.45);
+}
+
+.potok-heatmap__cell--lvl3 {
+  background-color: rgba(242, 153, 74, 0.7);
+}
+
+.potok-heatmap__cell--lvl4 {
+  background-color: var(--accent-orange);
+}
+
+.potok-heatmap__legend {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  margin-top: 0.6rem;
+  font-size: 0.7rem;
+  color: var(--text-secondary);
+}
+
+.potok-heatmap__legend .potok-heatmap__cell {
+  width: 10px;
+  height: 10px;
+}
+
+/* ---------- Sections mastery ---------- */
+.potok-sections-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 0.45rem 0;
+  border-bottom: 1px solid var(--border-subtle);
+  font-size: 0.82rem;
+}
+
+.potok-sections-row:last-child {
+  border-bottom: none;
+}
+
+.potok-sections-row__name {
+  width: 110px;
+  flex-shrink: 0;
+  color: var(--text-main);
+  font-weight: 600;
+}
+
+.potok-sections-row--full .potok-sections-row__name::after {
+  content: ' ✓';
+  color: var(--accent-orange);
+}
+
+.potok-sections-row__track {
+  flex: 1;
+  height: 8px;
+  border-radius: 4px;
+  background-color: var(--bg-hover);
+  overflow: hidden;
+}
+
+.potok-sections-row__fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--accent-orange), #FFB86C);
+  transition: width 0.6s ease;
+}
+
+.potok-sections-row__stat {
+  width: 92px;
+  text-align: right;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---------- Animations ---------- */
+@keyframes potok-gam-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes potok-levelup-pulse {
+  0% { transform: translateX(-50%) scale(0.8); }
+  50% { transform: translateX(-50%) scale(1.05); }
+  100% { transform: translateX(-50%) scale(1); }
+}
+
+/* ---------- Responsive ---------- */
+@media screen and (max-width: 59.9375em) {
+  .potok-level-panel {
+    margin: 0 0 0.8rem;
+    padding: 0.8rem;
+  }
+
+  .potok-level-panel__level-num {
+    font-size: 1.3rem;
+  }
+
+  .potok-level-panel__xp-val {
+    font-size: 1.1rem;
+  }
+
+  .potok-stats-grid {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 0.7rem;
+  }
+
+  .potok-stats-card__value {
+    font-size: 1.3rem;
+  }
+
+  .potok-stats-actions {
+    flex-direction: column;
+  }
+
+  .potok-stats-btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  .potok-heatmap-panel {
+    overflow-x: auto;
+  }
+
+  .potok-sections-row__name {
+    width: 84px;
+    font-size: 0.75rem;
+  }
+
+  .potok-sections-row__stat {
+    width: 76px;
+    font-size: 0.72rem;
+  }
+}
+
+@media screen and (max-width: 30em) {
+  .potok-stats-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}

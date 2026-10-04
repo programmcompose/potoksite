@@ -1,0 +1,658 @@
+[
+  {
+    "term": "ADSR (Attack, Decay, Sustain, Release)",
+    "definition": "огибающая (envelope) звука. Четыре параметра, определяющие, как звук развивается во времени.",
+    "link": "",
+    "link_text": "",
+    "slug": "adsr-attack-decay-sustain-release",
+    "category": "effects"
+  },
+  {
+    "term": "Ableton Live",
+    "definition": "DAW от компании Ableton, популярна для электронной музыки.",
+    "link": "",
+    "link_text": "",
+    "slug": "ableton-live",
+    "category": "daw"
+  },
+  {
+    "term": "Amplifier (Амплификатор, Усилитель)",
+    "definition": "устройство для усиления аудиосигнала до уровня, достаточного для воспроизведения в колонках.",
+    "link": "",
+    "link_text": "",
+    "slug": "amplifier-амплификатор-усилитель",
+    "category": "equipment"
+  },
+  {
+    "term": "Амплитуда (Amplitude)",
+    "definition": "величина колебания звуковой волны. Определяет громкость. Измеряется в дБ.",
+    "link": "",
+    "link_text": "",
+    "slug": "амплитуда-amplitude",
+    "category": "physics"
+  },
+  {
+    "term": "Аналоговый звук",
+    "definition": "непрерывный сигнал, в отличие от цифрового.",
+    "link": "",
+    "link_text": "",
+    "slug": "аналоговый-звук",
+    "category": "physics"
+  },
+  {
+    "term": "Auto-Tune",
+    "definition": "автоматическая коррекция высоты тона вокала. Известен характерным «роботизированным» эффектом (T-Pain, Auto-Tune effect).",
+    "link": "",
+    "link_text": "",
+    "slug": "autotune",
+    "category": "effects"
+  },
+  {
+    "term": "Аудиоинтерфейс",
+    "definition": "устройство для подключения микрофонов и инструментов к компьютеру. Выполняет A/D и D/A конвертацию.",
+    "link": "",
+    "link_text": "",
+    "slug": "аудиоинтерфейс",
+    "category": "equipment"
+  },
+  {
+    "term": "Automation (Автоматизация)",
+    "definition": "запись изменений параметров трека или плагина во времени (громкость, панорама, параметры фильтров и т.д.).",
+    "link": "",
+    "link_text": "",
+    "slug": "automation-автоматизация",
+    "category": "daw"
+  },
+  {
+    "term": "Band-pass Filter (Пропускающий фильтр)",
+    "definition": "фильтр, пропускающий полосу частот между нижней и верхней границей, отсекая всё остальное.",
+    "link": "",
+    "link_text": "",
+    "slug": "bandpass-filter-пропускающий-фильтр",
+    "category": "mixing"
+  },
+  {
+    "term": "Bitcrush (Биткраш)",
+    "definition": "эффект снижения битности и/или частоты дискретизации. Создаёт «разбитое», 8-битное звучание.",
+    "link": "",
+    "link_text": "",
+    "slug": "bitcrush-биткраш",
+    "category": "effects"
+  },
+  {
+    "term": "BPM (Beats Per Minute)",
+    "definition": "количество ударов в минуту. Определяет темп.",
+    "link": "",
+    "link_text": "",
+    "slug": "bpm-beats-per-minute",
+    "category": "theory"
+  },
+  {
+    "term": "Bit Depth (Битность)",
+    "definition": "количество бит для представления каждого сэмпла. Влияет на динамический диапазон.",
+    "link": "",
+    "link_text": "",
+    "slug": "bit-depth-битность",
+    "category": "physics"
+  },
+  {
+    "term": "Bus (Шина)",
+    "definition": "виртуальный канал для группировки и обработки нескольких треков.",
+    "link": "",
+    "link_text": "",
+    "slug": "bus-шина",
+    "category": "mixing"
+  },
+  {
+    "term": "CD-Quality",
+    "definition": "стандарт качества аудио: 16-bit / 44.1 кГц.",
+    "link": "",
+    "link_text": "",
+    "slug": "cdquality",
+    "category": "physics"
+  },
+  {
+    "term": "Cent (Цент)",
+    "definition": "единица измерения музыкального интервала: 1/100 полутона. Используется для точной настройки питча.",
+    "link": "",
+    "link_text": "",
+    "slug": "cent-цент",
+    "category": "theory"
+  },
+  {
+    "term": "Chorus (Хорус)",
+    "definition": "модулятивный эффект, «умножающий» сигнал с лёгким расстройством, создающий объёмный, «хоровой» тембр.",
+    "link": "",
+    "link_text": "",
+    "slug": "chorus-хорус",
+    "category": "effects"
+  },
+  {
+    "term": "Clip (Клип)",
+    "definition": "фрагмент аудио или MIDI на таймлайне DAW.",
+    "link": "",
+    "link_text": "",
+    "slug": "clip-клип",
+    "category": "daw"
+  },
+  {
+    "term": "Compressor (Компрессор)",
+    "definition": "плагин для уменьшения динамического диапазона.",
+    "link": "",
+    "link_text": "",
+    "slug": "compressor-компрессор",
+    "category": "mixing"
+  },
+  {
+    "term": "DAW (Digital Audio Workstation)",
+    "definition": "программа для создания музыки на компьютере.",
+    "link": "",
+    "link_text": "",
+    "slug": "daw-digital-audio-workstation",
+    "category": "daw"
+  },
+  {
+    "term": "Delay (Задержка)",
+    "definition": "эффект, создающий повторения звука с затуханием. Базовый пространственный эффект.",
+    "link": "",
+    "link_text": "",
+    "slug": "delay-задержка",
+    "category": "mixing"
+  },
+  {
+    "term": "Distortion (Дисторшн)",
+    "definition": "сильное нелинейное искажение сигнала. Используется для агрессивного, «жёсткого» тембра.",
+    "link": "",
+    "link_text": "",
+    "slug": "distortion-дисторшн",
+    "category": "effects"
+  },
+  {
+    "term": "Detune (Детюн)",
+    "definition": "небольшое отклонение высоты тона от точного значения. Лёгкий детюн добавляет вокалу «жизни» и естественности.",
+    "link": "",
+    "link_text": "",
+    "slug": "detune-детюн",
+    "category": "effects"
+  },
+  {
+    "term": "Expander (Экспандер)",
+    "definition": "плагин, увеличивающий динамический диапазон: тихие звуки становятся ещё тише. Обратный компрессору эффект.",
+    "link": "",
+    "link_text": "",
+    "slug": "expander-экспандер",
+    "category": "mixing"
+  },
+  {
+    "term": "EQ (Equalizer, Эквалайзер)",
+    "definition": "плагин для корректировки частотного спектра.",
+    "link": "",
+    "link_text": "",
+    "slug": "eq-equalizer-эквалайзер",
+    "category": "mixing"
+  },
+  {
+    "term": "Fade",
+    "definition": "плавное изменение громкости (fade-in, fade-out).",
+    "link": "",
+    "link_text": "",
+    "slug": "fade",
+    "category": "daw"
+  },
+  {
+    "term": "Flanger (Фленджер)",
+    "definition": "модулятивный эффект, смешивающий сигнал с его задержанной копией, создающий эффект «пролёта самолёта».",
+    "link": "",
+    "link_text": "",
+    "slug": "flanger-фленджер",
+    "category": "effects"
+  },
+  {
+    "term": "Frequency (Частота)",
+    "definition": "количество колебаний в секунду. Измеряется в Гц. Определяет высоту тона.",
+    "link": "",
+    "link_text": "",
+    "slug": "frequency-частота",
+    "category": "physics"
+  },
+  {
+    "term": "Fuzz (Фаззер)",
+    "definition": "экстремальная форма дисторшн с полным «разрушением» формы волны. Характерен для гаражного рока и стоун-метала.",
+    "link": "",
+    "link_text": "",
+    "slug": "fuzz-фаззер",
+    "category": "effects"
+  },
+  {
+    "term": "Formant (Формант)",
+    "definition": "резонансные пики тембра, определяющие «окрас» голоса независимо от высоты тона. Изменение формантов позволяет менять «цвет» голоса без изменения ноты.",
+    "link": "",
+    "link_text": "",
+    "slug": "formant-формант",
+    "category": "theory"
+  },
+  {
+    "term": "Gain",
+    "definition": "усиление сигнала. Не путать с громкостью (volume).",
+    "link": "",
+    "link_text": "",
+    "slug": "gain",
+    "category": "physics"
+  },
+  {
+    "term": "Gain Staging",
+    "definition": "правильное распределение уровней сигнала на всех этапах.",
+    "link": "",
+    "link_text": "",
+    "slug": "gain-staging",
+    "category": "mixing"
+  },
+  {
+    "term": "Granular (Гранулярный синтез)",
+    "definition": "техника, разбивающая аудио на микроскопические «зёрна» (granules) и обрабатывающая их независимо.",
+    "link": "",
+    "link_text": "",
+    "slug": "granular-гранулярный-синтез",
+    "category": "effects"
+  },
+  {
+    "term": "Groove",
+    "definition": "ощущение «движения» в ритме. Часто достигается свингом и синкопой.",
+    "link": "",
+    "link_text": "",
+    "slug": "groove",
+    "category": "theory"
+  },
+  {
+    "term": "Grid (Сетка)",
+    "definition": "временная сетка в DAW, визуальный и ритмический ориентир для выравнивания клипов и MIDI-нот.",
+    "link": "",
+    "link_text": "",
+    "slug": "grid-сетка",
+    "category": "daw"
+  },
+  {
+    "term": "Harmonizer (Гармонизатор)",
+    "definition": "плагин, генерирующий гармонические голоса на основе входного сигнала.",
+    "link": "",
+    "link_text": "",
+    "slug": "harmonizer-гармонизатор",
+    "category": "effects"
+  },
+  {
+    "term": "Headroom",
+    "definition": "запас между пиковым уровнем сигнала и 0 dBFS. Рекомендуется 3–6 dB.",
+    "link": "",
+    "link_text": "",
+    "slug": "headroom",
+    "category": "physics"
+  },
+  {
+    "term": "Hi-Hat (Хай-хэт)",
+    "definition": "перкуссионный инструмент из двух цимбал.",
+    "link": "",
+    "link_text": "",
+    "slug": "hihat-хайхэт",
+    "category": "equipment"
+  },
+  {
+    "term": "High-Pass Filter (HPF)",
+    "definition": "фильтр, пропускающий частоты выше определённой.",
+    "link": "",
+    "link_text": "",
+    "slug": "highpass-filter-hpf",
+    "category": "mixing"
+  },
+  {
+    "term": "Impulse Response (IR)",
+    "definition": "образец акустических свойств помещения. Используется в convolution-ревербераторах.",
+    "link": "",
+    "link_text": "",
+    "slug": "impulse-response-ir",
+    "category": "mixing"
+  },
+  {
+    "term": "Insert",
+    "definition": "плагин, вставленный на конкретный трек.",
+    "link": "",
+    "link_text": "",
+    "slug": "insert",
+    "category": "mixing"
+  },
+  {
+    "term": "LFO (Low-Frequency Oscillator, Низкочастотный осциллятор)",
+    "definition": "генератор сигнала низкой частоты для модуляции параметров (громкость, частота, тембр).",
+    "link": "",
+    "link_text": "",
+    "slug": "lfo-lowfrequency-oscillator-низкочастотный-осциллятор",
+    "category": "effects"
+  },
+  {
+    "term": "LPF (Low-Pass Filter, Низкочастотный фильтр)",
+    "definition": "фильтр, пропускающий частоты ниже определённой и отсекающий высокие.",
+    "link": "",
+    "link_text": "",
+    "slug": "lpf-lowpass-filter-низкочастотный-фильтр",
+    "category": "mixing"
+  },
+  {
+    "term": "Latency (Латентность)",
+    "definition": "задержка между входом и выходом сигнала. Измеряется в миллисекундах.",
+    "link": "",
+    "link_text": "",
+    "slug": "latency-латентность",
+    "category": "physics"
+  },
+  {
+    "term": "Limiter (Лимитер)",
+    "definition": "компрессор с очень высоким ratio (∞:1). Предотвращает клиппинг.",
+    "link": "",
+    "link_text": "",
+    "slug": "limiter-лимитер",
+    "category": "mixing"
+  },
+  {
+    "term": "LUFS (Loudness Units Full Scale)",
+    "definition": "стандарт измерения громкости.",
+    "link": "",
+    "link_text": "",
+    "slug": "lufs-loudness-units-full-scale",
+    "category": "physics"
+  },
+  {
+    "term": "MIDI (Musical Instrument Digital Interface)",
+    "definition": "протокол передачи музыкальной информации (не аудио!).",
+    "link": "",
+    "link_text": "",
+    "slug": "midi-musical-instrument-digital-interface",
+    "category": "daw"
+  },
+  {
+    "term": "Mix (Микс)",
+    "definition": "результат сведения всех элементов трека.",
+    "link": "",
+    "link_text": "",
+    "slug": "mix-микс",
+    "category": "mixing"
+  },
+  {
+    "term": "Mixing (Сведение)",
+    "definition": "процесс балансировки элементов в миксе.",
+    "link": "",
+    "link_text": "",
+    "slug": "mixing-сведение",
+    "category": "mixing"
+  },
+  {
+    "term": "Monitor (Монитор)",
+    "definition": "студийная акустическая система для контроля звука.",
+    "link": "",
+    "link_text": "",
+    "slug": "monitor-монитор",
+    "category": "equipment"
+  },
+  {
+    "term": "Mastering (Мастеринг)",
+    "definition": "финальная обработка микса перед релизом.",
+    "link": "",
+    "link_text": "",
+    "slug": "mastering-мастеринг",
+    "category": "mixing"
+  },
+  {
+    "term": "Multi-effects (Мульти-эффекты)",
+    "definition": "плагины, объединяющие несколько эффектов в одной цепи (последовательно, параллельно или комбинированно).",
+    "link": "",
+    "link_text": "",
+    "slug": "multieffects-мультиэффекты",
+    "category": "effects"
+  },
+  {
+    "term": "Noise Gate (Нойз-гейт)",
+    "definition": "плагин, подавляющий сигнал ниже заданного порога. Убирает фоновый шум, шипение, гул.",
+    "link": "",
+    "link_text": "",
+    "slug": "noise-gate-нойзгейт",
+    "category": "mixing"
+  },
+  {
+    "term": "Overdrive (Овердрайв)",
+    "definition": "мягкое нелинейное искажение, имитирующее перегрузку лампового предусилителя. Тёплее и «округлее» дисторшн.",
+    "link": "",
+    "link_text": "",
+    "slug": "overdrive-овердрайв",
+    "category": "effects"
+  },
+  {
+    "term": "Panning (Панорамирование)",
+    "definition": "размещение звука в стереополе (лево/право).",
+    "link": "",
+    "link_text": "",
+    "slug": "panning-панорамирование",
+    "category": "mixing"
+  },
+  {
+    "term": "Pitch (Питч)",
+    "definition": "высота звука. В контексте вокала — точность попадания в ноту.",
+    "link": "",
+    "link_text": "",
+    "slug": "pitch-питч",
+    "category": "theory"
+  },
+  {
+    "term": "Plosive (Плозив)",
+    "definition": "ударные согласные (п, б), создающие низкочастотный щелчок при записи вокала. Убирается поп-фильтром и модулем De-plosive.",
+    "link": "",
+    "link_text": "",
+    "slug": "plosive-плозив",
+    "category": "effects"
+  },
+  {
+    "term": "Phaser (Фейзер)",
+    "definition": "модулятивный эффект, создающий движущиеся впадины и пики в спектре через фазовый сдвиг.",
+    "link": "",
+    "link_text": "",
+    "slug": "phaser-фейзер",
+    "category": "effects"
+  },
+  {
+    "term": "Pitch Shifter (Пич-шифтер)",
+    "definition": "плагин для изменения высоты тона сигнала без изменения темпа.",
+    "link": "",
+    "link_text": "",
+    "slug": "pitch-shifter-пичшифтер",
+    "category": "effects"
+  },
+  {
+    "term": "Plugin (Плагин)",
+    "definition": "программное расширение DAW (VST, AU, AAX).",
+    "link": "",
+    "link_text": "",
+    "slug": "plugin-плагин",
+    "category": "daw"
+  },
+  {
+    "term": "Preamp (Предусилитель)",
+    "definition": "устройство для усиления слабого сигнала микрофона до рабочего уровня.",
+    "link": "",
+    "link_text": "",
+    "slug": "preamp-предусилитель",
+    "category": "equipment"
+  },
+  {
+    "term": "Reverb (Реверберация)",
+    "definition": "эффект, имитирующий отражения в помещении.",
+    "link": "",
+    "link_text": "",
+    "slug": "reverb-реверберация",
+    "category": "mixing"
+  },
+  {
+    "term": "Retune Speed",
+    "definition": "скорость реакции Auto-Tune на изменение питча. Fast (0–5) даёт роботизированный эффект, Slow (30+) — плавную, почти незаметную коррекцию.",
+    "link": "",
+    "link_text": "",
+    "slug": "retune-speed",
+    "category": "effects"
+  },
+  {
+    "term": "Ring Modulator (Ринг-модулятор)",
+    "definition": "эффект, умножающий два сигнала, создающий металлические, безобертонные тембры.",
+    "link": "",
+    "link_text": "",
+    "slug": "ring-modulator-рингмодулятор",
+    "category": "effects"
+  },
+  {
+    "term": "Sample Rate (Частота дискретизации)",
+    "definition": "количество измерений в секунду. Стандарт: 44.1 кГц или 48 кГц.",
+    "link": "",
+    "link_text": "",
+    "slug": "sample-rate-частота-дискретизации",
+    "category": "physics"
+  },
+  {
+    "term": "Saturation (Сатурация)",
+    "definition": "мягкое искажение, добавляющее «тёплоту».",
+    "link": "",
+    "link_text": "",
+    "slug": "saturation-сатурация",
+    "category": "mixing"
+  },
+  {
+    "term": "Sidechain (Сайдчейн)",
+    "definition": "техника, при которой один сигнал управляет параметрами другого (часто: kick «качает» bass).",
+    "link": "",
+    "link_text": "",
+    "slug": "sidechain-сайдчейн",
+    "category": "mixing"
+  },
+  {
+    "term": "Spectrum (Спектр)",
+    "definition": "распределение энергии сигнала по частотам.",
+    "link": "",
+    "link_text": "",
+    "slug": "spectrum-спектр",
+    "category": "physics"
+  },
+  {
+    "term": "Sibilants (Сибилянты)",
+    "definition": "высокочастотные звуки (э, с, щ), создающие резкий «режущий» эффект. Часто требуют отдельной обработки de-esser'ом.",
+    "link": "",
+    "link_text": "",
+    "slug": "sibilants-сибилянты",
+    "category": "effects"
+  },
+  {
+    "term": "Spectral De-noise",
+    "definition": "подавление шума в частотной (спектральной) области. Позволяет точечно удалять нежелательные частоты на спектрограмме.",
+    "link": "",
+    "link_text": "",
+    "slug": "spectral-denoise",
+    "category": "effects"
+  },
+  {
+    "term": "Stereo (Стерео)",
+    "definition": "двухканальный звук (лево + право).",
+    "link": "",
+    "link_text": "",
+    "slug": "stereo-стерео",
+    "category": "physics"
+  },
+  {
+    "term": "Stutter (Статтер)",
+    "definition": "эффект заикания: быстрое повторение коротких фрагментов звука, создающий «глитч-ритм».",
+    "link": "",
+    "link_text": "",
+    "slug": "stutter-статтер",
+    "category": "effects"
+  },
+  {
+    "term": "Time Signature (Временная подпись)",
+    "definition": "количество ударов в такте и тип ноты-единицы (например, 4/4).",
+    "link": "",
+    "link_text": "",
+    "slug": "time-signature-временная-подпись",
+    "category": "theory"
+  },
+  {
+    "term": "Time-stretching (Тайм-стретчинг)",
+    "definition": "изменение длительности/темпа аудио без изменения высоты тона.",
+    "link": "",
+    "link_text": "",
+    "slug": "timestretching-таймстретчинг",
+    "category": "effects"
+  },
+  {
+    "term": "Transient (Транзиент)",
+    "definition": "начальная часть звуковой волны (атака).",
+    "link": "",
+    "link_text": "",
+    "slug": "transient-транзиент",
+    "category": "mixing"
+  },
+  {
+    "term": "Track (Трек)",
+    "definition": "отдельный канал в DAW для аудио или MIDI.",
+    "link": "",
+    "link_text": "",
+    "slug": "track-трек",
+    "category": "daw"
+  },
+  {
+    "term": "Tremolo (Тремоло)",
+    "definition": "модулятивный эффект, периодически изменяющий амплитуду (громкость) сигнала.",
+    "link": "",
+    "link_text": "",
+    "slug": "tremolo-тремоло",
+    "category": "effects"
+  },
+  {
+    "term": "True Peak",
+    "definition": "максимальный уровень сигнала, включая интерполяционные пики.",
+    "link": "",
+    "link_text": "",
+    "slug": "true-peak",
+    "category": "physics"
+  },
+  {
+    "term": "Vibrato (Вибрато)",
+    "definition": "модулятивный эффект, периодически изменяющий высоту тона. Придаёт звуку «живость» и выразительность.",
+    "link": "",
+    "link_text": "",
+    "slug": "vibrato-вибрато",
+    "category": "effects"
+  },
+  {
+    "term": "VST (Virtual Studio Technology)",
+    "definition": "стандарт аудио-плагинов.",
+    "link": "",
+    "link_text": "",
+    "slug": "vst-virtual-studio-technology",
+    "category": "daw"
+  },
+  {
+    "term": "Volume (Громкость)",
+    "definition": "воспринимаемая громкость звука.",
+    "link": "",
+    "link_text": "",
+    "slug": "volume-громкость",
+    "category": "physics"
+  },
+  {
+    "term": "Waveform (Форма волны)",
+    "definition": "визуальное представление звуковой волны.",
+    "link": "",
+    "link_text": "",
+    "slug": "waveform-форма-волны",
+    "category": "physics"
+  },
+  {
+    "term": "Warp / Elastic Audio",
+    "definition": "технология DAW для изменения длительности/тайминга аудио без изменения высоты тона. Используется для выравнивания вокала по сетке.",
+    "link": "",
+    "link_text": "",
+    "slug": "warp--elastic-audio",
+    "category": "effects"
+  }
+]

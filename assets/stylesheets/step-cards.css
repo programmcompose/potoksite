@@ -1,0 +1,108 @@
+/* ========================================
+   Step cards — нумерованные шаги DAW-процедур
+   18 ПОТОК (стиль Tailwind: сетка 01–06)
+
+   Использование в Markdown:
+   <div class="step-cards">
+     <div class="step-card">
+       <span class="step-num">01</span>
+       <h4>Название шага</h4>
+       <p>Описание действия.</p>
+       <code class="step-key">F6</code>   (необязательно)
+       <img src="...">                    (необязательный скриншот)
+     </div>
+   </div>
+   ======================================== */
+
+.step-cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin: 1.5em 0;
+}
+
+@media (max-width: 48em) {
+  .step-cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+.step-card {
+  position: relative;
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  padding: 20px 24px 22px;
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.step-card:hover {
+  transform: translateY(-2px);
+  border-color: color-mix(in srgb, var(--accent-orange) 45%, transparent);
+}
+
+[data-md-color-scheme="slate"] .step-card:hover {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+}
+
+[data-md-color-scheme="default"] .step-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+/* Крупный номер шага */
+.step-num {
+  display: block;
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.9rem;
+  font-weight: 900;
+  line-height: 1;
+  color: var(--accent-orange);
+  opacity: 0.5;
+  margin-bottom: 12px;
+}
+
+.step-card h4 {
+  margin: 0 0 6px;
+  font-size: 1.02rem;
+  font-weight: 700;
+  color: var(--text-heading);
+}
+
+.step-cards .step-card p {
+  margin: 0;
+  font-size: 0.92em;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+/* Чип горячей клавиши */
+.step-key {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 3px 10px;
+  border-radius: 8px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--accent-orange);
+  background: color-mix(in srgb, var(--accent-orange) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--accent-orange) 25%, transparent);
+}
+
+/* Скриншот внутри карточки */
+.step-card img {
+  display: block;
+  width: 100%;
+  margin-top: 14px;
+  border-radius: 8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .step-card {
+    transition: none;
+  }
+
+  .step-card:hover {
+    transform: none;
+  }
+}

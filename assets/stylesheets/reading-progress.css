@@ -1,0 +1,21 @@
+/* ============================================
+   Reading Progress Bar
+   Файл: docs/assets/stylesheets/reading-progress.css
+   ============================================ */
+
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 0%;
+  background: var(--md-accent-fg-color, #00bcd4);
+  z-index: 10000;
+  transition: width 80ms linear;
+  pointer-events: none;
+}
+
+/* Чтобы не мешал header'у Material */
+.md-header {
+  /* оставляем как есть */
+}

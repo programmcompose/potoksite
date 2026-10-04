@@ -1,0 +1,171 @@
+/* ========================================
+   Stage Lock — Поэтапная разблокировка контента
+   Design tokens consistent styling
+   ======================================== */
+
+/* --- Locked navigation item --- */
+.md-nav__item.stage-locked {
+  position: relative;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Desaturate and dim */
+.md-nav__item.stage-locked > .md-nav__link {
+  filter: grayscale(0.6) brightness(0.7);
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Lock overlay on nav item */
+.md-nav__item.stage-locked > .md-nav__link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 4px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Lock badge with date */
+.stage-lock-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  margin-top: 0.35em;
+  padding: 0.3em 0.6em;
+  border-radius: 6px;
+  font-size: 0.75em;
+  font-weight: 600;
+  background: rgba(239, 83, 80, 0.08);
+  color: #ef5350;
+  border: 1px solid rgba(239, 83, 80, 0.15);
+  white-space: nowrap;
+  animation: stage-lock-pulse 3s ease-in-out infinite;
+}
+
+.stage-lock-badge .lock-icon {
+  font-size: 1.1em;
+}
+
+.stage-lock-badge .unlock-date {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Pulse animation */
+@keyframes stage-lock-pulse {
+  0%, 100% { opacity: 0.85; }
+  50% { opacity: 1; }
+}
+
+/* --- Locked page overlay --- */
+.stage-page-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  animation: overlay-fade-in 0.4s ease;
+}
+
+.stage-page-overlay__content {
+  text-align: center;
+  padding: 2.5em 3em;
+  border-radius: 16px;
+  background: var(--bg-card);
+  border: 1px solid rgba(239, 83, 80, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  max-width: 420px;
+  animation: overlay-slide-up 0.4s ease;
+}
+
+.stage-page-overlay__icon {
+  font-size: 3em;
+  margin-bottom: 0.5em;
+}
+
+.stage-page-overlay__title {
+  font-size: 1.3em;
+  font-weight: 700;
+  margin-bottom: 0.4em;
+  color: var(--text-heading);
+}
+
+.stage-page-overlay__text {
+  font-size: 0.95em;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  margin-bottom: 1em;
+}
+
+.stage-page-overlay__date {
+  display: inline-block;
+  padding: 0.4em 1em;
+  border-radius: 8px;
+  font-size: 0.9em;
+  font-weight: 600;
+  background: rgba(239, 83, 80, 0.08);
+  color: #ef5350;
+  border: 1px solid rgba(239, 83, 80, 0.15);
+}
+
+.stage-page-overlay__hint {
+  display: block;
+  margin-top: 1em;
+  font-size: 0.8em;
+  opacity: 0.5;
+  color: var(--text-secondary);
+}
+
+/* Back to home button — blue */
+.stage-page-overlay__btn {
+  display: inline-block;
+  margin-top: 1.2em;
+  padding: 0.5em 1.5em;
+  border-radius: 8px;
+  font-size: 0.9em;
+  font-weight: 600;
+  color: #fff;
+  background: var(--accent-blue);
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.stage-page-overlay__btn:hover {
+  background: var(--accent-blue-hover);
+  opacity: 0.9;
+}
+
+@keyframes overlay-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes overlay-slide-up {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+/* --- Debug badge --- */
+.stage-debug-badge {
+  position: fixed;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  z-index: 10000;
+  padding: 0.3em 0.7em;
+  border-radius: 6px;
+  font-size: 0.7em;
+  font-weight: 700;
+  font-family: monospace;
+  background: rgba(59, 130, 246, 0.12);
+  color: var(--accent-blue);
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  pointer-events: none;
+}

@@ -1,0 +1,163 @@
+/* ========================================
+   «Словарь терминов» — hero, фильтры категорий, бейджи
+   18 ПОТОК
+   ======================================== */
+
+/* ---------- Hero: cyan-вариант (свободный цвет палитры сайта) ---------- */
+
+.hero-section.glossary {
+  background:
+    radial-gradient(ellipse at center, rgba(0, 188, 212, 0.15) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(178, 235, 242, 0.6) 0%, rgba(128, 222, 234, 0.6) 50%, rgba(77, 208, 225, 0.6) 100%) !important;
+  border-color: rgba(0, 188, 212, 0.3) !important;
+  box-shadow:
+    0 4px 24px rgba(0, 188, 212, 0.12),
+    inset 0 1px 0 rgba(255, 255, 255, 0.8) !important;
+}
+
+.hero-section.glossary h1 {
+  background: linear-gradient(135deg, #0097A7 0%, #006064 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-section.glossary .hero-subtitle {
+  color: #00838F;
+}
+
+.hero-section.glossary .hero-tag {
+  background: rgba(255, 255, 255, 0.35);
+  border-color: rgba(255, 255, 255, 0.5);
+  color: #00695C;
+}
+
+/* Тёмная тема */
+[data-md-color-scheme="slate"] .hero-section.glossary {
+  background:
+    radial-gradient(ellipse at center, rgba(0, 188, 212, 0.14) 0%, transparent 70%),
+    linear-gradient(135deg, rgba(0, 77, 93, 0.65) 0%, rgba(0, 56, 68, 0.65) 50%, rgba(4, 44, 52, 0.65) 100%) !important;
+  border-color: rgba(38, 198, 218, 0.25) !important;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3) !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.glossary h1 {
+  background: none !important;
+  -webkit-text-fill-color: #B2EBF2 !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.glossary .hero-subtitle {
+  color: #4DD0E1 !important;
+}
+
+[data-md-color-scheme="slate"] .hero-section.glossary .hero-tag {
+  background: rgba(77, 208, 225, 0.08) !important;
+  border-color: rgba(77, 208, 225, 0.25) !important;
+  color: #4DD0E1 !important;
+}
+
+/* ---------- Панель фильтров (sticky под шапкой) ---------- */
+
+#glossary-filters {
+  position: sticky;
+  top: 2.4rem; /* чуть ниже .md-header (~36px), чтобы не залезать под шапку */
+  z-index: 3;
+  margin: -0.75rem 0 1.9rem;
+  padding: 0.6rem 0;
+  background: color-mix(in srgb, var(--md-default-bg-color, #fff) 82%, transparent);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid color-mix(in srgb, var(--text-main, #E5E7EB) 14%, transparent);
+}
+
+.gl-filters {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.gl-chip {
+  font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-secondary, #9CA3AF);
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--text-main, #E5E7EB) 22%, transparent);
+  padding: 0.34rem 0.75rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.gl-chip:hover {
+  color: var(--text-main, #E5E7EB);
+  border-color: var(--accent-orange, #F2994A);
+}
+
+.gl-chip-active,
+.gl-chip-active:hover {
+  background: var(--accent-orange, #F2994A);
+  border-color: var(--accent-orange, #F2994A);
+  color: #0B0F17;
+}
+
+/* ---------- Бейджи категорий у терминов ---------- */
+
+.gl-badge {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 0.4rem;
+  font-family: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.14rem 0.45rem;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+.gl-cat-theory {
+  color: #4C8DFF;
+  border: 1px solid rgba(76, 141, 255, 0.45);
+  background: rgba(76, 141, 255, 0.1);
+}
+
+.gl-cat-physics {
+  color: #26C6DA;
+  border: 1px solid rgba(38, 198, 218, 0.45);
+  background: rgba(38, 198, 218, 0.1);
+}
+
+.gl-cat-mixing {
+  color: #F2994A;
+  border: 1px solid rgba(242, 153, 74, 0.5);
+  background: rgba(242, 153, 74, 0.12);
+}
+
+.gl-cat-effects {
+  color: #B388FF;
+  border: 1px solid rgba(179, 136, 255, 0.45);
+  background: rgba(179, 136, 255, 0.1);
+}
+
+.gl-cat-equipment {
+  color: #66BB6A;
+  border: 1px solid rgba(102, 187, 106, 0.45);
+  background: rgba(102, 187, 106, 0.1);
+}
+
+.gl-cat-daw {
+  color: #90A4AE;
+  border: 1px solid rgba(144, 164, 174, 0.5);
+  background: rgba(144, 164, 174, 0.12);
+}
+
+/* Тёмная тема — чуть ярче текст бейджей */
+[data-md-color-scheme="slate"] .gl-cat-theory { color: #82B1FF; }
+[data-md-color-scheme="slate"] .gl-cat-physics { color: #4DD0E1; }
+[data-md-color-scheme="slate"] .gl-cat-mixing { color: #FFB26B; }
+[data-md-color-scheme="slate"] .gl-cat-effects { color: #C9A8FF; }
+[data-md-color-scheme="slate"] .gl-cat-equipment { color: #81C784; }
+[data-md-color-scheme="slate"] .gl-cat-daw { color: #B0BEC5; }
